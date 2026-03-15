@@ -2,61 +2,160 @@
 
 ## Project Overview
 
-**project-scaffold** is a boilerplate/scaffold/template for quickly bootstrapping Quirk Systems projects. It provides a minimal starting point with standard configuration.
+**project-scaffold** is the fully-loaded boilerplate for Quirk Systems projects. It provides a production-ready Next.js 15 scaffold with all tooling, testing, CI/CD, and conventions configured out of the box.
 
-## Current State
+## Tech Stack
 
-This repository is a **minimal scaffold** — no source code, dependencies, or tooling have been added yet. It contains only:
+| Category                  | Tool                               |
+| ------------------------- | ---------------------------------- |
+| Runtime / Package Manager | Bun                                |
+| Framework                 | Next.js 15 (App Router, Turbopack) |
+| Language                  | TypeScript (strict mode)           |
+| Styling                   | Tailwind CSS v4 (CSS-first config) |
+| Components                | shadcn/ui (new-york style)         |
+| Server State              | TanStack Query v5                  |
+| Client State              | Zustand                            |
+| Forms                     | React Hook Form + Zod              |
+| Database                  | Drizzle ORM (SQLite default)       |
+| Auth                      | Auth.js v5 (scaffolded)            |
+| Unit Testing              | Vitest + React Testing Library     |
+| E2E Testing               | Playwright                         |
+| Linting                   | ESLint 9 (flat config) + Prettier  |
+| Git Hooks                 | Lefthook                           |
+| CI/CD                     | GitHub Actions                     |
 
-- `.gitignore` — configured for Next.js/TypeScript/Node.js projects
-- `LICENSE` — Apache License 2.0
-- `README.md` — brief project description
-
-## Intended Tech Stack
-
-Based on the `.gitignore` configuration, this scaffold targets:
-
-- **Framework**: Next.js
-- **Language**: TypeScript
-- **Runtime**: Node.js
-- **Package Manager**: npm or yarn
-- **Deployment**: Vercel
-- **Testing**: Jest (coverage directory pattern present)
-
-## Repository Structure
+## Directory Structure
 
 ```
-project-scaffold/
-├── .gitignore        # Git ignore rules for Next.js/TS/Node
-├── LICENSE           # Apache 2.0
-├── README.md         # Project description
-└── CLAUDE.md         # This file
+src/
+├── app/                    # Next.js App Router pages and layouts
+│   ├── api/                # API routes
+│   │   └── auth/           # Auth.js route handlers
+│   ├── layout.tsx          # Root layout (providers, fonts, metadata)
+│   ├── page.tsx            # Home page
+│   ├── loading.tsx         # Root loading state
+│   ├── error.tsx           # Root error boundary
+│   └── not-found.tsx       # 404 page
+├── components/
+│   ├── ui/                 # shadcn/ui components (Button, etc.)
+│   └── providers.tsx       # Client providers (QueryClient)
+├── hooks/                  # Custom React hooks
+├── lib/
+│   ├── db/                 # Drizzle ORM setup and schema
+│   │   ├── index.ts        # Database client
+│   │   └── schema.ts       # Table definitions
+│   ├── auth.ts             # Auth.js configuration
+│   ├── env.ts              # Environment variable validation (t3-env)
+│   └── utils.ts            # Utility functions (cn helper)
+└── types/                  # Shared TypeScript types
 ```
 
-## Development Conventions
+## Commands
 
-### Environment Variables
-- Local environment files use the pattern `.env*.local` and `.env`
-- These are gitignored — never commit secrets or environment files
+| Command                 | Description                          |
+| ----------------------- | ------------------------------------ |
+| `bun run dev`           | Start dev server with Turbopack      |
+| `bun run build`         | Production build                     |
+| `bun run start`         | Start production server              |
+| `bun run lint`          | Run ESLint                           |
+| `bun run lint:fix`      | Run ESLint with auto-fix             |
+| `bun run format`        | Format all files with Prettier       |
+| `bun run format:check`  | Check formatting                     |
+| `bun run type-check`    | TypeScript type checking             |
+| `bun run test`          | Run Vitest in watch mode             |
+| `bun run test:run`      | Run Vitest once                      |
+| `bun run test:coverage` | Run tests with coverage              |
+| `bun run test:e2e`      | Run Playwright E2E tests             |
+| `bun run db:generate`   | Generate Drizzle migrations          |
+| `bun run db:push`       | Push schema changes to DB            |
+| `bun run db:studio`     | Open Drizzle Studio                  |
+| `bun run db:migrate`    | Run migrations                       |
+| `bun run validate`      | Run lint + type-check + test + build |
+| `bun run clean`         | Remove .next, out, node_modules      |
 
-### Build Artifacts
-- Next.js build output: `/.next/`
-- Static export output: `/out/`
-- Production build: `/build/`
-- These directories are gitignored
+## Environment Variables
 
-### Dependencies
-- Node modules are in `/node_modules/` (gitignored)
-- PnP (Plug'n'Play) files are gitignored if using Yarn Berry
+Defined in `src/lib/env.ts` using t3-env with Zod validation. Copy `.env.example` to `.env` to get started.
 
-## License
+| Variable              | Required | Description                                              |
+| --------------------- | -------- | -------------------------------------------------------- |
+| `NEXT_PUBLIC_APP_URL` | No       | Public app URL                                           |
+| `DATABASE_URL`        | No       | SQLite file path (default: `local.db`)                   |
+| `AUTH_SECRET`         | No       | Auth.js secret (generate with `openssl rand -base64 32`) |
+| `SKIP_ENV_VALIDATION` | No       | Set to `1` to skip env validation (CI/Docker)            |
 
-Apache License 2.0 — see `LICENSE` file for full terms.
+Server variables are optional in the scaffold so it boots without a `.env` file. Tighten validation when configuring for a real project.
+
+## Conventions
+
+### File Naming
+
+- Components: PascalCase (`Button.tsx`) or kebab-case for shadcn (`button.tsx`)
+- Hooks: `use-<name>.ts`
+- Utilities: camelCase
+- Route files: lowercase (`page.tsx`, `layout.tsx`, `route.ts`)
+
+### Imports
+
+- Use `@/` path alias for all imports from `src/`
+- Example: `import { cn } from "@/lib/utils"`
+
+### Components
+
+- Server Components by default (no directive needed)
+- Add `"use client"` only when using hooks, browser APIs, or event handlers
+- Use `cn()` from `@/lib/utils` for conditional class names
+- shadcn/ui components live in `src/components/ui/`
+
+### Styling
+
+- Tailwind CSS v4 with CSS-first configuration
+- Theme variables defined in `src/app/globals.css` using `@theme inline`
+- No `tailwind.config.ts` — all customization is in CSS
+- OKLCH color space for theme colors (light/dark mode)
+
+### Database
+
+- Drizzle ORM with code-first TypeScript schemas
+- Schema defined in `src/lib/db/schema.ts`
+- SQLite via `better-sqlite3` for local development
+- Switch to PostgreSQL for production by changing the dialect and driver
+
+### Testing
+
+- Unit tests: `src/**/*.test.tsx` — use Vitest + React Testing Library
+- E2E tests: `e2e/*.spec.ts` — use Playwright
+- Test setup in `src/__tests__/setup.ts` (auto-cleanup, jest-dom matchers)
+- Server Components cannot be tested with Vitest — use E2E tests for those
+
+### Git
+
+- Conventional commits enforced via commitlint
+- Pre-commit hooks run lint, format check, and type-check (via Lefthook)
+- Branch naming: `feature/`, `fix/`, `chore/`
+
+## Adding shadcn/ui Components
+
+```bash
+bunx shadcn@latest add <component-name>
+```
+
+The `components.json` is pre-configured with correct aliases and Tailwind v4 settings.
+
+## CI/CD
+
+GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to `main`:
+
+1. **validate** job: lint → type-check → test → build
+2. **e2e** job: Playwright tests (runs after validate passes)
 
 ## Guidelines for AI Assistants
 
-- **Keep changes minimal** — only modify what is directly requested
-- **Follow existing patterns** — match the style and conventions already in the codebase
-- **Don't over-engineer** — this is a scaffold; keep things simple and extensible
-- **No secrets in commits** — never commit `.env` files, API keys, or credentials
-- **Preserve the scaffold nature** — additions should be broadly useful template code, not project-specific logic
+- Run `bun run validate` after making changes to verify nothing is broken
+- Follow existing patterns — don't introduce new libraries without good reason
+- Keep the scaffold nature — additions should be broadly useful, not project-specific
+- Use `@/` path aliases for imports
+- Add `"use client"` only when necessary
+- Never commit `.env` files or secrets
+- Write tests for new components and utilities
+- Use conventional commit messages
