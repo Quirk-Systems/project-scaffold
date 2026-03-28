@@ -190,6 +190,22 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to `main`. 
 
 Both jobs use `SKIP_ENV_VALIDATION=1` for the build/E2E steps. Playwright retries failed tests twice in CI (0 retries locally) and uses a single worker in CI.
 
+## Extended Documentation
+
+| File | What's Inside |
+|------|---------------|
+| [AGENTS.md](AGENTS.md) | Claude Agent SDK, MCP servers, agentic loop, tool patterns, multi-agent, guardrails |
+| [PROJECT.md](PROJECT.md) | PRD/ADR/RFC templates, new project checklist, sprint/retro templates, release process |
+| [docs/recommendations/INDEX.md](docs/recommendations/INDEX.md) | Full index of all recommendation docs (30+ files) |
+
+Key recommendation docs:
+- **AI**: `docs/recommendations/ai/` — prompt patterns, agent patterns, model selection, memory, evals
+- **Voice**: `docs/recommendations/voice/` — AI voice, persona, soul, tone calibration
+- **Tips**: `docs/recommendations/tips/` — TypeScript, Next.js, Testing, Debugging, Tailwind, Drizzle, Bun, Git
+- **Reports**: `docs/recommendations/reports/` — repo health, security, performance, dependency, code quality
+- **Macros**: `docs/recommendations/macros/` — Claude commands, shell aliases, bun scripts, one-click scripts
+- **Installs**: `docs/recommendations/installs/` — macOS, Linux, Docker, project bootstrap, dev tools
+
 ## Guidelines for AI Assistants
 
 - Run `bun run validate` after making changes to verify nothing is broken
@@ -201,3 +217,5 @@ Both jobs use `SKIP_ENV_VALIDATION=1` for the build/E2E steps. Playwright retrie
 - Write tests for new components and utilities (`src/**/*.test.tsx` for unit, `e2e/*.spec.ts` for E2E)
 - Use conventional commit messages (enforced by commitlint)
 - Node.js >=20.0.0 is required (alongside Bun)
+- For agent/AI work, see `AGENTS.md` and `docs/recommendations/ai/`
+- For project planning, see `PROJECT.md`
