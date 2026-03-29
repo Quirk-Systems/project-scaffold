@@ -25,6 +25,7 @@
     "db:migrate": "drizzle-kit migrate",
     "clean": "rm -rf .next out node_modules",
     "validate": "bun run lint && bun run type-check && bun run test:run && bun run build",
+    "postinstall": "next telemetry disable",
     "prepare": "lefthook install"
   },
   "dependencies": {
