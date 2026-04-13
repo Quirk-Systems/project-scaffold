@@ -16,6 +16,7 @@
 | [CICD.md](pipelines/CICD.md) | GitHub Actions, Docker, deploy pipelines, secrets |
 | [FOLDER_STRUCTURES.md](structure/FOLDER_STRUCTURES.md) | Opinionated folder layouts for every project type |
 | [APPS.md](apps/APPS.md) | App stacks, starter kits, SaaS patterns |
+| [MCP.md](mcp/MCP.md) | Model Context Protocol servers, build patterns, install paths |
 | [WILD.md](wild/WILD.md) | Wild ideas, experiments, rabbit holes |
 
 ---
