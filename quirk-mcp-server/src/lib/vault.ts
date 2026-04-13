@@ -3,6 +3,7 @@ import path from "node:path";
 import { glob } from "glob";
 import matter from "gray-matter";
 import type { QuirkConfig } from "./config.js";
+import { mapWithConcurrency, SCAN_CONCURRENCY } from "./concurrency.js";
 
 export interface ParsedNote {
   path: string;
@@ -215,15 +216,21 @@ export async function findBacklinks(
   );
 
   const allFiles = await listMarkdownFiles(cfg);
-  const backlinks: string[] = [];
+  const candidates = allFiles.filter((f) => f !== targetRel);
 
-  for (const file of allFiles) {
-    if (file === targetRel) continue;
-    const full = path.join(cfg.vaultPath, file);
-    const content = await fs.readFile(full, "utf-8");
-    if (pattern.test(content)) backlinks.push(file);
-  }
-  return backlinks;
+  const hits = await mapWithConcurrency(
+    candidates,
+    SCAN_CONCURRENCY,
+    async (file) => {
+      const content = await fs.readFile(
+        path.join(cfg.vaultPath, file),
+        "utf-8",
+      );
+      return pattern.test(content) ? file : null;
+    },
+  );
+
+  return hits.filter((f): f is string => f !== null);
 }
 
 async function fileExists(full: string): Promise<boolean> {

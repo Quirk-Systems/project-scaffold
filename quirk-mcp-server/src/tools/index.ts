@@ -16,6 +16,7 @@ import {
   writeNote,
 } from "../lib/vault.js";
 import { formatDate } from "../lib/daily.js";
+import { mapWithConcurrency, SCAN_CONCURRENCY } from "../lib/concurrency.js";
 
 export interface ToolDefinition {
   name: string;
@@ -157,36 +158,46 @@ const searchVaultTool: ToolDefinition = {
       ? parsed.query
       : parsed.query.toLowerCase();
 
-    const hits: SearchHit[] = [];
-    for (const file of files) {
-      if (hits.length >= parsed.limit) break;
-      const content = await fs.readFile(
-        path.join(cfg.vaultPath, file),
-        "utf-8",
-      );
-      const haystack = parsed.caseSensitive ? content : content.toLowerCase();
-      if (!haystack.includes(needle)) continue;
-
-      const lines = content.split("\n");
-      for (let i = 0; i < lines.length; i++) {
-        if (hits.length >= parsed.limit) break;
-        const line = lines[i]!;
-        const cmp = parsed.caseSensitive ? line : line.toLowerCase();
-        const idx = cmp.indexOf(needle);
-        if (idx === -1) continue;
-        const start = Math.max(0, idx - parsed.contextChars);
-        const end = Math.min(
-          line.length,
-          idx + parsed.query.length + parsed.contextChars,
+    const perFileHits = await mapWithConcurrency(
+      files,
+      SCAN_CONCURRENCY,
+      async (file): Promise<SearchHit[]> => {
+        const content = await fs.readFile(
+          path.join(cfg.vaultPath, file),
+          "utf-8",
         );
-        hits.push({
-          path: file,
-          line: i + 1,
-          snippet: line.slice(start, end).trim(),
-        });
-      }
-    }
-    return { query: parsed.query, count: hits.length, hits };
+        const haystack = parsed.caseSensitive ? content : content.toLowerCase();
+        if (!haystack.includes(needle)) return [];
+
+        const fileHits: SearchHit[] = [];
+        const lines = content.split("\n");
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i]!;
+          const cmp = parsed.caseSensitive ? line : line.toLowerCase();
+          const idx = cmp.indexOf(needle);
+          if (idx === -1) continue;
+          const start = Math.max(0, idx - parsed.contextChars);
+          const end = Math.min(
+            line.length,
+            idx + parsed.query.length + parsed.contextChars,
+          );
+          fileHits.push({
+            path: file,
+            line: i + 1,
+            snippet: line.slice(start, end).trim(),
+          });
+        }
+        return fileHits;
+      },
+    );
+
+    const hits = perFileHits.flat().slice(0, parsed.limit);
+    return {
+      query: parsed.query,
+      count: hits.length,
+      truncated: perFileHits.flat().length > parsed.limit,
+      hits,
+    };
   },
 };
 
@@ -268,10 +279,14 @@ const getTagsTool: ToolDefinition = {
     const files = await listMarkdownFiles(cfg, parsed.folder);
     const counts = new Map<string, number>();
 
-    for (const file of files) {
-      const note = await readNote(cfg, file).catch(() => null);
-      if (!note) continue;
-      for (const tag of note.tags) {
+    const perFileTags = await mapWithConcurrency(
+      files,
+      SCAN_CONCURRENCY,
+      (file) => readNote(cfg, file).then((n) => n.tags).catch(() => [] as string[]),
+    );
+
+    for (const tags of perFileTags) {
+      for (const tag of tags) {
         counts.set(tag, (counts.get(tag) ?? 0) + 1);
       }
     }
@@ -401,17 +416,23 @@ const searchByTagTool: ToolDefinition = {
     const parsed = searchByTagSchema.parse(args);
     const needle = parsed.tag.replace(/^#/, "");
     const files = await listMarkdownFiles(cfg);
-    const matches: { path: string; tags: string[] }[] = [];
 
-    for (const file of files) {
-      if (matches.length >= parsed.limit) break;
-      const note = await readNote(cfg, file).catch(() => null);
-      if (!note) continue;
-      const hit = note.tags.some(
-        (t) => t === needle || t.startsWith(`${needle}/`),
-      );
-      if (hit) matches.push({ path: note.path, tags: note.tags });
-    }
+    const perFile = await mapWithConcurrency(
+      files,
+      SCAN_CONCURRENCY,
+      async (file) => {
+        const note = await readNote(cfg, file).catch(() => null);
+        if (!note) return null;
+        const hit = note.tags.some(
+          (t) => t === needle || t.startsWith(`${needle}/`),
+        );
+        return hit ? { path: note.path, tags: note.tags } : null;
+      },
+    );
+
+    const matches = perFile
+      .filter((m): m is { path: string; tags: string[] } => m !== null)
+      .slice(0, parsed.limit);
 
     return { tag: needle, count: matches.length, matches };
   },
@@ -437,13 +458,23 @@ const getVaultStatsTool: ToolDefinition = {
       notesByBasename.set(base, file);
       const top = file.split("/")[0] ?? "(root)";
       folderCounts.set(top, (folderCounts.get(top) ?? 0) + 1);
+    }
 
-      const note = await readNote(cfg, file).catch(() => null);
-      if (!note) continue;
-      for (const tag of note.tags) tags.add(tag);
-      for (const link of extractWikiLinks(note.content)) {
-        linkedTargets.add(link);
-      }
+    const perFile = await mapWithConcurrency(
+      files,
+      SCAN_CONCURRENCY,
+      (file) =>
+        readNote(cfg, file)
+          .then((n) => ({
+            tags: n.tags,
+            links: extractWikiLinks(n.content),
+          }))
+          .catch(() => ({ tags: [] as string[], links: [] as string[] })),
+    );
+
+    for (const { tags: t, links } of perFile) {
+      for (const tag of t) tags.add(tag);
+      for (const link of links) linkedTargets.add(link);
     }
 
     const orphans: string[] = [];
