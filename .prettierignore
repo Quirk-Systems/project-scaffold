@@ -4,3 +4,4 @@ out
 build
 coverage
 bun.lock
+quirk-mcp-server
