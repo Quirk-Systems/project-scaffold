@@ -1,0 +1,26 @@
+# CODEOWNERS
+# Each line: pattern  owner(s)
+# Last matching pattern takes precedence.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default: all files require review from core team
+*                           @Quirk-Systems/core
+
+# Infrastructure and CI — require platform team review
+.github/                    @Quirk-Systems/platform
+Dockerfile                  @Quirk-Systems/platform
+docker-compose*.yml         @Quirk-Systems/platform
+Makefile                    @Quirk-Systems/platform
+
+# Database schema — require backend team review
+prisma/schema.prisma        @Quirk-Systems/backend
+prisma/migrations/          @Quirk-Systems/backend
+
+# Security-sensitive files
+src/lib/auth.ts             @Quirk-Systems/core
+src/middleware.ts           @Quirk-Systems/core
+src/app/api/auth/           @Quirk-Systems/core
+
+# Docs — anyone can review
+docs/                       @Quirk-Systems/core
+*.md                        @Quirk-Systems/core
