@@ -21,7 +21,7 @@ their own deployable.
 >
 > ```bash
 > git format-patch 51bfadc^..eba61dc -- quirk-mcp-server/
-> # apply with: git am --directory=. <patches>
+> # apply with: git am --directory=. *.patch
 > ```
 
 ---
