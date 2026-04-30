@@ -1,0 +1,25 @@
+name: Smoke test (reusable validate)
+
+# Temporary caller used to verify the org-default reusable validate workflow
+# works end-to-end against project-scaffold. Once verified, remove this file
+# and migrate ci.yml to call the reusable workflow directly.
+
+on:
+  push:
+    branches:
+      - "claude/plan-github-issues-ffBZh"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    uses: quirk-systems/.github/.github/workflows/reusable-validate.yml@claude/plan-github-issues-ffBZh
+    with:
+      package-manager: bun
+      node-version: "20"
+      run-build: true
+      run-e2e: true
