@@ -10,6 +10,7 @@
 |------|---------------|
 | [PLANNING.md](planning/PLANNING.md) | Planning doc templates, PRDs, ADRs, RFCs |
 | [APPS.md](apps/APPS.md) | App stacks, starter kits, SaaS patterns |
+| [MCP.md](mcp/MCP.md) | Model Context Protocol servers, build patterns, install paths |
 | [WILD.md](wild/WILD.md) | Wild ideas, experiments, rabbit holes |
 | [OBSIDIAN.md](obsidian/OBSIDIAN.md) | Vault setup, plugins, Dataview, templater, canvas |
 
