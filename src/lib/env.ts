@@ -18,3 +18,20 @@ export const env = createEnv({
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
 });
+
+const REQUIRED_IN_PROD = ["AUTH_SECRET", "DATABASE_URL"] as const;
+
+export function requireProductionEnv(): void {
+  if (process.env.SKIP_ENV_VALIDATION) return;
+  if (env.NODE_ENV !== "production") return;
+
+  const missing = REQUIRED_IN_PROD.filter(
+    (key) => !env[key as keyof typeof env],
+  );
+  if (missing.length > 0) {
+    throw new Error(
+      `Production build requires: ${missing.join(", ")}. ` +
+        `Set them in .env or the deployment environment.`,
+    );
+  }
+}
