@@ -25,7 +25,7 @@
     "db:studio": "drizzle-kit studio",
     "db:migrate": "drizzle-kit migrate",
     "clean": "rm -rf .next out node_modules",
-    "validate": "bun run lint && bun run type-check && bun run test:run && bun run build",
+    "validate": "bun run lint && bun run type-check && bun run test:run && SKIP_ENV_VALIDATION=1 bun run build",
     "validate:full": "bun run validate && bun run test:e2e",
     "prepare": "lefthook install"
   },

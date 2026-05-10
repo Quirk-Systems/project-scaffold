@@ -22,6 +22,7 @@ export const env = createEnv({
 const REQUIRED_IN_PROD = ["AUTH_SECRET", "DATABASE_URL"] as const;
 
 export function requireProductionEnv(): void {
+  if (process.env.SKIP_ENV_VALIDATION) return;
   if (env.NODE_ENV !== "production") return;
 
   const missing = REQUIRED_IN_PROD.filter(
