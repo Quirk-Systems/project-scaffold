@@ -108,6 +108,14 @@
 
 ---
 
+## Governance
+
+| File | What's Inside |
+|------|---------------|
+| [../../governance/BRANCH_PROTECTION.md](../../governance/BRANCH_PROTECTION.md) | Branch ruleset config, required CI checks, merge policy, emergency override |
+
+---
+
 ## Quick Philosophy
 
 - Flat > nested when possible

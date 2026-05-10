@@ -217,5 +217,7 @@ Key recommendation docs:
 - Write tests for new components and utilities (`src/**/*.test.tsx` for unit, `e2e/*.spec.ts` for E2E)
 - Use conventional commit messages (enforced by commitlint)
 - Node.js >=20.0.0 is required (alongside Bun)
+- Direct pushes to `main` are blocked — always work on a branch and open a PR
 - For agent/AI work, see `AGENTS.md` and `docs/recommendations/ai/`
 - For project planning, see `PROJECT.md`
+- For branch protection rules and CI check names, see `docs/governance/BRANCH_PROTECTION.md`
