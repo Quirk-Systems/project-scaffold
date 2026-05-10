@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
+    "predev": "bun run db:migrate",
     "build": "next build",
     "start": "next start",
     "preview": "next build && next start",

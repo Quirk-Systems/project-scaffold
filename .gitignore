@@ -42,8 +42,7 @@ bun.lock
 /blob-report/
 /playwright/.cache/
 
-# drizzle
-/drizzle/
+# drizzle (migrations are committed; runtime artifacts are not)
 *.db
 *.db-journal
 
