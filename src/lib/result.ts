@@ -28,12 +28,12 @@ export async function tryCatchAsync<T>(
   }
 }
 
-export function unwrap<T>(result: Result<T>): T {
+export function unwrap<T, E>(result: Result<T, E>): T {
   if (result.ok) return result.value;
   throw result.error;
 }
 
-export function unwrapOr<T>(result: Result<T>, fallback: T): T {
+export function unwrapOr<T, E>(result: Result<T, E>, fallback: T): T {
   return result.ok ? result.value : fallback;
 }
 
