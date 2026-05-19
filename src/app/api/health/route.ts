@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { sql } from "drizzle-orm";
-import { db } from "@/lib/db";
 
 const startedAt = Date.now();
 
@@ -10,6 +9,11 @@ export async function GET() {
   const checks: Record<string, { ok: boolean; error?: string }> = {};
 
   try {
+    // Lazy-import so a failure to open the DB connection (e.g. bad
+    // DATABASE_URL pointing at a missing or unwritable path) surfaces
+    // here as a failed check rather than crashing the route module
+    // at import time.
+    const { db } = await import("@/lib/db");
     db.run(sql`SELECT 1`);
     checks.database = { ok: true };
   } catch (err) {
