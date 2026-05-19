@@ -34,7 +34,7 @@ yarn-error.log*
 next-env.d.ts
 
 # bun
-bun.lock
+# (bun.lock is committed for reproducible installs and `bun audit` support)
 
 # playwright
 /test-results/
