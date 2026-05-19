@@ -23,6 +23,8 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:migrate": "drizzle-kit migrate",
+    "db:reset": "rm -f local.db local.db-journal && bun run db:migrate",
+    "db:seed": "bun run scripts/seed.ts",
     "clean": "rm -rf .next out node_modules",
     "validate": "bun run lint && bun run type-check && bun run test:run && bun run build",
     "prepare": "lefthook install"
