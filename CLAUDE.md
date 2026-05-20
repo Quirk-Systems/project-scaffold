@@ -49,8 +49,9 @@ project-scaffold/
 │   │   ├── error.tsx           # Root error boundary
 │   │   └── not-found.tsx       # 404 page
 │   ├── components/
-│   │   ├── ui/                 # shadcn/ui components (button.tsx, etc.)
-│   │   └── providers.tsx       # Client providers (QueryClient)
+│   │   ├── ui/                 # shadcn/ui components (button, card, input, label, separator, sonner)
+│   │   ├── providers.tsx       # Client providers (QueryClient + ThemeProvider)
+│   │   └── theme-toggle.tsx    # Dark mode toggle (Sun/Moon)
 │   ├── hooks/
 │   │   └── use-media-query.ts  # Media query hook (returns boolean)
 │   ├── lib/
@@ -59,6 +60,8 @@ project-scaffold/
 │   │   │   └── schema.ts       # Table definitions (users table)
 │   │   ├── auth.ts             # Auth.js configuration
 │   │   ├── env.ts              # Environment variable validation (t3-env)
+│   │   ├── logger.ts           # Structured pino logger
+│   │   ├── result.ts           # Result<T, E> type + combinators
 │   │   └── utils.ts            # Utility functions (cn helper)
 │   └── types/
 │       └── index.ts            # Shared TypeScript types (WithRequired<T, K>)
