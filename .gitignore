@@ -34,7 +34,7 @@ yarn-error.log*
 next-env.d.ts
 
 # bun
-bun.lock
+# (bun.lock is committed for reproducible installs and `bun audit` support)
 
 # playwright
 /test-results/
@@ -48,7 +48,10 @@ bun.lock
 
 # IDE
 .idea/
-.vscode/
+# .vscode/ — track extensions.json and settings.json; ignore the rest
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 *.swp
 *.swo
 
