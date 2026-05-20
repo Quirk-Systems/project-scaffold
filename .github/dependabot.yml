@@ -1,0 +1,61 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore(deps)
+      prefix-development: chore(deps-dev)
+      include: scope
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      next:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+      drizzle:
+        patterns:
+          - "drizzle-*"
+          - "better-sqlite3"
+          - "@types/better-sqlite3"
+      testing:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+          - "@testing-library/*"
+          - "@playwright/*"
+          - "jsdom"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "tailwind-merge"
+          - "tw-animate-css"
+          - "prettier-plugin-tailwindcss"
+      linting:
+        patterns:
+          - "eslint*"
+          - "@eslint/*"
+          - "prettier*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore(ci)
+      include: scope

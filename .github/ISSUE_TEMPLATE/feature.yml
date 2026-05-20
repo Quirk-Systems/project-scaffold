@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest a new capability for the scaffold.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Start with the use case, not the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Optional — leave blank if you'd rather discuss approach.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      description: Does this belong in the scaffold itself, or as a per-project decision?
+      options:
+        - label: Belongs in the scaffold (broadly useful to every Quirk project)
+        - label: Belongs in docs/recommendations as a recipe
+        - label: Per-project decision

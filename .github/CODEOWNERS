@@ -1,0 +1,12 @@
+# Default owner for everything in the repo
+*       @bryansayler
+
+# Auth, env, and database are sensitive — flag them explicitly
+/src/lib/auth.ts        @bryansayler
+/src/lib/env.ts         @bryansayler
+/src/lib/db/            @bryansayler
+/drizzle/               @bryansayler
+
+# CI, infra, and security
+/.github/               @bryansayler
+/SECURITY.md            @bryansayler
