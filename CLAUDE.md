@@ -14,10 +14,10 @@
 | Styling                   | Tailwind CSS v4 (CSS-first config)     |
 | Components                | shadcn/ui (new-york style)             |
 | Server State              | TanStack Query v5                      |
-| Client State              | Zustand                                |
+| Client State              | (per-project: Zustand or Jotai)        |
 | Forms                     | React Hook Form + Zod                  |
 | Database                  | Drizzle ORM (SQLite default)           |
-| Auth                      | Auth.js v5 (scaffolded)                |
+| Auth                      | Auth.js v5 (Credentials provider)      |
 | Unit Testing              | Vitest + React Testing Library         |
 | E2E Testing               | Playwright (Chromium, Firefox, WebKit) |
 | Linting                   | ESLint 9 (flat config) + Prettier      |
@@ -102,8 +102,6 @@ project-scaffold/
 | `bun run db:push`       | Push schema changes to DB             |
 | `bun run db:studio`     | Open Drizzle Studio                   |
 | `bun run db:migrate`    | Run migrations                        |
-| `bun run db:reset`      | Wipe local.db and re-migrate          |
-| `bun run db:seed`       | Seed dev DB with test data            |
 | `bun run validate`      | Run lint + type-check + test + build  |
 | `bun run clean`         | Remove .next, out, node_modules       |
 
