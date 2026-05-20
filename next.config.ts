@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
-import "./src/lib/env";
+import { requireProductionEnv } from "./src/lib/env";
+
+requireProductionEnv();
 
 const nextConfig: NextConfig = {};
 

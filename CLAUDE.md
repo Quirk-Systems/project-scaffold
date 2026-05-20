@@ -6,23 +6,23 @@
 
 ## Tech Stack
 
-| Category                  | Tool                               |
-| ------------------------- | ---------------------------------- |
-| Runtime / Package Manager | Bun                                |
-| Framework                 | Next.js 15 (App Router, Turbopack) |
-| Language                  | TypeScript (strict mode)           |
-| Styling                   | Tailwind CSS v4 (CSS-first config) |
-| Components                | shadcn/ui (new-york style)         |
-| Server State              | TanStack Query v5                  |
-| Client State              | Zustand                            |
-| Forms                     | React Hook Form + Zod              |
-| Database                  | Drizzle ORM (SQLite default)       |
-| Auth                      | Auth.js v5 (scaffolded)            |
-| Unit Testing              | Vitest + React Testing Library     |
+| Category                  | Tool                                   |
+| ------------------------- | -------------------------------------- |
+| Runtime / Package Manager | Bun                                    |
+| Framework                 | Next.js 15 (App Router, Turbopack)     |
+| Language                  | TypeScript (strict mode)               |
+| Styling                   | Tailwind CSS v4 (CSS-first config)     |
+| Components                | shadcn/ui (new-york style)             |
+| Server State              | TanStack Query v5                      |
+| Client State              | (per-project: Zustand or Jotai)        |
+| Forms                     | React Hook Form + Zod                  |
+| Database                  | Drizzle ORM (SQLite default)           |
+| Auth                      | Auth.js v5 (Credentials provider)      |
+| Unit Testing              | Vitest + React Testing Library         |
 | E2E Testing               | Playwright (Chromium, Firefox, WebKit) |
-| Linting                   | ESLint 9 (flat config) + Prettier  |
-| Git Hooks                 | Lefthook                           |
-| CI/CD                     | GitHub Actions                     |
+| Linting                   | ESLint 9 (flat config) + Prettier      |
+| Git Hooks                 | Lefthook                               |
+| CI/CD                     | GitHub Actions                         |
 
 ## Directory Structure
 
@@ -78,29 +78,29 @@ project-scaffold/
 
 ## Commands
 
-| Command                   | Description                              |
-| ------------------------- | ---------------------------------------- |
-| `bun run dev`             | Start dev server with Turbopack          |
-| `bun run build`           | Production build                         |
-| `bun run start`           | Start production server                  |
-| `bun run preview`         | Build then start (production preview)    |
-| `bun run lint`            | Run ESLint                               |
-| `bun run lint:fix`        | Run ESLint with auto-fix                 |
-| `bun run format`          | Format all files with Prettier           |
-| `bun run format:check`    | Check formatting                         |
-| `bun run type-check`      | TypeScript type checking                 |
-| `bun run test`            | Run Vitest in watch mode                 |
-| `bun run test:ui`         | Run Vitest with browser UI               |
-| `bun run test:run`        | Run Vitest once                          |
-| `bun run test:coverage`   | Run tests with v8 coverage               |
-| `bun run test:e2e`        | Run Playwright E2E tests                 |
-| `bun run test:e2e:ui`     | Run Playwright with browser UI           |
-| `bun run db:generate`     | Generate Drizzle migrations              |
-| `bun run db:push`         | Push schema changes to DB                |
-| `bun run db:studio`       | Open Drizzle Studio                      |
-| `bun run db:migrate`      | Run migrations                           |
-| `bun run validate`        | Run lint + type-check + test + build     |
-| `bun run clean`           | Remove .next, out, node_modules          |
+| Command                 | Description                           |
+| ----------------------- | ------------------------------------- |
+| `bun run dev`           | Start dev server with Turbopack       |
+| `bun run build`         | Production build                      |
+| `bun run start`         | Start production server               |
+| `bun run preview`       | Build then start (production preview) |
+| `bun run lint`          | Run ESLint                            |
+| `bun run lint:fix`      | Run ESLint with auto-fix              |
+| `bun run format`        | Format all files with Prettier        |
+| `bun run format:check`  | Check formatting                      |
+| `bun run type-check`    | TypeScript type checking              |
+| `bun run test`          | Run Vitest in watch mode              |
+| `bun run test:ui`       | Run Vitest with browser UI            |
+| `bun run test:run`      | Run Vitest once                       |
+| `bun run test:coverage` | Run tests with v8 coverage            |
+| `bun run test:e2e`      | Run Playwright E2E tests              |
+| `bun run test:e2e:ui`   | Run Playwright with browser UI        |
+| `bun run db:generate`   | Generate Drizzle migrations           |
+| `bun run db:push`       | Push schema changes to DB             |
+| `bun run db:studio`     | Open Drizzle Studio                   |
+| `bun run db:migrate`    | Run migrations                        |
+| `bun run validate`      | Run lint + type-check + test + build  |
+| `bun run clean`         | Remove .next, out, node_modules       |
 
 ## Environment Variables
 
@@ -192,13 +192,14 @@ Both jobs use `SKIP_ENV_VALIDATION=1` for the build/E2E steps. Playwright retrie
 
 ## Extended Documentation
 
-| File | What's Inside |
-|------|---------------|
-| [AGENTS.md](AGENTS.md) | Claude Agent SDK, MCP servers, agentic loop, tool patterns, multi-agent, guardrails |
-| [PROJECT.md](PROJECT.md) | PRD/ADR/RFC templates, new project checklist, sprint/retro templates, release process |
-| [docs/recommendations/INDEX.md](docs/recommendations/INDEX.md) | Full index of all recommendation docs (30+ files) |
+| File                                                           | What's Inside                                                                         |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [AGENTS.md](AGENTS.md)                                         | Claude Agent SDK, MCP servers, agentic loop, tool patterns, multi-agent, guardrails   |
+| [PROJECT.md](PROJECT.md)                                       | PRD/ADR/RFC templates, new project checklist, sprint/retro templates, release process |
+| [docs/recommendations/INDEX.md](docs/recommendations/INDEX.md) | Full index of all recommendation docs (30+ files)                                     |
 
 Key recommendation docs:
+
 - **AI**: `docs/recommendations/ai/` — prompt patterns, agent patterns, model selection, memory, evals
 - **Voice**: `docs/recommendations/voice/` — AI voice, persona, soul, tone calibration
 - **Tips**: `docs/recommendations/tips/` — TypeScript, Next.js, Testing, Debugging, Tailwind, Drizzle, Bun, Git
