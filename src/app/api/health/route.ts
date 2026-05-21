@@ -14,7 +14,7 @@ export async function GET() {
     // here as a failed check rather than crashing the route module
     // at import time.
     const { db } = await import("@/lib/db");
-    db.run(sql`SELECT 1`);
+    await db.execute(sql`select 1`);
     checks.database = { ok: true };
   } catch (err) {
     checks.database = {
