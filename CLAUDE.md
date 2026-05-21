@@ -16,7 +16,7 @@
 | Server State              | TanStack Query v5                      |
 | Client State              | (per-project: Zustand or Jotai)        |
 | Forms                     | React Hook Form + Zod                  |
-| Database                  | Drizzle ORM (SQLite default)           |
+| Database                  | Drizzle ORM (Supabase Postgres)        |
 | Auth                      | Auth.js v5 (Credentials provider)      |
 | Unit Testing              | Vitest + React Testing Library         |
 | E2E Testing               | Playwright (Chromium, Firefox, WebKit) |
@@ -151,9 +151,9 @@ Server variables are optional in the scaffold so it boots without a `.env` file.
 
 - Drizzle ORM with code-first TypeScript schemas
 - Schema defined in `src/lib/db/schema.ts`
-- Default table: `users` (id UUID, email unique, name optional, timestamps)
-- SQLite via `better-sqlite3` for local development
-- Switch to PostgreSQL for production by changing the dialect and driver in `drizzle.config.ts` and `src/lib/db/index.ts`
+- PostgreSQL via `postgres` (postgres-js), pointed at Supabase through `DATABASE_URL`
+- pgvector (`vector(1536)`) powers asset embeddings; the migration enables the `vector` extension
+- Tables: `users` plus the Quirk OS registry (`quirk_assets`, `quirk_asset_versions`, `quirk_annotations`, `quirk_tags`, `quirk_diffs`, `quirk_experiments`, `quirk_runs`, `quirk_pipelines`, `quirk_pipeline_steps`, `quirk_pipeline_runs`)
 
 ### Testing
 

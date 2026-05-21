@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { GET } from "@/app/api/health/route";
 
 type HealthBody = {
   ok: boolean;
@@ -17,6 +16,12 @@ describe("GET /api/health", () => {
   });
 
   it("returns 200 with ok=true when the database responds", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/db", () => ({
+      db: { execute: vi.fn().mockResolvedValue([{ "?column?": 1 }]) },
+    }));
+
+    const { GET } = await import("@/app/api/health/route");
     const res = await GET();
     expect(res.status).toBe(200);
 
@@ -31,12 +36,20 @@ describe("GET /api/health", () => {
 
   describe("when the database is unreachable", () => {
     beforeEach(() => {
-      vi.doMock("@/lib/db", () => {
-        throw new Error("SQLITE_CANTOPEN: unable to open database file");
-      });
+      vi.resetModules();
+      vi.doMock("@/lib/db", () => ({
+        db: {
+          execute: vi
+            .fn()
+            .mockRejectedValue(
+              new Error("ECONNREFUSED: cannot reach Postgres"),
+            ),
+        },
+      }));
     });
 
     it("returns 503 with a degraded status and the underlying error", async () => {
+      const { GET } = await import("@/app/api/health/route");
       const res = await GET();
       expect(res.status).toBe(503);
 

@@ -43,14 +43,16 @@ export default function Home() {
         <Card>
           <CardHeader>
             <CardTitle>Database</CardTitle>
-            <CardDescription>Drizzle + SQLite</CardDescription>
+            <CardDescription>Drizzle + Supabase Postgres</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm">
-              Schema in <code className="text-xs">src/lib/db/schema.ts</code>.
-              Migrations auto-run on{" "}
-              <code className="text-xs">bun run dev</code>. Switch to Postgres
-              for production.
+              Schema in <code className="text-xs">src/lib/db/schema.ts</code>,
+              backed by Supabase Postgres with pgvector embeddings. Powers the{" "}
+              <a href="/quirk" className="underline">
+                Quirk OS
+              </a>{" "}
+              asset engine.
             </p>
           </CardContent>
         </Card>
