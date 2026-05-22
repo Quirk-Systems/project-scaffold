@@ -9,7 +9,7 @@
 | Category                  | Tool                                   |
 | ------------------------- | -------------------------------------- |
 | Runtime / Package Manager | Bun                                    |
-| Framework                 | Next.js 15 (App Router, Turbopack)     |
+| Framework                 | Next.js 16 (App Router, Turbopack)     |
 | Language                  | TypeScript (strict mode)               |
 | Styling                   | Tailwind CSS v4 (CSS-first config)     |
 | Components                | shadcn/ui (new-york style)             |
