@@ -20,5 +20,10 @@ export default defineConfig({
     command: "bun run build && bun run start",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
+    // Cold CI runs build then start inside this window; the 60s default is
+    // too tight for a fresh production build, so give it headroom.
+    timeout: 120_000,
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });
