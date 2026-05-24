@@ -26,6 +26,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:reset": "rm -f local.db local.db-journal && bun run db:migrate",
     "db:seed": "bun run scripts/seed.ts",
+    "docs:ideas": "bun run scripts/generate-ideas-doc.ts && prettier --write docs/recommendations/wild/IDEAS.md",
     "clean": "rm -rf .next out node_modules",
     "validate": "bun run lint && bun run type-check && bun run test:run && SKIP_ENV_VALIDATION=1 bun run build",
     "validate:full": "bun run validate && bun run test:e2e",
