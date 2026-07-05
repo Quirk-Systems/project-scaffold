@@ -26,12 +26,20 @@ export async function createCheckoutSession(
 
   // Stripe happily creates multiple subscriptions for one customer, which
   // double-bills a user who revisits /pricing after subscribing. Short-circuit
-  // when a live subscription already exists; route those users to billing
-  // management instead of Checkout.
+  // on every non-terminal status — including unpaid (failed-payment setting)
+  // and paused — and route those users to billing management instead.
+  // `incomplete` is deliberately NOT blocked: it marks an abandoned first
+  // payment, and the idempotency key below already dedupes rapid retries.
   const existing = await db.query.subscriptions.findFirst({
     where: and(
       eq(subscriptions.userId, userId),
-      inArray(subscriptions.status, ["active", "trialing", "past_due"]),
+      inArray(subscriptions.status, [
+        "active",
+        "trialing",
+        "past_due",
+        "unpaid",
+        "paused",
+      ]),
     ),
   });
   if (existing) {

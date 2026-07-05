@@ -24,7 +24,9 @@ export async function handleStripeEvent(
     // row after deletion, or a stale `created` could overwrite newer state.
     // Instead, re-fetch the subscription and sync from Stripe's current truth.
     case "customer.subscription.created":
-    case "customer.subscription.updated": {
+    case "customer.subscription.updated":
+    case "customer.subscription.paused":
+    case "customer.subscription.resumed": {
       await syncSubscriptionFromStripe(database, event.data.object.id);
       return;
     }

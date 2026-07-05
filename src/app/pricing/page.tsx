@@ -1,6 +1,11 @@
 import { env } from "@/lib/env";
 import { startCheckout } from "./actions";
 
+// Evaluate STRIPE_PRICE_ID at request time, not build time: builds run
+// without secrets (SKIP_ENV_VALIDATION), so static prerendering would bake
+// configured=false into deployments that supply the env var at runtime.
+export const dynamic = "force-dynamic";
+
 export default function PricingPage() {
   const configured = Boolean(env.STRIPE_PRICE_ID);
 
