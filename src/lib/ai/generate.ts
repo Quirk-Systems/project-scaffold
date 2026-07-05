@@ -16,6 +16,11 @@ export type GenerateOptions = {
   thinking?: boolean;
 };
 
+// Adaptive thinking is supported on Opus 4.6+/Sonnet 4.6+; older tiers
+// (e.g. Haiku 4.5) only take manual extended thinking with budget_tokens
+// and 400 on the adaptive shape.
+const ADAPTIVE_THINKING_MODELS = /^claude-(opus-4-[6-9]|sonnet-4-[6-9])/;
+
 function buildParams(prompt: string, options: GenerateOptions) {
   const model = options.model ?? DEFAULT_MODEL;
   // `effort` is only supported by recent Opus/Sonnet models and 400s on
@@ -24,6 +29,14 @@ function buildParams(prompt: string, options: GenerateOptions) {
   // asked for it explicitly.
   const effort =
     options.effort ?? (model === DEFAULT_MODEL ? ("low" as const) : undefined);
+  // Fail loudly rather than send a shape the model will reject: callers on
+  // non-adaptive tiers should call the SDK directly with budget_tokens.
+  if (options.thinking && !ADAPTIVE_THINKING_MODELS.test(model)) {
+    throw new Error(
+      `thinking maps to adaptive thinking, which ${model} does not support; ` +
+        "use the Anthropic SDK directly with manual extended thinking for this model",
+    );
+  }
   return {
     model,
     max_tokens: options.maxTokens ?? 1024,

@@ -77,11 +77,28 @@ export async function createCheckoutSession(
     }
   }
 
-  // The local-subscription guard above can't catch a double-click/retry that
-  // lands before the webhook writes the subscriptions row. A time-bucketed
-  // idempotency key makes rapid duplicate attempts return the SAME Checkout
-  // Session instead of minting a second billable one; the 10-minute bucket
-  // lets a genuinely new attempt (e.g. after abandoning) proceed later.
+  // Checkout Sessions stay completable for 24h, so a user who starts
+  // checkout, waits, and starts again could complete BOTH sessions and end
+  // up double-subscribed. Reuse an in-flight open session for this
+  // customer/price instead of minting a new one.
+  const openSessions = await stripe.checkout.sessions.list({
+    customer: customerRow.stripeCustomerId,
+    status: "open",
+    limit: 10,
+    expand: ["data.line_items"],
+  });
+  const inFlight = openSessions.data.find(
+    (s) =>
+      s.mode === "subscription" &&
+      s.line_items?.data.some((li) => li.price?.id === priceId),
+  );
+  if (inFlight?.url) {
+    return { url: inFlight.url };
+  }
+
+  // Belt for the remaining race: two *concurrent* requests can both miss the
+  // open-session lookup above. A time-bucketed idempotency key makes those
+  // simultaneous creates return the SAME session.
   const idempotencyBucket = Math.floor(Date.now() / 600_000);
   const session = await stripe.checkout.sessions.create(
     {
