@@ -1,7 +1,14 @@
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { customers } from "@/lib/db/schema";
+import { customers, subscriptions } from "@/lib/db/schema";
 import { getStripe } from "./client";
+
+export class AlreadySubscribedError extends Error {
+  constructor(userId: string) {
+    super(`User ${userId} already has an active subscription`);
+    this.name = "AlreadySubscribedError";
+  }
+}
 
 export type CreateCheckoutSessionInput = {
   userId: string;
@@ -16,6 +23,20 @@ export async function createCheckoutSession(
 ): Promise<{ url: string }> {
   const stripe = getStripe();
   const { userId, email, priceId, successUrl, cancelUrl } = input;
+
+  // Stripe happily creates multiple subscriptions for one customer, which
+  // double-bills a user who revisits /pricing after subscribing. Short-circuit
+  // when a live subscription already exists; route those users to billing
+  // management instead of Checkout.
+  const existing = await db.query.subscriptions.findFirst({
+    where: and(
+      eq(subscriptions.userId, userId),
+      inArray(subscriptions.status, ["active", "trialing", "past_due"]),
+    ),
+  });
+  if (existing) {
+    throw new AlreadySubscribedError(userId);
+  }
 
   let customerRow = await db.query.customers.findFirst({
     where: eq(customers.userId, userId),

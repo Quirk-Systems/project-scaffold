@@ -16,15 +16,16 @@ export async function handleStripeEvent(
       if (!session.subscription || typeof session.subscription !== "string") {
         return;
       }
-      const sub = await getStripe().subscriptions.retrieve(
-        session.subscription,
-      );
-      await upsertSubscription(database, sub);
+      await syncSubscriptionFromStripe(database, session.subscription);
       return;
     }
+    // Stripe does not guarantee event ordering, so never apply the event's
+    // snapshot directly — a delayed pre-cancellation update could reinsert a
+    // row after deletion, or a stale `created` could overwrite newer state.
+    // Instead, re-fetch the subscription and sync from Stripe's current truth.
     case "customer.subscription.created":
     case "customer.subscription.updated": {
-      await upsertSubscription(database, event.data.object);
+      await syncSubscriptionFromStripe(database, event.data.object.id);
       return;
     }
     case "customer.subscription.deleted": {
@@ -46,10 +47,10 @@ export async function handleStripeEvent(
           .subscription;
       const subId = typeof subRef === "string" ? subRef : (subRef?.id ?? null);
       if (!subId) return;
-      await database
-        .update(subscriptions)
-        .set({ status: "past_due", updatedAt: new Date() })
-        .where(eq(subscriptions.stripeSubscriptionId, subId));
+      // Don't hardcode past_due: a failed *first* invoice leaves the
+      // subscription `incomplete`, not delinquent. Sync the actual status so
+      // an unpaid signup never looks like an existing subscriber in grace.
+      await syncSubscriptionFromStripe(database, subId);
       return;
     }
     default: {
@@ -57,6 +58,22 @@ export async function handleStripeEvent(
       return;
     }
   }
+}
+
+// Fetches the subscription's current state from Stripe and mirrors it
+// locally: canceled subscriptions are removed, everything else is upserted.
+async function syncSubscriptionFromStripe(
+  database: Database,
+  stripeSubscriptionId: string,
+): Promise<void> {
+  const sub = await getStripe().subscriptions.retrieve(stripeSubscriptionId);
+  if (sub.status === "canceled") {
+    await database
+      .delete(subscriptions)
+      .where(eq(subscriptions.stripeSubscriptionId, sub.id));
+    return;
+  }
+  await upsertSubscription(database, sub);
 }
 
 async function upsertSubscription(
@@ -82,13 +99,20 @@ async function upsertSubscription(
     return;
   }
 
+  // Basil (2025-03-31) moved current_period_end onto subscription items;
+  // pre-basil account versions still send it at the subscription level.
+  const periodEnd =
+    primaryItem.current_period_end ??
+    (sub as unknown as { current_period_end?: number }).current_period_end;
+
   const values = {
     userId: customerRow.userId,
     customerId: customerRow.id,
     stripeSubscriptionId: sub.id,
     stripePriceId: primaryItem.price.id,
     status: sub.status,
-    currentPeriodEnd: new Date(primaryItem.current_period_end * 1000),
+    currentPeriodEnd:
+      typeof periodEnd === "number" ? new Date(periodEnd * 1000) : null,
     cancelAtPeriodEnd: sub.cancel_at_period_end,
     updatedAt: new Date(),
   } as const;

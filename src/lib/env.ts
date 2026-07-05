@@ -8,7 +8,16 @@ export const env = createEnv({
       .default("development"),
     DATABASE_URL: z.string().optional(),
     AUTH_SECRET: z.string().min(1).optional(),
-    AUTH_EMAIL_FROM: z.string().email().optional(),
+    // Resend accepts both "user@example.com" and "Name <user@example.com>".
+    AUTH_EMAIL_FROM: z
+      .string()
+      .refine(
+        (v) =>
+          /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(v) ||
+          /^.+<[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+>$/.test(v),
+        "must be an email address or 'Display Name <email>'",
+      )
+      .optional(),
     RESEND_API_KEY: z.string().optional(),
     ANTHROPIC_API_KEY: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().optional(),

@@ -17,11 +17,18 @@ export type GenerateOptions = {
 };
 
 function buildParams(prompt: string, options: GenerateOptions) {
+  const model = options.model ?? DEFAULT_MODEL;
+  // `effort` is only supported by recent Opus/Sonnet models and 400s on
+  // others (e.g. Haiku 4.5). Default it only for the known-good default
+  // model; when the caller overrides the model, send effort only if they
+  // asked for it explicitly.
+  const effort =
+    options.effort ?? (model === DEFAULT_MODEL ? ("low" as const) : undefined);
   return {
-    model: options.model ?? DEFAULT_MODEL,
+    model,
     max_tokens: options.maxTokens ?? 1024,
     system: composeSystem(options.persona, options.register),
-    output_config: { effort: options.effort ?? "low" },
+    ...(effort ? { output_config: { effort } } : {}),
     ...(options.thinking ? { thinking: { type: "adaptive" as const } } : {}),
     messages: [{ role: "user" as const, content: prompt }],
   };
