@@ -8,6 +8,8 @@ export const env = createEnv({
       .default("development"),
     DATABASE_URL: z.string().optional(),
     AUTH_SECRET: z.string().min(1).optional(),
+    AUTH_EMAIL_FROM: z.string().email().optional(),
+    RESEND_API_KEY: z.string().optional(),
     ANTHROPIC_API_KEY: z.string().optional(),
   },
   client: {
