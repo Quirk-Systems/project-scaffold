@@ -4,7 +4,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { env } from "@/lib/env";
-import { createCheckoutSession, AlreadySubscribedError } from "@/lib/billing";
+import {
+  createCheckoutSession,
+  createBillingPortalSession,
+  AlreadySubscribedError,
+} from "@/lib/billing";
 
 // Prefer the configured public URL; otherwise derive the origin from the
 // request so hosted Checkout never redirects a deployed app to localhost.
@@ -13,7 +17,13 @@ async function resolveAppUrl(): Promise<string> {
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host");
   if (host) {
-    const proto = h.get("x-forwarded-proto") ?? "https";
+    // Local dev has no x-forwarded-proto and doesn't serve TLS — default
+    // loopback hosts to http so Stripe doesn't redirect to https://localhost.
+    const isLoopback =
+      host.startsWith("localhost") ||
+      host.startsWith("127.") ||
+      host.startsWith("[::1]");
+    const proto = h.get("x-forwarded-proto") ?? (isLoopback ? "http" : "https");
     return `${proto}://${host}`;
   }
   if (env.NODE_ENV === "production") {
@@ -46,7 +56,14 @@ export async function startCheckout(): Promise<void> {
     checkoutUrl = checkout.url;
   } catch (err) {
     if (err instanceof AlreadySubscribedError) {
-      redirect("/pricing?status=already-subscribed");
+      // Existing subscribers (including past_due) go to the Billing Portal to
+      // manage or fix payment; fall back to a status flag if the portal
+      // isn't configured in the Stripe dashboard yet.
+      const portal = await createBillingPortalSession({
+        userId: session.user.id,
+        returnUrl: `${appUrl}/pricing`,
+      }).catch(() => null);
+      redirect(portal?.url ?? "/pricing?status=already-subscribed");
     }
     throw err;
   }

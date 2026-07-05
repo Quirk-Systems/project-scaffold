@@ -69,15 +69,26 @@ export async function createCheckoutSession(
     }
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    customer: customerRow.stripeCustomerId,
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: successUrl,
-    cancel_url: cancelUrl,
-    allow_promotion_codes: true,
-    client_reference_id: userId,
-  });
+  // The local-subscription guard above can't catch a double-click/retry that
+  // lands before the webhook writes the subscriptions row. A time-bucketed
+  // idempotency key makes rapid duplicate attempts return the SAME Checkout
+  // Session instead of minting a second billable one; the 10-minute bucket
+  // lets a genuinely new attempt (e.g. after abandoning) proceed later.
+  const idempotencyBucket = Math.floor(Date.now() / 600_000);
+  const session = await stripe.checkout.sessions.create(
+    {
+      mode: "subscription",
+      customer: customerRow.stripeCustomerId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      allow_promotion_codes: true,
+      client_reference_id: userId,
+    },
+    {
+      idempotencyKey: `checkout:${userId}:${priceId}:${idempotencyBucket}`,
+    },
+  );
 
   if (!session.url) {
     throw new Error("Stripe Checkout session did not return a URL");

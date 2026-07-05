@@ -22,15 +22,21 @@ export type CaptureInput = {
 };
 
 // No-op when PostHog isn't configured, so call sites never need to guard.
+// Analytics must also never take the caller down: a PostHog outage or bad
+// key degrades to a warn + no-op instead of a thrown request error.
 export async function capture(input: CaptureInput): Promise<void> {
   const client = getClient();
   if (!client) return;
-  client.capture({
-    distinctId: input.distinctId,
-    event: input.event,
-    properties: input.properties,
-  });
-  await client.flush();
+  try {
+    client.capture({
+      distinctId: input.distinctId,
+      event: input.event,
+      properties: input.properties,
+    });
+    await client.flush();
+  } catch (err) {
+    console.warn("[posthog] capture failed", err);
+  }
 }
 
 export async function isFeatureEnabled(
@@ -39,5 +45,11 @@ export async function isFeatureEnabled(
 ): Promise<boolean | undefined> {
   const client = getClient();
   if (!client) return undefined;
-  return client.isFeatureEnabled(key, distinctId);
+  try {
+    return await client.isFeatureEnabled(key, distinctId);
+  } catch (err) {
+    // Unresolved (undefined) lets flag() fall through to its default.
+    console.warn("[posthog] feature-flag lookup failed", err);
+    return undefined;
+  }
 }
