@@ -10,10 +10,19 @@ import {
   AlreadySubscribedError,
 } from "@/lib/billing";
 
-// Prefer the configured public URL; otherwise derive the origin from the
-// request so hosted Checkout never redirects a deployed app to localhost.
+// Resolve the base URL for Stripe's success/cancel redirects. In production
+// the canonical NEXT_PUBLIC_APP_URL is REQUIRED: Host/x-forwarded-host are
+// request-controlled, and deriving redirect URLs from them would let a
+// spoofed header send payers to a hostile domain after payment. Header
+// derivation is a dev/preview convenience only.
 async function resolveAppUrl(): Promise<string> {
   if (env.NEXT_PUBLIC_APP_URL) return env.NEXT_PUBLIC_APP_URL;
+  if (env.NODE_ENV === "production") {
+    throw new Error(
+      "Set NEXT_PUBLIC_APP_URL: checkout redirect URLs must not be derived " +
+        "from request headers in production (host-header spoofing risk)",
+    );
+  }
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host");
   if (host) {
@@ -25,11 +34,6 @@ async function resolveAppUrl(): Promise<string> {
       host.startsWith("[::1]");
     const proto = h.get("x-forwarded-proto") ?? (isLoopback ? "http" : "https");
     return `${proto}://${host}`;
-  }
-  if (env.NODE_ENV === "production") {
-    throw new Error(
-      "Cannot resolve app URL for checkout redirects: set NEXT_PUBLIC_APP_URL",
-    );
   }
   return "http://localhost:3000";
 }

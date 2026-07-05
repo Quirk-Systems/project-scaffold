@@ -16,10 +16,13 @@ export type GenerateOptions = {
   thinking?: boolean;
 };
 
-// Adaptive thinking is supported on Opus 4.6+/Sonnet 4.6+; older tiers
-// (e.g. Haiku 4.5) only take manual extended thinking with budget_tokens
-// and 400 on the adaptive shape.
-const ADAPTIVE_THINKING_MODELS = /^claude-(opus-4-[6-9]|sonnet-4-[6-9])/;
+// Adaptive thinking is supported on Opus 4.6+/Sonnet 4.6+ and the Claude 5
+// family; only known legacy tiers (Haiku 4.5, Sonnet/Opus <= 4.5, Claude 3.x)
+// require manual extended thinking with budget_tokens and 400 on the adaptive
+// shape. Gate by the finite legacy list — an allow-list would wrongly reject
+// every newly released model (e.g. claude-sonnet-5, claude-fable-5).
+const LEGACY_THINKING_MODELS =
+  /^claude-(3-|haiku-4-|opus-4-[0-5](?!\d)|sonnet-4-[0-5](?!\d))/;
 
 function buildParams(prompt: string, options: GenerateOptions) {
   const model = options.model ?? DEFAULT_MODEL;
@@ -31,7 +34,7 @@ function buildParams(prompt: string, options: GenerateOptions) {
     options.effort ?? (model === DEFAULT_MODEL ? ("low" as const) : undefined);
   // Fail loudly rather than send a shape the model will reject: callers on
   // non-adaptive tiers should call the SDK directly with budget_tokens.
-  if (options.thinking && !ADAPTIVE_THINKING_MODELS.test(model)) {
+  if (options.thinking && LEGACY_THINKING_MODELS.test(model)) {
     throw new Error(
       `thinking maps to adaptive thinking, which ${model} does not support; ` +
         "use the Anthropic SDK directly with manual extended thinking for this model",
