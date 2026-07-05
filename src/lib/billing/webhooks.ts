@@ -36,7 +36,14 @@ export async function handleStripeEvent(
     }
     case "invoice.payment_failed": {
       const invoice = event.data.object;
-      const subRef = invoice.parent?.subscription_details?.subscription;
+      // Accounts pinned to API versions >= 2025-03-31 (basil) send the
+      // subscription under invoice.parent; older account versions still send
+      // a top-level invoice.subscription. The client doesn't pin apiVersion,
+      // so webhook payloads follow the account version — read both shapes.
+      const subRef =
+        invoice.parent?.subscription_details?.subscription ??
+        (invoice as unknown as { subscription?: string | { id: string } })
+          .subscription;
       const subId = typeof subRef === "string" ? subRef : (subRef?.id ?? null);
       if (!subId) return;
       await database

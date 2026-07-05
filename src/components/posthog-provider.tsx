@@ -12,7 +12,9 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
     if (!key || posthog.__loaded) return;
     posthog.init(key, {
       api_host: env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com",
-      capture_pageview: true,
+      // "history_change" captures the initial load AND App Router client-side
+      // navigations; `true` (legacy default) only captures full page loads.
+      capture_pageview: "history_change",
       capture_pageleave: true,
     });
   }, []);
