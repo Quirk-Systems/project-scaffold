@@ -11,6 +11,9 @@ export const env = createEnv({
     AUTH_EMAIL_FROM: z.string().email().optional(),
     RESEND_API_KEY: z.string().optional(),
     ANTHROPIC_API_KEY: z.string().optional(),
+    STRIPE_SECRET_KEY: z.string().optional(),
+    STRIPE_WEBHOOK_SECRET: z.string().optional(),
+    STRIPE_PRICE_ID: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
