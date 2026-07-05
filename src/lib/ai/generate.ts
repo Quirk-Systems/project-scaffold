@@ -40,12 +40,22 @@ function buildParams(prompt: string, options: GenerateOptions) {
         "use the Anthropic SDK directly with manual extended thinking for this model",
     );
   }
+  // Enforce the "thinking off by default" contract explicitly: newer models
+  // (e.g. the Claude 5 family) may run adaptive thinking BY DEFAULT, so
+  // omitting the field would silently add reasoning latency/tokens. Send an
+  // explicit `disabled` on modern models; legacy tiers keep the omitted
+  // field (their default is off, and Claude 3.x predates the parameter).
+  const thinking = options.thinking
+    ? { thinking: { type: "adaptive" as const } }
+    : LEGACY_THINKING_MODELS.test(model)
+      ? {}
+      : { thinking: { type: "disabled" as const } };
   return {
     model,
     max_tokens: options.maxTokens ?? 1024,
     system: composeSystem(options.persona, options.register),
     ...(effort ? { output_config: { effort } } : {}),
-    ...(options.thinking ? { thinking: { type: "adaptive" as const } } : {}),
+    ...thinking,
     messages: [{ role: "user" as const, content: prompt }],
   };
 }
