@@ -16,3 +16,12 @@ export {
   type GenerateOptions,
 } from "./generate";
 export { animationFor, type AiState } from "./animation";
+export {
+  DEFAULT_EMBEDDING_MODEL,
+  EMBEDDING_INPUT_MAX_CHARS,
+  assertEmbeddingsConfigured,
+  buildAssetEmbeddingInput,
+  embedText,
+  embedTexts,
+  isEmbeddingsConfigured,
+} from "./embeddings";

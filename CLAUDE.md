@@ -102,6 +102,7 @@ project-scaffold/
 | `bun run db:push`       | Push schema changes to DB             |
 | `bun run db:studio`     | Open Drizzle Studio                   |
 | `bun run db:migrate`    | Run migrations                        |
+| `bun run db:embed`      | Backfill `quirk_assets.embedding`     |
 | `bun run validate`      | Run lint + type-check + test + build  |
 | `bun run clean`         | Remove .next, out, node_modules       |
 
@@ -109,20 +110,23 @@ project-scaffold/
 
 Defined in `src/lib/env.ts` using t3-env with Zod validation. Copy `.env.example` to `.env` to get started.
 
-| Variable                   | Required | Description                                              |
-| -------------------------- | -------- | -------------------------------------------------------- |
-| `NEXT_PUBLIC_APP_URL`      | No       | Public app URL                                           |
-| `DATABASE_URL`             | No       | Postgres connection string (Supabase pooler in prod)     |
-| `AUTH_SECRET`              | No       | Auth.js secret (generate with `openssl rand -base64 32`) |
-| `AUTH_EMAIL_FROM`          | No       | Transactional sender address (verified Resend domain)    |
-| `RESEND_API_KEY`           | No       | Resend API key (email sending)                           |
-| `STRIPE_SECRET_KEY`        | No       | Stripe secret key                                        |
-| `STRIPE_WEBHOOK_SECRET`    | No       | Stripe webhook signing secret (from `stripe listen`)     |
-| `STRIPE_PRICE_ID`          | No       | Default price for the `/pricing` checkout button         |
-| `ANTHROPIC_API_KEY`        | No       | Claude API key for the `src/lib/ai` persona layer        |
-| `NEXT_PUBLIC_POSTHOG_KEY`  | No       | PostHog project key (analytics + flags); unset = no-op   |
-| `NEXT_PUBLIC_POSTHOG_HOST` | No       | PostHog host (default `https://us.i.posthog.com`)        |
-| `SKIP_ENV_VALIDATION`      | No       | Set to `1` to skip env validation (CI/Docker)            |
+| Variable                   | Required | Description                                               |
+| -------------------------- | -------- | --------------------------------------------------------- |
+| `NEXT_PUBLIC_APP_URL`      | No       | Public app URL                                            |
+| `DATABASE_URL`             | No       | Postgres connection string (Supabase pooler in prod)      |
+| `AUTH_SECRET`              | No       | Auth.js secret (generate with `openssl rand -base64 32`)  |
+| `AUTH_EMAIL_FROM`          | No       | Transactional sender address (verified Resend domain)     |
+| `RESEND_API_KEY`           | No       | Resend API key (email sending)                            |
+| `STRIPE_SECRET_KEY`        | No       | Stripe secret key                                         |
+| `STRIPE_WEBHOOK_SECRET`    | No       | Stripe webhook signing secret (from `stripe listen`)      |
+| `STRIPE_PRICE_ID`          | No       | Default price for the `/pricing` checkout button          |
+| `ANTHROPIC_API_KEY`        | No       | Claude API key for the `src/lib/ai` persona layer         |
+| `EMBEDDINGS_API_KEY`       | No       | Key for the OpenAI-compatible embeddings endpoint         |
+| `EMBEDDINGS_BASE_URL`      | No       | Embeddings endpoint (default `https://api.openai.com/v1`) |
+| `EMBEDDINGS_MODEL`         | No       | Embedding model (default `text-embedding-3-small`)        |
+| `NEXT_PUBLIC_POSTHOG_KEY`  | No       | PostHog project key (analytics + flags); unset = no-op    |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No       | PostHog host (default `https://us.i.posthog.com`)         |
+| `SKIP_ENV_VALIDATION`      | No       | Set to `1` to skip env validation (CI/Docker)             |
 
 Server variables are optional in the scaffold so it boots without a `.env` file. Tighten validation when configuring for a real project (`requireProductionEnv()` already enforces `AUTH_SECRET`/`DATABASE_URL` in production builds).
 
@@ -152,6 +156,7 @@ Server variables are optional in the scaffold so it boots without a `.env` file.
 - Module: `src/lib/ai/` — lazy `getAnthropic()` (`DEFAULT_MODEL` `claude-opus-4-7`), `personas.ts` (frozen cacheable house voice), `registers.ts` (tonal modes with animation vocabularies), `compose.ts` (cache breakpoint on the persona prefix), `generate.ts` (`generateText`/`streamText`/`createStream`), `animation.ts` (`AiState` lifecycle)
 - **No `temperature`/`top_p`/`top_k`** — removed on Opus 4.7 (they 400); tune via prompt + `effort`
 - Defaults tuned for snappy tone responses: `effort: "low"`, thinking off, `max_tokens: 1024`
+- Embeddings: `embeddings.ts` — Anthropic has no embeddings API, so `embedText`/`embedTexts` speak the OpenAI-compatible `/embeddings` format over fetch (no SDK); `EMBEDDINGS_API_KEY`/`EMBEDDINGS_BASE_URL`/`EMBEDDINGS_MODEL` select the provider. `src/lib/db/embed.ts` adds `embedPendingAssets()` (backfill, run via `bun run db:embed`) and `semanticSearchAssets(query)` on top of `searchAssets()`
 
 ### Analytics & flags (PostHog)
 
