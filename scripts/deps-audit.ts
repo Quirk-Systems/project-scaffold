@@ -2,7 +2,8 @@
  * Dependency audit — the mechanical layer of the update routine.
  *
  * Usage:
- *   bun run deps:audit            # markdown report to stdout
+ *   bun run deps:audit                      # markdown report to stdout
+ *   bun run deps:audit -- --json <path>     # also write machine-readable JSON
  *
  * Scope: this repository — package.json + bun.lock (bun/npm ecosystem) and
  * .github/workflows/*.yml action pins. Docker/infrastructure manifests are
@@ -10,13 +11,23 @@
  * (CVE research, migration steps, grouped PRs, verification runs) use the
  * /deps-audit Claude command, which wraps this script.
  *
+ * Escalation is policy-as-code: .github/deps-policy.json decides which
+ * finding classes fail the process (exit 2, after the report is fully
+ * written) so CI behavior is deterministic even when no agent runs.
+ *
  * Priority order: critical/high CVE (production-path first) -> breaking
  * major -> minor -> patch. Findings use a stable per-item block so reports
  * diff cleanly week over week.
  */
 
-import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import {
+  readFileSync,
+  readdirSync,
+  existsSync,
+  writeFileSync,
+  mkdirSync,
+} from "node:fs";
+import { join, dirname } from "node:path";
 import { spawnSync } from "node:child_process";
 
 type Advisory = {
@@ -34,10 +45,38 @@ type OutdatedRow = {
   latest: string;
 };
 
-type Finding = {
-  priority: number;
-  block: string;
+type PolicyRule = {
+  action?: string;
+  deadline_days?: number;
+  pr?: string;
+  automerge?: boolean;
 };
+
+type FindingRecord = {
+  repository: string;
+  ecosystem: string;
+  dependency: string;
+  current_version: string;
+  recommended_version: string;
+  severity: string;
+  update_type: string;
+  production_path: boolean;
+  direct: boolean;
+  environment: "runtime" | "dev" | "transitive";
+  advisory_id: string | null;
+  advisory_url: string | null;
+  advisory_title: string | null;
+  vulnerable_versions: string | null;
+  fix_available: boolean;
+  upgrade_effort: string;
+  verification: "verified" | "partially-verified" | "unverified";
+  recommended_action: string;
+  policy_class: string | null;
+  deadline_days: number | null;
+  priority: number;
+};
+
+const REPO = "Quirk-Systems/project-scaffold";
 
 const SEVERITY_RANK: Record<Advisory["severity"], number> = {
   critical: 0,
@@ -61,11 +100,7 @@ function run(cmd: string[]): string {
 
 function stripAnsi(s: string): string {
   // eslint-disable-next-line no-control-regex
-  return s.replace(/\[[0-9;]*m/g, "");
-}
-
-function parseMajor(v: string): number {
-  return Number(v.replace(/^[^\d]*/, "").split(".")[0] ?? 0);
+  return s.replace(/\[[0-9;]*m/g, "");
 }
 
 function updateType(current: string, target: string): string {
@@ -117,16 +152,36 @@ function parseAudit(prodOnly: boolean): Record<string, Advisory[]> {
   }
 }
 
-function depClass(
+function loadPolicy(): Record<string, PolicyRule> {
+  const path = ".github/deps-policy.json";
+  if (!existsSync(path)) return {};
+  try {
+    return JSON.parse(readFileSync(path, "utf8")) as Record<string, PolicyRule>;
+  } catch {
+    return {};
+  }
+}
+
+function policyClassFor(severity: string, prodPath: boolean): string {
+  if (severity === "critical") {
+    return prodPath ? "critical_production" : "critical_dev_only";
+  }
+  if (severity === "high") {
+    return prodPath ? "high_production" : "high_dev_only";
+  }
+  return "moderate_or_low";
+}
+
+function environmentFor(
   name: string,
   pkg: {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
   },
-): string {
-  if (pkg.dependencies?.[name]) return "runtime (direct)";
-  if (pkg.devDependencies?.[name]) return "dev (direct)";
-  return "transitive";
+): { environment: FindingRecord["environment"]; direct: boolean } {
+  if (pkg.dependencies?.[name]) return { environment: "runtime", direct: true };
+  if (pkg.devDependencies?.[name]) return { environment: "dev", direct: true };
+  return { environment: "transitive", direct: false };
 }
 
 function pinHealth(range: string | undefined): string | null {
@@ -153,113 +208,189 @@ function actionsFindings(): string[] {
   return unpinned;
 }
 
-function block(fields: Record<string, string>): string {
+function mdBlock(fields: Record<string, string>): string {
   return Object.entries(fields)
     .map(([k, v]) => `- **${k}**: ${v}`)
     .join("\n");
 }
 
+function recordToMarkdown(r: FindingRecord): string {
+  const header =
+    r.advisory_title !== null
+      ? `### ${r.severity.toUpperCase()}: ${r.dependency} — ${r.advisory_title}`
+      : `### MAJOR: ${r.dependency} ${r.current_version} → ${r.recommended_version}`;
+  return [
+    header,
+    mdBlock({
+      Repository: r.repository,
+      Severity: `${r.severity}${
+        r.advisory_id
+          ? r.production_path
+            ? " · PRODUCTION-PATH"
+            : " · dev/build-only"
+          : ""
+      }`,
+      Dependency: `\`${r.dependency}\` (${r.environment}${r.direct ? ", direct" : ""})`,
+      "Current → Recommended": `${r.current_version} → ${r.recommended_version}`,
+      "Update type": r.update_type,
+      ...(r.advisory_url
+        ? {
+            "Security advisory": `[${r.advisory_id}](${r.advisory_url}) — vulnerable ${r.vulnerable_versions}`,
+            "Affected surface": r.production_path
+              ? "production runtime tree"
+              : "dev/build tooling only",
+          }
+        : {
+            "Breaking changes": PEER_COUPLED.has(r.dependency)
+              ? "peer-coupled — see .github/dependabot.yml ignore rationale"
+              : "review upstream changelog before migrating",
+          }),
+      "Estimated effort": r.upgrade_effort,
+      ...(r.policy_class
+        ? {
+            Policy: `${r.policy_class}${r.deadline_days !== null ? ` — remediation SLA ${r.deadline_days}d` : ""}`,
+          }
+        : {}),
+      "Verification status": `${r.verification} — recommended`,
+      "Recommended action": r.recommended_action,
+    }),
+  ].join("\n");
+}
+
 function main() {
+  const args = process.argv.slice(2);
+  const jsonFlag = args.indexOf("--json");
+  const jsonPath = jsonFlag !== -1 ? args[jsonFlag + 1] : null;
+
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
   };
-  const today = new Date().toISOString().slice(0, 10);
+  const policy = loadPolicy();
+  const scannedAt = new Date().toISOString();
+  const today = scannedAt.slice(0, 10);
 
   const fullAudit = parseAudit(false);
-  const prodAudit = parseAudit(true);
-  const prodVulnerable = new Set(Object.keys(prodAudit));
+  const prodVulnerable = new Set(Object.keys(parseAudit(true)));
   const outdated = parseOutdated();
   const outdatedByName = new Map(outdated.map((r) => [r.name, r]));
 
-  const findings: Finding[] = [];
+  const records: FindingRecord[] = [];
 
-  // --- Security advisories, ranked by severity then production-path ---
+  // --- Security advisories ---
   for (const [name, advisories] of Object.entries(fullAudit)) {
     for (const adv of advisories) {
       const prodPath = prodVulnerable.has(name);
       const row = outdatedByName.get(name);
-      const cls = depClass(name, pkg);
-      const fixTarget = row
+      const { environment, direct } = environmentFor(name, pkg);
+      const cls = policyClassFor(adv.severity, prodPath);
+      const rule = policy[cls] ?? {};
+      const recommended = row
         ? row.update !== row.current
           ? `${row.update} (in-range)`
           : `${row.latest} (requires ${updateType(row.current, row.latest)} bump)`
-        : "transitive — bump the direct parent or add an override";
-      findings.push({
+        : "bump direct parent or add an override";
+      records.push({
+        repository: REPO,
+        ecosystem: "bun",
+        dependency: name,
+        current_version: row?.current ?? "locked (transitive)",
+        recommended_version: recommended,
+        severity: adv.severity,
+        update_type: row ? updateType(row.current, row.latest) : "override",
+        production_path: prodPath,
+        direct,
+        environment,
+        advisory_id: adv.url.split("/").pop() ?? String(adv.id),
+        advisory_url: adv.url,
+        advisory_title: adv.title,
+        vulnerable_versions: adv.vulnerable_versions,
+        fix_available: Boolean(row),
+        upgrade_effort: row
+          ? effortFor(updateType(row.current, row.latest), name)
+          : "moderate (override)",
+        verification: "unverified",
+        recommended_action: prodPath
+          ? "update-immediately"
+          : SEVERITY_RANK[adv.severity] <= 1
+            ? "isolated-migration-pr"
+            : "group-into-maintenance-pr",
+        policy_class: cls,
+        deadline_days: rule.deadline_days ?? null,
         priority: SEVERITY_RANK[adv.severity] * 2 + (prodPath ? 0 : 1),
-        block: [
-          `### ${adv.severity.toUpperCase()}: ${name} — ${adv.title}`,
-          block({
-            Repository: "Quirk-Systems/project-scaffold",
-            Severity: `${adv.severity}${prodPath ? " · PRODUCTION-PATH" : " · dev/build-only"}`,
-            Dependency: `\`${name}\` (${cls})`,
-            "Current → Recommended": row
-              ? `${row.current} → ${fixTarget}`
-              : `locked → ${fixTarget}`,
-            "Update type": row
-              ? updateType(row.current, row.latest)
-              : "override",
-            "Security advisory": `[${adv.url.split("/").pop()}](${adv.url}) — vulnerable ${adv.vulnerable_versions}`,
-            "Affected surface": prodPath
-              ? "production runtime tree"
-              : "dev/build tooling only",
-            "Verification status": "unverified — recommended",
-            "Recommended action": prodPath
-              ? "Update immediately"
-              : SEVERITY_RANK[adv.severity] <= 1
-                ? "Create isolated migration PR"
-                : "Group into low-risk maintenance PR",
-          }),
-        ].join("\n"),
       });
     }
   }
 
-  // --- Outdated (non-vulnerable) dependencies ---
-  const patchMinorBatch: string[] = [];
+  // --- Outdated (non-vulnerable) majors + groupable batch ---
+  const batch: {
+    dependency: string;
+    current_version: string;
+    recommended_version: string;
+    update_type: string;
+    environment: string;
+    pin_note: string | null;
+  }[] = [];
   for (const row of outdated) {
-    if (fullAudit[row.name]) continue; // already reported above
+    if (fullAudit[row.name]) continue;
     const type = updateType(row.current, row.latest);
-    const cls = depClass(row.name, pkg);
+    const { environment, direct } = environmentFor(row.name, pkg);
     const range =
       pkg.dependencies?.[row.name] ?? pkg.devDependencies?.[row.name];
-    const pin = pinHealth(range);
     if (type !== "major") {
-      patchMinorBatch.push(
-        `- \`${row.name}\` ${row.current} → ${row.latest} (${type}, ${cls})${pin ? ` — ${pin}` : ""}`,
-      );
+      batch.push({
+        dependency: row.name,
+        current_version: row.current,
+        recommended_version: row.latest,
+        update_type: type,
+        environment,
+        pin_note: pinHealth(range),
+      });
       continue;
     }
-    findings.push({
+    records.push({
+      repository: REPO,
+      ecosystem: "bun",
+      dependency: row.name,
+      current_version: row.current,
+      recommended_version:
+        row.update !== row.current
+          ? `${row.update} now; ${row.latest} via migration`
+          : `${row.latest} via migration`,
+      severity: "maintenance",
+      update_type: "major",
+      production_path: environment === "runtime",
+      direct,
+      environment,
+      advisory_id: null,
+      advisory_url: null,
+      advisory_title: null,
+      vulnerable_versions: null,
+      fix_available: true,
+      upgrade_effort: effortFor("major", row.name),
+      verification: "unverified",
+      recommended_action: "isolated-migration-pr",
+      policy_class: null,
+      deadline_days: null,
       priority: 10 + (PEER_COUPLED.has(row.name) ? 0 : 1),
-      block: [
-        `### MAJOR: ${row.name} ${parseMajor(row.current)} → ${parseMajor(row.latest)}`,
-        block({
-          Repository: "Quirk-Systems/project-scaffold",
-          Severity: "maintenance",
-          Dependency: `\`${row.name}\` (${cls})`,
-          "Current → Recommended": `${row.current} → ${row.update !== row.current ? `${row.update} now; ${row.latest} via migration` : `${row.latest} via migration`}`,
-          "Update type": "major (breaking)",
-          "Breaking changes": PEER_COUPLED.has(row.name)
-            ? "peer-coupled — see .github/dependabot.yml ignore rationale"
-            : "review upstream changelog before migrating",
-          "Estimated effort": effortFor("major", row.name),
-          "Verification status": "unverified — recommended",
-          "Recommended action": "Create isolated migration PR",
-        }),
-      ].join("\n"),
     });
   }
 
-  // --- Emit ---
+  records.sort((a, b) => a.priority - b.priority);
+
+  // --- Policy verdict ---
+  const failing = records.filter(
+    (r) => r.policy_class && policy[r.policy_class]?.action === "fail",
+  );
+  const criticalCount = records.filter((r) => r.severity === "critical").length;
+
+  // --- Markdown report ---
   const lines: string[] = [];
-  const criticalCount = Object.values(fullAudit)
-    .flat()
-    .filter((a) => a.severity === "critical").length;
+  lines.push("<!-- quirk-dependency-audit -->");
   lines.push(`# Dependency audit — ${today}`);
   lines.push("");
   lines.push(
-    `Scope: \`Quirk-Systems/project-scaffold\` @ default branch — package.json/bun.lock (bun), .github/workflows actions. No Dockerfile or infrastructure manifests present.`,
+    `Scope: \`${REPO}\` @ default branch — package.json/bun.lock (bun), .github/workflows actions. No Dockerfile or infrastructure manifests present.`,
   );
   lines.push("");
   if (criticalCount > 0) {
@@ -268,19 +399,29 @@ function main() {
     );
     lines.push("");
   }
-
-  findings.sort((a, b) => a.priority - b.priority);
-  for (const f of findings) {
-    lines.push(f.block, "");
+  if (failing.length > 0) {
+    lines.push(
+      `> ❌ **Policy: ${failing.length} finding(s) in a fail class (${[...new Set(failing.map((f) => f.policy_class))].join(", ")}) — this run exits non-zero.**`,
+    );
+    lines.push("");
   }
 
-  if (patchMinorBatch.length > 0) {
+  for (const r of records) {
+    lines.push(recordToMarkdown(r), "");
+  }
+
+  if (batch.length > 0) {
     lines.push(`### Groupable low-risk batch (patch/minor, no advisories)`);
     lines.push(
       "Safe to upgrade together in one maintenance PR (`bun update` then validate):",
       "",
     );
-    lines.push(...patchMinorBatch, "");
+    for (const b of batch) {
+      lines.push(
+        `- \`${b.dependency}\` ${b.current_version} → ${b.recommended_version} (${b.update_type}, ${b.environment})${b.pin_note ? ` — ${b.pin_note}` : ""}`,
+      );
+    }
+    lines.push("");
   }
 
   const actionIssues = actionsFindings();
@@ -289,7 +430,7 @@ function main() {
     lines.push(...actionIssues.map((s) => `- ${s}`), "");
   }
 
-  if (findings.length === 0 && patchMinorBatch.length === 0) {
+  if (records.length === 0 && batch.length === 0) {
     lines.push(`All dependencies current and advisory-free as of ${today}.`);
   }
 
@@ -299,6 +440,42 @@ function main() {
   );
 
   console.log(lines.join("\n"));
+
+  // --- Machine-readable output ---
+  if (jsonPath) {
+    mkdirSync(dirname(jsonPath), { recursive: true });
+    writeFileSync(
+      jsonPath,
+      JSON.stringify(
+        {
+          repository: REPO,
+          ecosystem: "bun",
+          scanned_at: scannedAt,
+          clean: records.length === 0 && batch.length === 0,
+          policy_fail: failing.length > 0,
+          summary: {
+            critical: criticalCount,
+            high: records.filter((r) => r.severity === "high").length,
+            moderate: records.filter((r) => r.severity === "moderate").length,
+            low: records.filter((r) => r.severity === "low").length,
+            majors: records.filter((r) => r.severity === "maintenance").length,
+            batch_size: batch.length,
+          },
+          findings: records,
+          groupable_batch: batch,
+          actions_pin_issues: actionIssues,
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+  }
+
+  // Policy-as-code exit: after the report is fully written, so a failing
+  // run still produces the issue/artifact it exists to produce.
+  if (failing.length > 0) {
+    process.exitCode = 2;
+  }
 }
 
 main();
