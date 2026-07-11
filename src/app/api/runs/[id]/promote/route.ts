@@ -10,9 +10,12 @@ export async function POST(
 ) {
   const { id } = await params;
   try {
-    const run = await promoteRun(id);
-    if (!run) return notFound("Run not found");
-    return NextResponse.json({ run }, { status: 201 });
+    const promoted = await promoteRun(id);
+    if (!promoted) return notFound("Run not found");
+    return NextResponse.json(
+      { run: promoted.run, offer: promoted.offer },
+      { status: 201 },
+    );
   } catch (e) {
     return serverError(e);
   }
