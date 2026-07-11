@@ -204,7 +204,15 @@ Server variables are optional in the scaffold so it boots without a `.env` file.
 - Schema defined in `src/lib/db/schema.ts`
 - PostgreSQL via `postgres` (postgres-js), pointed at Supabase through `DATABASE_URL`
 - pgvector (`vector(1536)`) powers asset embeddings; the migration enables the `vector` extension
-- Tables: `users` plus the Quirk OS registry (`quirk_assets`, `quirk_asset_versions`, `quirk_annotations`, `quirk_tags`, `quirk_diffs`, `quirk_experiments`, `quirk_runs`, `quirk_pipelines`, `quirk_pipeline_steps`, `quirk_pipeline_runs`)
+- Tables: `users`, billing (`customers`, `subscriptions`), plus the Quirk OS registry (`quirk_assets`, `quirk_asset_versions`, `quirk_annotations`, `quirk_tags`, `quirk_diffs`, `quirk_experiments`, `quirk_runs`, `quirk_pipelines`, `quirk_pipeline_steps`, `quirk_pipeline_runs`, `quirk_offers`)
+
+### Quirk Offers (one-of-one drops)
+
+- Module: `src/lib/quirk/offers.ts` — `mintOffer()` (persona-voiced pitch via the AI layer when `ANTHROPIC_API_KEY` is set, deterministic `fallbackPitch()` otherwise), `claimOffer()` (single conditional `UPDATE … WHERE status='open'` — the 1/1 is race-decided atomically), `listOffers()`/`getOffer()`
+- **One offer per asset, ever**: unique constraint on `quirk_offers.asset_id`; double-mint surfaces as `OfferAlreadyMintedError` → 409
+- Auto-mint: `promoteRun()` mints the winner's offer best-effort (promotion never fails because minting did); manual mint via `POST /api/offers`
+- Claim: `POST /api/offers/[id]/claim` is auth-gated; losing the race is a 409, not an error
+- UI: `/quirk/offers` (OffersBoard — filter chips, claim button, claimed/retired states)
 
 ### Testing
 

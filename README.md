@@ -27,6 +27,7 @@ capture → annotate → mutate → diff → experiment → promote → publish
 | Experiments & runs        | Track persona/mask/prompt/model variations; promote winners                                                                   |
 | Pipelines                 | Multi-step asset processing with run tracking                                                                                 |
 | Media storage             | Binary assets (photography, design work) in private object storage, served via signed URLs                                    |
+| Offers                    | One-of-one claimable drops minted from curated assets — persona-voiced, atomically claimed by exactly one person              |
 
 ### The agent crew (`src/lib/quirk/agents/`)
 
