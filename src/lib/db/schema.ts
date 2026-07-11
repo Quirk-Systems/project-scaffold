@@ -368,6 +368,50 @@ export const quirkPipelineRuns = pgTable("quirk_pipeline_runs", {
 });
 
 // ---------------------------------------------------------------------------
+// 6. Quirk Offers — one-of-one claimable drops
+// ---------------------------------------------------------------------------
+
+export const offerStatusEnum = pgEnum("quirk_offer_status", [
+  "open",
+  "claimed",
+  "retired",
+]);
+
+export const quirkOffers = pgTable(
+  "quirk_offers",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    assetId: uuid("asset_id")
+      .notNull()
+      .references(() => quirkAssets.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    // Persona-voiced pitch copy (AI when configured, heuristic otherwise).
+    pitch: text("pitch").notNull(),
+    register: text("register"),
+    scores: jsonb("scores")
+      .$type<Record<string, number>>()
+      .notNull()
+      .default({}),
+    status: offerStatusEnum("status").notNull().default("open"),
+    claimedBy: uuid("claimed_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    claimedAt: timestamp("claimed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("quirk_offers_status_idx").on(t.status),
+    // One offer per asset — the 1/1 is minted once, ever.
+    unique("quirk_offers_asset_uq").on(t.assetId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
 // Shared row types
 // ---------------------------------------------------------------------------
 
@@ -390,3 +434,4 @@ export type QuirkRun = typeof quirkRuns.$inferSelect;
 export type QuirkPipeline = typeof quirkPipelines.$inferSelect;
 export type QuirkPipelineStep = typeof quirkPipelineSteps.$inferSelect;
 export type QuirkPipelineRun = typeof quirkPipelineRuns.$inferSelect;
+export type QuirkOffer = typeof quirkOffers.$inferSelect;
