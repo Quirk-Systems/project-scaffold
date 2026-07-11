@@ -8,6 +8,19 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
+    ignore:
+      # Majors on peer-coupled packages need coordinated migrations, not
+      # auto-bumps: the zod 3->4 solo bump broke every install on main
+      # (t3-env 0.11 peer-requires zod ^3). Lift each pin only as part of
+      # its migration PR.
+      - dependency-name: zod
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@t3-oss/env-nextjs"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@hookform/resolvers"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: next-auth
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore(deps)
       prefix-development: chore(deps-dev)
