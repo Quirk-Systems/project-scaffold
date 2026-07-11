@@ -8,6 +8,8 @@ import {
 } from "@/lib/db/schema";
 import { labRatGenerate, pickWinner } from "./agents";
 import { captureAsset, getAsset, setAssetStatus } from "./assets";
+import { mintOffer } from "./offers";
+import type { QuirkOffer } from "@/lib/db/schema";
 
 export async function listExperiments(): Promise<QuirkExperiment[]> {
   return db
@@ -111,9 +113,13 @@ export async function scoreRun(
 }
 
 /**
- * Promote a winning run's output into a new canonical asset.
+ * Promote a winning run's output into a new canonical asset, and mint its
+ * one-of-one offer — winners graduate straight to the drops board.
  */
-export async function promoteRun(runId: string): Promise<QuirkRun | null> {
+export async function promoteRun(runId: string): Promise<{
+  run: QuirkRun;
+  offer: QuirkOffer | null;
+} | null> {
   const [run] = await db
     .select()
     .from(quirkRuns)
@@ -136,6 +142,16 @@ export async function promoteRun(runId: string): Promise<QuirkRun | null> {
     .set({ outcome: "winner", outputAssetId: asset.id })
     .where(eq(quirkRuns.id, runId))
     .returning();
+  if (!updated) return null;
 
-  return updated ?? null;
+  // Best-effort: promotion must never fail because minting did (e.g. a
+  // transient voice-layer error). The manual mint endpoint is the recovery.
+  let offer: QuirkOffer | null = null;
+  try {
+    offer = await mintOffer({ assetId: asset.id });
+  } catch (e) {
+    console.warn(`[quirk] auto-mint failed for asset ${asset.id}:`, e);
+  }
+
+  return { run: updated, offer };
 }
