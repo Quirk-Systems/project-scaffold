@@ -1,0 +1,34 @@
+{
+  "$comment": "Escalation rules as code — read by scripts/deps-audit.ts so CI behavior is deterministic even when no agent runs. action: 'fail' exits non-zero (after the report is written), 'warn' reports only. deadline_days is the remediation SLA surfaced in reports. pr: how the fix should land.",
+  "critical_production": {
+    "action": "fail",
+    "notify": "immediate",
+    "deadline_days": 0,
+    "pr": "isolated"
+  },
+  "critical_dev_only": {
+    "action": "warn",
+    "deadline_days": 7,
+    "pr": "isolated"
+  },
+  "high_production": {
+    "action": "fail",
+    "deadline_days": 3,
+    "pr": "isolated"
+  },
+  "high_dev_only": {
+    "action": "warn",
+    "deadline_days": 14,
+    "pr": "isolated"
+  },
+  "moderate_or_low": {
+    "action": "report",
+    "deadline_days": 30,
+    "pr": "grouped"
+  },
+  "minor_patch_clean": {
+    "action": "group",
+    "automerge": false,
+    "$note": "flip automerge to true only when repository policy explicitly permits it (verified, no peer churn, no new findings, no lifecycle scripts)"
+  }
+}
