@@ -8,8 +8,10 @@ import type {
   QuirkPipeline,
   QuirkPipelineStep,
   QuirkPipelineRun,
+  QuirkOffer,
 } from "@/lib/db/schema";
 import type { ProposedAnnotation } from "@/lib/quirk/agents/types";
+import type { OfferWithAsset } from "@/lib/quirk/offers";
 
 export type {
   QuirkAsset,
@@ -21,6 +23,8 @@ export type {
   QuirkPipeline,
   QuirkPipelineStep,
   QuirkPipelineRun,
+  QuirkOffer,
+  OfferWithAsset,
   ProposedAnnotation,
 };
 
@@ -104,7 +108,23 @@ export const quirkApi = {
       body: JSON.stringify(body),
     }),
   promoteRun: (id: string) =>
-    request<{ run: QuirkRun }>(`/api/runs/${id}/promote`, { method: "POST" }),
+    request<{ run: QuirkRun; offer: QuirkOffer | null }>(
+      `/api/runs/${id}/promote`,
+      { method: "POST" },
+    ),
+  listOffers: (status?: string) =>
+    request<{ offers: OfferWithAsset[] }>(
+      `/api/offers${status ? `?status=${status}` : ""}`,
+    ),
+  mintOffer: (body: { assetId: string; register?: string }) =>
+    request<{ offer: OfferWithAsset }>("/api/offers", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  claimOffer: (id: string) =>
+    request<{ offer: QuirkOffer }>(`/api/offers/${id}/claim`, {
+      method: "POST",
+    }),
   listPipelines: () =>
     request<{ pipelines: QuirkPipeline[] }>("/api/pipelines"),
   getPipeline: (id: string) =>
