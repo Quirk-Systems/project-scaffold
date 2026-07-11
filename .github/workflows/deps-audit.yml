@@ -1,0 +1,58 @@
+name: deps-audit
+
+on:
+  schedule:
+    # Weekly, Monday 09:00 UTC — pairs with dependabot's Monday cadence.
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Run mechanical audit
+        run: bun run deps:audit > audit-report.md
+
+      - name: Detect critical advisories
+        id: critical
+        run: |
+          if grep -q "🚨" audit-report.md; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open audit issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CRITICAL: ${{ steps.critical.outputs.found }}
+        run: |
+          TITLE="Dependency audit — $(date +%F)"
+          if [ "$CRITICAL" = "true" ]; then
+            TITLE="🚨 $TITLE — CRITICAL advisories"
+            LABELS="dependencies,security"
+          else
+            LABELS="dependencies"
+          fi
+          gh issue create \
+            --title "$TITLE" \
+            --body-file audit-report.md \
+            --label "$LABELS" \
+            --repo "$GITHUB_REPOSITORY"
+
+      # The immediate-alert half of the routine lives elsewhere: bun audit
+      # --prod gates every PR (ci.yml security job) and Dependabot security
+      # alerts fire on advisory publication — this workflow is the weekly
+      # full-tree sweep with an actionable checklist.

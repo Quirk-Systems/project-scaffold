@@ -252,6 +252,14 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to `main`. 
 
 Both jobs use `SKIP_ENV_VALIDATION=1` for the build/E2E steps. Playwright retries failed tests twice in CI (0 retries locally) and uses a single worker in CI.
 
+### Dependency-update routine (three layers)
+
+- **Immediate**: `bun audit --prod` gates every PR (`ci.yml` security job); Dependabot security alerts fire on advisory publication. Critical production-path vulnerabilities are fixed the same session, never queued for Monday
+- **Weekly sweep**: `.github/workflows/deps-audit.yml` (Mondays + manual dispatch) runs `bun run deps:audit` and opens a severity-labeled issue with the full-tree report; critical findings prefix the title with 🚨 and add the `security` label
+- **Mechanical scanner**: `scripts/deps-audit.ts` — parses `bun audit --json` (full + `--prod` for production-path flags) and `bun outdated`; ranks critical/high CVE → major → minor → patch; emits a stable per-finding block (dependency, current → safest recommended, update type, advisory, affected surface, effort, verification status, recommended action); groups advisory-free patch/minors into one maintenance batch; checks GitHub Actions pins for moving branches
+- **Intelligent audit**: the `/deps-audit` command (`.claude/commands/deps-audit.md`) wraps the scanner with judgment — advisory research, reachability analysis, migration steps from changelogs, verified upgrade branches, and one recommended action per finding
+- Majors on peer-coupled packages (zod, t3-env, hookform/resolvers, next-auth) are dependabot-ignored and land only via coordinated migration PRs
+
 ## Extended Documentation
 
 | File                                                           | What's Inside                                                                         |
