@@ -136,6 +136,20 @@ export async function claimOffer(input: {
   return claimed ?? null;
 }
 
+/**
+ * Curatorial pull-back: retire an open offer so it can never be claimed.
+ * Same atomic conditional-UPDATE shape as claiming — a claimed offer cannot
+ * be retired (it already belongs to someone).
+ */
+export async function retireOffer(offerId: string): Promise<QuirkOffer | null> {
+  const [retired] = await db
+    .update(quirkOffers)
+    .set({ status: "retired", updatedAt: sql`now()` })
+    .where(and(eq(quirkOffers.id, offerId), eq(quirkOffers.status, "open")))
+    .returning();
+  return retired ?? null;
+}
+
 export async function getOffer(id: string): Promise<OfferWithAsset | null> {
   const rows = await db
     .select()

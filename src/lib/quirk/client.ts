@@ -12,6 +12,7 @@ import type {
 } from "@/lib/db/schema";
 import type { ProposedAnnotation } from "@/lib/quirk/agents/types";
 import type { OfferWithAsset } from "@/lib/quirk/offers";
+import type { GoldilocksReading } from "@/lib/quirk/goldilocks";
 
 export type {
   QuirkAsset,
@@ -108,10 +109,11 @@ export const quirkApi = {
       body: JSON.stringify(body),
     }),
   promoteRun: (id: string) =>
-    request<{ run: QuirkRun; offer: QuirkOffer | null }>(
-      `/api/runs/${id}/promote`,
-      { method: "POST" },
-    ),
+    request<{
+      run: QuirkRun;
+      offer: QuirkOffer | null;
+      goldilocks: GoldilocksReading;
+    }>(`/api/runs/${id}/promote`, { method: "POST" }),
   listOffers: (status?: string) =>
     request<{ offers: OfferWithAsset[] }>(
       `/api/offers${status ? `?status=${status}` : ""}`,
@@ -123,6 +125,10 @@ export const quirkApi = {
     }),
   claimOffer: (id: string) =>
     request<{ offer: QuirkOffer }>(`/api/offers/${id}/claim`, {
+      method: "POST",
+    }),
+  retireOffer: (id: string) =>
+    request<{ offer: QuirkOffer }>(`/api/offers/${id}/retire`, {
       method: "POST",
     }),
   listPipelines: () =>
