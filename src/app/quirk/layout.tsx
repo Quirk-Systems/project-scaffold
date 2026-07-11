@@ -5,6 +5,7 @@ const NAV = [
   { href: "/quirk", label: "Inbox" },
   { href: "/quirk/experiments", label: "Experiments" },
   { href: "/quirk/pipelines", label: "Pipelines" },
+  { href: "/quirk/offers", label: "Offers" },
 ];
 
 export default function QuirkLayout({
