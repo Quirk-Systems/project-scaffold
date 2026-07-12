@@ -34,7 +34,7 @@ yarn-error.log*
 next-env.d.ts
 
 # bun
-bun.lock
+# (bun.lock is committed for reproducible installs and `bun audit` support)
 
 # playwright
 /test-results/
@@ -42,16 +42,21 @@ bun.lock
 /blob-report/
 /playwright/.cache/
 
-# drizzle
-/drizzle/
+# drizzle (migrations are committed; runtime artifacts are not)
 *.db
 *.db-journal
 
 # IDE
 .idea/
-.vscode/
+# .vscode/ — track extensions.json and settings.json; ignore the rest
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 *.swp
 *.swo
 
 # lefthook
 .lefthook-local/
+
+# generated dependency-audit output
+/artifacts/

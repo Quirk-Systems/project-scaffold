@@ -12,6 +12,8 @@ describe("Home", () => {
 
   it("renders the description", () => {
     render(<Home />);
-    expect(screen.getByText(/start building/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/your project scaffold is ready/i),
+    ).toBeInTheDocument();
   });
 });
