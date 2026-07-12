@@ -6,7 +6,7 @@ import {
   type QuirkExperiment,
   type QuirkRun,
 } from "@/lib/db/schema";
-import { labRatGenerate, pickWinner } from "./agents";
+import { labRatGenerate } from "./agents";
 import { captureAsset, getAsset, setAssetStatus } from "./assets";
 import { mintOffer } from "./offers";
 import type { QuirkOffer } from "@/lib/db/schema";
@@ -79,7 +79,13 @@ export async function createExperiment(input: {
           count: input.variantCount,
         });
   const winnerIdx =
-    input.journey === "swerveme_v1" ? -1 : pickWinner(variants);
+    input.journey === "swerveme_v1"
+      ? -1
+      : variants.reduce(
+          (best, candidate, index, all) =>
+            candidate.score > all[best].score ? index : best,
+          0,
+        );
 
   const runs = await db
     .insert(quirkRuns)
