@@ -13,7 +13,11 @@ export async function POST(
     const promoted = await promoteRun(id);
     if (!promoted) return notFound("Run not found");
     return NextResponse.json(
-      { run: promoted.run, offer: promoted.offer },
+      {
+        run: promoted.run,
+        offer: promoted.offer,
+        goldilocks: promoted.goldilocks,
+      },
       { status: 201 },
     );
   } catch (e) {

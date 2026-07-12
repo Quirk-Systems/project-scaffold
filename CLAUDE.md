@@ -210,8 +210,10 @@ Server variables are optional in the scaffold so it boots without a `.env` file.
 
 - Module: `src/lib/quirk/offers.ts` — `mintOffer()` (persona-voiced pitch via the AI layer when `ANTHROPIC_API_KEY` is set, deterministic `fallbackPitch()` otherwise), `claimOffer()` (single conditional `UPDATE … WHERE status='open'` — the 1/1 is race-decided atomically), `listOffers()`/`getOffer()`
 - **One offer per asset, ever**: unique constraint on `quirk_offers.asset_id`; double-mint surfaces as `OfferAlreadyMintedError` → 409
-- Auto-mint: `promoteRun()` mints the winner's offer best-effort (promotion never fails because minting did); manual mint via `POST /api/offers`
+- Auto-mint: `promoteRun()` mints the winner's offer best-effort (promotion never fails because minting did) — **gated by Goldilocks**; manual mint via `POST /api/offers` bypasses the gate (heuristics drive, humans overrule)
+- **Goldilocks gate** (`src/lib/quirk/goldilocks.ts`): `readGoldilocks(scores)` rules a profile `too_cold` (quality below floor or no pulse — nobody would claim it), `too_hot` (weirdness outrunning quality, or rant energy — hold for human curation), or `just_right` (auto-mint). Pure and deterministic; the reading (verdict, heat, reasons) is returned in the promote response
 - Claim: `POST /api/offers/[id]/claim` is auth-gated; losing the race is a 409, not an error
+- Retire: `POST /api/offers/[id]/retire` — curatorial pull-back, open offers only (a claimed 1/1 already belongs to someone)
 - UI: `/quirk/offers` (OffersBoard — filter chips, claim button, claimed/retired states)
 
 ### Testing
