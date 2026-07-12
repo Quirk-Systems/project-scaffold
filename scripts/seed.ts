@@ -16,6 +16,12 @@ import {
   quirkRuns,
 } from "../src/lib/db/schema";
 import { quirkCategories, quirkIdeas } from "./data/quirk-ideas";
+import { ensureSwervemeV1Pipeline } from "../src/lib/quirk/pipelines";
+import {
+  SWERVEME_COVENANT,
+  SWERVEME_SOURCE_PHRASE,
+  SWERVEME_V1,
+} from "../src/lib/quirk/swerveme";
 
 async function seedUsers() {
   await db.insert(users).values([
@@ -108,10 +114,29 @@ async function seedQuirkIdeas() {
   );
 }
 
+async function seedSwervemeV1() {
+  const pipeline = await ensureSwervemeV1Pipeline();
+  await db.insert(quirkAssets).values({
+    title: "The Squirther That Named the Journey",
+    assetType: "text",
+    rawText: SWERVEME_SOURCE_PHRASE,
+    status: "captured",
+    metadata: {
+      journey: SWERVEME_V1,
+      role: "squirther_source",
+      covenant: SWERVEME_COVENANT,
+      pipeline_id: pipeline.id,
+      lineage: { parent_ids: [], origin: "human_phrase" },
+    },
+  });
+  console.log("Seeded SWERVEME_V1 pipeline and initial Squirther source.");
+}
+
 async function seed() {
   console.log("Seeding database...");
   await seedUsers();
   await seedQuirkIdeas();
+  await seedSwervemeV1();
 }
 
 seed()
