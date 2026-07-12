@@ -4,6 +4,11 @@
  * Usage:
  *   bun run deps:audit                      # markdown report to stdout
  *   bun run deps:audit -- --json <path>     # also write machine-readable JSON
+ *   bun run deps:audit -- --verify          # apply `bun update` in a throwaway
+ *                                           # git worktree, run the validate
+ *                                           # gate + audit delta there, and
+ *                                           # label cleared findings verified;
+ *                                           # the working tree is never touched
  *
  * Scope: this repository — package.json + bun.lock (bun/npm ecosystem) and
  * .github/workflows/*.yml action pins. Docker/infrastructure manifests are
@@ -93,8 +98,8 @@ const PEER_COUPLED = new Set([
   "next-auth",
 ]);
 
-function run(cmd: string[]): string {
-  const proc = spawnSync(cmd[0], cmd.slice(1), { encoding: "utf8" });
+function run(cmd: string[], cwd?: string): string {
+  const proc = spawnSync(cmd[0], cmd.slice(1), { encoding: "utf8", cwd });
   return proc.stdout ?? "";
 }
 
@@ -208,6 +213,75 @@ function actionsFindings(): string[] {
   return unpinned;
 }
 
+type VerifyResult = {
+  attempted: boolean;
+  verdict: "verified" | "failed";
+  validate_passed: boolean;
+  advisories_before: number;
+  advisories_after: number;
+  cleared_advisories: string[]; // package names whose advisories vanished
+  lockfile_stat: string;
+};
+
+/**
+ * --verify mode: apply `bun update` in a throwaway git worktree, run the
+ * full validate gate there, and measure the audit delta. The real working
+ * tree is never touched; the worktree is removed in all outcomes. An
+ * advisory counts as verified-fixed only if it is present before and
+ * absent after — measured, not inferred.
+ */
+function runVerification(
+  auditBefore: Record<string, Advisory[]>,
+): VerifyResult {
+  const dir = `/tmp/deps-verify-${process.pid}`;
+  const log = (msg: string) => console.error(`[verify] ${msg}`);
+  log(`creating worktree at ${dir}`);
+  run(["git", "worktree", "add", "--detach", dir, "HEAD"]);
+  try {
+    log("applying bun update in worktree");
+    run(["bun", "update"], dir);
+
+    log("auditing worktree");
+    const rawAfter = stripAnsi(run(["bun", "audit", "--json"], dir));
+    const jsonStart = rawAfter.indexOf("{");
+    const auditAfter: Record<string, Advisory[]> =
+      jsonStart === -1 ? {} : JSON.parse(rawAfter.slice(jsonStart));
+
+    log("running validate gate in worktree (lint+types+tests+build)");
+    const validate = spawnSync("bun", ["run", "validate"], {
+      cwd: dir,
+      encoding: "utf8",
+      timeout: 15 * 60 * 1000,
+    });
+    const validatePassed = validate.status === 0;
+    if (!validatePassed) {
+      log(`validate FAILED (exit ${validate.status})`);
+      log((validate.stdout ?? "").split("\n").slice(-12).join("\n"));
+    }
+
+    const before = Object.values(auditBefore).flat().length;
+    const after = Object.values(auditAfter).flat().length;
+    const cleared = Object.keys(auditBefore).filter((k) => !auditAfter[k]);
+    const lockStat = run(
+      ["git", "diff", "--stat", "package.json", "bun.lock"],
+      dir,
+    ).trim();
+
+    return {
+      attempted: true,
+      verdict: validatePassed ? "verified" : "failed",
+      validate_passed: validatePassed,
+      advisories_before: before,
+      advisories_after: after,
+      cleared_advisories: cleared,
+      lockfile_stat: lockStat || "(no changes)",
+    };
+  } finally {
+    run(["git", "worktree", "remove", "--force", dir]);
+    log("worktree removed");
+  }
+}
+
 function mdBlock(fields: Record<string, string>): string {
   return Object.entries(fields)
     .map(([k, v]) => `- **${k}**: ${v}`)
@@ -261,6 +335,7 @@ function main() {
   const args = process.argv.slice(2);
   const jsonFlag = args.indexOf("--json");
   const jsonPath = jsonFlag !== -1 ? args[jsonFlag + 1] : null;
+  const verifyMode = args.includes("--verify");
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
     dependencies?: Record<string, string>;
@@ -378,6 +453,21 @@ function main() {
 
   records.sort((a, b) => a.priority - b.priority);
 
+  // --- Optional worktree verification ---
+  let verify: VerifyResult | null = null;
+  if (verifyMode) {
+    verify = runVerification(fullAudit);
+    if (verify.verdict === "verified") {
+      for (const r of records) {
+        if (r.advisory_id && verify.cleared_advisories.includes(r.dependency)) {
+          r.verification = "verified";
+          r.recommended_version += " — cleared by `bun update` (verified)";
+          r.recommended_action = "apply-bun-update-verified";
+        }
+      }
+    }
+  }
+
   // --- Policy verdict ---
   const failing = records.filter(
     (r) => r.policy_class && policy[r.policy_class]?.action === "fail",
@@ -424,6 +514,21 @@ function main() {
     lines.push("");
   }
 
+  if (verify?.attempted) {
+    lines.push(`### Verification run (\`--verify\`, throwaway worktree)`);
+    lines.push(
+      mdBlock({
+        Verdict: verify.verdict === "verified" ? "✅ verified" : "❌ failed",
+        "Validate gate": verify.validate_passed
+          ? "lint + type-check + tests + build all green after `bun update`"
+          : "FAILED — do not apply this batch without investigation",
+        "Advisory delta": `${verify.advisories_before} → ${verify.advisories_after}${verify.cleared_advisories.length > 0 ? ` (cleared: ${verify.cleared_advisories.join(", ")})` : ""}`,
+        "Manifest/lockfile change": verify.lockfile_stat,
+      }),
+      "",
+    );
+  }
+
   const actionIssues = actionsFindings();
   if (actionIssues.length > 0) {
     lines.push(`### GitHub Actions pin health`);
@@ -464,6 +569,7 @@ function main() {
           findings: records,
           groupable_batch: batch,
           actions_pin_issues: actionIssues,
+          verify,
         },
         null,
         2,
