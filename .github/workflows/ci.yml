@@ -25,17 +25,26 @@ jobs:
       - run: bun install --frozen-lockfile
       - name: Generate foundation formatting patch
         run: |
-          bunx prettier --write ".github/**/*.{json,yml,yaml,md}" "apps/**/*.md" "docs/{architecture,operations,roadmaps,semantics}/**/*.md" "packages/**/*.{ts,md}" "registries/**/*.{json,jsonld}" "rulesets/**/*.json" "runtimes/**/*.{json,md}" "schemas/**/*.json" "templates/**/*.{json,md}" "tooling/**/*.{js,mjs,ts,md}" "ARCHITECTURE.md" "CONTRIBUTING.md" "package.json" "tsconfig.json"
+          set +e
+          bunx prettier --write ".github/**/*.{json,yml,yaml,md}" "apps/**/*.md" "docs/{architecture,operations,roadmaps,semantics}/**/*.md" "packages/**/*.{ts,md}" "registries/**/*.{json,jsonld}" "rulesets/**/*.json" "runtimes/**/*.{json,md}" "schemas/**/*.json" "templates/**/*.{json,md}" "tooling/**/*.{js,mjs,ts,md}" "ARCHITECTURE.md" "CONTRIBUTING.md" "package.json" "tsconfig.json" > prettier.log 2>&1
+          status=$?
           git diff --binary > formatting.patch
           git diff --name-only > formatting-files.txt
+          echo "$status" > prettier-exit.txt
+          cat prettier.log
+          exit 0
       - name: Upload formatting patch
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: foundation-formatting-patch
           path: |
             formatting.patch
             formatting-files.txt
+            prettier.log
+            prettier-exit.txt
           retention-days: 1
+          if-no-files-found: error
 
   validate:
     runs-on: ubuntu-latest
@@ -113,8 +122,26 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
-      - name: Dependency audit
-        run: bun audit --prod
+      - name: Capture dependency audit
+        id: audit
+        run: |
+          set +e
+          bun audit --prod > dependency-audit.txt 2>&1
+          status=$?
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          cat dependency-audit.txt
+          exit 0
+      - name: Upload dependency audit
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dependency-audit
+          path: dependency-audit.txt
+          retention-days: 7
+          if-no-files-found: error
+      - name: Enforce dependency audit
+        if: ${{ steps.audit.outputs.exit_code != '0' }}
+        run: exit 1
       - name: Secret scan
         uses: trufflesecurity/trufflehog@4d82f215b9ec0bf795ce9955054ec7da3c612ae5
         with:
