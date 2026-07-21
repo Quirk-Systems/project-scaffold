@@ -14,51 +14,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  format-diagnostic:
+  foundation-repair:
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 55 && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'agent/quirk-foundation-scaffold' }}
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: agent/quirk-foundation-scaffold
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@56408e9a3f6d4f21fb6b1bf4fd7529dc366d7611 # v2.0.2
         with:
           bun-version: latest
-      - run: bun install --frozen-lockfile
-      - name: Generate foundation formatting patch
+      - name: Apply generated architecture repairs
         run: |
-          set +e
-          bunx prettier --write ".github/actions/**/*.{yml,yaml,md}" ".github/ISSUE_TEMPLATE/**/*.{yml,yaml,md}" ".github/rulesets/**/*.json" ".github/workflows/**/*.{yml,yaml}" ".github/copilot-instructions.md" ".github/PULL_REQUEST_TEMPLATE.md" "apps/**/*.md" "docs/{architecture,operations,roadmaps,semantics}/**/*.md" "packages/**/*.{ts,md}" "registries/**/*.json" "rulesets/**/*.json" "runtimes/**/*.{json,md}" "schemas/**/*.json" "templates/**/*.{json,md}" "tooling/**/*.{js,mjs,ts,md}" "ARCHITECTURE.md" "CONTRIBUTING.md" "package.json" "tsconfig.json" > prettier.log 2>&1
-          bunx prettier --parser json --write "registries/**/*.jsonld" >> prettier.log 2>&1
-          status=$?
-          git diff --binary > formatting.patch
-          git diff --name-only > formatting-files.txt
-          echo "$status" > prettier-exit.txt
-          cat prettier.log
-          exit 0
-      - name: Upload formatting patch
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: foundation-formatting-patch
-          path: |
-            formatting.patch
-            formatting-files.txt
-            prettier.log
-            prettier-exit.txt
-          retention-days: 1
-          if-no-files-found: error
-
-  dependency-remediation:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: oven-sh/setup-bun@56408e9a3f6d4f21fb6b1bf4fd7529dc366d7611 # v2.0.2
-        with:
-          bun-version: latest
-      - run: bun install --frozen-lockfile
-      - name: Generate DOMPurify override patch
-        run: |
-          set +e
           node --input-type=module <<'NODE'
           import { readFileSync, writeFileSync } from "node:fs";
           const path = "package.json";
@@ -66,31 +37,21 @@ jobs:
           manifest.overrides = { ...manifest.overrides, dompurify: "3.4.12" };
           writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
           NODE
-          bun install > dependency-update.txt 2>&1
-          update_status=$?
-          bun audit --prod > dependency-audit-after.txt 2>&1
-          audit_status=$?
-          git diff --binary -- bun.lock package.json > dependency-remediation.patch
-          git diff --name-only -- bun.lock package.json > dependency-remediation-files.txt
-          echo "$update_status" > dependency-update-exit.txt
-          echo "$audit_status" > dependency-audit-after-exit.txt
-          cat dependency-update.txt
-          cat dependency-audit-after.txt
-          exit 0
-      - name: Upload dependency remediation
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: dependency-remediation
-          path: |
-            dependency-remediation.patch
-            dependency-remediation-files.txt
-            dependency-update.txt
-            dependency-update-exit.txt
-            dependency-audit-after.txt
-            dependency-audit-after-exit.txt
-          retention-days: 1
-          if-no-files-found: error
+          bun install
+          bunx prettier --write tooling/cli/quirk.mjs
+          bunx prettier --parser json --write registries/ontology/quirk-core.jsonld
+          bun audit --prod
+      - name: Commit generated results
+        run: |
+          if git diff --quiet; then
+            echo "No repair changes required."
+            exit 0
+          fi
+          git config user.name "Quirk Foundation Repair"
+          git config user.email "actions@users.noreply.github.com"
+          git add package.json bun.lock tooling/cli/quirk.mjs registries/ontology/quirk-core.jsonld
+          git commit -m "fix(core): apply generated architecture repairs [foundation-repaired]"
+          git push origin HEAD:agent/quirk-foundation-scaffold
 
   validate:
     runs-on: ubuntu-latest
@@ -168,26 +129,8 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
-      - name: Capture dependency audit
-        id: audit
-        run: |
-          set +e
-          bun audit --prod > dependency-audit.txt 2>&1
-          status=$?
-          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
-          cat dependency-audit.txt
-          exit 0
-      - name: Upload dependency audit
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: dependency-audit
-          path: dependency-audit.txt
-          retention-days: 7
-          if-no-files-found: error
-      - name: Enforce dependency audit
-        if: ${{ steps.audit.outputs.exit_code != '0' }}
-        run: exit 1
+      - name: Dependency audit
+        run: bun audit --prod
       - name: Secret scan
         uses: trufflesecurity/trufflehog@4d82f215b9ec0bf795ce9955054ec7da3c612ae5
         with:
