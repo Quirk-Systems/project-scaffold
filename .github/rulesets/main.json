@@ -51,6 +51,5 @@
         "required_review_thread_resolution": true
       }
     }
-  ],
-  "operational_note": "This declarative desired state is reviewed in Git. Apply through repository Settings or a future Ruleset API adapter. Increase required approvals when multi-maintainer review is available."
+  ]
 }
