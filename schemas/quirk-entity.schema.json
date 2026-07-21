@@ -4,7 +4,18 @@
   "title": "Universal Quirk Entity",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "type", "version", "status", "name", "purpose", "owner"],
+  "required": [
+    "id",
+    "type",
+    "version",
+    "status",
+    "name",
+    "purpose",
+    "owner",
+    "scope",
+    "createdAt",
+    "updatedAt"
+  ],
   "properties": {
     "id": {
       "type": "string",
@@ -52,6 +63,17 @@
     "owner": {
       "type": "string",
       "minLength": 1
+    },
+    "scope": {
+      "enum": ["personal", "project", "organization", "public"]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
     }
   }
 }
