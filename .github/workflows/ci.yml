@@ -24,6 +24,29 @@ jobs:
           echo "os=${RUNNER_OS}"
           echo "arch=${RUNNER_ARCH}"
 
+  format-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: oven-sh/setup-bun@56408e9a3f6d4f21fb6b1bf4fd7529dc366d7611 # v2.0.2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - name: Generate authoritative formatting patch
+        run: |
+          bun run format
+          git diff --binary > formatting.patch
+          git diff --name-only > formatting-files.txt
+      - name: Upload formatting patch
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: formatting-patch
+          path: |
+            formatting.patch
+            formatting-files.txt
+          retention-days: 1
+
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 20
