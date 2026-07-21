@@ -10,6 +10,10 @@
       "@id": "quirk:dependsOn",
       "@type": "@id"
     },
+    "dependsOnAuthority": {
+      "@id": "quirk:dependsOnAuthority",
+      "@type": "@id"
+    },
     "produces": {
       "@id": "quirk:produces",
       "@type": "@id"
