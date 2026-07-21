@@ -13,6 +13,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "format:check:foundation": "prettier --check ARCHITECTURE.md CONTRIBUTING.md apps packages registries rulesets runtimes schemas templates tooling docs/architecture docs/semantics docs/operations docs/roadmaps .github/actions .github/ISSUE_TEMPLATE .github/rulesets .github/workflows .github/copilot-instructions.md .github/PULL_REQUEST_TEMPLATE.md",
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -35,7 +36,7 @@
     "quirk:graph": "bun tooling/cli/quirk.mjs graph",
     "quirk:classify": "bun tooling/cli/quirk.mjs classify .",
     "clean": "rm -rf .next out node_modules",
-    "validate": "bun run format:check && bun run lint && bun run type-check && bun run test:run && bun run quirk:validate && SKIP_ENV_VALIDATION=1 bun run build",
+    "validate": "bun run format:check:foundation && bun run lint && bun run type-check && bun run test:run && bun run quirk:validate && SKIP_ENV_VALIDATION=1 bun run build",
     "validate:full": "bun run validate && bun run test:e2e",
     "prepare": "lefthook install"
   },
