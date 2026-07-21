@@ -4,6 +4,9 @@
 
 **project-scaffold** is the fully-loaded boilerplate for Quirk Systems projects. It provides a production-ready Next.js 15 scaffold with all tooling, testing, CI/CD, and conventions configured out of the box. Stack, scripts, and layout are visible in `package.json` and the tree itself.
 
+Runtime baseline: Node.js 22.12+ and Bun 1.3.14+. Use `.nvmrc` and the
+`packageManager` field rather than choosing local versions ad hoc.
+
 ## Environment Variables
 
 Defined in `src/lib/env.ts` using t3-env with Zod validation. Copy `.env.example` to `.env` to get started.
@@ -66,6 +69,7 @@ Integration details (lazy-client pattern, media storage, Stripe, Resend, AI laye
 - Unit tests: `src/**/*.{test,spec}.{ts,tsx}` — use Vitest + React Testing Library
 - E2E tests: `e2e/*.spec.ts` — use Playwright (runs Chromium, Firefox, WebKit)
 - Test setup in `src/__tests__/setup.ts` (auto-cleanup, jest-dom matchers, mock reset)
+- `bun run test:coverage` exercises Vitest 4, Vite 8, and its version-matched V8 provider; `bun run test:ui` is backed by the version-matched UI package
 - Server Components cannot be tested with Vitest — use E2E tests for those
 - E2E web server: builds then starts (`bun run build && bun run start`) on port 3000
 
@@ -90,7 +94,7 @@ Integration details (lazy-client pattern, media storage, Stripe, Resend, AI laye
 - **Weekly sweep**: `.github/workflows/deps-audit.yml` (Mondays + manual dispatch) runs `bun run deps:audit` and opens a severity-labeled issue with the full-tree report; critical findings prefix the title with 🚨 and add the `security` label
 - **Mechanical scanner**: `scripts/deps-audit.ts` — parses `bun audit --json` (full + `--prod` for production-path flags) and `bun outdated`; ranks critical/high CVE → major → minor → patch; emits a stable per-finding block (dependency, current → safest recommended, update type, advisory, affected surface, effort, verification status, recommended action); groups advisory-free patch/minors into one maintenance batch; checks GitHub Actions pins for moving branches
 - **Intelligent audit**: the `/deps-audit` command (`.claude/commands/deps-audit.md`) wraps the scanner with judgment — advisory research, reachability analysis, migration steps from changelogs, verified upgrade branches, and one recommended action per finding
-- Majors on peer-coupled packages (zod, t3-env, hookform/resolvers, next-auth) are dependabot-ignored and land only via coordinated migration PRs
+- Majors on peer-coupled packages (zod, t3-env, hookform/resolvers, next-auth, Vitest, and jest-dom) are dependabot-ignored and land only via coordinated migration PRs
 
 ## Extended Documentation
 
@@ -111,7 +115,7 @@ Key recommendation docs:
 
 ## Guidelines for AI Assistants
 
-- Run `bun run validate` after making changes to verify nothing is broken
+- Run `bun run validate` after making changes to verify lint, types, coverage, and build
 - Follow existing patterns — don't introduce new libraries without good reason
 - Keep the scaffold nature — additions should be broadly useful, not project-specific
 - Use `@/` path aliases for imports

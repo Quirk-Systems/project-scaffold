@@ -42,11 +42,11 @@ brew install \
 # Bun (includes Node via BunJS compat)
 curl -fsSL https://bun.sh/install | bash
 
-# Node.js via nvm (for projects that need specific Node versions)
+# Node.js 22 via nvm (matches this repository's runtime contract)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source ~/.zshrc
-nvm install --lts
-nvm use --lts
+nvm install 22
+nvm use 22
 
 # ── Cask Apps ────────────────────────────────────────────────
 brew install --cask \

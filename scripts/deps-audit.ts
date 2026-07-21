@@ -91,6 +91,10 @@ const PEER_COUPLED = new Set([
   "@t3-oss/env-nextjs",
   "@hookform/resolvers",
   "next-auth",
+  "vitest",
+  "@vitest/coverage-v8",
+  "@vitest/ui",
+  "@testing-library/jest-dom",
 ]);
 
 function run(cmd: string[]): string {
@@ -99,8 +103,8 @@ function run(cmd: string[]): string {
 }
 
 function stripAnsi(s: string): string {
-  // eslint-disable-next-line no-control-regex
-  return s.replace(/\[[0-9;]*m/g, "");
+  const escape = String.fromCharCode(27);
+  return s.replace(new RegExp(`${escape}\\[[0-9;]*m`, "g"), "");
 }
 
 function updateType(current: string, target: string): string {

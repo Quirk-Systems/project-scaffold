@@ -1,5 +1,10 @@
 # Testing Tips
 
+> Scaffold baseline: Node.js 22.12+, Vitest 4 + Vite 8, React Testing Library, and the
+> version-matched `@vitest/coverage-v8`/`@vitest/ui` packages. Run
+> `bun run validate` to exercise lint, types, coverage, and the production
+> build before review.
+
 > Tests are documentation that verifies itself. Write them for the next developer, not the linter.
 
 ---

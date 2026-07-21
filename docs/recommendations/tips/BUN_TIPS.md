@@ -179,15 +179,15 @@ bun link ../my-lib
 
 ## Lockfile
 
-Bun uses `bun.lockb` (binary format).
+Bun 1.2+ uses the text-based `bun.lock` format. Commit it with every
+manifest change so CI can reproduce the exact dependency graph.
 
 ```bash
-# View contents
-bun bun.lockb | head              # or
-cat bun.lockb | bun -e 'console.log(await Bun.file("/dev/stdin").text())'
+# Inspect the resolved graph
+rg 'dependency-name' bun.lock
 
 # Regenerate
-rm bun.lockb && bun install
+bun install
 
 # CI: ensure lockfile is respected
 bun install --frozen-lockfile     # fails if lockfile would change
@@ -203,7 +203,7 @@ bun install --frozen-lockfile     # fails if lockfile would change
     "db:seed": "bun run src/scripts/seed.ts",
     "db:reset": "bun run src/scripts/reset-db.ts",
     "codegen": "bun run scripts/generate-types.ts",
-    "clean": "rm -rf .next out node_modules bun.lockb && bun install"
+    "clean": "rm -rf .next out node_modules && bun install --frozen-lockfile"
   }
 }
 ```

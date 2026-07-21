@@ -38,10 +38,10 @@ export PATH="$HOME/.bun/bin:$PATH"
 echo 'export BUN_INSTALL="$HOME/.bun"' >> ~/.zshrc
 echo 'export PATH="$BUN_INSTALL/bin:$PATH"' >> ~/.zshrc
 
-# ── Node.js LTS (via nvm) ────────────────────────────────────
+# ── Node.js 22 (via nvm; matches repository contract) ────────
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source ~/.bashrc
-nvm install --lts && nvm use --lts
+nvm install 22 && nvm use 22
 
 # ── Docker ───────────────────────────────────────────────────
 # Add Docker's GPG key

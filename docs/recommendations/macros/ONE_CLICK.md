@@ -53,7 +53,7 @@ rm -f local.db && bun run db:push && bun run src/scripts/seed.ts
 
 ```bash
 # Nuclear option — fresh state
-rm -rf .next out node_modules bun.lockb && bun install && echo "✓ Clean install done"
+rm -rf .next out node_modules && bun install --frozen-lockfile && echo "✓ Clean install done"
 ```
 
 ---

@@ -50,7 +50,11 @@ all lazy-initialized so the repo builds and validates with zero secrets.
 
 ## Getting started
 
+Runtime baseline: **Node.js 22.12+** and **Bun 1.3.14+**. The repository pins
+both versions in `package.json`; `.nvmrc` and CI use Node 22.
+
 ```bash
+nvm use                # reads .nvmrc
 bun install
 cp .env.example .env   # everything optional; features no-op until configured
 bun run dev            # http://localhost:3000 — /quirk is the registry UI
@@ -68,7 +72,7 @@ curl -F "file=@photo.jpg" -F "title=Golden hour test" \
 | Command                          | Description                                        |
 | -------------------------------- | -------------------------------------------------- |
 | `bun run dev`                    | Dev server (runs migrations first)                 |
-| `bun run validate`               | lint + type-check + tests + build — the merge gate |
+| `bun run validate`               | lint + type-check + coverage + build — merge gate  |
 | `bun run db:migrate` / `db:seed` | Schema + Quirk OS seed data                        |
 | `bun run test:e2e`               | Playwright suite                                   |
 | `bun run email:dev`              | Preview react-email templates                      |
