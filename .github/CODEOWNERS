@@ -1,5 +1,17 @@
+# Default owner
 * @bryansayler
 
+# Existing sensitive application paths
+/src/lib/auth.ts @bryansayler
+/src/lib/env.ts @bryansayler
+/src/lib/db/ @bryansayler
+/drizzle/ @bryansayler
+/src/lib/billing/ @bryansayler
+/src/app/api/webhooks/ @bryansayler
+/src/lib/quirk/media.ts @bryansayler
+/SECURITY.md @bryansayler
+
+# Quirk foundational architecture
 /packages/contracts/ @bryansayler
 /packages/semantics/ @bryansayler
 /packages/file-management/ @bryansayler
@@ -9,5 +21,4 @@
 /registries/ontology/ @bryansayler
 /rulesets/ @bryansayler
 /schemas/ @bryansayler
-/.github/workflows/ @bryansayler
-/.github/actions/ @bryansayler
+/.github/ @bryansayler
