@@ -9,7 +9,7 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, extname, join, relative, resolve } from "node:path";
+import { dirname, extname, join, relative, resolve } from "node:path";
 import process from "node:process";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "../..");
@@ -39,6 +39,18 @@ const DECLARATIVE_ROOTS = [
   "schemas",
   "templates",
   ".github/rulesets",
+];
+
+const ONTOLOGY_RELATIONS = [
+  "dependsOn",
+  "dependsOnAuthority",
+  "produces",
+  "consumes",
+  "governs",
+  "evaluates",
+  "projectsTo",
+  "implements",
+  "integratesWith",
 ];
 
 const IDENTIFIER_PATTERN = /^quirk:\/\/[a-z0-9][a-z0-9/_-]*$/;
@@ -132,7 +144,7 @@ function doctor() {
 
 function validate() {
   const files = DECLARATIVE_ROOTS.flatMap((root) =>
-    walk(resolve(ROOT, root), (path) => path.endsWith(".json")),
+    walk(resolve(ROOT, root), (path) => /\.json(ld)?$/.test(path)),
   );
   const identifiers = [];
   const parsed = new Map();
@@ -157,6 +169,7 @@ function validate() {
   }
 
   validateSemantics(parsed);
+  validateOntology(parsed);
   validateActionPins();
   validateRequiredSurfaces();
 
@@ -178,6 +191,30 @@ function validateSemantics(parsed) {
     }
   }
   pass(`${names.size} semantic terms inspected`);
+}
+
+function validateOntology(parsed) {
+  const ontologyPath = resolve(ROOT, "registries/ontology/quirk-core.jsonld");
+  const ontology = parsed.get(ontologyPath) ?? parseJson(ontologyPath);
+  if (!ontology) return;
+
+  const context = ontology["@context"] ?? {};
+  const nodes = ontology["@graph"] ?? [];
+  let relationCount = 0;
+
+  for (const node of nodes) {
+    for (const relation of ONTOLOGY_RELATIONS) {
+      const value = node[relation] ?? node[`quirk:${relation}`];
+      if (value === undefined) continue;
+      relationCount += [value].flat().length;
+      if (!context[relation] && node[relation] !== undefined) {
+        fail(`ontology relation is missing from @context: ${relation}`);
+      }
+    }
+  }
+
+  if (relationCount === 0) fail("ontology contains no inspectable relations");
+  else pass(`${relationCount} ontology relations inspected`);
 }
 
 function validateActionPins() {
@@ -218,15 +255,6 @@ function graph(outputPath) {
   if (!ontology) return;
 
   const nodes = ontology["@graph"] ?? [];
-  const relations = [
-    "quirk:dependsOn",
-    "quirk:produces",
-    "quirk:consumes",
-    "quirk:governs",
-    "quirk:projectsTo",
-    "quirk:implements",
-    "quirk:integratesWith",
-  ];
   const lines = ["flowchart LR"];
   const nodeIds = new Map();
 
@@ -237,8 +265,9 @@ function graph(outputPath) {
   }
 
   for (const node of nodes) {
-    for (const relation of relations) {
-      const targets = node[relation] ? [node[relation]].flat() : [];
+    for (const relation of ONTOLOGY_RELATIONS) {
+      const value = node[relation] ?? node[`quirk:${relation}`];
+      const targets = value === undefined ? [] : [value].flat();
       for (const target of targets) {
         const sourceId = nodeIds.get(node["@id"]);
         const targetId =
@@ -274,6 +303,7 @@ function classifyOne(path) {
     ".tsx": "code",
     ".js": "code",
     ".mjs": "code",
+    ".cjs": "code",
     ".py": "code",
     ".php": "code",
     ".sql": "code",
@@ -309,20 +339,37 @@ function classifyOne(path) {
     canonicalArea = "registries";
     retention = "canonical";
     reasons.push("registry path");
+  } else if (lower.includes("/prompts/") || lower.endsWith(".prompt.md")) {
+    fileClass = "prompt";
+    canonicalArea = "prompts";
+    retention = "canonical";
+    reasons.push("prompt registry path");
   } else if (lower.includes("/docs/") || fileClass === "documentation") {
     canonicalArea = "docs";
+  } else if (lower.includes("/generated/") || lower.includes("/dist/")) {
+    fileClass = "generated";
+    canonicalArea = "generated";
+    retention = "generated";
+    reasons.push("generated output path");
   } else if (lower.includes("/packages/")) {
     canonicalArea = "packages";
   } else if (lower.includes("/apps/") || lower.includes("/src/app/")) {
     canonicalArea = "apps";
   }
 
-  if (/(^|\/)\.env($|\.)/.test(lower) || /\.(pem|p12|key)$/.test(lower)) {
+  if (
+    /(^|\/)\.env($|\.)/.test(lower) ||
+    lower.includes("private-key") ||
+    /\.(pem|p12|key)$/.test(lower)
+  ) {
     fileClass = "secret-risk";
     risk = "critical";
     canonicalArea = "quarantine";
     retention = "transient";
     reasons.push("credential pattern");
+  } else if (lower.includes("customer") || lower.includes("personal-data")) {
+    risk = "high";
+    reasons.push("potential personal or customer data");
   } else if (fileClass === "configuration" || fileClass === "registry") {
     risk = "medium";
   }
