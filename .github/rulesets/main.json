@@ -1,0 +1,58 @@
+{
+  "name": "Quirk main protection",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "refs/heads/main"
+      ],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "required_linear_history"
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "required_status_checks": [
+          {
+            "context": "validate"
+          },
+          {
+            "context": "e2e"
+          },
+          {
+            "context": "security"
+          },
+          {
+            "context": "dependency-review"
+          },
+          {
+            "context": "analyze"
+          }
+        ]
+      }
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": true
+      }
+    }
+  ],
+  "operational_note": "This declarative desired state is reviewed in Git. Apply through repository Settings or a future Ruleset API adapter. Increase required approvals when multi-maintainer review is available."
+}

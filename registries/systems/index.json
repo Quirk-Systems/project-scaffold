@@ -1,0 +1,17 @@
+{
+  "id": "quirk://registries/systems/index",
+  "version": "1.0.0",
+  "systems": [
+    "canonlock",
+    "context-dock",
+    "memory-commons",
+    "preference-core",
+    "capability-lattice",
+    "runway",
+    "authority-gate",
+    "proofrail",
+    "asset-foundry",
+    "signal-ledger",
+    "interlock"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "quirk://runtimes/durable-worker",
+  "name": "Durable Worker",
+  "kind": "worker",
+  "status": "experimental",
+  "capabilities": [
+    "network",
+    "queue",
+    "checkpoint",
+    "retry",
+    "database",
+    "object-storage",
+    "telemetry"
+  ],
+  "prohibitions": [
+    "interactive-ui",
+    "unbounded-loop"
+  ],
+  "limits": {
+    "timeoutMs": 3600000,
+    "memoryMb": 2048,
+    "maxConcurrency": 16
+  },
+  "authority": {
+    "network": "allowlist",
+    "filesystem": "none",
+    "secrets": "scoped"
+  }
+}

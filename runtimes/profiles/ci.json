@@ -1,0 +1,29 @@
+{
+  "id": "quirk://runtimes/github-ci",
+  "name": "GitHub CI",
+  "kind": "ci",
+  "status": "active",
+  "capabilities": [
+    "filesystem-read",
+    "ephemeral-write",
+    "network",
+    "tests",
+    "build",
+    "security-scan"
+  ],
+  "prohibitions": [
+    "production-data-write",
+    "human-approval",
+    "long-lived-state"
+  ],
+  "limits": {
+    "timeoutMs": 1800000,
+    "memoryMb": 7168,
+    "maxConcurrency": 4
+  },
+  "authority": {
+    "network": "open",
+    "filesystem": "read-write",
+    "secrets": "scoped"
+  }
+}

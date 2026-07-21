@@ -1,0 +1,48 @@
+{
+  "id": "quirk://pipelines/foundation-processing",
+  "version": "1.0.0",
+  "status": "active",
+  "purpose": "Normalize repository knowledge into validated, classified, semantically linked, routable records.",
+  "stages": [
+    {
+      "id": "ingest",
+      "state": "received",
+      "output": "raw-envelope"
+    },
+    {
+      "id": "normalize",
+      "state": "normalized",
+      "output": "normalized-envelope"
+    },
+    {
+      "id": "classify",
+      "state": "classified",
+      "output": "file-and-data-classification"
+    },
+    {
+      "id": "enrich",
+      "state": "enriched",
+      "output": "semantic-and-provenance-links"
+    },
+    {
+      "id": "validate",
+      "state": "validated",
+      "output": "schema-and-ruleset-results"
+    },
+    {
+      "id": "route",
+      "state": "routed",
+      "output": "runtime-and-destination"
+    },
+    {
+      "id": "emit",
+      "state": "emitted",
+      "output": "event-and-projection"
+    }
+  ],
+  "failure": {
+    "invalid": "quarantine",
+    "transient": "retry-bounded",
+    "unknown": "preserve-and-stop"
+  }
+}

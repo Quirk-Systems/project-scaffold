@@ -1,0 +1,142 @@
+{
+  "id": "quirk://registries/semantics/core-terms",
+  "version": "1.0.0",
+  "status": "active",
+  "terms": [
+    {
+      "term": "Asset",
+      "slug": "asset",
+      "definition": "A reusable, versioned output with lineage, ownership, quality evidence, and a lifecycle.",
+      "status": "canonical",
+      "aliases": [
+        "Quirk asset"
+      ],
+      "domains": [
+        "foundry",
+        "product",
+        "knowledge"
+      ]
+    },
+    {
+      "term": "Artifact",
+      "slug": "artifact",
+      "definition": "Deprecated Quirk term for reusable output.",
+      "status": "deprecated",
+      "replacement": "Asset",
+      "domains": [
+        "legacy"
+      ]
+    },
+    {
+      "term": "Capability",
+      "slug": "capability",
+      "definition": "A reliable outcome with defined inputs, outputs, authority, implementation, and evaluation.",
+      "status": "canonical",
+      "domains": [
+        "agents",
+        "runtime",
+        "product"
+      ]
+    },
+    {
+      "term": "Override",
+      "slug": "override",
+      "definition": "A hard human-authorized rule or instruction that supersedes lower-priority behavior.",
+      "status": "canonical",
+      "domains": [
+        "authority",
+        "canon"
+      ]
+    },
+    {
+      "term": "Overswerve",
+      "slug": "overswerve",
+      "definition": "A named reroute into an asset, action, boundary, proof, ritual, offer, or other useful direction.",
+      "status": "canonical",
+      "domains": [
+        "routing",
+        "creative"
+      ]
+    },
+    {
+      "term": "Mandem",
+      "slug": "mandem",
+      "definition": "A trust-rich, identity-heavy group of complementary operators using fast informal coordination.",
+      "status": "canonical",
+      "domains": [
+        "organization"
+      ]
+    },
+    {
+      "term": "Ruleset",
+      "slug": "ruleset",
+      "definition": "A versioned collection of machine-checkable and human-readable policy rules.",
+      "status": "canonical",
+      "domains": [
+        "governance",
+        "repository",
+        "runtime"
+      ]
+    },
+    {
+      "term": "Runtime Profile",
+      "slug": "runtime-profile",
+      "definition": "A provider-independent declaration of execution capability, limits, authority, and prohibitions.",
+      "status": "canonical",
+      "domains": [
+        "runtime",
+        "infrastructure"
+      ]
+    },
+    {
+      "term": "Projection",
+      "slug": "projection",
+      "definition": "A derived representation optimized for query or presentation that does not silently become canonical.",
+      "status": "canonical",
+      "domains": [
+        "data",
+        "architecture"
+      ]
+    },
+    {
+      "term": "Pile-On",
+      "slug": "pile-on",
+      "definition": "Controlled expansion that strengthens, connects, compounds, productizes, or proves completed work.",
+      "status": "canonical",
+      "domains": [
+        "production",
+        "reuse"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "term": "dependsOn",
+      "definition": "The subject cannot operate correctly without the object."
+    },
+    {
+      "term": "produces",
+      "definition": "The subject creates an object as an intended output."
+    },
+    {
+      "term": "consumes",
+      "definition": "The subject accepts the object as an input."
+    },
+    {
+      "term": "governs",
+      "definition": "The subject defines or enforces rules over the object."
+    },
+    {
+      "term": "evaluates",
+      "definition": "The subject assesses the quality or state of the object."
+    },
+    {
+      "term": "projectsTo",
+      "definition": "The canonical subject is transformed into a derived representation."
+    },
+    {
+      "term": "contradicts",
+      "definition": "The subject and object cannot both remain accepted without qualification."
+    }
+  ]
+}

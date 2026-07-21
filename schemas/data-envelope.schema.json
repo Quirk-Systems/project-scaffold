@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.quirk.systems/data-envelope.schema.json",
+  "title": "Quirk Data Processing Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "state",
+    "source",
+    "purpose",
+    "classification",
+    "payload",
+    "provenance",
+    "diagnostics"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^qdata_[A-Za-z0-9_-]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "state": {
+      "enum": [
+        "received",
+        "normalized",
+        "classified",
+        "enriched",
+        "validated",
+        "routed",
+        "emitted",
+        "quarantined",
+        "failed"
+      ]
+    },
+    "source": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "classification": {
+      "enum": [
+        "public",
+        "internal",
+        "personal",
+        "restricted"
+      ]
+    },
+    "payload": {},
+    "provenance": {
+      "type": "object",
+      "required": [
+        "createdAt",
+        "actorId",
+        "sourceRefs"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actorId": {
+          "type": "string"
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

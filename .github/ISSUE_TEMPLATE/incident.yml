@@ -1,0 +1,32 @@
+name: Operational incident
+description: Capture a failure without losing partial value or evidence
+title: "incident: "
+labels: ["incident"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact and affected systems
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence, traces, and preserved outputs
+    validations:
+      required: true
+  - type: textarea
+    id: response
+    attributes:
+      label: Containment and recovery
+  - type: textarea
+    id: dividend
+    attributes:
+      label: Failure dividend
+      description: Regression test, evaluator, rule, limitation, monitoring signal, or recovery procedure to add.

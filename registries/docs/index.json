@@ -1,0 +1,22 @@
+{
+  "id": "quirk://registries/docs/index",
+  "version": "1.0.0",
+  "collections": [
+    {
+      "id": "quirk://docs/architecture",
+      "path": "docs/architecture"
+    },
+    {
+      "id": "quirk://docs/semantics",
+      "path": "docs/semantics"
+    },
+    {
+      "id": "quirk://docs/operations",
+      "path": "docs/operations"
+    },
+    {
+      "id": "quirk://docs/roadmaps",
+      "path": "docs/roadmaps"
+    }
+  ]
+}

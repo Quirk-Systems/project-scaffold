@@ -2,40 +2,43 @@
 
 ## The short version
 
-1. Branch from `main` (`feature/`, `fix/`, or `chore/` prefix).
-2. Make your change following the conventions in [CLAUDE.md](CLAUDE.md) —
-   it is the source of truth for structure, naming, and patterns.
-3. Run `bun run validate` (lint + type-check + tests + build). It must be
-   green; it's also the CI merge gate.
-4. Commit with [conventional commits](https://www.conventionalcommits.org)
-   (enforced by commitlint via Lefthook).
-5. Open a PR against `main`. Automated review runs on every push — treat
-   its findings as real until verified otherwise; fix what's confirmed.
+1. Branch from `main` with `feat/`, `fix/`, `docs/`, `refactor/`, `test/`, `security/`, or `chore/`.
+2. Read `ARCHITECTURE.md`, `CLAUDE.md`, `AGENTS.md`, and the nearest package README.
+3. Map the change to an issue or Work Packet.
+4. Run `bun run validate`. It includes formatting, lint, type checking, tests, Quirk foundation validation, and the production build.
+5. Use conventional commits and open a focused pull request against `main`.
 
 ## Ground rules
 
-- **Keep the scaffold nature.** Additions should be broadly useful across
-  Quirk projects, not one-off product features.
-- **Follow existing patterns before inventing new ones.** Third-party
-  clients go through `createLazyClient` (lazy, memoized, aggregated config
-  errors). New env vars are `.optional()` so the repo builds with zero
-  secrets. Domain logic lives in `src/lib/quirk/`; route handlers stay thin.
-- **Never commit secrets.** `.env` is gitignored; `.env.example` documents
-  every variable.
-- **Write tests** for new lib code (`src/**/*.test.ts`) and E2E specs for
-  user-facing flows (`e2e/*.spec.ts`).
-- **Migrations are committed.** Schema changes require `bun run db:generate`
-  and the resulting `drizzle/` files in the same PR (prettier-format the
-  generated JSON).
+- Keep the scaffold broadly reusable across Quirk applications.
+- Preserve the canonical/runtime/projection distinction.
+- Validate external input at the boundary.
+- Every new permission needs an authority review.
+- Every event needs a versioned contract.
+- Every schema change needs a migration and compatibility statement.
+- Every meaningful failure should produce regression coverage or an explicit limitation.
+- Never commit secrets, raw private data, or generated credentials.
+- Prefer small vertical proofs over disconnected architecture layers.
+- Prompts, rulesets, registries, and templates are versioned assets.
+- New shared logic belongs in `packages/`; provider logic belongs behind adapters.
+- New declarative knowledge belongs in `registries/`; enforceable policy belongs in `rulesets/`.
 
-## Working with the asset engine
+## Pull request evidence
 
-The lifecycle is `capture → annotate → mutate → diff → experiment →
-promote → publish`. Each stage has an owning agent module under
-`src/lib/quirk/agents/` — extend the owning agent rather than scattering
-stage logic across routes.
+A pull request must state the outcome, implementation, verification, risk, review focus, and deliberate exclusions. UI changes include screenshots and accessibility evidence. Runtime changes include failure, retry, idempotency, and rollback behavior.
 
-## Questions
+## Quirk CLI
 
-Open a GitHub issue. Security reports go through [SECURITY.md](SECURITY.md),
-not public issues.
+```bash
+bun run quirk:doctor
+bun run quirk:validate
+bun run quirk:graph
+bun run quirk -- runtime list
+bun run quirk -- semantics inspect asset
+bun run quirk -- classify .
+bun run quirk -- init system example-system
+```
+
+## Security
+
+Use `SECURITY.md` for vulnerability reports. Do not disclose security findings in public issues.

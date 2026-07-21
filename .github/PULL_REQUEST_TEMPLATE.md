@@ -1,23 +1,46 @@
-## Summary
+## Outcome
 
-<!-- One or two sentences: what changes and why. -->
+What becomes observably possible after this change?
 
-## Changes
+## Implementation
 
-<!-- Bulleted list of concrete things in this PR. Keep it scannable. -->
+- Important technical choices:
+- Canonical/runtime/projection impact:
+- Files, packages, registries, schemas, or workflows affected:
 
--
--
--
+## Verification
 
-## Test plan
+- [ ] `bun run quirk:validate`
+- [ ] `bun run type-check`
+- [ ] `bun run test:run`
+- [ ] `bun run build`
+- [ ] UI/accessibility evidence attached when applicable
+- [ ] Migration or compatibility behavior tested when applicable
 
-<!-- Check off what you actually ran. Add manual steps if the change touches UI. -->
+Commands and observed results:
 
-- [ ] `bun run validate` (lint + type-check + unit tests + build)
-- [ ] `bun run test:e2e` (or `bun run validate:full`)
-- [ ] Manual: <!-- e.g. visited /api/health, signed in, toggled theme -->
+## Authority and data
 
-## Notes for reviewer
+- Permission changes:
+- Sensitive data touched:
+- Retention or deletion changes:
+- Human approval required:
 
-<!-- Trade-offs, follow-ups, screenshots, or anything that doesn't fit above. -->
+## Risk
+
+- Failure modes:
+- Retry/idempotency behavior:
+- Rollback:
+- Known limitations:
+
+## Review focus
+
+Where is human judgment most valuable?
+
+## Compounding
+
+Reusable asset, capability, rule, evaluator, template, or adapter created:
+
+## Deliberate exclusions
+
+Valid follow-up work intentionally excluded from this change:

@@ -1,17 +1,13 @@
-# Default owner for everything in the repo
-*       @bryansayler
+* @bryansayler
 
-# Auth, env, and database are sensitive — flag them explicitly
-/src/lib/auth.ts        @bryansayler
-/src/lib/env.ts         @bryansayler
-/src/lib/db/            @bryansayler
-/drizzle/               @bryansayler
-
-# Money paths and media storage
-/src/lib/billing/       @bryansayler
-/src/app/api/webhooks/  @bryansayler
-/src/lib/quirk/media.ts @bryansayler
-
-# CI, infra, and security
-/.github/               @bryansayler
-/SECURITY.md            @bryansayler
+/packages/contracts/ @bryansayler
+/packages/semantics/ @bryansayler
+/packages/file-management/ @bryansayler
+/packages/data-processing/ @bryansayler
+/packages/runtime/ @bryansayler
+/packages/rulesets/ @bryansayler
+/registries/ontology/ @bryansayler
+/rulesets/ @bryansayler
+/schemas/ @bryansayler
+/.github/workflows/ @bryansayler
+/.github/actions/ @bryansayler

@@ -1,0 +1,26 @@
+{
+  "id": "quirk://registries/templates/index",
+  "version": "1.0.0",
+  "templates": [
+    {
+      "id": "quirk://templates/system",
+      "path": "templates/system",
+      "produces": "system-foundation"
+    },
+    {
+      "id": "quirk://templates/capability",
+      "path": "templates/capability",
+      "produces": "capability-manifest"
+    },
+    {
+      "id": "quirk://templates/work-packet",
+      "path": "templates/work-packet.md",
+      "produces": "work-packet"
+    },
+    {
+      "id": "quirk://templates/adr",
+      "path": "templates/adr.md",
+      "produces": "decision-record"
+    }
+  ]
+}

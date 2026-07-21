@@ -1,0 +1,30 @@
+{
+  "id": "quirk://systems/example-system",
+  "name": "<name>",
+  "version": "0.1.0",
+  "status": "proposed",
+  "owner": "<owner>",
+  "foundingProblem": "<recurring problem>",
+  "foundingClaim": "<what becomes possible>",
+  "jurisdiction": {
+    "governs": [],
+    "doesNotGovern": []
+  },
+  "principles": [],
+  "humanRights": [
+    "inspect",
+    "correct",
+    "override",
+    "revoke",
+    "forget",
+    "appeal"
+  ],
+  "relationships": {
+    "upstream": [],
+    "downstream": [],
+    "peers": [],
+    "external": []
+  },
+  "successConditions": [],
+  "dissolutionConditions": []
+}

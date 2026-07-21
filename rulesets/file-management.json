@@ -1,0 +1,45 @@
+{
+  "id": "quirk://rulesets/file-management",
+  "version": "1.0.0",
+  "status": "active",
+  "owner": "bryansayler",
+  "purpose": "Classify, route, retain, quarantine, and delete files with human authority.",
+  "rules": [
+    {
+      "id": "quirk://rules/files/no-automatic-delete",
+      "description": "Deletion requires explicit human approval.",
+      "effect": "deny",
+      "target": "file.delete",
+      "condition": {
+        "field": "authority.humanApproved",
+        "operator": "not_equals",
+        "value": true
+      },
+      "message": "Do not delete without exact human approval."
+    },
+    {
+      "id": "quirk://rules/files/quarantine-secrets",
+      "description": "Credential patterns are quarantined.",
+      "effect": "require",
+      "target": "file",
+      "condition": {
+        "field": "fileClass",
+        "operator": "equals",
+        "value": "secret-risk"
+      },
+      "message": "Move credential-bearing files into a non-versioned quarantine workflow."
+    },
+    {
+      "id": "quirk://rules/files/provenance-before-move",
+      "description": "Moves preserve original path and content hash.",
+      "effect": "require",
+      "target": "file.move",
+      "condition": {
+        "field": "provenance.exists",
+        "operator": "equals",
+        "value": true
+      },
+      "message": "Record original path, destination, reason, and hash."
+    }
+  ]
+}

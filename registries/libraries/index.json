@@ -1,0 +1,36 @@
+{
+  "id": "quirk://registries/libraries/index",
+  "version": "1.0.0",
+  "libraries": [
+    {
+      "id": "quirk://libraries/contracts",
+      "path": "packages/contracts",
+      "status": "experimental"
+    },
+    {
+      "id": "quirk://libraries/semantics",
+      "path": "packages/semantics",
+      "status": "experimental"
+    },
+    {
+      "id": "quirk://libraries/file-management",
+      "path": "packages/file-management",
+      "status": "experimental"
+    },
+    {
+      "id": "quirk://libraries/data-processing",
+      "path": "packages/data-processing",
+      "status": "experimental"
+    },
+    {
+      "id": "quirk://libraries/runtime",
+      "path": "packages/runtime",
+      "status": "experimental"
+    },
+    {
+      "id": "quirk://libraries/rulesets",
+      "path": "packages/rulesets",
+      "status": "experimental"
+    }
+  ]
+}

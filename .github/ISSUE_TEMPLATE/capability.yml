@@ -1,0 +1,35 @@
+name: Capability proposal
+description: Define a reusable outcome Quirk should reliably produce
+title: "capability: "
+labels: ["capability"]
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: Describe the result, not a preferred tool.
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inputs and outputs
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Permissions and risk
+    validations:
+      required: true
+  - type: textarea
+    id: proof
+    attributes:
+      label: Evaluation and acceptance evidence
+    validations:
+      required: true
+  - type: textarea
+    id: shadow
+    attributes:
+      label: Dangerous appearance of success
+      description: How could this look successful while failing?

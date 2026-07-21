@@ -1,0 +1,31 @@
+name: Architecture decision
+description: Propose a consequential Quirk Systems architectural decision
+title: "architecture: "
+labels: ["architecture"]
+body:
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision
+      description: What exact decision must be made?
+    validations:
+      required: true
+  - type: textarea
+    id: forces
+    attributes:
+      label: Forces and evidence
+      description: Current behavior, constraints, sources, and operational pressure.
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Viable options
+      description: Include tradeoffs, migration, reversibility, and failure behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Human authority required
+      description: What must Bryan or another named owner decide?

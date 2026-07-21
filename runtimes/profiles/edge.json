@@ -1,0 +1,27 @@
+{
+  "id": "quirk://runtimes/edge-request",
+  "name": "Edge Request",
+  "kind": "edge",
+  "status": "constrained",
+  "capabilities": [
+    "low-latency",
+    "network",
+    "stateless-validation"
+  ],
+  "prohibitions": [
+    "restricted-data",
+    "long-running-work",
+    "filesystem-write",
+    "large-model-execution"
+  ],
+  "limits": {
+    "timeoutMs": 30000,
+    "memoryMb": 128,
+    "maxConcurrency": 32
+  },
+  "authority": {
+    "network": "allowlist",
+    "filesystem": "none",
+    "secrets": "none"
+  }
+}

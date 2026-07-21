@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.quirk.systems/file-record.schema.json",
+  "title": "Quirk File Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "path",
+    "fileClass",
+    "risk",
+    "canonicalArea",
+    "retention",
+    "reasons"
+  ],
+  "properties": {
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fileClass": {
+      "enum": [
+        "code",
+        "test",
+        "configuration",
+        "schema",
+        "registry",
+        "documentation",
+        "prompt",
+        "asset",
+        "generated",
+        "secret-risk",
+        "unknown"
+      ]
+    },
+    "risk": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "canonicalArea": {
+      "type": "string"
+    },
+    "retention": {
+      "enum": [
+        "transient",
+        "project",
+        "canonical",
+        "generated"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

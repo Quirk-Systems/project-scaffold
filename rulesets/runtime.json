@@ -1,0 +1,44 @@
+{
+  "id": "quirk://rulesets/runtime",
+  "version": "1.0.0",
+  "status": "active",
+  "owner": "bryansayler",
+  "purpose": "Route work only to runtimes whose capability, authority, and resource boundaries satisfy the task.",
+  "rules": [
+    {
+      "id": "quirk://rules/runtime/no-secret-on-edge",
+      "description": "Restricted secrets are not exposed to edge profiles.",
+      "effect": "deny",
+      "target": "runtime.edge",
+      "condition": {
+        "field": "data.classification",
+        "operator": "equals",
+        "value": "restricted"
+      },
+      "message": "Route restricted work to a scoped server or worker runtime."
+    },
+    {
+      "id": "quirk://rules/runtime/checkpoint-long-work",
+      "description": "Long work must checkpoint.",
+      "effect": "require",
+      "target": "runtime.execution",
+      "condition": {
+        "field": "duration.checkpointed",
+        "operator": "equals",
+        "value": true
+      },
+      "message": "Checkpoint work that may exceed one request lifetime."
+    },
+    {
+      "id": "quirk://rules/runtime/bounded-concurrency",
+      "description": "Concurrency must be explicit.",
+      "effect": "require",
+      "target": "runtime.execution",
+      "condition": {
+        "field": "limits.maxConcurrency",
+        "operator": "exists"
+      },
+      "message": "Declare bounded concurrency and backpressure."
+    }
+  ]
+}

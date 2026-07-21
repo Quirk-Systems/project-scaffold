@@ -1,0 +1,11 @@
+{
+  "id": "quirk://registries/actions/index",
+  "version": "1.0.0",
+  "actions": [
+    {
+      "id": "quirk://actions/foundation-validation",
+      "path": ".github/actions/quirk-validate",
+      "purpose": "Reusable foundation validation in GitHub workflows."
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "quirk://rulesets/repository-foundation",
+  "version": "1.0.0",
+  "status": "active",
+  "owner": "bryansayler",
+  "purpose": "Protect main, enforce evidence-backed changes, and keep automation supply-chain behavior explicit.",
+  "rules": [
+    {
+      "id": "quirk://rules/repository/no-force-main",
+      "description": "Main may not be force-pushed.",
+      "effect": "deny",
+      "target": "git.ref",
+      "condition": {
+        "field": "operation",
+        "operator": "equals",
+        "value": "force-push"
+      },
+      "message": "Force pushes to main are prohibited."
+    },
+    {
+      "id": "quirk://rules/repository/required-checks",
+      "description": "Required checks must pass before merge.",
+      "effect": "require",
+      "target": "pull_request",
+      "condition": {
+        "field": "checks.complete",
+        "operator": "equals",
+        "value": true
+      },
+      "message": "CI, foundation validation, dependency review, and code scanning must complete."
+    },
+    {
+      "id": "quirk://rules/repository/sha-pinned-actions",
+      "description": "External actions use immutable full commit SHAs.",
+      "effect": "require",
+      "target": "workflow",
+      "condition": {
+        "field": "actions.shaPinned",
+        "operator": "equals",
+        "value": true
+      },
+      "message": "Pin external Actions to a reviewed full-length commit SHA."
+    },
+    {
+      "id": "quirk://rules/repository/no-secrets",
+      "description": "Credentials never enter Git history.",
+      "effect": "deny",
+      "target": "file",
+      "condition": {
+        "field": "classification",
+        "operator": "equals",
+        "value": "secret-risk"
+      },
+      "message": "Quarantine credential-bearing files."
+    }
+  ],
+  "github_settings": {
+    "target": "refs/heads/main",
+    "required_status_checks": [
+      "validate",
+      "e2e",
+      "security",
+      "dependency-review",
+      "analyze"
+    ],
+    "required_approving_review_count": 0,
+    "require_conversation_resolution": true,
+    "require_linear_history": true,
+    "block_force_pushes": true,
+    "block_deletions": true,
+    "note": "Raise approval count to one when a second maintainer can review without blocking solo operation."
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "quirk": "https://schema.quirk.systems/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "schema": "https://schema.org/",
+    "name": "schema:name",
+    "description": "schema:description",
+    "dependsOn": {
+      "@id": "quirk:dependsOn",
+      "@type": "@id"
+    },
+    "produces": {
+      "@id": "quirk:produces",
+      "@type": "@id"
+    },
+    "governs": {
+      "@id": "quirk:governs",
+      "@type": "@id"
+    },
+    "evaluates": {
+      "@id": "quirk:evaluates",
+      "@type": "@id"
+    },
+    "projectsTo": {
+      "@id": "quirk:projectsTo",
+      "@type": "@id"
+    },
+    "consumes": {
+      "@id": "quirk:consumes",
+      "@type": "@id"
+    }
+  },
+  "@graph": [
+    {
+      "@id": "quirk:System",
+      "@type": "schema:DefinedTerm",
+      "name": "Quirk System",
+      "description": "A governed architectural capability boundary."
+    },
+    {
+      "@id": "quirk:Asset",
+      "@type": [
+        "schema:CreativeWork",
+        "prov:Entity"
+      ],
+      "name": "Asset",
+      "description": "A reusable, versioned output with lineage and ownership."
+    },
+    {
+      "@id": "quirk:Event",
+      "@type": "prov:Entity",
+      "name": "Event",
+      "description": "An immutable record of something that occurred."
+    },
+    {
+      "@id": "quirk:Capability",
+      "@type": "schema:DefinedTerm",
+      "name": "Capability",
+      "description": "A reliable outcome with inputs, outputs, authority, implementation, and evaluation."
+    },
+    {
+      "@id": "quirk:Canonlock",
+      "@type": "quirk:System",
+      "name": "Quirk Canonlock",
+      "governs": "quirk:CanonicalMeaning",
+      "produces": "quirk:DecisionRecord"
+    },
+    {
+      "@id": "quirk:ContextDock",
+      "@type": "quirk:System",
+      "name": "Quirk Context Dock",
+      "dependsOn": "quirk:Canonlock",
+      "produces": "quirk:ContextPacket"
+    },
+    {
+      "@id": "quirk:MemoryCommons",
+      "@type": "quirk:System",
+      "name": "Quirk Memory Commons",
+      "produces": "quirk:MemoryRecord"
+    },
+    {
+      "@id": "quirk:PreferenceCore",
+      "@type": "quirk:System",
+      "name": "Quirk Preference Core",
+      "dependsOn": "quirk:MemoryCommons",
+      "produces": "quirk:PreferenceEdge"
+    },
+    {
+      "@id": "quirk:CapabilityLattice",
+      "@type": "quirk:System",
+      "name": "Quirk Capability Lattice",
+      "dependsOn": "quirk:ContextDock",
+      "produces": "quirk:ExecutionPlan"
+    },
+    {
+      "@id": "quirk:AuthorityGate",
+      "@type": "quirk:System",
+      "name": "Quirk Authority Gate",
+      "governs": "quirk:ActionPermission",
+      "produces": "quirk:AuthorityReceipt"
+    },
+    {
+      "@id": "quirk:Runway",
+      "@type": "quirk:System",
+      "name": "Quirk Runway",
+      "dependsOn": "quirk:CapabilityLattice",
+      "dependsOnAuthority": "quirk:AuthorityGate",
+      "produces": "quirk:WorkflowRun"
+    },
+    {
+      "@id": "quirk:Proofrail",
+      "@type": "quirk:System",
+      "name": "Quirk Proofrail",
+      "evaluates": "quirk:WorkflowRun",
+      "produces": "quirk:ProofBundle"
+    },
+    {
+      "@id": "quirk:AssetFoundry",
+      "@type": "quirk:System",
+      "name": "Quirk Asset Foundry",
+      "consumes": "quirk:ProofBundle",
+      "produces": "quirk:Asset"
+    },
+    {
+      "@id": "quirk:SignalLedger",
+      "@type": "quirk:System",
+      "name": "Quirk Signal Ledger",
+      "evaluates": "quirk:Asset",
+      "produces": "quirk:DecisionSignal"
+    },
+    {
+      "@id": "quirk:Interlock",
+      "@type": "quirk:System",
+      "name": "Quirk Interlock",
+      "governs": "quirk:SystemBoundary"
+    }
+  ]
+}
