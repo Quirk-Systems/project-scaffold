@@ -134,11 +134,13 @@ function doctor() {
   }
 
   const packageJson = parseJson(resolve(ROOT, "package.json"));
-  if (packageJson?.scripts?.["quirk:validate"]) pass("quirk scripts registered");
+  if (packageJson?.scripts?.["quirk:validate"])
+    pass("quirk scripts registered");
   else fail("package.json is missing quirk:validate");
 
   const ruleset = parseJson(resolve(ROOT, ".github/rulesets/main.json"));
-  if (ruleset?.enforcement === "active") pass("main ruleset desired state is active");
+  if (ruleset?.enforcement === "active")
+    pass("main ruleset desired state is active");
   else warn("main ruleset desired state is not active");
 }
 
@@ -246,12 +248,15 @@ function validateActionPins() {
 
 function validateRequiredSurfaces() {
   for (const surface of REQUIRED_SURFACES) {
-    if (!existsSync(resolve(ROOT, surface))) fail(`missing surface: ${surface}`);
+    if (!existsSync(resolve(ROOT, surface)))
+      fail(`missing surface: ${surface}`);
   }
 }
 
 function graph(outputPath) {
-  const ontology = parseJson(resolve(ROOT, "registries/ontology/quirk-core.jsonld"));
+  const ontology = parseJson(
+    resolve(ROOT, "registries/ontology/quirk-core.jsonld"),
+  );
   if (!ontology) return;
 
   const nodes = ontology["@graph"] ?? [];
@@ -394,7 +399,10 @@ function classify(target = ".") {
   }
 
   const files = statSync(absolute).isDirectory()
-    ? walk(absolute, (path) => !path.includes("/node_modules/") && !path.includes("/.git/"))
+    ? walk(
+        absolute,
+        (path) => !path.includes("/node_modules/") && !path.includes("/.git/"),
+      )
     : [absolute];
 
   const output = files.map((file) => classifyOne(relative(ROOT, file)));
@@ -440,7 +448,9 @@ function rules(subcommand) {
     return;
   }
 
-  const files = walk(resolve(ROOT, "rulesets"), (path) => path.endsWith(".json"));
+  const files = walk(resolve(ROOT, "rulesets"), (path) =>
+    path.endsWith(".json"),
+  );
   for (const file of files) {
     const ruleset = parseJson(file);
     if (!ruleset) continue;
@@ -475,7 +485,10 @@ function initSystem(name) {
   }
 
   mkdirSync(destination, { recursive: true });
-  cpSync(resolve(ROOT, "templates/system/charter.json"), join(destination, "charter.json"));
+  cpSync(
+    resolve(ROOT, "templates/system/charter.json"),
+    join(destination, "charter.json"),
+  );
   cpSync(
     resolve(ROOT, "templates/capability/manifest.json"),
     join(destination, "capability.json"),

@@ -44,10 +44,7 @@
     },
     {
       "@id": "quirk:Asset",
-      "@type": [
-        "schema:CreativeWork",
-        "prov:Entity"
-      ],
+      "@type": ["schema:CreativeWork", "prov:Entity"],
       "name": "Asset",
       "description": "A reusable, versioned output with lineage and ownership."
     },
