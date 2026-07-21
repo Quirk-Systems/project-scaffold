@@ -4,15 +4,7 @@
   "title": "Universal Quirk Entity",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "id",
-    "type",
-    "version",
-    "status",
-    "name",
-    "purpose",
-    "owner"
-  ],
+  "required": ["id", "type", "version", "status", "name", "purpose", "owner"],
   "properties": {
     "id": {
       "type": "string",

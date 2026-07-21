@@ -1,4 +1,8 @@
-export type SemanticTermStatus = "canonical" | "alias" | "deprecated" | "experimental";
+export type SemanticTermStatus =
+  | "canonical"
+  | "alias"
+  | "deprecated"
+  | "experimental";
 
 export interface SemanticTerm {
   term: string;
@@ -27,7 +31,9 @@ export function normalizeSemanticValue(value: string): string {
     .replace(/^-|-$/g, "");
 }
 
-export function createTermIndex(terms: SemanticTerm[]): Map<string, SemanticTerm> {
+export function createTermIndex(
+  terms: SemanticTerm[],
+): Map<string, SemanticTerm> {
   const index = new Map<string, SemanticTerm>();
   for (const term of terms) {
     index.set(normalizeSemanticValue(term.term), term);

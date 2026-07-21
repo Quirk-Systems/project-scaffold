@@ -12,10 +12,7 @@
     "object-storage",
     "telemetry"
   ],
-  "prohibitions": [
-    "interactive-ui",
-    "unbounded-loop"
-  ],
+  "prohibitions": ["interactive-ui", "unbounded-loop"],
   "limits": {
     "timeoutMs": 3600000,
     "memoryMb": 2048,

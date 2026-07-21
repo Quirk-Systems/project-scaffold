@@ -10,10 +10,7 @@
     "database-local",
     "interactive-debug"
   ],
-  "prohibitions": [
-    "production-secret-access",
-    "public-publish"
-  ],
+  "prohibitions": ["production-secret-access", "public-publish"],
   "limits": {
     "timeoutMs": 600000,
     "memoryMb": 4096,

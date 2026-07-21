@@ -30,19 +30,19 @@
 
 ## The eleven systems
 
-| System | Function | Method |
-| --- | --- | --- |
-| Quirk Canonlock | Canonical identity, definitions, rules, and decisions | RATIFY |
-| Quirk Context Dock | Purpose-bound context assembly | DOCK |
-| Quirk Memory Commons | Versioned observations, beliefs, corrections, and forgetting | REMEMBER |
-| Quirk Preference Core | Contextual preference ranking and user control | RANK |
-| Quirk Capability Lattice | Capability registration, qualification, and routing | QUALIFY |
-| Quirk Runway | Durable execution, checkpoints, retries, and recovery | EXECUTE |
-| Quirk Authority Gate | Permissions, approval, consent, and reversibility | AUTHORIZE |
-| Quirk Proofrail | Evidence, evaluation, confidence, and traceability | PROVE |
-| Quirk Asset Foundry | Reusable asset extraction, packaging, and lifecycle | EXTRACT |
-| Quirk Signal Ledger | Decision-bound metrics and learning | MEASURE |
-| Quirk Interlock | Explicit system integration contracts | CONNECT |
+| System                   | Function                                                     | Method    |
+| ------------------------ | ------------------------------------------------------------ | --------- |
+| Quirk Canonlock          | Canonical identity, definitions, rules, and decisions        | RATIFY    |
+| Quirk Context Dock       | Purpose-bound context assembly                               | DOCK      |
+| Quirk Memory Commons     | Versioned observations, beliefs, corrections, and forgetting | REMEMBER  |
+| Quirk Preference Core    | Contextual preference ranking and user control               | RANK      |
+| Quirk Capability Lattice | Capability registration, qualification, and routing          | QUALIFY   |
+| Quirk Runway             | Durable execution, checkpoints, retries, and recovery        | EXECUTE   |
+| Quirk Authority Gate     | Permissions, approval, consent, and reversibility            | AUTHORIZE |
+| Quirk Proofrail          | Evidence, evaluation, confidence, and traceability           | PROVE     |
+| Quirk Asset Foundry      | Reusable asset extraction, packaging, and lifecycle          | EXTRACT   |
+| Quirk Signal Ledger      | Decision-bound metrics and learning                          | MEASURE   |
+| Quirk Interlock          | Explicit system integration contracts                        | CONNECT   |
 
 ## Quickstart success criteria
 

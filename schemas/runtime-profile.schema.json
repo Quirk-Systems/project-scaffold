@@ -23,20 +23,10 @@
       "type": "string"
     },
     "kind": {
-      "enum": [
-        "local",
-        "ci",
-        "server",
-        "worker",
-        "edge"
-      ]
+      "enum": ["local", "ci", "server", "worker", "edge"]
     },
     "status": {
-      "enum": [
-        "experimental",
-        "active",
-        "constrained"
-      ]
+      "enum": ["experimental", "active", "constrained"]
     },
     "capabilities": {
       "type": "array",
@@ -54,11 +44,7 @@
     },
     "limits": {
       "type": "object",
-      "required": [
-        "timeoutMs",
-        "memoryMb",
-        "maxConcurrency"
-      ],
+      "required": ["timeoutMs", "memoryMb", "maxConcurrency"],
       "properties": {
         "timeoutMs": {
           "type": "integer",
@@ -76,31 +62,16 @@
     },
     "authority": {
       "type": "object",
-      "required": [
-        "network",
-        "filesystem",
-        "secrets"
-      ],
+      "required": ["network", "filesystem", "secrets"],
       "properties": {
         "network": {
-          "enum": [
-            "none",
-            "allowlist",
-            "open"
-          ]
+          "enum": ["none", "allowlist", "open"]
         },
         "filesystem": {
-          "enum": [
-            "none",
-            "read",
-            "read-write"
-          ]
+          "enum": ["none", "read", "read-write"]
         },
         "secrets": {
-          "enum": [
-            "none",
-            "scoped"
-          ]
+          "enum": ["none", "scoped"]
         }
       }
     }

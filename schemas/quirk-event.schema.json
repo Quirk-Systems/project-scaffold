@@ -31,17 +31,10 @@
     },
     "actor": {
       "type": "object",
-      "required": [
-        "type",
-        "id"
-      ],
+      "required": ["type", "id"],
       "properties": {
         "type": {
-          "enum": [
-            "human",
-            "agent",
-            "service"
-          ]
+          "enum": ["human", "agent", "service"]
         },
         "id": {
           "type": "string",

@@ -3,11 +3,7 @@
   "name": "Edge Request",
   "kind": "edge",
   "status": "constrained",
-  "capabilities": [
-    "low-latency",
-    "network",
-    "stateless-validation"
-  ],
+  "capabilities": ["low-latency", "network", "stateless-validation"],
   "prohibitions": [
     "restricted-data",
     "long-running-work",

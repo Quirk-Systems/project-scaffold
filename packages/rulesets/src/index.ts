@@ -22,11 +22,7 @@ export interface RuleResult {
 
 function readPath(input: unknown, path: string): unknown {
   return path.split(".").reduce<unknown>((current, segment) => {
-    if (
-      current !== null &&
-      typeof current === "object" &&
-      segment in current
-    ) {
+    if (current !== null && typeof current === "object" && segment in current) {
       return (current as Record<string, unknown>)[segment];
     }
     return undefined;
@@ -53,8 +49,7 @@ export function evaluateRule(rule: QuirkRule, input: unknown): RuleResult {
       break;
   }
 
-  const passed =
-    rule.effect === "deny" ? !conditionMatches : conditionMatches;
+  const passed = rule.effect === "deny" ? !conditionMatches : conditionMatches;
 
   return {
     ruleId: rule.id,

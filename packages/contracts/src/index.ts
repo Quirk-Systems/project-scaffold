@@ -61,7 +61,12 @@ export interface QuirkEvent<TPayload = unknown> {
 
 export interface AuthorityEnvelope {
   risk: QuirkRisk;
-  approvalState: "not_required" | "requested" | "approved" | "denied" | "expired";
+  approvalState:
+    | "not_required"
+    | "requested"
+    | "approved"
+    | "denied"
+    | "expired";
   approvalId?: string;
   actionHash?: string;
 }

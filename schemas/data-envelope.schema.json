@@ -44,21 +44,12 @@
       "type": "string"
     },
     "classification": {
-      "enum": [
-        "public",
-        "internal",
-        "personal",
-        "restricted"
-      ]
+      "enum": ["public", "internal", "personal", "restricted"]
     },
     "payload": {},
     "provenance": {
       "type": "object",
-      "required": [
-        "createdAt",
-        "actorId",
-        "sourceRefs"
-      ],
+      "required": ["createdAt", "actorId", "sourceRefs"],
       "properties": {
         "createdAt": {
           "type": "string",

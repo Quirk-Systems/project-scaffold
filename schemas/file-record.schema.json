@@ -33,23 +33,13 @@
       ]
     },
     "risk": {
-      "enum": [
-        "low",
-        "medium",
-        "high",
-        "critical"
-      ]
+      "enum": ["low", "medium", "high", "critical"]
     },
     "canonicalArea": {
       "type": "string"
     },
     "retention": {
-      "enum": [
-        "transient",
-        "project",
-        "canonical",
-        "generated"
-      ]
+      "enum": ["transient", "project", "canonical", "generated"]
     },
     "reasons": {
       "type": "array",

@@ -4,23 +4,14 @@
   "version": "1.0.0",
   "status": "active",
   "outcome": "Detect missing foundation surfaces, invalid declarative files, duplicate identifiers, deprecated semantics, and unpinned GitHub Actions.",
-  "inputs": [
-    "repository-root"
-  ],
-  "outputs": [
-    "validation-report",
-    "exit-code"
-  ],
+  "inputs": ["repository-root"],
+  "outputs": ["validation-report", "exit-code"],
   "authority": {
     "maximumRisk": "low",
     "writes": false
   },
   "quality": {
     "minimumScore": 1.0,
-    "evidence": [
-      "CLI exit code",
-      "diagnostic list",
-      "CI run"
-    ]
+    "evidence": ["CLI exit code", "diagnostic list", "CI run"]
   }
 }

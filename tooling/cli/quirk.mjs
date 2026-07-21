@@ -33,7 +33,8 @@ const DECLARATIVE_ROOTS = [
   "templates",
 ];
 const QUIRK_ID = /^quirk:\/\/[a-z0-9][a-z0-9/_-]*$/i;
-const FULL_SHA_ACTION = /^\s*(?:-\s*)?uses:\s*[^./][^@]*@[0-9a-f]{40}(?:\s+#.*)?$/i;
+const FULL_SHA_ACTION =
+  /^\s*(?:-\s*)?uses:\s*[^./][^@]*@[0-9a-f]{40}(?:\s+#.*)?$/i;
 
 function fail(message) {
   console.error(`✗ ${message}`);
@@ -55,7 +56,8 @@ function walk(path, predicate = () => true) {
     const full = join(path, name);
     const stat = statSync(full);
     if (stat.isDirectory()) {
-      if (name === "node_modules" || name === ".git" || name === ".next") continue;
+      if (name === "node_modules" || name === ".git" || name === ".next")
+        continue;
       entries.push(...walk(full, predicate));
     } else if (predicate(full)) {
       entries.push(full);
@@ -84,7 +86,11 @@ function collectIds(value, source, ids, diagnostics) {
   if (!value || typeof value !== "object") return;
 
   for (const [key, child] of Object.entries(value)) {
-    if ((key === "id" || key === "@id") && typeof child === "string" && child.startsWith("quirk:")) {
+    if (
+      (key === "id" || key === "@id") &&
+      typeof child === "string" &&
+      child.startsWith("quirk:")
+    ) {
       const normalized = child.startsWith("quirk://")
         ? child
         : child.replace(/^quirk:/, "quirk://ontology/");
@@ -92,7 +98,9 @@ function collectIds(value, source, ids, diagnostics) {
         diagnostics.push(`${source}: invalid Quirk identifier ${child}`);
       }
       if (key === "id" && ids.has(normalized)) {
-        diagnostics.push(`${source}: duplicate identifier ${child}; first seen in ${ids.get(normalized)}`);
+        diagnostics.push(
+          `${source}: duplicate identifier ${child}; first seen in ${ids.get(normalized)}`,
+        );
       } else if (key === "id") {
         ids.set(normalized, source);
       }
@@ -108,7 +116,11 @@ function validateActions(diagnostics) {
   for (const path of workflowFiles) {
     const lines = readFileSync(path, "utf8").split(/\r?\n/);
     lines.forEach((line, index) => {
-      if (!line.trim().startsWith("uses:") && !line.trim().startsWith("- uses:")) return;
+      if (
+        !line.trim().startsWith("uses:") &&
+        !line.trim().startsWith("- uses:")
+      )
+        return;
       if (line.includes("uses: ./")) return;
       if (!FULL_SHA_ACTION.test(line)) {
         diagnostics.push(
@@ -126,10 +138,13 @@ function validateTerms(diagnostics) {
   const canonical = new Set();
   for (const term of registry.terms ?? []) {
     const key = String(term.term).toLowerCase();
-    if (canonical.has(key)) diagnostics.push(`Duplicate semantic term: ${term.term}`);
+    if (canonical.has(key))
+      diagnostics.push(`Duplicate semantic term: ${term.term}`);
     canonical.add(key);
     if (term.status === "deprecated" && !term.replacement) {
-      diagnostics.push(`Deprecated semantic term lacks replacement: ${term.term}`);
+      diagnostics.push(
+        `Deprecated semantic term lacks replacement: ${term.term}`,
+      );
     }
   }
 }
@@ -166,7 +181,9 @@ function validate() {
 
   const deprecatedMatches = [];
   for (const path of [
-    ...walk(resolve(ROOT, "registries"), (p) => [".json", ".jsonld"].includes(extname(p))),
+    ...walk(resolve(ROOT, "registries"), (p) =>
+      [".json", ".jsonld"].includes(extname(p)),
+    ),
     ...walk(resolve(ROOT, "rulesets"), (p) => extname(p) === ".json"),
   ]) {
     const text = readFileSync(path, "utf8");
@@ -175,7 +192,9 @@ function validate() {
     }
   }
   if (deprecatedMatches.length > 0) {
-    warnings.push(`Potential deprecated semantic key “artifact” in: ${deprecatedMatches.join(", ")}`);
+    warnings.push(
+      `Potential deprecated semantic key “artifact” in: ${deprecatedMatches.join(", ")}`,
+    );
   }
 
   if (diagnostics.length > 0) {
@@ -198,7 +217,9 @@ function doctor() {
   console.log(`Node: ${process.version}`);
   console.log(`Platform: ${process.platform} ${process.arch}`);
   for (const directory of REQUIRED_DIRECTORIES) {
-    console.log(`${existsSync(resolve(ROOT, directory)) ? "✓" : "✗"} ${directory}`);
+    console.log(
+      `${existsSync(resolve(ROOT, directory)) ? "✓" : "✗"} ${directory}`,
+    );
   }
   console.log(`\nDeclarative files: ${declarativeFiles().length}`);
 }
@@ -208,7 +229,14 @@ function graph(outputPath) {
   const ontology = readJson(ontologyPath);
   const graph = ontology["@graph"] ?? [];
   const nodes = graph.filter((item) => item["@type"] === "quirk:System");
-  const relations = ["dependsOn", "produces", "consumes", "governs", "evaluates", "projectsTo"];
+  const relations = [
+    "dependsOn",
+    "produces",
+    "consumes",
+    "governs",
+    "evaluates",
+    "projectsTo",
+  ];
   const lines = ["flowchart LR"];
   const nodeIds = new Map();
 
@@ -253,22 +281,45 @@ function classifyOne(path) {
   const reasons = [];
 
   const extensionMap = {
-    ".ts": "code", ".tsx": "code", ".js": "code", ".mjs": "code",
-    ".py": "code", ".php": "code", ".sql": "code",
-    ".json": "configuration", ".jsonld": "registry",
-    ".yml": "configuration", ".yaml": "configuration", ".toml": "configuration",
-    ".md": "documentation", ".mdx": "documentation",
-    ".png": "asset", ".jpg": "asset", ".jpeg": "asset", ".webp": "asset",
-    ".svg": "asset", ".mp3": "asset", ".wav": "asset", ".mp4": "asset",
+    ".ts": "code",
+    ".tsx": "code",
+    ".js": "code",
+    ".mjs": "code",
+    ".py": "code",
+    ".php": "code",
+    ".sql": "code",
+    ".json": "configuration",
+    ".jsonld": "registry",
+    ".yml": "configuration",
+    ".yaml": "configuration",
+    ".toml": "configuration",
+    ".md": "documentation",
+    ".mdx": "documentation",
+    ".png": "asset",
+    ".jpg": "asset",
+    ".jpeg": "asset",
+    ".webp": "asset",
+    ".svg": "asset",
+    ".mp3": "asset",
+    ".wav": "asset",
+    ".mp4": "asset",
   };
   fileClass = extensionMap[extension] ?? "unknown";
 
   if (/(\.test|\.spec)\.[^.]+$/.test(lower) || lower.includes("/tests/")) {
-    fileClass = "test"; canonicalArea = "tests"; reasons.push("test naming");
+    fileClass = "test";
+    canonicalArea = "tests";
+    reasons.push("test naming");
   } else if (lower.includes("/schemas/") || lower.endsWith(".schema.json")) {
-    fileClass = "schema"; canonicalArea = "schemas"; retention = "canonical"; reasons.push("schema path");
+    fileClass = "schema";
+    canonicalArea = "schemas";
+    retention = "canonical";
+    reasons.push("schema path");
   } else if (lower.includes("/registries/")) {
-    fileClass = "registry"; canonicalArea = "registries"; retention = "canonical"; reasons.push("registry path");
+    fileClass = "registry";
+    canonicalArea = "registries";
+    retention = "canonical";
+    reasons.push("registry path");
   } else if (lower.includes("/docs/") || fileClass === "documentation") {
     canonicalArea = "docs";
   } else if (lower.includes("/packages/")) {
@@ -278,13 +329,25 @@ function classifyOne(path) {
   }
 
   if (/(^|\/)\.env($|\.)/.test(lower) || /\.(pem|p12|key)$/.test(lower)) {
-    fileClass = "secret-risk"; risk = "critical"; canonicalArea = "quarantine"; retention = "transient"; reasons.push("credential pattern");
+    fileClass = "secret-risk";
+    risk = "critical";
+    canonicalArea = "quarantine";
+    retention = "transient";
+    reasons.push("credential pattern");
   } else if (fileClass === "configuration" || fileClass === "registry") {
     risk = "medium";
   }
 
   if (reasons.length === 0) reasons.push(`extension ${extension || "none"}`);
-  return { path: normalized, extension, fileClass, risk, canonicalArea, retention, reasons };
+  return {
+    path: normalized,
+    extension,
+    fileClass,
+    risk,
+    canonicalArea,
+    retention,
+    reasons,
+  };
 }
 
 function classify(target = ".") {
@@ -293,11 +356,11 @@ function classify(target = ".") {
     fail(`Path does not exist: ${target}`);
     return;
   }
-  const paths = statSync(absolute).isDirectory()
-    ? walk(absolute)
-    : [absolute];
+  const paths = statSync(absolute).isDirectory() ? walk(absolute) : [absolute];
   const records = paths.map((path) => classifyOne(relative(ROOT, path)));
-  console.log(JSON.stringify({ root: target, count: records.length, records }, null, 2));
+  console.log(
+    JSON.stringify({ root: target, count: records.length, records }, null, 2),
+  );
 }
 
 function runtimeList() {
@@ -306,7 +369,9 @@ function runtimeList() {
     .map(readJson)
     .sort((a, b) => a.name.localeCompare(b.name));
   for (const profile of profiles) {
-    console.log(`${profile.id}\t${profile.kind}\t${profile.status}\t${profile.name}`);
+    console.log(
+      `${profile.id}\t${profile.kind}\t${profile.status}\t${profile.name}`,
+    );
   }
 }
 
@@ -316,16 +381,27 @@ function semanticsInspect(term) {
     return;
   }
   const registry = readJson(resolve(ROOT, "registries/semantics/terms.json"));
-  const normalized = term.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const normalized = term
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-");
   const matched = (registry.terms ?? []).find((item) => {
     const values = [item.term, item.slug, ...(item.aliases ?? [])];
     return values.some(
-      (value) => String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") === normalized,
+      (value) =>
+        String(value)
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-") === normalized,
     );
   });
   console.log(
     JSON.stringify(
-      matched ?? { term, status: "unknown", message: "No canonical semantic term registered." },
+      matched ?? {
+        term,
+        status: "unknown",
+        message: "No canonical semantic term registered.",
+      },
       null,
       2,
     ),
@@ -345,7 +421,10 @@ function initSystem(slug) {
   mkdirSync(directory, { recursive: true });
   const charter = {
     id: `quirk://systems/${slug}`,
-    name: slug.split("-").map((part) => part[0].toUpperCase() + part.slice(1)).join(" "),
+    name: slug
+      .split("-")
+      .map((part) => part[0].toUpperCase() + part.slice(1))
+      .join(" "),
     version: "0.1.0",
     status: "proposed",
     owner: "bryansayler",
@@ -353,12 +432,22 @@ function initSystem(slug) {
     foundingClaim: "",
     jurisdiction: { governs: [], doesNotGovern: [] },
     principles: [],
-    humanRights: ["inspect", "correct", "override", "revoke", "forget", "appeal"],
+    humanRights: [
+      "inspect",
+      "correct",
+      "override",
+      "revoke",
+      "forget",
+      "appeal",
+    ],
     relationships: { upstream: [], downstream: [], peers: [], external: [] },
     successConditions: [],
     dissolutionConditions: [],
   };
-  writeFileSync(join(directory, "charter.json"), `${JSON.stringify(charter, null, 2)}\n`);
+  writeFileSync(
+    join(directory, "charter.json"),
+    `${JSON.stringify(charter, null, 2)}\n`,
+  );
   writeFileSync(
     join(directory, "README.md"),
     `# ${charter.name}\n\nStatus: proposed\n\nComplete the charter before implementation.\n`,
