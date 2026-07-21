@@ -34,14 +34,13 @@ import {
 } from "node:fs";
 import { join, dirname } from "node:path";
 import { spawnSync } from "node:child_process";
-
-type Advisory = {
-  id: number;
-  url: string;
-  title: string;
-  severity: "critical" | "high" | "moderate" | "low";
-  vulnerable_versions: string;
-};
+import {
+  assessVerificationEvidence,
+  parseAuditOutput,
+  type AuditAdvisory as Advisory,
+  type AuditMap,
+  type DependencyManifest,
+} from "./deps-audit-verification";
 
 type OutdatedRow = {
   name: string;
@@ -98,13 +97,45 @@ const PEER_COUPLED = new Set([
   "next-auth",
 ]);
 
+type CommandResult = {
+  status: number | null;
+  stdout: string;
+  stderr: string;
+  error: string | null;
+};
+
+function runCommand(
+  cmd: string[],
+  cwd?: string,
+  timeout?: number,
+): CommandResult {
+  const proc = spawnSync(cmd[0], cmd.slice(1), {
+    encoding: "utf8",
+    cwd,
+    timeout,
+  });
+  return {
+    status: proc.status,
+    stdout: proc.stdout ?? "",
+    stderr: proc.stderr ?? "",
+    error: proc.error?.message ?? null,
+  };
+}
+
 function run(cmd: string[], cwd?: string): string {
-  const proc = spawnSync(cmd[0], cmd.slice(1), { encoding: "utf8", cwd });
-  return proc.stdout ?? "";
+  return runCommand(cmd, cwd).stdout;
+}
+
+function commandSucceeded(result: CommandResult): boolean {
+  return result.error === null && result.status === 0;
+}
+
+function commandFailure(command: string, result: CommandResult): string {
+  const detail = result.error || result.stderr.trim() || result.stdout.trim();
+  return `${command} failed (exit ${result.status ?? "unknown"})${detail ? `: ${detail}` : ""}`;
 }
 
 function stripAnsi(s: string): string {
-  // eslint-disable-next-line no-control-regex
   return s.replace(/\[[0-9;]*m/g, "");
 }
 
@@ -143,18 +174,20 @@ function parseOutdated(): OutdatedRow[] {
   return rows;
 }
 
-function parseAudit(prodOnly: boolean): Record<string, Advisory[]> {
+function parseAudit(prodOnly: boolean): AuditMap {
   const cmd = prodOnly
     ? ["bun", "audit", "--prod", "--json"]
     : ["bun", "audit", "--json"];
-  const raw = stripAnsi(run(cmd));
-  const jsonStart = raw.indexOf("{");
-  if (jsonStart === -1) return {};
-  try {
-    return JSON.parse(raw.slice(jsonStart)) as Record<string, Advisory[]>;
-  } catch {
-    return {};
+  const result = runCommand(cmd);
+  if (result.error || result.status === null) {
+    throw new Error(commandFailure(cmd.join(" "), result));
   }
+
+  const parsed = parseAuditOutput(result.stdout);
+  if (!parsed.ok) {
+    throw new Error(`${cmd.join(" ")} failed closed: ${parsed.error}`);
+  }
+  return parsed.audit;
 }
 
 function loadPolicy(): Record<string, PolicyRule> {
@@ -218,67 +251,156 @@ type VerifyResult = {
   verdict: "verified" | "failed";
   validate_passed: boolean;
   advisories_before: number;
-  advisories_after: number;
+  advisories_after: number | null;
   cleared_advisories: string[]; // package names whose advisories vanished
   lockfile_stat: string;
+  unexpected_manifest_changes: string[];
+  failure_reasons: string[];
+  cleanup: {
+    attempted: boolean;
+    removed: boolean;
+    error: string | null;
+  };
 };
 
 /**
  * --verify mode: apply `bun update` in a throwaway git worktree, run the
  * full validate gate there, and measure the audit delta. The real working
- * tree is never touched; the worktree is removed in all outcomes. An
+ * tree is never touched; cleanup is attempted and reported in all outcomes. An
  * advisory counts as verified-fixed only if it is present before and
  * absent after — measured, not inferred.
  */
-function runVerification(
-  auditBefore: Record<string, Advisory[]>,
-): VerifyResult {
+function runVerification(auditBefore: AuditMap): VerifyResult {
   const dir = `/tmp/deps-verify-${process.pid}`;
   const log = (msg: string) => console.error(`[verify] ${msg}`);
+  const result: VerifyResult = {
+    attempted: true,
+    verdict: "failed",
+    validate_passed: false,
+    advisories_before: Object.values(auditBefore).flat().length,
+    advisories_after: null,
+    cleared_advisories: [],
+    lockfile_stat: "(unavailable)",
+    unexpected_manifest_changes: [],
+    failure_reasons: [],
+    cleanup: {
+      attempted: false,
+      removed: false,
+      error: null,
+    },
+  };
+
   log(`creating worktree at ${dir}`);
-  run(["git", "worktree", "add", "--detach", dir, "HEAD"]);
+  const worktree = runCommand([
+    "git",
+    "worktree",
+    "add",
+    "--detach",
+    dir,
+    "HEAD",
+  ]);
+  if (!commandSucceeded(worktree)) {
+    const failure = commandFailure("git worktree add", worktree);
+    result.failure_reasons.push(failure);
+    log(failure);
+    log("worktree was not created; cleanup not attempted");
+    return result;
+  }
+
   try {
+    const manifestBefore = JSON.parse(
+      readFileSync(join(dir, "package.json"), "utf8"),
+    ) as DependencyManifest;
+
     log("applying bun update in worktree");
-    run(["bun", "update"], dir);
+    const update = runCommand(["bun", "update"], dir);
+    if (!commandSucceeded(update)) {
+      const failure = commandFailure("bun update", update);
+      result.failure_reasons.push(failure);
+      log(failure);
+      return result;
+    }
+
+    const manifestAfter = JSON.parse(
+      readFileSync(join(dir, "package.json"), "utf8"),
+    ) as DependencyManifest;
 
     log("auditing worktree");
-    const rawAfter = stripAnsi(run(["bun", "audit", "--json"], dir));
-    const jsonStart = rawAfter.indexOf("{");
-    const auditAfter: Record<string, Advisory[]> =
-      jsonStart === -1 ? {} : JSON.parse(rawAfter.slice(jsonStart));
+    const audit = runCommand(["bun", "audit", "--json"], dir);
+    const auditError =
+      audit.error || audit.status === null
+        ? commandFailure("bun audit --json", audit)
+        : null;
 
     log("running validate gate in worktree (lint+types+tests+build)");
-    const validate = spawnSync("bun", ["run", "validate"], {
-      cwd: dir,
-      encoding: "utf8",
-      timeout: 15 * 60 * 1000,
-    });
-    const validatePassed = validate.status === 0;
-    if (!validatePassed) {
+    const validate = runCommand(
+      ["bun", "run", "validate"],
+      dir,
+      15 * 60 * 1000,
+    );
+    result.validate_passed = commandSucceeded(validate);
+    if (!result.validate_passed) {
       log(`validate FAILED (exit ${validate.status})`);
       log((validate.stdout ?? "").split("\n").slice(-12).join("\n"));
     }
 
-    const before = Object.values(auditBefore).flat().length;
-    const after = Object.values(auditAfter).flat().length;
-    const cleared = Object.keys(auditBefore).filter((k) => !auditAfter[k]);
-    const lockStat = run(
+    const assessment = assessVerificationEvidence({
+      updateSucceeded: true,
+      auditError,
+      auditOutput: audit.stdout,
+      validatePassed: result.validate_passed,
+      manifestBefore,
+      manifestAfter,
+    });
+    result.verdict = assessment.verdict;
+    result.unexpected_manifest_changes = assessment.unexpectedManifestChanges;
+    result.failure_reasons.push(...assessment.failures);
+
+    if (assessment.auditAfter) {
+      result.advisories_after = Object.values(
+        assessment.auditAfter,
+      ).flat().length;
+      result.cleared_advisories = Object.keys(auditBefore).filter(
+        (dependency) => !assessment.auditAfter?.[dependency],
+      );
+    }
+
+    const lockStat = runCommand(
       ["git", "diff", "--stat", "package.json", "bun.lock"],
       dir,
-    ).trim();
+    );
+    if (commandSucceeded(lockStat)) {
+      result.lockfile_stat = lockStat.stdout.trim() || "(no changes)";
+    } else {
+      const failure = commandFailure("git diff --stat", lockStat);
+      result.failure_reasons.push(failure);
+      result.verdict = "failed";
+    }
 
-    return {
-      attempted: true,
-      verdict: validatePassed ? "verified" : "failed",
-      validate_passed: validatePassed,
-      advisories_before: before,
-      advisories_after: after,
-      cleared_advisories: cleared,
-      lockfile_stat: lockStat || "(no changes)",
-    };
+    for (const failure of result.failure_reasons) {
+      log(failure);
+    }
+
+    return result;
+  } catch (error) {
+    const failure = `verification crashed: ${error instanceof Error ? error.message : String(error)}`;
+    result.failure_reasons.push(failure);
+    result.verdict = "failed";
+    log(failure);
+    return result;
   } finally {
-    run(["git", "worktree", "remove", "--force", dir]);
-    log("worktree removed");
+    result.cleanup.attempted = true;
+    const cleanup = runCommand(["git", "worktree", "remove", "--force", dir]);
+    if (commandSucceeded(cleanup)) {
+      result.cleanup.removed = true;
+      log("worktree removed");
+    } else {
+      const failure = commandFailure("git worktree remove", cleanup);
+      result.cleanup.error = failure;
+      result.failure_reasons.push(failure);
+      result.verdict = "failed";
+      log(`cleanup FAILED: ${failure}`);
+    }
   }
 }
 
@@ -522,8 +644,23 @@ function main() {
         "Validate gate": verify.validate_passed
           ? "lint + type-check + tests + build all green after `bun update`"
           : "FAILED — do not apply this batch without investigation",
-        "Advisory delta": `${verify.advisories_before} → ${verify.advisories_after}${verify.cleared_advisories.length > 0 ? ` (cleared: ${verify.cleared_advisories.join(", ")})` : ""}`,
+        "Advisory delta":
+          verify.advisories_after === null
+            ? `${verify.advisories_before} → unknown (audit output rejected)`
+            : `${verify.advisories_before} → ${verify.advisories_after}${verify.cleared_advisories.length > 0 ? ` (cleared: ${verify.cleared_advisories.join(", ")})` : ""}`,
         "Manifest/lockfile change": verify.lockfile_stat,
+        "Scope gate":
+          verify.unexpected_manifest_changes.length === 0
+            ? "passed — no dependency additions, removals, or compatibility-line crossings"
+            : `FAILED — ${verify.unexpected_manifest_changes.join("; ")}`,
+        Cleanup: verify.cleanup.removed
+          ? "worktree removed"
+          : verify.cleanup.attempted
+            ? `FAILED — ${verify.cleanup.error ?? "unknown cleanup error"}`
+            : "not attempted because worktree creation failed",
+        ...(verify.failure_reasons.length > 0
+          ? { Failures: verify.failure_reasons.join("; ") }
+          : {}),
       }),
       "",
     );
@@ -579,7 +716,9 @@ function main() {
 
   // Policy-as-code exit: after the report is fully written, so a failing
   // run still produces the issue/artifact it exists to produce.
-  if (failing.length > 0) {
+  if (verify?.verdict === "failed") {
+    process.exitCode = 3;
+  } else if (failing.length > 0) {
     process.exitCode = 2;
   }
 }
