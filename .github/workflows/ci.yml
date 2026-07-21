@@ -56,10 +56,17 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
-      - name: Generate DOMPurify remediation patch
+      - name: Generate DOMPurify override patch
         run: |
           set +e
-          bun update dompurify > dependency-update.txt 2>&1
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from "node:fs";
+          const path = "package.json";
+          const manifest = JSON.parse(readFileSync(path, "utf8"));
+          manifest.overrides = { ...manifest.overrides, dompurify: "3.4.12" };
+          writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
+          NODE
+          bun install > dependency-update.txt 2>&1
           update_status=$?
           bun audit --prod > dependency-audit-after.txt 2>&1
           audit_status=$?
