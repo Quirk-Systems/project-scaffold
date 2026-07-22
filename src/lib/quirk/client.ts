@@ -13,6 +13,7 @@ import type {
 import type { ProposedAnnotation } from "@/lib/quirk/agents/types";
 import type { OfferWithAsset } from "@/lib/quirk/offers";
 import type { GoldilocksReading } from "@/lib/quirk/goldilocks";
+import type { AssetSearchHit } from "@/lib/db/search";
 
 export type {
   QuirkAsset,
@@ -32,6 +33,13 @@ export type {
 export type AssetSummary = QuirkAsset & {
   versionCount: number;
   annotationCount: number;
+};
+
+export type AssetSearchFilters = {
+  text?: string;
+  tags?: string[];
+  assetTypes?: string[];
+  statuses?: string[];
 };
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
@@ -56,6 +64,31 @@ export const quirkApi = {
       "/api/assets/capture",
       { method: "POST", body: JSON.stringify(body) },
     ),
+  uploadAsset: async (form: FormData) => {
+    const res = await fetch("/api/assets/upload", {
+      method: "POST",
+      body: form,
+    });
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new Error(body.error ?? `Request failed (${res.status})`);
+    }
+    return res.json() as Promise<{
+      asset: QuirkAsset;
+      version: QuirkAssetVersion;
+      url: string;
+    }>;
+  },
+  searchAssets: (filters: AssetSearchFilters) => {
+    const params = new URLSearchParams();
+    if (filters.text) params.set("q", filters.text);
+    filters.tags?.forEach((tag) => params.append("tag", tag));
+    filters.assetTypes?.forEach((type) => params.append("type", type));
+    filters.statuses?.forEach((status) => params.append("status", status));
+    return request<{ hits: AssetSearchHit[] }>(
+      `/api/assets/search?${params.toString()}`,
+    );
+  },
   getAsset: (id: string) =>
     request<{
       asset: QuirkAsset;
