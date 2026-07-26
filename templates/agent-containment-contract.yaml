@@ -52,7 +52,7 @@ tool_surface:
 environment:
   # Explicit allowlist entries are checked before a wildcard domain block.
   network_allowlist:
-    - github.com/Quirk-Systems/project-scaffold
+    - github.com
   blocked_domains:
     - "*"
   credential_isolation: Use an ephemeral token scoped to read-only repository access.

@@ -162,9 +162,11 @@
       ],
       "properties": {
         "network_allowlist": {
+          "description": "Network domains the agent may access.",
           "$ref": "#/$defs/stringArray"
         },
         "blocked_domains": {
+          "description": "Network domains to deny. Explicit allowlist domains are checked before a wildcard block.",
           "$ref": "#/$defs/stringArray"
         },
         "credential_isolation": {

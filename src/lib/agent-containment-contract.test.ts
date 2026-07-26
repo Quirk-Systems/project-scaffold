@@ -44,6 +44,14 @@ describe("agent containment contract schema", () => {
     contract.tool_surface.destructive_action_policy = "approval_required";
 
     expect(validate(contract)).toBe(false);
+    expect(validate.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          instancePath: "/tool_surface/destructive_action_policy",
+          keyword: "const",
+        }),
+      ]),
+    );
   });
 
   it("fails closed when out-of-scope actions are not denied", () => {
@@ -53,6 +61,14 @@ describe("agent containment contract schema", () => {
     contract.tool_surface.out_of_scope_action_policy = "approval_required";
 
     expect(validate(contract)).toBe(false);
+    expect(validate.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          instancePath: "/tool_surface/out_of_scope_action_policy",
+          keyword: "const",
+        }),
+      ]),
+    );
   });
 
   it("rejects production credentials in a sandbox", () => {
