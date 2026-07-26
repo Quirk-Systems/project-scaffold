@@ -17,7 +17,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       capture_pageview: "history_change",
       capture_pageleave: true,
     });
-    // Runtime config is fixed for the lifetime of the root client provider.
+    // Runtime config is fixed for the browser session and refreshes on reload.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
