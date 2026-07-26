@@ -93,9 +93,7 @@ export function normalizeSearchParams(
   const text = params.text?.trim() || undefined;
 
   const tags = params.tags
-    ? dedupe(
-        params.tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean),
-      )
+    ? dedupe(params.tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))
     : undefined;
 
   const minSimilarity =

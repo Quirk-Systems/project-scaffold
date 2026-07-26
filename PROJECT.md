@@ -27,40 +27,51 @@ Each phase has artifacts. Don't skip the artifacts — they compress future deci
 ---
 
 ## Problem Statement
+
 [One paragraph. What hurts, who hurts, how often, how much.]
 
 ## Goals
+
 - [ ] Goal 1 (measurable)
 - [ ] Goal 2 (measurable)
 
 ## Non-Goals (explicit)
+
 - Not solving X in this version
 - Not supporting Y use case
 
 ## User Stories
+
 - As a [user type], I want [action] so that [outcome]
 - As a [user type], I want [action] so that [outcome]
 
 ## Acceptance Criteria
+
 ### Scenario: [name]
+
 - Given [context]
 - When [action]
 - Then [outcome]
 
 ## Technical Approach
+
 [2-3 paragraphs on the approach. Key decisions. Alternatives considered.]
 
 ## Schema Changes
+
 [Any DB schema changes. Migration plan.]
 
 ## API Changes
+
 [New or modified API endpoints. Breaking changes.]
 
 ## Open Questions
+
 - [ ] Question 1 — owner: [name], due: [date]
 - [ ] Question 2 — owner: [name], due: [date]
 
 ## Success Metrics
+
 - [Metric]: [baseline] → [target] by [date]
 ```
 
@@ -77,33 +88,42 @@ Each phase has artifacts. Don't skip the artifacts — they compress future deci
 ---
 
 ## Context
+
 [What situation forced this decision? What constraints exist?]
 
 ## Decision
+
 [What we decided to do. One clear statement.]
 
 ## Options Considered
 
 ### Option A: [name]
+
 **Pros:** ...
 **Cons:** ...
 
 ### Option B: [name]
+
 **Pros:** ...
 **Cons:** ...
 
 ### Option C (Chosen): [name]
+
 **Pros:** ...
 **Cons:** ...
 
 ## Consequences
+
 **Positive:**
+
 - [outcome]
 
 **Negative / Tradeoffs:**
+
 - [tradeoff we accept]
 
 ## References
+
 - [link to relevant docs, RFCs, issues]
 ```
 
@@ -123,34 +143,43 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 ---
 
 ## Summary
+
 [One paragraph. What are you proposing and why?]
 
 ## Motivation
+
 [Why does this need to change? What's broken or missing?]
 
 ## Detailed Design
 
 ### Overview
+
 [High-level description]
 
 ### API Design
+
 [Code examples of new APIs / interfaces]
 
 ### Implementation Plan
+
 1. Phase 1: [description]
 2. Phase 2: [description]
 3. Phase 3: [description]
 
 ### Migration Plan
+
 [If breaking: how do existing users migrate?]
 
 ## Drawbacks
+
 [What are the downsides of this approach?]
 
 ## Alternatives
+
 [What else was considered? Why rejected?]
 
 ## Unresolved Questions
+
 [Things to figure out during implementation]
 ```
 
@@ -159,6 +188,7 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 ## New Project Checklist
 
 ### Day 0 — Setup
+
 - [ ] Clone scaffold: `git clone <repo> my-project`
 - [ ] Copy env: `cp .env.example .env`
 - [ ] Install: `bun install`
@@ -173,6 +203,7 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 - [ ] Set required CI checks
 
 ### Day 1 — First Feature
+
 - [ ] Write PRD (even a short one)
 - [ ] Create ADR if making architecture choices
 - [ ] Update DB schema in `src/lib/db/schema.ts`
@@ -184,6 +215,7 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 - [ ] Open PR, get review
 
 ### Week 1 — Foundation
+
 - [ ] Auth configured (update `src/lib/auth.ts`)
 - [ ] First real DB migrations generated
 - [ ] Error monitoring set up (Sentry, etc.)
@@ -201,19 +233,23 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 **Goal:** [One sentence. What does success look like?]
 
 ## Committed
-| Task | Owner | Status |
-|------|-------|--------|
+
+| Task   | Owner  | Status                           |
+| ------ | ------ | -------------------------------- |
 | [task] | [name] | Not Started / In Progress / Done |
 
 ## Stretch
-| Task | Owner |
-|------|-------|
+
+| Task   | Owner  |
+| ------ | ------ |
 | [task] | [name] |
 
 ## Blockers
+
 - [blocker] — owner: [name]
 
 ## Notes
+
 [anything else]
 ```
 
@@ -225,18 +261,22 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 # Retro — Sprint [N]
 
 ## What Went Well
+
 - [thing]
 - [thing]
 
 ## What Didn't Go Well
+
 - [thing]
 - [thing]
 
 ## Action Items
+
 - [ ] [action] — owner: [name], due: [date]
 - [ ] [action] — owner: [name], due: [date]
 
 ## Metrics
+
 - Velocity: [points/tickets completed]
 - Carryover: [points/tickets not completed]
 - Bugs shipped: [n]
@@ -248,12 +288,14 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 ## Versioning
 
 Follow [Semantic Versioning](https://semver.org):
+
 - `MAJOR.MINOR.PATCH`
 - MAJOR: breaking API change
 - MINOR: new backwards-compatible feature
 - PATCH: backwards-compatible bug fix
 
 Bun script to bump version:
+
 ```bash
 # patch: 0.1.0 → 0.1.1
 bun version patch

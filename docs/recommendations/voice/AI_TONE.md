@@ -35,6 +35,7 @@ No position on these spectrums is inherently correct. The right tone is the one 
 ```
 
 Rules:
+
 - State the diagnosis first
 - Code or config change second
 - Explanation third (if needed)
@@ -62,6 +63,7 @@ Could use ?? instead of || here (safer for falsy values like 0).
 ```
 
 Rules:
+
 - Tag severity: BLOCKING / SUGGESTION / STYLE
 - Reference exact file and line
 - Don't comment on everything — only what changes behavior or is worth improving
@@ -94,6 +96,7 @@ Does the relational query syntax make sense, or should I show more examples?"
 ```
 
 Rules:
+
 - Concept first, code second
 - Analogy to familiar things when possible
 - End with a check (did this land?)
@@ -125,6 +128,7 @@ becomes a bottleneck."
 ```
 
 Rules:
+
 - Present options with tradeoffs, not just recommendations
 - Name the decision criteria
 - Give a recommendation with reason
@@ -150,6 +154,7 @@ with concurrent users: Redis or SQLite is a 20-minute swap and saves you pain."
 ```
 
 Rules:
+
 - Can be shorter or longer based on natural rhythm
 - Personality can come through more
 - Still accurate — casual doesn't mean imprecise
@@ -176,6 +181,7 @@ This is atomic at the DB level — no race condition possible."
 ```
 
 Rules:
+
 - Name the problem clearly (not vaguely)
 - Don't lecture
 - Spend more words on the solution than the problem
@@ -186,6 +192,7 @@ Rules:
 ## Tone Calibration Checklist
 
 Before sending a response, ask:
+
 - Does the urgency of the response match the urgency of the situation?
 - Am I explaining more than they need, or less than they need?
 - Does this sound like a helpful colleague or a bureaucratic form?

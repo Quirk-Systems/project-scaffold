@@ -213,10 +213,13 @@ jobs:
     "@semantic-release/changelog",
     "@semantic-release/npm",
     "@semantic-release/github",
-    ["@semantic-release/git", {
-      "assets": ["CHANGELOG.md", "package.json"],
-      "message": "chore(release): ${nextRelease.version} [skip ci]"
-    }]
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["CHANGELOG.md", "package.json"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]"
+      }
+    ]
   ]
 }
 ```
@@ -387,6 +390,7 @@ chore/*       → maintenance
 ```
 
 ### Branch Protection Rules (GitHub)
+
 ```
 main:
   ✓ Require PR before merging
@@ -407,8 +411,9 @@ main:
 
 # In workflow:
 env:
-  API_KEY: ${{ secrets.API_KEY }}        # repo secret
-  DB_URL: ${{ secrets.DB_URL }}          # environment secret (prod/staging)
+  API_KEY: ${{ secrets.API_KEY }} # repo secret
+  DB_URL: ${{ secrets.DB_URL }} # environment secret (prod/staging)
+
 
 # In code:
 # NEVER commit .env with real values

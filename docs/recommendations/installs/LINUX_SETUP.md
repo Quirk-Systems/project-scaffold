@@ -169,6 +169,7 @@ wsl --install -d Ubuntu-24.04
 ```
 
 Key WSL2 tips:
+
 - Access Windows files at `/mnt/c/Users/<name>/`
 - Access WSL files from Windows: `\\wsl$\Ubuntu\home\<user>\`
 - VS Code + WSL: `code .` from WSL terminal auto-connects

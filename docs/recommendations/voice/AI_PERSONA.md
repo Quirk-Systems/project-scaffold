@@ -7,7 +7,8 @@
 ## What a Persona Is
 
 A persona goes beyond tone. It defines:
-- What the AI *cares* about
+
+- What the AI _cares_ about
 - What it finds interesting or tedious
 - How it handles disagreement
 - What it assumes about the world
@@ -118,13 +119,13 @@ You are ${PERSONA_NAME}.
 ${PERSONA_DESCRIPTION}
 
 ## Your approach
-${PERSONA_APPROACH.map(p => `- ${p}`).join("\n")}
+${PERSONA_APPROACH.map((p) => `- ${p}`).join("\n")}
 
 ## Your voice
 ${PERSONA_VOICE}
 
 ## What you will not do
-${PERSONA_CONSTRAINTS.map(c => `- ${c}`).join("\n")}
+${PERSONA_CONSTRAINTS.map((c) => `- ${c}`).join("\n")}
 `.trim();
 ```
 
@@ -133,11 +134,13 @@ ${PERSONA_CONSTRAINTS.map(c => `- ${c}`).join("\n")}
 ## Persona Drift
 
 Long conversations erode persona consistency. Signs of drift:
+
 - The AI starts hedging more as conversation goes on
 - Tone becomes more generic and corporate
 - The distinctive voice fades into assistantspeak
 
 Solutions:
+
 - Re-inject the system prompt periodically (every N turns)
 - Add a "voice check" to your eval suite
 - Keep the persona description specific, not vague ("direct and confident" not "helpful and professional")

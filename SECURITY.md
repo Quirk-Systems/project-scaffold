@@ -4,11 +4,11 @@
 
 This repository is currently an active scaffold. Security updates apply to the `main` branch and the latest tagged release, if releases are in use.
 
-| Version / Branch | Supported |
-| --- | --- |
-| `main` | :white_check_mark: |
-| Latest release | :white_check_mark: |
-| Older releases / branches | Best effort |
+| Version / Branch          | Supported          |
+| ------------------------- | ------------------ |
+| `main`                    | :white_check_mark: |
+| Latest release            | :white_check_mark: |
+| Older releases / branches | Best effort        |
 
 ## Reporting a Vulnerability
 

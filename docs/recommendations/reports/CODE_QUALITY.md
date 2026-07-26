@@ -63,12 +63,14 @@ bunx typedoc --plugin typedoc-plugin-coverage src/lib/ --coverageFailAt 80
 ```
 
 When to add docs:
+
 - Public API functions (exported from lib/)
-- Complex algorithm — explain the *why*, not the *what*
+- Complex algorithm — explain the _why_, not the _what_
 - Non-obvious performance decisions
 - Workarounds for upstream bugs (link the issue)
 
 When NOT to add docs:
+
 - Self-explanatory function names (`getUserById` needs no doc)
 - Internal implementation details that change frequently
 - Comments that just restate the code
@@ -80,6 +82,7 @@ When NOT to add docs:
 Current config extends `next/core-web-vitals + next/typescript + prettier`.
 
 Consider adding:
+
 ```javascript
 // eslint.config.mjs
 {
@@ -129,6 +132,7 @@ grep -r "from '\.\." src/ | grep -v "node_modules"
 ## Coupling Analysis
 
 High coupling = changes cascade everywhere. Signs:
+
 - File imports from 10+ different modules
 - Changing a type in `schema.ts` breaks 15 files
 - Tests require complex setup with many mocks
@@ -146,27 +150,32 @@ Before approving any PR:
 
 ```markdown
 ### Logic
+
 - [ ] Does it do what the PR description says?
 - [ ] Are edge cases handled? (empty arrays, null, 0, -1, max values)
 - [ ] No off-by-one errors in loops/indices?
 - [ ] Async errors handled (try/catch or `.catch()`)?
 
 ### Security
+
 - [ ] User input validated with Zod?
 - [ ] Auth checked in API routes?
 - [ ] No secrets hardcoded?
 
 ### Performance
+
 - [ ] No obvious N+1 queries?
 - [ ] No expensive computation in render?
 - [ ] Large assets optimized?
 
 ### Tests
+
 - [ ] New code has tests?
 - [ ] Tests test behavior, not implementation?
 - [ ] E2E test for user-facing flows?
 
 ### Conventions
+
 - [ ] Uses `@/` imports?
 - [ ] "use client" only where needed?
 - [ ] Follows naming conventions?
@@ -178,6 +187,7 @@ Before approving any PR:
 ## Automated Quality Gates
 
 Add to CI to catch regressions:
+
 ```yaml
 # .github/workflows/ci.yml
 - name: Complexity check

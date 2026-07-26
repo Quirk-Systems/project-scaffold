@@ -27,6 +27,7 @@
 ```
 
 Finding unnecessary re-renders:
+
 1. Open DevTools → Components → Settings → "Highlight updates when components render"
 2. Interact with UI
 3. Watch for components flashing unexpectedly
@@ -61,6 +62,7 @@ if (process.env.NODE_ENV === "development") {
 ```
 
 Intercepting Next.js fetch in dev:
+
 ```typescript
 // Temporary — add to layout.tsx for debug session only
 if (process.env.NODE_ENV === "development") {
@@ -82,9 +84,10 @@ if (process.env.NODE_ENV === "development") {
 // Enable query logging in dev (src/lib/db/index.ts)
 const db = drizzle(sqlite, {
   schema,
-  logger: process.env.NODE_ENV === "development"
-    ? { logQuery: (query, params) => console.log("[db]", query, params) }
-    : false,
+  logger:
+    process.env.NODE_ENV === "development"
+      ? { logQuery: (query, params) => console.log("[db]", query, params) }
+      : false,
 });
 ```
 
@@ -134,7 +137,9 @@ function SearchComponent() {
 
   // BUG: if user types quickly, earlier response might arrive last
   useEffect(() => {
-    fetch(`/api/search?q=${query}`).then(r => r.json()).then(setResults);
+    fetch(`/api/search?q=${query}`)
+      .then((r) => r.json())
+      .then(setResults);
   }, [query]);
 
   // FIX: cancel stale requests with AbortController
@@ -142,9 +147,9 @@ function SearchComponent() {
     const controller = new AbortController();
 
     fetch(`/api/search?q=${query}`, { signal: controller.signal })
-      .then(r => r.json())
+      .then((r) => r.json())
       .then(setResults)
-      .catch(err => {
+      .catch((err) => {
         if (err.name !== "AbortError") console.error(err);
       });
 
@@ -182,6 +187,7 @@ useEffect(() => {
 ```
 
 Detect with Chrome DevTools:
+
 1. DevTools → Memory → Take heap snapshot
 2. Interact (navigate, open/close components)
 3. Take another snapshot

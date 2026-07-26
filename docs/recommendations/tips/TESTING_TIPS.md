@@ -39,6 +39,7 @@ e2e/
 ## Vitest Patterns
 
 ### Basic Component Test
+
 ```tsx
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
@@ -46,7 +47,11 @@ import { UserCard } from "@/components/UserCard";
 
 describe("UserCard", () => {
   it("shows user name and email", () => {
-    render(<UserCard user={{ id: "1", name: "Alice", email: "alice@example.com" }} />);
+    render(
+      <UserCard
+        user={{ id: "1", name: "Alice", email: "alice@example.com" }}
+      />,
+    );
 
     expect(screen.getByText("Alice")).toBeInTheDocument();
     expect(screen.getByText("alice@example.com")).toBeInTheDocument();
@@ -60,6 +65,7 @@ describe("UserCard", () => {
 ```
 
 ### User Events (Interactions)
+
 ```tsx
 import userEvent from "@testing-library/user-event";
 
@@ -77,6 +83,7 @@ it("calls onDelete when delete button clicked", async () => {
 ```
 
 ### Async Testing
+
 ```tsx
 import { waitFor } from "@testing-library/react";
 
@@ -126,6 +133,7 @@ const admin = createUser({ role: "admin" }); // only override what matters
 ## Mocking Patterns
 
 ### Mock a module
+
 ```typescript
 import { vi, beforeEach } from "vitest";
 
@@ -149,14 +157,19 @@ beforeEach(() => {
 ```
 
 ### Mock fetch
+
 ```typescript
-vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-  ok: true,
-  json: () => Promise.resolve({ data: [] }),
-}));
+vi.stubGlobal(
+  "fetch",
+  vi.fn().mockResolvedValue({
+    ok: true,
+    json: () => Promise.resolve({ data: [] }),
+  }),
+);
 ```
 
 ### Spy on a function
+
 ```typescript
 import * as authModule from "@/lib/auth";
 
@@ -167,6 +180,7 @@ vi.spyOn(authModule, "auth").mockResolvedValue({
 ```
 
 ### The setup.ts auto-resets mocks
+
 ```typescript
 // src/__tests__/setup.ts (already configured)
 afterEach(() => {
@@ -186,7 +200,7 @@ function renderWithQuery(ui: React.ReactElement) {
     defaultOptions: { queries: { retry: false } }, // don't retry in tests
   });
   return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
   );
 }
 
@@ -209,6 +223,7 @@ it("fetches and displays users", async () => {
 ## Playwright E2E Patterns
 
 ### Page Object Model
+
 ```typescript
 // e2e/pages/home.page.ts
 import { Page, Locator } from "@playwright/test";
@@ -239,6 +254,7 @@ test("homepage shows heading", async ({ page }) => {
 ```
 
 ### Auth State in Playwright
+
 ```typescript
 // e2e/setup/auth.setup.ts
 import { test as setup } from "@playwright/test";

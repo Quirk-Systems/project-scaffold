@@ -41,7 +41,9 @@ async function runAgent(task: string, tools: Tool[]): Promise<string> {
     }
 
     if (response.stop_reason === "tool_use") {
-      const toolUseBlocks = response.content.filter((b) => b.type === "tool_use");
+      const toolUseBlocks = response.content.filter(
+        (b) => b.type === "tool_use",
+      );
       const toolResults = await Promise.all(
         toolUseBlocks.map(async (block) => {
           if (block.type !== "tool_use") return null;
@@ -51,7 +53,7 @@ async function runAgent(task: string, tools: Tool[]): Promise<string> {
             tool_use_id: block.id,
             content: JSON.stringify(result),
           };
-        })
+        }),
       );
 
       messages.push({
@@ -68,6 +70,7 @@ async function runAgent(task: string, tools: Tool[]): Promise<string> {
 ## Tool Definition Patterns
 
 ### Minimal Tool
+
 ```typescript
 const readFileTool: Tool = {
   name: "read_file",
@@ -83,10 +86,12 @@ const readFileTool: Tool = {
 ```
 
 ### Tool With Optional Params
+
 ```typescript
 const searchTool: Tool = {
   name: "search_code",
-  description: "Search for a pattern in source files. Returns matching lines with file and line number.",
+  description:
+    "Search for a pattern in source files. Returns matching lines with file and line number.",
   input_schema: {
     type: "object",
     properties: {
@@ -100,6 +105,7 @@ const searchTool: Tool = {
 ```
 
 ### Tool With Enum
+
 ```typescript
 const dbQueryTool: Tool = {
   name: "db_query",
@@ -108,7 +114,11 @@ const dbQueryTool: Tool = {
     type: "object",
     properties: {
       sql: { type: "string" },
-      dialect: { type: "string", enum: ["sqlite", "postgres"], default: "sqlite" },
+      dialect: {
+        type: "string",
+        enum: ["sqlite", "postgres"],
+        default: "sqlite",
+      },
     },
     required: ["sql"],
   },
@@ -120,18 +130,20 @@ const dbQueryTool: Tool = {
 ## Multi-Agent Patterns
 
 ### Orchestrator + Subagents
+
 ```typescript
 // Orchestrator breaks task → delegates to specialized subagents
 async function orchestrate(task: string) {
-  const plan = await planAgent(task);          // plan: string[]
+  const plan = await planAgent(task); // plan: string[]
   const results = await Promise.all(
-    plan.map((subtask) => codeAgent(subtask))  // parallel execution
+    plan.map((subtask) => codeAgent(subtask)), // parallel execution
   );
   return await synthesizeAgent(results);
 }
 ```
 
 ### Pipeline (Sequential)
+
 ```typescript
 const pipeline = [
   (input: string) => researchAgent(input),
@@ -150,6 +162,7 @@ async function runPipeline(task: string) {
 ```
 
 ### Evaluator-Optimizer Loop
+
 ```typescript
 async function evaluatorOptimizer(task: string, maxRounds = 3) {
   let solution = await generateAgent(task);
@@ -174,7 +187,7 @@ This scaffold is designed to work with Claude Code. Claude Code gives you:
 - Shell execution (Bash)
 - Subagent spawning (Agent tool)
 - Web access (WebSearch, WebFetch)
-- GitHub integration (mcp__github__*)
+- GitHub integration (mcp**github**\*)
 
 ### Custom Slash Commands
 
@@ -190,6 +203,7 @@ Create `.claude/commands/<name>.md` — Claude executes the prompt on `/name`.
 ```
 
 ### CLAUDE.md Layering
+
 ```
 CLAUDE.md                # project-wide rules
 src/CLAUDE.md            # src-specific patterns
@@ -204,6 +218,7 @@ src/app/api/CLAUDE.md    # API route conventions
 MCP (Model Context Protocol) extends Claude with custom tools.
 
 ### Adding an MCP Server (claude_desktop_config.json)
+
 ```json
 {
   "mcpServers": {
@@ -219,6 +234,7 @@ MCP (Model Context Protocol) extends Claude with custom tools.
 ```
 
 ### Minimal MCP Server (TypeScript)
+
 ```typescript
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -306,17 +322,19 @@ interface AgentStep {
 
 ```typescript
 const GUARDRAILS = {
-  maxTurns: 20,           // prevent infinite loops
+  maxTurns: 20, // prevent infinite loops
   maxTokensTotal: 100_000, // cost control
-  timeoutMs: 120_000,      // 2 min wall clock
+  timeoutMs: 120_000, // 2 min wall clock
   allowedTools: new Set(["read_file", "search_code"]), // allowlist
 };
 
 // Check before each tool execution
 function checkGuardrails(state: AgentState) {
   if (state.turns >= GUARDRAILS.maxTurns) throw new Error("Max turns exceeded");
-  if (state.tokens >= GUARDRAILS.maxTokensTotal) throw new Error("Token budget exceeded");
-  if (Date.now() - state.startTime > GUARDRAILS.timeoutMs) throw new Error("Timeout");
+  if (state.tokens >= GUARDRAILS.maxTokensTotal)
+    throw new Error("Token budget exceeded");
+  if (Date.now() - state.startTime > GUARDRAILS.timeoutMs)
+    throw new Error("Timeout");
 }
 ```
 
@@ -324,12 +342,12 @@ function checkGuardrails(state: AgentState) {
 
 ## Model Selection for Agents
 
-| Task | Model | Why |
-|------|-------|-----|
-| Complex reasoning, planning | claude-opus-4-6 | Best judgment |
-| Code generation, tool use | claude-sonnet-4-6 | Speed + quality balance |
-| Simple extraction, classification | claude-haiku-4-5 | Fast + cheap |
-| Subagent tasks | claude-sonnet-4-6 | Reliable tool use |
+| Task                              | Model             | Why                     |
+| --------------------------------- | ----------------- | ----------------------- |
+| Complex reasoning, planning       | claude-opus-4-6   | Best judgment           |
+| Code generation, tool use         | claude-sonnet-4-6 | Speed + quality balance |
+| Simple extraction, classification | claude-haiku-4-5  | Fast + cheap            |
+| Subagent tasks                    | claude-sonnet-4-6 | Reliable tool use       |
 
 ---
 

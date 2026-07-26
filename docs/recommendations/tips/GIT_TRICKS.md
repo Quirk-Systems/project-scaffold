@@ -39,6 +39,7 @@
 ## Rebase Workflows
 
 ### Interactive rebase — clean up before merging
+
 ```bash
 # Squash last 4 commits into one
 git rebase -i HEAD~4
@@ -61,6 +62,7 @@ git rebase --continue
 ```
 
 ### Rebase onto main (keep history clean)
+
 ```bash
 git fetch origin
 git rebase origin/main

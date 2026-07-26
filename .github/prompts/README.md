@@ -10,19 +10,19 @@ Prompt files define repeatable tasks. Keep repository-wide standards in `.github
 
 ## Prompt Map
 
-| Prompt | Use |
-| --- | --- |
-| `quirk-orient` | Map an unfamiliar repository without changing it |
-| `quirk-build` | Implement a bounded feature with proof |
-| `quirk-review` | Produce a decision-grade code review |
-| `quirk-poke-holes` | Adversarially test a plan or architecture |
-| `quirk-fix-ci` | Diagnose and repair a failing check |
-| `quirk-deps` | Assess dependency and lockfile risk |
-| `quirk-architecture` | Write an evidence-backed architecture decision |
+| Prompt                | Use                                                   |
+| --------------------- | ----------------------------------------------------- |
+| `quirk-orient`        | Map an unfamiliar repository without changing it      |
+| `quirk-build`         | Implement a bounded feature with proof                |
+| `quirk-review`        | Produce a decision-grade code review                  |
+| `quirk-poke-holes`    | Adversarially test a plan or architecture             |
+| `quirk-fix-ci`        | Diagnose and repair a failing check                   |
+| `quirk-deps`          | Assess dependency and lockfile risk                   |
+| `quirk-architecture`  | Write an evidence-backed architecture decision        |
 | `quirk-core-contract` | Protect canonical, runtime, and projection boundaries |
-| `quirk-security-pass` | Trace credible security failures |
-| `quirk-ship` | Prepare a reviewer-ready pull request |
-| `quirk-compound` | Extract reusable capability from finished work |
+| `quirk-security-pass` | Trace credible security failures                      |
+| `quirk-ship`          | Prepare a reviewer-ready pull request                 |
+| `quirk-compound`      | Extract reusable capability from finished work        |
 
 ## Quirk Prompt Spine
 

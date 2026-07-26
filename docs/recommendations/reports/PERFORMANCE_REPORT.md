@@ -6,13 +6,13 @@
 
 ## Core Web Vitals Targets
 
-| Metric | Good | Needs Work | Poor |
-|--------|------|-----------|------|
-| LCP (Largest Contentful Paint) | < 2.5s | 2.5–4.0s | > 4.0s |
-| INP (Interaction to Next Paint) | < 200ms | 200–500ms | > 500ms |
-| CLS (Cumulative Layout Shift) | < 0.1 | 0.1–0.25 | > 0.25 |
-| TTFB (Time to First Byte) | < 800ms | 800ms–1.8s | > 1.8s |
-| FCP (First Contentful Paint) | < 1.8s | 1.8–3.0s | > 3.0s |
+| Metric                          | Good    | Needs Work | Poor    |
+| ------------------------------- | ------- | ---------- | ------- |
+| LCP (Largest Contentful Paint)  | < 2.5s  | 2.5–4.0s   | > 4.0s  |
+| INP (Interaction to Next Paint) | < 200ms | 200–500ms  | > 500ms |
+| CLS (Cumulative Layout Shift)   | < 0.1   | 0.1–0.25   | > 0.25  |
+| TTFB (Time to First Byte)       | < 800ms | 800ms–1.8s | > 1.8s  |
+| FCP (First Contentful Paint)    | < 1.8s  | 1.8–3.0s   | > 3.0s  |
 
 Measure at: [PageSpeed Insights](https://pagespeed.web.dev) · [WebPageTest](https://webpagetest.org) · Chrome DevTools → Lighthouse
 
@@ -29,6 +29,7 @@ bun run build
 ```
 
 Enable bundle analyzer:
+
 ```bash
 ANALYZE=true bun run build
 # Interactive treemap opens in browser
@@ -36,6 +37,7 @@ ANALYZE=true bun run build
 ```
 
 Key things to find:
+
 - Any server-only library shipped to the client (e.g., `better-sqlite3`)
 - Large vendor chunks (>100 kB)
 - Duplicate modules (same lib, multiple versions)
@@ -61,7 +63,7 @@ import { unstable_cache } from "next/cache";
 const getCachedUser = unstable_cache(
   async (id: string) => db.query.users.findFirst({ where: eq(users.id, id) }),
   ["user"],
-  { revalidate: 60, tags: ["user"] }
+  { revalidate: 60, tags: ["user"] },
 );
 ```
 
@@ -81,10 +83,11 @@ import Image from "next/image";
   priority // for above-the-fold images
   placeholder="blur"
   blurDataURL="data:image/jpeg;base64,..." // tiny base64 preview
-/>
+/>;
 ```
 
 Rules:
+
 - Use `priority` on the LCP image
 - Never use `<img>` without Next.js wrapper (prevents optimization)
 - Use `sizes` prop for responsive images
@@ -100,9 +103,9 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
-  display: "swap",      // prevent FOIT
+  display: "swap", // prevent FOIT
   variable: "--font-sans",
-  preload: true,        // preload critical font
+  preload: true, // preload critical font
 });
 ```
 
@@ -116,8 +119,9 @@ Font loading is already configured. Never import fonts via CSS `@import` — it 
 // Slow: N+1 query problem
 const users = await db.query.users.findMany();
 for (const user of users) {
-  const posts = await db.query.posts.findMany({ // N queries!
-    where: eq(posts.userId, user.id)
+  const posts = await db.query.posts.findMany({
+    // N queries!
+    where: eq(posts.userId, user.id),
   });
 }
 
@@ -128,6 +132,7 @@ const usersWithPosts = await db.query.users.findMany({
 ```
 
 Add query logging in development:
+
 ```typescript
 // src/lib/db/index.ts
 const db = drizzle(sqlite, {
@@ -167,11 +172,13 @@ const handleClick = useCallback((id: string) => {
 ```
 
 When to memoize:
+
 - Component re-renders unnecessarily (use React DevTools Profiler to verify)
 - Expensive calculation runs on every render
 - Callback passed to memoized child component
 
 When NOT to memoize:
+
 - Small/simple components — overhead isn't worth it
 - Already fast operations — adds complexity for no gain
 

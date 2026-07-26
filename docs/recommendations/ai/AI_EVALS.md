@@ -7,12 +7,14 @@
 ## Why Evals Matter
 
 Without evals:
+
 - You can't tell if a prompt change helped or hurt
 - You can't detect when model updates break your use case
 - You can't compare approaches objectively
 - You ship regressions silently
 
 With evals:
+
 - Prompt changes have measurable impact
 - Model updates are caught automatically
 - You have data, not opinions, for decisions
@@ -21,13 +23,13 @@ With evals:
 
 ## Types of Evaluations
 
-| Type | When | Method |
-|------|------|--------|
-| Unit | Individual responses | Compare to expected output |
-| Regression | After any change | Run suite, compare to baseline |
-| A/B | Comparing prompt variants | Run both, compare distributions |
-| Human | Subjective quality | Human reviewers score responses |
-| LLM-as-Judge | Scalable quality | Claude evaluates Claude's output |
+| Type         | When                      | Method                           |
+| ------------ | ------------------------- | -------------------------------- |
+| Unit         | Individual responses      | Compare to expected output       |
+| Regression   | After any change          | Run suite, compare to baseline   |
+| A/B          | Comparing prompt variants | Run both, compare distributions  |
+| Human        | Subjective quality        | Human reviewers score responses  |
+| LLM-as-Judge | Scalable quality          | Claude evaluates Claude's output |
 
 ---
 
@@ -111,9 +113,7 @@ const EVAL_SUITE: Eval[] = [
 ];
 
 async function runSuite(model: string) {
-  const results = await Promise.all(
-    EVAL_SUITE.map((e) => runEval(e, model))
-  );
+  const results = await Promise.all(EVAL_SUITE.map((e) => runEval(e, model)));
 
   const passed = results.filter((r) => r.passed).length;
   const failed = results.filter((r) => !r.passed);
@@ -143,14 +143,15 @@ Use Claude to evaluate Claude. Scales better than human review.
 async function judgeResponse(
   task: string,
   response: string,
-  criteria: string[]
+  criteria: string[],
 ): Promise<{ score: number; feedback: string }> {
   const evaluation = await client.messages.create({
-    model: "claude-opus-4-6",  // use best model as judge
+    model: "claude-opus-4-6", // use best model as judge
     max_tokens: 512,
-    messages: [{
-      role: "user",
-      content: `You are evaluating an AI response. Score it 0-10 on each criterion.
+    messages: [
+      {
+        role: "user",
+        content: `You are evaluating an AI response. Score it 0-10 on each criterion.
 
 Task given to AI:
 ${task}
@@ -167,7 +168,8 @@ Respond as JSON:
   "average": n,
   "feedback": "1-2 sentences on main strengths/weaknesses"
 }`,
-    }],
+      },
+    ],
   });
 
   return JSON.parse(extractText(evaluation.content));
@@ -182,7 +184,7 @@ Respond as JSON:
 async function abTest(
   variants: { name: string; prompt: string }[],
   inputs: string[],
-  judge: (input: string, output: string) => Promise<number>
+  judge: (input: string, output: string) => Promise<number>,
 ) {
   const results: Record<string, number[]> = {};
 
@@ -220,7 +222,7 @@ name: AI Evals
 on:
   pull_request:
     paths:
-      - "src/**/*.ts"  # run when AI-related code changes
+      - "src/**/*.ts" # run when AI-related code changes
       - ".claude/**"
       - "CLAUDE.md"
 
@@ -252,15 +254,15 @@ console.log(`Evals passed: ${results.passed}/${results.total}`);
 
 ## Metrics to Track
 
-| Metric | How to Measure |
-|--------|---------------|
-| Task success rate | % of evals passing |
-| Output quality | LLM-as-judge score (0-10) |
-| Latency p50/p95 | Timestamp each request |
-| Cost per task | Token count × price |
-| Refusal rate | % of requests refused |
+| Metric            | How to Measure              |
+| ----------------- | --------------------------- |
+| Task success rate | % of evals passing          |
+| Output quality    | LLM-as-judge score (0-10)   |
+| Latency p50/p95   | Timestamp each request      |
+| Cost per task     | Token count × price         |
+| Refusal rate      | % of requests refused       |
 | Format compliance | % of JSON outputs parseable |
-| Safety | % passing safety evals |
+| Safety            | % passing safety evals      |
 
 ---
 

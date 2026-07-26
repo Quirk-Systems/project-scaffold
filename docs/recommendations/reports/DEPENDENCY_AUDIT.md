@@ -85,6 +85,7 @@ bunx snyk test --package <name>
 ```
 
 Add to CI:
+
 ```yaml
 # .github/workflows/ci.yml
 - name: Security audit
@@ -96,6 +97,7 @@ Add to CI:
 ## Upgrade Strategy
 
 ### Safe upgrades (patch/minor)
+
 ```bash
 # Update patch versions (x.y.Z)
 bunx npm-check-updates --target patch -u && bun install
@@ -108,6 +110,7 @@ bun run validate
 ```
 
 ### Major upgrades
+
 1. Read the changelog / migration guide first
 2. Upgrade one package at a time
 3. Run tests after each
@@ -132,6 +135,7 @@ bunx bundlephobia <package-name>
 ```
 
 Rules of thumb:
+
 - Under 5 kB gzipped: fine
 - 5–50 kB: justify it
 - Over 50 kB: seriously consider alternatives or dynamic import
@@ -191,6 +195,7 @@ updates:
 ## Red Flags
 
 Stop and investigate before shipping if:
+
 - Any `bun audit` result is `high` or `critical`
 - A package hasn't been updated in > 2 years (check GitHub)
 - A package has < 500 weekly downloads (bus factor risk)

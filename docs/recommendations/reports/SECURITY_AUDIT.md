@@ -7,6 +7,7 @@
 ## OWASP Top 10 Checklist (Web)
 
 ### 1. Broken Access Control
+
 - [ ] Every API route checks authentication before executing
 - [ ] Authorization checks use server-side logic (not just UI hiding)
 - [ ] User A cannot access User B's data
@@ -29,6 +30,7 @@ export async function GET() {
 ```
 
 ### 2. Cryptographic Failures
+
 - [ ] No secrets in source code or git history
 - [ ] No sensitive data logged
 - [ ] Passwords hashed with bcrypt/argon2 (never stored plain)
@@ -37,6 +39,7 @@ export async function GET() {
 - [ ] No MD5/SHA1 for security purposes — use SHA-256+
 
 ### 3. Injection
+
 - [ ] All DB queries use Drizzle parameterized queries (never string concatenation)
 - [ ] All user input validated with Zod before use
 - [ ] No `eval()`, `new Function()`, or `dangerouslySetInnerHTML` with untrusted input
@@ -52,12 +55,14 @@ const result = await db.query.users.findFirst({
 ```
 
 ### 4. Insecure Design
+
 - [ ] Rate limiting on auth endpoints (login, signup, password reset)
 - [ ] Account enumeration prevented (same error for "user not found" and "wrong password")
 - [ ] Password reset tokens are single-use and expire
 - [ ] MFA available for privileged accounts
 
 ### 5. Security Misconfiguration
+
 - [ ] No default credentials anywhere
 - [ ] Error messages don't leak stack traces or DB schemas to users
 - [ ] Security headers set (see headers section below)
@@ -65,17 +70,20 @@ const result = await db.query.users.findFirst({
 - [ ] Dev tools not accessible in production builds
 
 ### 6. Vulnerable Components
+
 - [ ] `bun audit` returns no high/critical findings
 - [ ] Dependencies are up to date (run monthly)
 - [ ] Unused dependencies removed
 
 ### 7. Authentication Failures
+
 - [ ] Sessions expire (not permanent tokens)
 - [ ] Sessions invalidated on logout (not just cookie clear)
 - [ ] Auth.js `AUTH_SECRET` is set and not the default
 - [ ] Password policy enforced (min length, etc.)
 
 ### 8. Software Integrity Failures
+
 - [ ] `bun install --frozen-lockfile` in CI (no lockfile drift)
 - [ ] Supply chain: review new dependencies before adding
 - [ ] GitHub Actions use pinned SHA versions for third-party actions
@@ -89,12 +97,14 @@ const result = await db.query.users.findFirst({
 ```
 
 ### 9. Logging & Monitoring Failures
+
 - [ ] Auth events logged (login, logout, failed attempts)
 - [ ] No sensitive data (passwords, tokens, PII) in logs
 - [ ] Errors monitored in production (Sentry/etc.)
 - [ ] Anomaly alerting set up (many failed logins, etc.)
 
 ### 10. SSRF (Server-Side Request Forgery)
+
 - [ ] User-provided URLs validated before fetching
 - [ ] Internal network not reachable via user-controlled URLs
 - [ ] Allowlist of domains for external requests where possible
@@ -157,6 +167,7 @@ bunx trufflehog git file://. --since-commit HEAD~10
 ```
 
 Add to pre-commit (lefthook.yml):
+
 ```yaml
 pre-commit:
   commands:
@@ -187,7 +198,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return Response.json(
       { error: "Invalid input", details: parsed.error.flatten() },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

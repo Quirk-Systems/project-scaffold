@@ -24,7 +24,7 @@ Try to break it through:
 Return a risk register:
 
 | Risk | Trigger | Consequence | Existing defense | Missing defense | Test |
-| --- | --- | --- | --- | --- | --- |
+| ---- | ------- | ----------- | ---------------- | --------------- | ---- |
 
 Then identify:
 

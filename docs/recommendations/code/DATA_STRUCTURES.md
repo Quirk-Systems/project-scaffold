@@ -92,11 +92,9 @@ class BloomFilter {
   constructor(expectedItems: number, falsePositiveRate: number) {
     // Optimal size and hash count formulas
     this.size = Math.ceil(
-      -(expectedItems * Math.log(falsePositiveRate)) / Math.log(2) ** 2
+      -(expectedItems * Math.log(falsePositiveRate)) / Math.log(2) ** 2,
     );
-    this.hashCount = Math.ceil(
-      (this.size / expectedItems) * Math.log(2)
-    );
+    this.hashCount = Math.ceil((this.size / expectedItems) * Math.log(2));
     this.bits = new Uint8Array(Math.ceil(this.size / 8));
   }
 
@@ -208,7 +206,9 @@ class SkipList<T> {
   }
 
   insert(value: T): void {
-    const update: (SkipNode<T | null> | null)[] = new Array(MAX_LEVEL).fill(null);
+    const update: (SkipNode<T | null> | null)[] = new Array(MAX_LEVEL).fill(
+      null,
+    );
     let current = this.head;
 
     for (let i = this.level - 1; i >= 0; i--) {
@@ -355,7 +355,9 @@ class LSMTree {
     this.sstables = this.sstables.filter((s) => s.level !== level);
 
     // Add compacted table at next level
-    const entries = [...merged.entries()].sort(([a], [b]) => a.localeCompare(b));
+    const entries = [...merged.entries()].sort(([a], [b]) =>
+      a.localeCompare(b),
+    );
     this.sstables.push(new SSTable(entries, level + 1));
   }
 }
