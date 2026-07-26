@@ -51,7 +51,8 @@ Destructive and out-of-scope actions are denied, not merely approval-gated.
 The environment declares a network allowlist, blocked domains, credential
 isolation, filesystem scope, runtime and cost limits, immutable logging, and
 the sandbox or production execution tier. Evaluation and sandbox runs cannot
-receive production credentials.
+receive production credentials. A blocked-domain wildcard denies every
+destination except an explicit network-allowlist entry.
 
 ### 5. Named human shutdown authority
 
