@@ -17,5 +17,9 @@ Aliases must be unique within a namespace. A deliberate collision requires an
 `alias_ambiguity` conflict naming the other entity. Canon changes cannot be
 approved or authored through Supabase.
 
+`content_hash` covers the complete entity payload except the hash field itself.
+After changing a canonical record, regenerate it with `hashCanonicalEntity()`;
+`bun run ontology:validate` rejects stale hashes.
+
 The runtime may accept change requests, evidence, and lint findings, but these
 remain proposals or history until the corresponding Git change is approved.

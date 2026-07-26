@@ -231,26 +231,32 @@ export function validateRegistry(
     });
   }
 
-  const aliases = new Map<string, CanonicalEntity>();
+  const aliases = new Map<string, CanonicalEntity[]>();
   for (const entity of entities) {
     for (const alias of entity.aliases) {
       const key = `${entity.namespace}:${alias.toLowerCase()}`;
-      const existing = aliases.get(key);
+      aliases.set(key, [...(aliases.get(key) ?? []), entity]);
+    }
+  }
+  for (const entitiesWithAlias of aliases.values()) {
+    if (entitiesWithAlias.length < 2) continue;
+    for (const entity of entitiesWithAlias) {
+      const others = entitiesWithAlias.filter(
+        (candidate) => candidate !== entity,
+      );
       if (
-        existing &&
         !entity.conflicts.some(
           (conflict) =>
             conflict.type === "alias_ambiguity" &&
-            conflict.with === existing.id,
+            others.some((other) => other.id === conflict.with),
         )
       ) {
         findings.push({
           code: "alias_collision",
           entityId: entity.id,
-          message: `Alias "${alias}" collides with ${existing.id}.`,
+          message: `Alias collides with ${others.map(({ id }) => id).join(", ")}.`,
         });
       }
-      aliases.set(key, entity);
     }
   }
 

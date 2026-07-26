@@ -99,7 +99,8 @@ describe("ontology registry", () => {
 
   it("builds a stable Git-attributed projection", async () => {
     const registry = await loadRegistry(ontologyRoot);
-    const projection = buildProjection(registry, "abc1234");
+    const commitSha = "a".repeat(40);
+    const projection = buildProjection(registry, commitSha);
 
     expect(projection.map((entry) => entry.canonicalId)).toEqual([
       "quirk.move.transform",
@@ -107,8 +108,16 @@ describe("ontology registry", () => {
     ]);
     expect(projection[0]).toMatchObject({
       canonicalPath: "seeds/transform.yaml",
-      commitSha: "abc1234",
+      commitSha,
     });
+  });
+
+  it("requires a full Git object ID for projection lineage", async () => {
+    const registry = await loadRegistry(ontologyRoot);
+
+    expect(() => buildProjection(registry, "abc1234")).toThrow(
+      "A full SHA-1 or SHA-256 Git commit ID is required.",
+    );
   });
 
   it("marks ontological meaning shifts in semantic diffs", async () => {

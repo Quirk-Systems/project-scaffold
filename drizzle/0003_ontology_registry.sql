@@ -158,6 +158,7 @@ CREATE INDEX "quirk_runs_input_asset_idx" ON "quirk_runs" USING btree ("input_as
 CREATE INDEX "quirk_runs_output_asset_idx" ON "quirk_runs" USING btree ("output_asset_id");--> statement-breakpoint
 CREATE INDEX "subscriptions_user_idx" ON "subscriptions" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "subscriptions_customer_idx" ON "subscriptions" USING btree ("customer_id");--> statement-breakpoint
+-- The legacy SECURITY DEFINER helper is administrative, not a client API.
 DO $$
 DECLARE
 	helper regprocedure;
