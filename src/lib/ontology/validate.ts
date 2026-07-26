@@ -4,6 +4,7 @@ import type {
   OntologyFinding,
   OntologyRegistry,
 } from "./types";
+import { CANONICAL_ENTITY_IDS } from "./types";
 import { lintRegistry } from "./lint";
 
 const REQUIRED_STRING_FIELDS = [
@@ -208,8 +209,8 @@ export function validateRegistry(
     ...cycleFinding(entities, "supersedes"),
   );
 
-  const transform = byId.get("quirk.move.transform");
-  const mutate = byId.get("quirk.move.transform.mutate");
+  const transform = byId.get(CANONICAL_ENTITY_IDS.transform);
+  const mutate = byId.get(CANONICAL_ENTITY_IDS.mutate);
   if (
     !transform ||
     transform.primary_type !== "move_family" ||
@@ -231,7 +232,7 @@ export function validateRegistry(
   const aliases = new Map<string, CanonicalEntity>();
   for (const entity of entities) {
     for (const alias of entity.aliases) {
-      const key = `${entity.namespace}:${alias.toLocaleLowerCase()}`;
+      const key = `${entity.namespace}:${alias.toLowerCase()}`;
       const existing = aliases.get(key);
       if (
         existing &&

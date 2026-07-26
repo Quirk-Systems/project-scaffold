@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import type { CanonicalEntity, OntologyRegistry } from "./types";
 import { assertValidRegistry } from "./validate";
 
+const COMMIT_SHA_PATTERN = /^[0-9a-f]{7,64}$/i;
+
 export type ProjectionEntity = {
   canonicalId: string;
   canonicalPath: string;
@@ -15,7 +17,7 @@ export function buildProjection(
   commitSha: string,
 ): ProjectionEntity[] {
   assertValidRegistry(registry);
-  if (!/^[0-9a-f]{7,64}$/i.test(commitSha)) {
+  if (!COMMIT_SHA_PATTERN.test(commitSha)) {
     throw new Error("A 7-64 character hexadecimal commit SHA is required.");
   }
 

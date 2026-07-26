@@ -1,5 +1,10 @@
 export const ONTOLOGY_SCHEMA_VERSION = 1;
 
+export const CANONICAL_ENTITY_IDS = {
+  transform: "quirk.move.transform",
+  mutate: "quirk.move.transform.mutate",
+} as const;
+
 export const OPERATIONAL_SEMANTIC_IDS = {
   assetMutated: "asset.status.mutated",
   runMutateAgain: "run.outcome.mutate_again",

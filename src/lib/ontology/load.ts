@@ -5,6 +5,8 @@ import type { CanonicalEntity, LocatedEntity, OntologyRegistry } from "./types";
 import { ONTOLOGY_SCHEMA_VERSION } from "./types";
 import { assertValidRegistry } from "./validate";
 
+const CANONICAL_FILE_PATTERN = /\.(?:json|ya?ml)$/;
+
 async function canonicalFiles(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
   const nested = await Promise.all(
@@ -13,7 +15,7 @@ async function canonicalFiles(directory: string): Promise<string[]> {
       .map(async (entry): Promise<string[]> => {
         const path = resolve(directory, entry.name);
         if (entry.isDirectory()) return canonicalFiles(path);
-        return /\.(?:json|ya?ml)$/.test(entry.name) ? [path] : [];
+        return CANONICAL_FILE_PATTERN.test(entry.name) ? [path] : [];
       }),
   );
   return nested.flat();
