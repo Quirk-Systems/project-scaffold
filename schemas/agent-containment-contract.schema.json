@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/schemas/agent-containment-contract.schema.json",
+  "title": "Quirk Agent Containment Contract",
+  "description": "The mandatory boundaries that must pass preflight before an agent starts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "agent_name",
+    "assigned_by",
+    "shutdown_authority",
+    "risk_class",
+    "objective",
+    "knowledge_surface",
+    "tool_surface",
+    "environment",
+    "human_authority",
+    "receipts",
+    "verification"
+  ],
+  "properties": {
+    "contract_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assigned_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "shutdown_authority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "risk_class": {
+      "enum": ["observe", "prepare", "act", "consequential_act"]
+    },
+    "objective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mission",
+        "success_conditions",
+        "non_goals",
+        "stop_conditions",
+        "postcondition"
+      ],
+      "properties": {
+        "mission": {
+          "type": "string",
+          "minLength": 1
+        },
+        "success_conditions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "non_goals": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "stop_conditions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "postcondition": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "knowledge_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_sources",
+        "forbidden_sources",
+        "data_sensitivity",
+        "citation_requirements",
+        "retention_rule",
+        "deletion_rule",
+        "derived_inference_rule"
+      ],
+      "properties": {
+        "allowed_sources": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "forbidden_sources": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "data_sensitivity": {
+          "enum": ["public", "internal", "personal", "secret", "regulated"]
+        },
+        "citation_requirements": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retention_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deletion_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "derived_inference_rule": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "tool_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "read_tools",
+        "prepare_tools",
+        "write_tools_requires_approval",
+        "forbidden_tools",
+        "destructive_action_policy",
+        "out_of_scope_action_policy",
+        "tool_call_receipt_requirements"
+      ],
+      "properties": {
+        "read_tools": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "prepare_tools": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "write_tools_requires_approval": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "forbidden_tools": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "destructive_action_policy": {
+          "const": "deny"
+        },
+        "out_of_scope_action_policy": {
+          "const": "deny"
+        },
+        "tool_call_receipt_requirements": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network_allowlist",
+        "blocked_domains",
+        "credential_isolation",
+        "filesystem_scope",
+        "runtime_limit_seconds",
+        "cost_limit_usd",
+        "immutable_logs",
+        "execution_tier",
+        "production_credentials_allowed"
+      ],
+      "properties": {
+        "network_allowlist": {
+          "description": "Network domains the agent may access.",
+          "$ref": "#/$defs/stringArray"
+        },
+        "blocked_domains": {
+          "description": "Network domains to deny. Explicit allowlist domains are checked before a wildcard block.",
+          "$ref": "#/$defs/stringArray"
+        },
+        "credential_isolation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "filesystem_scope": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "runtime_limit_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cost_limit_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "immutable_logs": {
+          "type": "boolean"
+        },
+        "execution_tier": {
+          "enum": ["sandbox", "production"]
+        },
+        "production_credentials_allowed": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "execution_tier": {
+                "const": "sandbox"
+              }
+            },
+            "required": ["execution_tier"]
+          },
+          "then": {
+            "properties": {
+              "production_credentials_allowed": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "human_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "named_owner",
+        "shutdown_authority",
+        "escalation_path",
+        "incident_review_owner",
+        "kill_switch_mechanism",
+        "post_run_review_requirements"
+      ],
+      "properties": {
+        "named_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shutdown_authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "escalation_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "incident_review_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kill_switch_mechanism": {
+          "type": "string",
+          "minLength": 1
+        },
+        "post_run_review_requirements": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "receipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_receipt_required",
+        "refusal_receipt_required",
+        "immutable_log_required"
+      ],
+      "properties": {
+        "action_receipt_required": {
+          "const": true
+        },
+        "refusal_receipt_required": {
+          "const": true
+        },
+        "immutable_log_required": {
+          "const": true
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["postcondition", "verifier", "rollback_required"],
+      "properties": {
+        "postcondition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rollback_required": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "nonEmptyStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

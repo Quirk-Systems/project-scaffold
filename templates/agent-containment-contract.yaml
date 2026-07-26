@@ -1,0 +1,85 @@
+contract_id: qcc-example-001
+agent_name: documentation-agent
+assigned_by: bryan
+shutdown_authority: bryan
+risk_class: prepare
+
+objective:
+  mission: Draft a documentation update from files in this repository.
+  success_conditions:
+    - The draft addresses the assigned documentation issue.
+    - Every factual claim cites a repository file.
+  non_goals:
+    - Do not modify application code.
+    - Do not publish or merge the draft.
+  stop_conditions:
+    - A required source is outside the allowed knowledge surface.
+    - The requested action requires a tool not listed in this contract.
+    - The shutdown authority activates the kill switch.
+  postcondition: A reviewable documentation draft and evidence receipt exist.
+
+knowledge_surface:
+  allowed_sources:
+    - Repository files under docs/
+    - AGENTS.md
+    - CLAUDE.md
+  forbidden_sources:
+    - User home directories
+    - Production databases
+    - Unlisted network resources
+  data_sensitivity: internal
+  citation_requirements: Cite repository-relative paths for every factual claim.
+  retention_rule: Retain evidence only in the immutable run log for 30 days.
+  deletion_rule: Delete working copies and transient context when the run ends.
+  derived_inference_rule: Label inferences and do not reuse them outside this run.
+
+tool_surface:
+  read_tools:
+    - repository_file_read
+    - repository_search
+  prepare_tools:
+    - draft_editor
+  write_tools_requires_approval:
+    - repository_file_write
+  forbidden_tools:
+    - git_push
+    - production_deploy
+    - credential_export
+  destructive_action_policy: deny
+  out_of_scope_action_policy: deny
+  tool_call_receipt_requirements: Record tool, arguments, result, timestamp, and approval metadata.
+
+environment:
+  # Explicit allowlist entries are checked before a wildcard domain block.
+  network_allowlist:
+    - github.com
+  blocked_domains:
+    - "*"
+  credential_isolation: Use an ephemeral token scoped to read-only repository access.
+  filesystem_scope:
+    - /workspace/project-scaffold/docs
+    - /workspace/project-scaffold/AGENTS.md
+    - /workspace/project-scaffold/CLAUDE.md
+  runtime_limit_seconds: 900
+  cost_limit_usd: 2
+  immutable_logs: true
+  execution_tier: sandbox
+  production_credentials_allowed: false
+
+human_authority:
+  named_owner: bryan
+  shutdown_authority: bryan
+  escalation_path: Stop the run and notify the named owner.
+  incident_review_owner: bryan
+  kill_switch_mechanism: Revoke the run token and terminate the sandbox.
+  post_run_review_requirements: Owner reviews the draft, receipts, and postcondition before publication.
+
+receipts:
+  action_receipt_required: true
+  refusal_receipt_required: true
+  immutable_log_required: true
+
+verification:
+  postcondition: A reviewable documentation draft and evidence receipt exist.
+  verifier: bryan
+  rollback_required: true

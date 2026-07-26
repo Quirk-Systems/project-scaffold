@@ -1,0 +1,22 @@
+receipt_id: qar-example-001
+contract_id: qcc-example-001
+agent_name: documentation-agent
+receipt_type: completion # completion | action | repair | rollback | escalation
+timestamp: "2026-01-01T00:00:00Z"
+action:
+  objective: Draft the assigned documentation update.
+  tool: draft_editor
+  arguments_summary: Updated only the approved documentation path.
+  result: Draft prepared for human review.
+approval:
+  required: false
+  approved_by: null
+  approved_at: null
+evidence:
+  - source: docs/example.md
+    claim: The draft was written to the approved filesystem scope.
+verification:
+  postcondition_met: true
+  verified_by: bryan
+  rollback_performed: false
+  notes: No external action was taken.
