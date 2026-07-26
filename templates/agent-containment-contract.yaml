@@ -50,9 +50,9 @@ tool_surface:
   tool_call_receipt_requirements: Record tool, arguments, result, timestamp, and approval metadata.
 
 environment:
+  # Explicit allowlist entries are checked before a wildcard domain block.
   network_allowlist:
     - github.com/Quirk-Systems/project-scaffold
-  # Explicit allowlist entries take precedence over this wildcard block.
   blocked_domains:
     - "*"
   credential_isolation: Use an ephemeral token scoped to read-only repository access.
