@@ -1,103 +1,79 @@
-{
-  "id": "quirk.move.transform",
-  "namespace": "quirk.move",
-  "canonical_name": "Transform",
-  "primary_type": "move_family",
-  "secondary_facets": [],
-  "definition": "The broader family of Quirk Moves that deliberately change form, state, structure, meaning, behavior, expression, context, or utility.",
-  "purpose": "Govern deliberate transformation while preserving semantic lineage.",
-  "owner": "Quirk Systems",
-  "governed_by": ["quirk-ontology-governance"],
-  "contained_by": null,
-  "lifecycle_status": "active",
-  "truth_status": "canonical",
-  "authority_level": "core",
-  "inputs": [],
-  "outputs": [],
-  "relations":
-    [
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.capability",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.skill",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.script",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.control",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.command",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.character",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.critique",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.critical",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.content",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.conversation",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.convention",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.construction",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.conundrum",
-        "external": true,
-      },
-      {
-        "type": "can_be_expressed_through",
-        "target": "quirk.type.cultural_fuckem",
-        "external": true,
-      },
-    ],
-  "capabilities_used": [],
-  "evidence_required":
-    ["documented intent", "traceable before-and-after state"],
-  "permissions": ["ontology:read", "ontology:propose"],
-  "lineage": { "source": "Quirk core canon" },
-  "conflicts": [],
-  "aliases": ["Transformation"],
-  "prohibited_meanings":
-    ["an automatic sibling classification for every expression surface"],
-  "supersedes": null,
-  "superseded_by": null,
-  "schema_version": 1,
-  "content_hash": "sha256:7e8086cfd77c30f0b5708c3d93534d074d5f73292ace96fb18f9427b5a02b009",
-}
+id: quirk.move.transform
+namespace: quirk.move
+canonical_name: Transform
+primary_type: move_family
+secondary_facets: []
+definition:
+  The broader family of Quirk Moves that deliberately change form, state, structure,
+  meaning, behavior, expression, context, or utility.
+purpose: Govern deliberate transformation while preserving semantic lineage.
+owner: Quirk Systems
+governed_by:
+  - quirk-ontology-governance
+contained_by: null
+lifecycle_status: active
+truth_status: canonical
+authority_level: core
+inputs: []
+outputs: []
+relations:
+  - type: can_be_expressed_through
+    target: quirk.type.capability
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.skill
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.script
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.control
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.command
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.character
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.critique
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.critical
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.content
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.conversation
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.convention
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.construction
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.conundrum
+    external: true
+  - type: can_be_expressed_through
+    target: quirk.type.cultural_fuckem
+    external: true
+capabilities_used: []
+evidence_required:
+  - documented intent
+  - traceable before-and-after state
+permissions:
+  - ontology:read
+  - ontology:propose
+lineage:
+  source: Quirk core canon
+conflicts: []
+aliases:
+  - Transformation
+prohibited_meanings:
+  - an automatic sibling classification for every expression surface
+supersedes: null
+superseded_by: null
+schema_version: 1
+content_hash: sha256:7e8086cfd77c30f0b5708c3d93534d074d5f73292ace96fb18f9427b5a02b009
