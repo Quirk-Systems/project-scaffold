@@ -4,6 +4,7 @@ import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { getRuntimeConfig } from "@/lib/runtime-config";
 
+// Render per request so promoted images read their deployment environment.
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {

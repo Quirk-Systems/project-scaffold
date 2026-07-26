@@ -17,7 +17,9 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       capture_pageview: "history_change",
       capture_pageleave: true,
     });
-  }, [posthogHost, posthogKey]);
+    // Runtime config is fixed for the lifetime of the root client provider.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // When PostHog isn't configured, render children untouched.
   if (!posthogKey) return <>{children}</>;
