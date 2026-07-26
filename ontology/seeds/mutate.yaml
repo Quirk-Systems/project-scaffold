@@ -1,0 +1,49 @@
+{
+  "id": "quirk.move.transform.mutate",
+  "namespace": "quirk.move.transform",
+  "canonical_name": "Mutate",
+  "primary_type": "move",
+  "secondary_facets": ["transformative"],
+  "definition": "A specific Quirk Move that changes a significant property while preserving traceable lineage to its source.",
+  "purpose": "Create a deliberate variant without replacing or obscuring its source canon.",
+  "owner": "Quirk Systems",
+  "governed_by": ["quirk-ontology-governance"],
+  "contained_by": "quirk.move.transform",
+  "lifecycle_status": "active",
+  "truth_status": "canonical",
+  "authority_level": "core",
+  "inputs": ["source entity"],
+  "outputs": ["traceable variant"],
+  "relations":
+    [
+      { "type": "member_of", "target": "quirk.move.transform" },
+      {
+        "type": "preserves",
+        "target": "quirk.concept.lineage",
+        "external": true,
+      },
+      {
+        "type": "changes",
+        "target": "quirk.concept.significant_property",
+        "external": true,
+      },
+    ],
+  "capabilities_used": [],
+  "evidence_required": ["source lineage", "change summary"],
+  "permissions": ["ontology:read", "ontology:propose"],
+  "lineage":
+    { "derived_from": ["quirk.move.transform"], "source": "Quirk core canon" },
+  "conflicts": [],
+  "aliases": ["Mutation"],
+  "prohibited_meanings":
+    [
+      "top-level transformation category",
+      "random corruption",
+      "uncontrolled persona drift",
+      "silent canon replacement",
+    ],
+  "supersedes": null,
+  "superseded_by": null,
+  "schema_version": 1,
+  "content_hash": "sha256:2cc0cd01676c0eb63fab5969caf028a2d6dca2caf4115991cb3663b4877e3b34",
+}
