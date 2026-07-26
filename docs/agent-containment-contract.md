@@ -3,9 +3,9 @@
 > Capability without containment is not autonomy. It is unmanaged reach.
 
 Every agent must receive a concrete, schema-valid containment contract before
-it starts. Preflight fails closed when a contract is absent, invalid, expired,
-or inconsistent with the requested run. The contract is an enforceable fence,
-not descriptive metadata.
+it starts. Preflight fails closed when a contract is absent, invalid, or
+inconsistent with the requested run. The contract is an enforceable fence, not
+descriptive metadata.
 
 ## Preflight and enforcement
 

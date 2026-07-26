@@ -46,6 +46,15 @@ describe("agent containment contract schema", () => {
     expect(validate(contract)).toBe(false);
   });
 
+  it("fails closed when out-of-scope actions are not denied", () => {
+    const contract = structuredClone(example) as {
+      tool_surface: { out_of_scope_action_policy: string };
+    };
+    contract.tool_surface.out_of_scope_action_policy = "approval_required";
+
+    expect(validate(contract)).toBe(false);
+  });
+
   it("rejects production credentials in a sandbox", () => {
     const contract = structuredClone(example) as {
       environment: { production_credentials_allowed: boolean };

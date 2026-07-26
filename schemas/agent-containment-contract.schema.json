@@ -165,7 +165,7 @@
           "$ref": "#/$defs/stringArray"
         },
         "blocked_domains": {
-          "$ref": "#/$defs/nonEmptyStringArray"
+          "$ref": "#/$defs/stringArray"
         },
         "credential_isolation": {
           "type": "string",
