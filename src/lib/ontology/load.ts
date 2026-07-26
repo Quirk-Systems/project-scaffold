@@ -25,8 +25,9 @@ function parseCanonicalFile(contents: string, path: string): CanonicalEntity[] {
   let value: unknown;
   try {
     value = path.endsWith(".json") ? JSON.parse(contents) : parse(contents);
-  } catch {
-    throw new Error(`${path} contains invalid canonical YAML or JSON.`);
+  } catch (error) {
+    const reason = error instanceof Error ? `: ${error.message}` : "";
+    throw new Error(`${path} contains invalid canonical YAML or JSON${reason}`);
   }
   if (Array.isArray(value)) return value as CanonicalEntity[];
   if (

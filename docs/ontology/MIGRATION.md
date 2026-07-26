@@ -17,6 +17,11 @@ after a separate permission review; never expose projection tables directly.
 New helper functions belong outside `public` and must have `PUBLIC`, `anon`,
 and `authenticated` execution revoked unless explicitly required.
 
+The migration owner retains access and is the expected application database
+role. If deployment uses a separate backend role, grant only that role the
+required `USAGE` and table privileges in a reviewed environment-specific
+migration; do not grant access to `PUBLIC`, `anon`, or `authenticated`.
+
 ## Deployment verification
 
 Run the migration with the normal `db:migrate` workflow, project a known Git

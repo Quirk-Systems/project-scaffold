@@ -118,7 +118,9 @@ function cycleFinding(
   entities: CanonicalEntity[],
   field: "contained_by" | "supersedes",
 ): OntologyFinding[] {
-  const next = new Map(entities.map((entity) => [entity.id, entity[field]]));
+  const relationshipMap = new Map(
+    entities.map((entity) => [entity.id, entity[field]]),
+  );
   const findings: OntologyFinding[] = [];
 
   for (const entity of entities) {
@@ -134,7 +136,7 @@ function cycleFinding(
         break;
       }
       path.add(current);
-      current = next.get(current);
+      current = relationshipMap.get(current);
     }
   }
   return findings;
