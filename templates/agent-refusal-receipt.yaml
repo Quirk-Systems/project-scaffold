@@ -1,0 +1,17 @@
+receipt_id: qrr-example-001
+contract_id: qcc-example-001
+agent_name: documentation-agent
+receipt_type: refusal
+timestamp: "2026-01-01T00:00:00Z"
+request_summary: Publish the draft directly to production.
+refusal:
+  boundary: tool_surface
+  reason: Production deployment is forbidden and no approved write tool permits publication.
+  policy: Fail closed for destructive or out-of-scope actions.
+evidence:
+  - contract_path: tool_surface.forbidden_tools
+    observed_value: production_deploy
+escalation:
+  required: true
+  notified: bryan
+  next_step: Human owner may issue a new contract with an appropriately reviewed boundary.

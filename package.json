@@ -27,6 +27,7 @@
     "db:reset": "rm -f local.db local.db-journal && bun run db:migrate",
     "db:seed": "bun run scripts/seed.ts",
     "deps:audit": "bun run scripts/deps-audit.ts",
+    "containment:validate": "bun run scripts/validate-agent-containment-contract.ts",
     "docs:ideas": "bun run scripts/generate-ideas-doc.ts && prettier --write docs/recommendations/wild/IDEAS.md",
     "email:dev": "email dev --dir src/emails --port 3001",
     "clean": "rm -rf .next out node_modules",
@@ -83,6 +84,7 @@
     "@types/react-dom": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "~3.2.6",
+    "ajv": "8.17.1",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.17.0",
     "eslint-config-next": "^16.2.6",
@@ -96,7 +98,8 @@
     "tailwindcss": "^4.0.0",
     "typescript": "^6.0.3",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "~3.2.6"
+    "vitest": "~3.2.6",
+    "yaml": "2.8.0"
   },
   "engines": {
     "node": ">=20.0.0"
