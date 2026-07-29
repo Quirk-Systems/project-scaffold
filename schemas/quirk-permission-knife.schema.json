@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-permission-knife.schema.json",
+  "title": "Quirk Permission Knife",
+  "description": "Scoped, time-boxed, retractable grant that narrows a Capability Surface.",
+  "type": "object",
+  "required": [
+    "knife_id",
+    "principal",
+    "surface_id",
+    "allowed_capabilities",
+    "scope",
+    "resource_filter",
+    "not_before",
+    "expires_at",
+    "revocation_hash",
+    "issued_by"
+  ],
+  "properties": {
+    "knife_id": { "type": "string", "format": "uuid" },
+    "principal": { "type": "string" },
+    "surface_id": { "type": "string", "format": "uuid" },
+    "allowed_capabilities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "scope": { "type": "string" },
+    "resource_filter": { "type": "object" },
+    "not_before": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "revocation_hash": {
+      "anyOf": [{ "type": "string" }, { "type": "null" }]
+    },
+    "issued_by": { "type": "string", "format": "email" }
+  },
+  "additionalProperties": false
+}

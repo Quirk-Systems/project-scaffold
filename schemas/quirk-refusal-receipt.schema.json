@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-refusal-receipt.schema.json",
+  "title": "Quirk Refusal Receipt",
+  "description": "Record of an agent refusing an action, with authority and reason.",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "agent_id",
+    "run_id",
+    "refused_capability",
+    "refusal_type",
+    "authority",
+    "reason",
+    "timestamp",
+    "signature"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string", "format": "uuid" },
+    "agent_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "refused_capability": { "type": "string" },
+    "refusal_type": {
+      "type": "string",
+      "enum": [
+        "out_of_scope",
+        "expired_grant",
+        "missing_consent",
+        "policy",
+        "safety"
+      ]
+    },
+    "authority": { "type": "string" },
+    "reason": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "signature": { "type": "string" }
+  },
+  "additionalProperties": false
+}

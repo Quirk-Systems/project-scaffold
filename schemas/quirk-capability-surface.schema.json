@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-capability-surface.schema.json",
+  "title": "Quirk Capability Surface",
+  "description": "Canonical allowlist of tools, models, data sets, and network boundaries an agent may use.",
+  "type": "object",
+  "required": [
+    "surface_id",
+    "agent_id",
+    "version",
+    "tools",
+    "models",
+    "data_access",
+    "network_boundaries",
+    "owner",
+    "reviewed_at",
+    "expires_at"
+  ],
+  "properties": {
+    "surface_id": { "type": "string", "format": "uuid" },
+    "agent_id": { "type": "string" },
+    "version": { "type": "string" },
+    "tools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0
+    },
+    "models": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0
+    },
+    "data_access": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0
+    },
+    "network_boundaries": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0
+    },
+    "owner": { "type": "string", "format": "email" },
+    "reviewed_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

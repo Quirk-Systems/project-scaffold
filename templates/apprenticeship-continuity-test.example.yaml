@@ -1,0 +1,17 @@
+test_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+apprentice_agent_id: agent-curator-v3
+mentor_id: alice@quirk.systems
+task_domain: curation
+minimum_tasks: 50
+agreement_rate: 0.91
+threshold: 0.88
+task_distribution:
+  - task_id: task-01
+    mentor_judgment: approve
+    apprentice_judgment: approve
+    aligned: true
+  - task_id: task-02
+    mentor_judgment: reject
+    apprentice_judgment: approve
+    aligned: false
+evaluated_at: "2026-07-29T09:30:00Z"

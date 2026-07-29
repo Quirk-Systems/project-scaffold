@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-reversibility-ledger.schema.json",
+  "title": "Quirk Reversibility Ledger",
+  "description": "Compensating action record for a mutating agent action.",
+  "type": "object",
+  "required": [
+    "ledger_id",
+    "action_receipt_id",
+    "compensating_action",
+    "pre_state_digest",
+    "post_state_digest",
+    "rollback_window_ms",
+    "expires_at",
+    "status"
+  ],
+  "properties": {
+    "ledger_id": { "type": "string", "format": "uuid" },
+    "action_receipt_id": { "type": "string", "format": "uuid" },
+    "compensating_action": {
+      "type": "object",
+      "required": ["tool", "arguments_template", "authorization"],
+      "properties": {
+        "tool": { "type": "string" },
+        "arguments_template": { "type": "object" },
+        "authorization": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "pre_state_digest": { "type": "string" },
+    "post_state_digest": {
+      "anyOf": [{ "type": "string" }, { "type": "null" }]
+    },
+    "rollback_window_ms": { "type": "integer", "minimum": 0 },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "available", "executed", "expired"]
+    }
+  },
+  "additionalProperties": false
+}
