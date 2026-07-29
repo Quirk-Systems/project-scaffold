@@ -1,0 +1,34 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bun install)",
+      "Bash(bun install --frozen-lockfile)",
+      "Bash(bun run lint)",
+      "Bash(bun run type-check)",
+      "Bash(bun run test:run)",
+      "Bash(bun run test:coverage)",
+      "Bash(bun run validate)",
+      "Bash(bun run build)",
+      "Bash(bun run deps:audit)",
+      "Bash(bun audit)",
+      "Bash(bun audit --prod)",
+      "Bash(bun outdated)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)"
+    ]
+  }
+}
