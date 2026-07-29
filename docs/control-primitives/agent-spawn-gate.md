@@ -40,7 +40,7 @@ approval_signature: sig-ed25519-...
 
 ## Schema
 
-See [`../schemas/quirk-agent-spawn-gate.schema.json`](../schemas/quirk-agent-spawn-gate.schema.json).
+See [`/schemas/quirk-agent-spawn-gate.schema.json`](../schemas/quirk-agent-spawn-gate.schema.json).
 
 ## Enforcement note
 

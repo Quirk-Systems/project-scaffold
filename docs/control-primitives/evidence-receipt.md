@@ -45,7 +45,7 @@ signature: sig-ed25519-...
 
 ## Schema
 
-See [`../schemas/quirk-evidence-receipt.schema.json`](../schemas/quirk-evidence-receipt.schema.json).
+See [`/schemas/quirk-evidence-receipt.schema.json`](../schemas/quirk-evidence-receipt.schema.json).
 
 ## Enforcement note
 

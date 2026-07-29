@@ -47,7 +47,7 @@ issued_by: bob@quirk.systems
 
 ## Schema
 
-See [`../schemas/quirk-permission-knife.schema.json`](../schemas/quirk-permission-knife.schema.json).
+See [`/schemas/quirk-permission-knife.schema.json`](../schemas/quirk-permission-knife.schema.json).
 
 ## Enforcement note
 

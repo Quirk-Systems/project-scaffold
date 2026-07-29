@@ -43,7 +43,7 @@ timestamp: "2026-07-29T10:07:00Z"
 
 ## Schema
 
-See [`../schemas/quirk-externality-receipt.schema.json`](../schemas/quirk-externality-receipt.schema.json).
+See [`/schemas/quirk-externality-receipt.schema.json`](../schemas/quirk-externality-receipt.schema.json).
 
 ## Enforcement note
 
