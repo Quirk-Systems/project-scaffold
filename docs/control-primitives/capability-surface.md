@@ -52,7 +52,7 @@ expires_at: "2026-10-29T10:00:00Z"
 
 ## Schema
 
-See [`/schemas/quirk-capability-surface.schema.json`](../schemas/quirk-capability-surface.schema.json).
+See [`../schemas/quirk-capability-surface.schema.json`](../schemas/quirk-capability-surface.schema.json).
 
 ## Enforcement note
 

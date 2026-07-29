@@ -60,7 +60,7 @@ evaluated_at: "2026-07-29T10:04:00Z"
 
 ## Schema
 
-See [`/schemas/quirk-judgment-ranker.schema.json`](../schemas/quirk-judgment-ranker.schema.json).
+See [`../schemas/quirk-judgment-ranker.schema.json`](../schemas/quirk-judgment-ranker.schema.json).
 
 ## Enforcement note
 

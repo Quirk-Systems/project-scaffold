@@ -42,7 +42,7 @@ status: available
 
 ## Schema
 
-See [`/schemas/quirk-reversibility-ledger.schema.json`](../schemas/quirk-reversibility-ledger.schema.json).
+See [`../schemas/quirk-reversibility-ledger.schema.json`](../schemas/quirk-reversibility-ledger.schema.json).
 
 ## Enforcement note
 

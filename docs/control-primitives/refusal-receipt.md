@@ -42,7 +42,7 @@ signature: sig-ed25519-...
 
 ## Schema
 
-See [`/schemas/quirk-refusal-receipt.schema.json`](../schemas/quirk-refusal-receipt.schema.json).
+See [`../schemas/quirk-refusal-receipt.schema.json`](../schemas/quirk-refusal-receipt.schema.json).
 
 ## Enforcement note
 

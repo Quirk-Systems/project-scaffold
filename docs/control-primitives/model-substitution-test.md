@@ -48,7 +48,7 @@ evaluated_at: "2026-07-29T08:00:00Z"
 
 ## Schema
 
-See [`/schemas/quirk-model-substitution-test.schema.json`](../schemas/quirk-model-substitution-test.schema.json).
+See [`../schemas/quirk-model-substitution-test.schema.json`](../schemas/quirk-model-substitution-test.schema.json).
 
 ## Enforcement note
 

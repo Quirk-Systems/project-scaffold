@@ -48,7 +48,7 @@ evaluated_at: "2026-07-29T09:30:00Z"
 
 ## Schema
 
-See [`/schemas/quirk-apprenticeship-continuity-test.schema.json`](../schemas/quirk-apprenticeship-continuity-test.schema.json).
+See [`../schemas/quirk-apprenticeship-continuity-test.schema.json`](../schemas/quirk-apprenticeship-continuity-test.schema.json).
 
 ## Enforcement note
 
