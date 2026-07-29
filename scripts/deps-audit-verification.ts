@@ -40,7 +40,10 @@ const DEPENDENCY_SECTIONS = [
 
 const SEVERITIES = new Set(["critical", "high", "moderate", "low"]);
 
-function stripAnsi(value: string): string {
+// The ESC byte is what makes a sequence an ANSI code. Matching the bracket
+// form alone would leave the ESC behind and would also eat literal text
+// like "[32m" out of package names and advisory titles.
+export function stripAnsi(value: string): string {
   return value.replace(/\u001b\[[0-9;]*m/g, "");
 }
 

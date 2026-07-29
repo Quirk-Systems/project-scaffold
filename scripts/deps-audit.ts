@@ -37,6 +37,7 @@ import { spawnSync } from "node:child_process";
 import {
   assessVerificationEvidence,
   parseAuditOutput,
+  stripAnsi,
   type AuditAdvisory as Advisory,
   type AuditMap,
   type DependencyManifest,
@@ -133,10 +134,6 @@ function commandSucceeded(result: CommandResult): boolean {
 function commandFailure(command: string, result: CommandResult): string {
   const detail = result.error || result.stderr.trim() || result.stdout.trim();
   return `${command} failed (exit ${result.status ?? "unknown"})${detail ? `: ${detail}` : ""}`;
-}
-
-function stripAnsi(s: string): string {
-  return s.replace(/\[[0-9;]*m/g, "");
 }
 
 function updateType(current: string, target: string): string {

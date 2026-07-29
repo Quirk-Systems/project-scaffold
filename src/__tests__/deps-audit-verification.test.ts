@@ -16,10 +16,14 @@ const validAudit = JSON.stringify({
   ],
 });
 
+// lucide-react carries the 0.x range: below 1.0.0 the compatibility line is
+// 0.<minor>, so a minor bump there is a breaking crossing rather than a
+// routine in-line update.
 const manifestBefore: DependencyManifest = {
   dependencies: {
     next: "^15.1.0",
     react: "^19.0.0",
+    "lucide-react": "^0.468.0",
   },
   devDependencies: {
     vitest: "~3.2.6",
@@ -30,6 +34,7 @@ const safeManifestAfter: DependencyManifest = {
   dependencies: {
     next: "^15.5.0",
     react: "^19.2.0",
+    "lucide-react": "^0.468.2",
   },
   devDependencies: {
     vitest: "~3.2.7",
@@ -67,6 +72,20 @@ describe("dependency verification evidence", () => {
       },
       expectedVerdict: "failed",
       expectedFailure: "next crossed compatibility line",
+    },
+    {
+      name: "fails when a 0.x update crosses its minor compatibility line",
+      auditError: null,
+      auditOutput: validAudit,
+      manifestAfter: {
+        ...safeManifestAfter,
+        dependencies: {
+          ...safeManifestAfter.dependencies,
+          "lucide-react": "^0.469.0",
+        },
+      },
+      expectedVerdict: "failed",
+      expectedFailure: "lucide-react crossed compatibility line",
     },
     {
       name: "fails when an update removes a direct dependency",
