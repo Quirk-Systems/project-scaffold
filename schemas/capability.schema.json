@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.quirk.systems/capability.schema.json",
+  "title": "Quirk Capability Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "version",
+    "status",
+    "outcome",
+    "inputs",
+    "outputs",
+    "authority",
+    "quality"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^quirk://capabilities/"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "experimental",
+        "validated",
+        "active",
+        "constrained",
+        "deprecated"
+      ]
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "authority": {
+      "type": "object"
+    },
+    "quality": {
+      "type": "object"
+    }
+  }
+}

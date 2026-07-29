@@ -1,0 +1,27 @@
+{
+  "id": "quirk://capabilities/example/example-capability",
+  "name": "<name>",
+  "version": "0.1.0",
+  "status": "experimental",
+  "outcome": "<observable result>",
+  "inputs": [],
+  "outputs": [],
+  "authority": {
+    "maximumRisk": "low",
+    "requiredPermissions": []
+  },
+  "operations": {
+    "latencyClass": "unknown",
+    "costClass": "unknown",
+    "idempotency": "required"
+  },
+  "quality": {
+    "evaluationSuite": "<ref>",
+    "minimumScore": 0.8,
+    "knownLimitations": []
+  },
+  "shadow": {
+    "looksSuccessfulWhen": [],
+    "mayStillHaveFailedWhen": []
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.quirk.systems/quirk-entity.schema.json",
+  "title": "Universal Quirk Entity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "version",
+    "status",
+    "name",
+    "purpose",
+    "owner",
+    "scope",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^quirk://[a-z0-9][a-z0-9/_-]*$"
+    },
+    "type": {
+      "enum": [
+        "principle",
+        "memory",
+        "preference",
+        "capability",
+        "workflow",
+        "evidence",
+        "asset",
+        "metric",
+        "system",
+        "runtime",
+        "rule"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "exploring",
+        "experimental",
+        "validated",
+        "active",
+        "constrained",
+        "deprecated",
+        "archived"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "enum": ["personal", "project", "organization", "public"]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "quirk://registries/pages/index",
+  "version": "1.0.0",
+  "pages": [
+    {
+      "id": "quirk://pages/control",
+      "surface": "apps/control",
+      "visibility": "internal"
+    },
+    {
+      "id": "quirk://pages/docs",
+      "surface": "apps/docs",
+      "visibility": "internal"
+    },
+    {
+      "id": "quirk://pages/public",
+      "surface": "apps/pages",
+      "visibility": "approval-required"
+    },
+    {
+      "id": "quirk://pages/studio",
+      "surface": "apps/studio",
+      "visibility": "experimental"
+    }
+  ]
+}

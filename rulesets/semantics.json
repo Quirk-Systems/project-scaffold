@@ -1,0 +1,45 @@
+{
+  "id": "quirk://rulesets/semantics",
+  "version": "1.0.0",
+  "status": "active",
+  "owner": "bryansayler",
+  "purpose": "Keep Quirk terminology versioned, resolvable, and operationally meaningful.",
+  "rules": [
+    {
+      "id": "quirk://rules/semantics/asset-not-artifact",
+      "description": "Reusable outputs are assets.",
+      "effect": "deny",
+      "target": "canonical.term",
+      "condition": {
+        "field": "term",
+        "operator": "equals",
+        "value": "artifact"
+      },
+      "message": "Use asset; artifact is deprecated in Quirk canon."
+    },
+    {
+      "id": "quirk://rules/semantics/defined-relation",
+      "description": "Ontology relations must be registered.",
+      "effect": "require",
+      "target": "ontology.edge",
+      "condition": {
+        "field": "relation.registered",
+        "operator": "equals",
+        "value": true
+      },
+      "message": "Register relation semantics before use."
+    },
+    {
+      "id": "quirk://rules/semantics/no-unscoped-team",
+      "description": "Organization words describe behavior rather than flattening groups into team.",
+      "effect": "warn",
+      "target": "canonical.term",
+      "condition": {
+        "field": "term",
+        "operator": "equals",
+        "value": "team"
+      },
+      "message": "Prefer the precise structure: Mandem, Crew, Guild, Club, Syndicate, Council, or Taskforce."
+    }
+  ]
+}

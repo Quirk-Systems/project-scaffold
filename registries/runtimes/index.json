@@ -1,0 +1,10 @@
+{
+  "id": "quirk://registries/runtimes/index",
+  "version": "1.0.0",
+  "profiles": [
+    "local-development",
+    "github-ci",
+    "durable-worker",
+    "edge-request"
+  ]
+}

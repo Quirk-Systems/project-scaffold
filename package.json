@@ -13,6 +13,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "format:check:foundation": "prettier --check ARCHITECTURE.md CONTRIBUTING.md apps packages registries rulesets runtimes schemas templates tooling docs/architecture docs/semantics docs/operations docs/roadmaps .github/actions .github/ISSUE_TEMPLATE .github/rulesets .github/workflows .github/copilot-instructions.md .github/PULL_REQUEST_TEMPLATE.md",
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -29,8 +30,13 @@
     "deps:audit": "bun run scripts/deps-audit.ts",
     "docs:ideas": "bun run scripts/generate-ideas-doc.ts && prettier --write docs/recommendations/wild/IDEAS.md",
     "email:dev": "email dev --dir src/emails --port 3001",
+    "quirk": "bun tooling/cli/quirk.mjs",
+    "quirk:doctor": "bun tooling/cli/quirk.mjs doctor",
+    "quirk:validate": "bun tooling/cli/quirk.mjs validate",
+    "quirk:graph": "bun tooling/cli/quirk.mjs graph",
+    "quirk:classify": "bun tooling/cli/quirk.mjs classify .",
     "clean": "rm -rf .next out node_modules",
-    "validate": "bun run lint && bun run type-check && bun run test:run && SKIP_ENV_VALIDATION=1 bun run build",
+    "validate": "bun run format:check:foundation && bun run lint && bun run type-check && bun run test:run && bun run quirk:validate && SKIP_ENV_VALIDATION=1 bun run build",
     "validate:full": "bun run validate && bun run test:e2e",
     "prepare": "lefthook install"
   },
@@ -48,9 +54,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
-    "better-sqlite3": "^11.7.0",
-    "lucide-react": "^0.468.0",
-    "next": "^15.1.0",
+    "lucide-react": "^1.16.0",
+    "next": "^16.2.6",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.4.6",
     "pino": "^10.3.1",
@@ -103,6 +108,7 @@
   },
   "overrides": {
     "postcss": "^8.5.10",
-    "shell-quote": "^1.9.0"
+    "shell-quote": "^1.9.0",
+    "dompurify": "3.4.12"
   }
 }

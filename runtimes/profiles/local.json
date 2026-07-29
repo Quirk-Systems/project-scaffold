@@ -1,0 +1,24 @@
+{
+  "id": "quirk://runtimes/local-development",
+  "name": "Local Development",
+  "kind": "local",
+  "status": "active",
+  "capabilities": [
+    "filesystem-read",
+    "filesystem-write",
+    "network",
+    "database-local",
+    "interactive-debug"
+  ],
+  "prohibitions": ["production-secret-access", "public-publish"],
+  "limits": {
+    "timeoutMs": 600000,
+    "memoryMb": 4096,
+    "maxConcurrency": 4
+  },
+  "authority": {
+    "network": "open",
+    "filesystem": "read-write",
+    "secrets": "scoped"
+  }
+}

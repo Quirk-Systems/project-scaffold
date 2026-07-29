@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.quirk.systems/runtime-profile.schema.json",
+  "title": "Quirk Runtime Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "kind",
+    "status",
+    "capabilities",
+    "prohibitions",
+    "limits",
+    "authority"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^quirk://runtimes/"
+    },
+    "name": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": ["local", "ci", "server", "worker", "edge"]
+    },
+    "status": {
+      "enum": ["experimental", "active", "constrained"]
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "prohibitions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "limits": {
+      "type": "object",
+      "required": ["timeoutMs", "memoryMb", "maxConcurrency"],
+      "properties": {
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "memoryMb": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxConcurrency": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["network", "filesystem", "secrets"],
+      "properties": {
+        "network": {
+          "enum": ["none", "allowlist", "open"]
+        },
+        "filesystem": {
+          "enum": ["none", "read", "read-write"]
+        },
+        "secrets": {
+          "enum": ["none", "scoped"]
+        }
+      }
+    }
+  }
+}

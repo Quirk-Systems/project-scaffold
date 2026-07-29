@@ -1,0 +1,8 @@
+name: Validate Quirk foundation
+description: Validate Quirk schemas, rulesets, registries, runtimes, templates, and ontology
+runs:
+  using: composite
+  steps:
+    - name: Quirk foundation validation
+      shell: bash
+      run: bun tooling/cli/quirk.mjs validate
