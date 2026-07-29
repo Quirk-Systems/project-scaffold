@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**project-scaffold** is the fully-loaded boilerplate for Quirk Systems projects. It provides a production-ready Next.js 15 scaffold with all tooling, testing, CI/CD, and conventions configured out of the box. Stack, scripts, and layout are visible in `package.json` and the tree itself.
+**quirk-os** is the implemented Quirk OS kernel for Quirk Systems projects. It provides a production-ready Next.js 15 scaffold with all tooling, testing, CI/CD, and conventions configured out of the box. Stack, scripts, and layout are visible in `package.json` and the tree itself.
 
 ## Environment Variables
 

@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/Quirk-Systems/project-scaffold/security/advisories/new
+    url: https://github.com/Quirk-Systems/quirk-os/security/advisories/new
     about: Report security issues privately. See SECURITY.md.
   - name: Quirk Systems discussions
-    url: https://github.com/Quirk-Systems/project-scaffold/discussions
+    url: https://github.com/Quirk-Systems/quirk-os/discussions
     about: Questions, ideas, and general conversation.

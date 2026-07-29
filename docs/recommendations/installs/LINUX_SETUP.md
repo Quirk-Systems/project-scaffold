@@ -120,7 +120,7 @@ For team consistency, consider Nix flakes:
 ```nix
 # flake.nix
 {
-  description = "project-scaffold dev environment";
+  description = "quirk-os dev environment";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
