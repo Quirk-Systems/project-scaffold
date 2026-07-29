@@ -6,6 +6,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   semantic-governance:
     uses: Quirk-Systems/.github/.github/workflows/quirk-semantic-governance.yml@main
