@@ -37,6 +37,20 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     needs: validate
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -54,6 +68,18 @@ jobs:
       - run: bun run test:e2e
         env:
           SKIP_ENV_VALIDATION: "1"
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
 
   security:
     runs-on: ubuntu-latest

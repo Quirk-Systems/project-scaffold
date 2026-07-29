@@ -1,0 +1,11 @@
+name: Quirk Semantic Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  semantic-governance:
+    uses: Quirk-Systems/.github/.github/workflows/quirk-semantic-governance.yml@main

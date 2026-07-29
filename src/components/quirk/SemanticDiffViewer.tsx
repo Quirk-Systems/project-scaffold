@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,12 +25,9 @@ export function SemanticDiffViewer({ assetId }: { assetId: string }) {
     [asset.data?.versions],
   );
 
-  useEffect(() => {
-    if (versions.length >= 2 && !toId && !fromId) {
-      setToId(versions[0].id);
-      setFromId(versions[1].id);
-    }
-  }, [versions, fromId, toId]);
+  // Default the comparison to the two latest versions until the user picks.
+  const effectiveToId = toId || versions[0]?.id || "";
+  const effectiveFromId = fromId || versions[1]?.id || "";
 
   const mutate = useMutation({
     mutationFn: () =>
@@ -49,8 +46,8 @@ export function SemanticDiffViewer({ assetId }: { assetId: string }) {
     mutationFn: () =>
       quirkApi.createDiff({
         assetId,
-        fromVersionId: fromId,
-        toVersionId: toId,
+        fromVersionId: effectiveFromId,
+        toVersionId: effectiveToId,
       }),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["asset", assetId] }),
@@ -92,20 +89,25 @@ export function SemanticDiffViewer({ assetId }: { assetId: string }) {
             <div className="flex flex-wrap items-end gap-3">
               <VersionSelect
                 label="From"
-                value={fromId}
+                value={effectiveFromId}
                 onChange={setFromId}
                 versions={versions}
               />
               <span className="text-muted-foreground pb-2">→</span>
               <VersionSelect
                 label="To"
-                value={toId}
+                value={effectiveToId}
                 onChange={setToId}
                 versions={versions}
               />
               <Button
                 onClick={() => diff.mutate()}
-                disabled={!fromId || !toId || fromId === toId || diff.isPending}
+                disabled={
+                  !effectiveFromId ||
+                  !effectiveToId ||
+                  effectiveFromId === effectiveToId ||
+                  diff.isPending
+                }
               >
                 {diff.isPending ? "Diffing…" : "Ask the Diff Witch"}
               </Button>

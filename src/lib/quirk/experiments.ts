@@ -8,6 +8,10 @@ import {
 } from "@/lib/db/schema";
 import { labRatGenerate, pickWinner } from "./agents";
 import { captureAsset, getAsset, setAssetStatus } from "./assets";
+import { mintOffer } from "./offers";
+import { readGoldilocks, type GoldilocksReading } from "./goldilocks";
+import { scoreText } from "./scoring";
+import type { QuirkOffer } from "@/lib/db/schema";
 
 export async function listExperiments(): Promise<QuirkExperiment[]> {
   return db
@@ -111,9 +115,16 @@ export async function scoreRun(
 }
 
 /**
- * Promote a winning run's output into a new canonical asset.
+ * Promote a winning run's output into a new canonical asset, and — if the
+ * Goldilocks gate reads it just right — mint its one-of-one offer. Too-cold
+ * and too-hot winners still promote; they just wait for a human to mint
+ * manually (POST /api/offers bypasses the gate).
  */
-export async function promoteRun(runId: string): Promise<QuirkRun | null> {
+export async function promoteRun(runId: string): Promise<{
+  run: QuirkRun;
+  offer: QuirkOffer | null;
+  goldilocks: GoldilocksReading;
+} | null> {
   const [run] = await db
     .select()
     .from(quirkRuns)
@@ -136,6 +147,24 @@ export async function promoteRun(runId: string): Promise<QuirkRun | null> {
     .set({ outcome: "winner", outputAssetId: asset.id })
     .where(eq(quirkRuns.id, runId))
     .returning();
+  if (!updated) return null;
 
-  return updated ?? null;
+  const goldilocks = readGoldilocks(text ? scoreText(text) : null);
+
+  // Best-effort: promotion must never fail because minting did (e.g. a
+  // transient voice-layer error). The manual mint endpoint is the recovery.
+  let offer: QuirkOffer | null = null;
+  if (goldilocks.verdict === "just_right") {
+    try {
+      offer = await mintOffer({ assetId: asset.id });
+    } catch (e) {
+      console.warn(`[quirk] auto-mint failed for asset ${asset.id}:`, e);
+    }
+  } else {
+    console.warn(
+      `[quirk] goldilocks held the mint for asset ${asset.id} (${goldilocks.verdict}): ${goldilocks.reasons.join("; ")}`,
+    );
+  }
+
+  return { run: updated, offer, goldilocks };
 }

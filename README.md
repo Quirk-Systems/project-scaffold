@@ -1,66 +1,89 @@
-# project-scaffold
+# Quirk OS
 
-A fully-loaded boilerplate to quickly get started on Quirk Systems projects.
+**The public monorepo for Quirk Systems** — an asset registry and mutation
+engine where unstructured material (prose, photography, graphic design,
+audio, prompts, datasets) is captured, annotated, semantically versioned,
+mutated, and promoted through data-supported curation.
 
-## Tech Stack
+Built on a production Next.js 16 scaffold: everything here is real, wired,
+and validated in CI.
 
-Next.js 15 (App Router) | TypeScript | Tailwind CSS v4 | shadcn/ui | Drizzle ORM | Vitest | Playwright | Bun
+## What lives here
 
-## Getting Started
+### The Quirk Data Engine
 
-### Prerequisites
+A registry for unstructured assets with pgvector embeddings and full
+lifecycle tracking:
 
-- [Bun](https://bun.sh/) (latest)
-- [Node.js](https://nodejs.org/) >= 20
+```
+capture → annotate → mutate → diff → experiment → promote → publish
+```
 
-### Setup
+| Piece                     | What it does                                                                                                                  |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `quirk_assets` + versions | Canonical rows for text/image/audio/video/pdf/prompt/song/dataset assets, embedded (pgvector 1536) and semantically versioned |
+| Annotations & tags        | `persona_fit`, `spawn_path`, `risk`, `quality`, `theme` — the research signal that drives curation                            |
+| Quirk Diff                | Semantic version control: additions/removals/meaning-shift between versions, not line diffs                                   |
+| Experiments & runs        | Track persona/mask/prompt/model variations; promote winners                                                                   |
+| Pipelines                 | Multi-step asset processing with run tracking                                                                                 |
+| Media storage             | Binary assets (photography, design work) in private object storage, served via signed URLs                                    |
+| Offers                    | One-of-one claimable drops minted from curated assets — persona-voiced, atomically claimed by exactly one person              |
+
+### The agent crew (`src/lib/quirk/agents/`)
+
+Named agents own lifecycle stages: **Archivist Goblin** (ingest/normalize),
+**Curator** (annotation), **Diff Witch** (semantic diffing), **Foreman**
+(pipelines), **Lab Rat King** (experiments).
+
+### The voice layer (`src/lib/ai/`)
+
+A persona/register composition layer over the Claude API: a frozen,
+prompt-cacheable house persona modulated by tonal registers (deadpan, warm,
+hype, mock_panic, swoon), each with an animation vocabulary the UI keys
+motion off. Personality as configuration, not copy-paste.
+
+### Production integrations
+
+Stripe billing (checkout, order-safe webhooks, billing portal), Resend +
+react-email, PostHog analytics/flags, structured pino logging, Auth.js —
+all lazy-initialized so the repo builds and validates with zero secrets.
+
+## Getting started
 
 ```bash
-# Install dependencies
 bun install
-
-# Copy environment variables
-cp .env.example .env
-
-# Start development server
-bun run dev
+cp .env.example .env   # everything optional; features no-op until configured
+bun run dev            # http://localhost:3000 — /quirk is the registry UI
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-## Scripts
-
-| Command              | Description                  |
-| -------------------- | ---------------------------- |
-| `bun run dev`        | Start dev server (Turbopack) |
-| `bun run build`      | Production build             |
-| `bun run start`      | Start production server      |
-| `bun run lint`       | Lint with ESLint             |
-| `bun run format`     | Format with Prettier         |
-| `bun run type-check` | TypeScript checking          |
-| `bun run test`       | Unit tests (watch)           |
-| `bun run test:run`   | Unit tests (once)            |
-| `bun run test:e2e`   | E2E tests (Playwright)       |
-| `bun run db:push`    | Push schema to database      |
-| `bun run db:studio`  | Open Drizzle Studio          |
-| `bun run validate`   | Full validation pipeline     |
-
-## Project Structure
-
-```
-src/
-├── app/          # Pages, layouts, API routes (App Router)
-├── components/   # React components (ui/ for shadcn)
-├── hooks/        # Custom React hooks
-├── lib/          # Utilities, database, auth, env validation
-└── types/        # Shared TypeScript types
-```
-
-## Adding Components
+Media capture (requires `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`):
 
 ```bash
-bunx shadcn@latest add button
+curl -F "file=@photo.jpg" -F "title=Golden hour test" \
+  http://localhost:3000/api/assets/upload
 ```
+
+## Commands
+
+| Command                          | Description                                        |
+| -------------------------------- | -------------------------------------------------- |
+| `bun run dev`                    | Dev server (runs migrations first)                 |
+| `bun run validate`               | lint + type-check + tests + build — the merge gate |
+| `bun run db:migrate` / `db:seed` | Schema + Quirk OS seed data                        |
+| `bun run test:e2e`               | Playwright suite                                   |
+| `bun run email:dev`              | Preview react-email templates                      |
+
+## Repository structure
+
+Single-app today, workspace-shaped on purpose — see
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the layout, the module
+boundaries that graduate to packages, and the asset lifecycle in depth.
+[CLAUDE.md](CLAUDE.md) is the source of truth for conventions and is kept
+current by the agents that work this repo.
+
+## Contributing & security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
 ## License
 

@@ -7,6 +7,11 @@
 /src/lib/db/            @bryansayler
 /drizzle/               @bryansayler
 
+# Money paths and media storage
+/src/lib/billing/       @bryansayler
+/src/app/api/webhooks/  @bryansayler
+/src/lib/quirk/media.ts @bryansayler
+
 # CI, infra, and security
 /.github/               @bryansayler
 /SECURITY.md            @bryansayler
