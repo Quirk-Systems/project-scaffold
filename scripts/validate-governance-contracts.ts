@@ -48,6 +48,10 @@ async function loadSchemas(): Promise<Map<string, object>> {
   return map;
 }
 
+// Explicit mapping so template authors can use readable filenames (e.g.
+// "spawn-gate.example.yaml") while still binding to the canonical schema name
+// (e.g. "quirk-agent-spawn-gate.schema.json"). Add new entries here when a new
+// primitive gets both a schema and an example template.
 const templateToSchema: Record<string, string> = {
   "containment-contract.example.yaml": "quirk-containment-contract.schema.json",
   "spawn-gate.example.yaml": "quirk-agent-spawn-gate.schema.json",
@@ -61,7 +65,10 @@ const templateToSchema: Record<string, string> = {
 function schemaFileForTemplate(file: string): string {
   const schema = templateToSchema[file];
   if (!schema) {
-    die(`No schema mapping configured for template: ${file}`);
+    die(
+      `No schema mapping configured for template: ${file}. ` +
+        `Add an entry in scripts/validate-governance-contracts.ts.`,
+    );
   }
   return schema;
 }

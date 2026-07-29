@@ -29,6 +29,7 @@
     },
     "pre_state_digest": { "type": "string" },
     "post_state_digest": {
+      "description": "Digest of state after the action. Null before the action completes; required string once the action finishes and rollback becomes available.",
       "anyOf": [{ "type": "string" }, { "type": "null" }]
     },
     "rollback_window_ms": { "type": "integer", "minimum": 0 },

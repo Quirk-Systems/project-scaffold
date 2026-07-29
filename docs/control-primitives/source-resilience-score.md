@@ -38,7 +38,7 @@ block_threshold: 0.50
 
 ## Schema
 
-See [`/schemas/quirk-source-resilience-score.schema.json`](../schemas/quirk-source-resilience-score.schema.json).
+See [`../schemas/quirk-source-resilience-score.schema.json`](../schemas/quirk-source-resilience-score.schema.json).
 
 ## Enforcement note
 
