@@ -21,6 +21,14 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: next-auth
         update-types: ["version-update:semver-major"]
+      # eslint 10 removed the legacy rule context API (context.getFilename).
+      # eslint-plugin-react — pulled in by eslint-config-next — still peers
+      # `eslint: ^9.7` at 7.37.5 and crashes on every React file under 10.
+      # Lift when eslint-plugin-react ships eslint 10 support.
+      - dependency-name: eslint
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore(deps)
       prefix-development: chore(deps-dev)
