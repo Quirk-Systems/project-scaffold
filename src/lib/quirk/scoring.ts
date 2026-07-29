@@ -115,7 +115,9 @@ function ratio(matches: number, total: number): number {
   return matches / total;
 }
 
-function round(n: number): number {
+/** Round to 3 decimals. Exported so score arithmetic stays identical wherever
+ * a persisted value is produced or compared. */
+export function round3(n: number): number {
   return Math.round(n * 1000) / 1000;
 }
 
@@ -178,13 +180,13 @@ export function scoreText(text: string): QuirkScores {
   );
 
   return {
-    hookDensity: round(hookDensity),
-    commercial: round(commercial),
-    funny: round(funny),
-    weirdness: round(weirdness),
-    emotionalCharge: round(emotionalCharge),
-    spawnPotential: round(spawnPotential),
-    quality: round(quality),
+    hookDensity: round3(hookDensity),
+    commercial: round3(commercial),
+    funny: round3(funny),
+    weirdness: round3(weirdness),
+    emotionalCharge: round3(emotionalCharge),
+    spawnPotential: round3(spawnPotential),
+    quality: round3(quality),
   };
 }
 
@@ -195,7 +197,7 @@ export function scoreDelta(
 ): Record<keyof QuirkScores, number> {
   const out = {} as Record<keyof QuirkScores, number>;
   for (const key of SCORE_KEYS) {
-    out[key] = round(to[key] - from[key]);
+    out[key] = round3(to[key] - from[key]);
   }
   return out;
 }
