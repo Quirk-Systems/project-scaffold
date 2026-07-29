@@ -45,6 +45,6 @@ paths:
 
 ### Analytics & flags (PostHog)
 
-- `src/lib/analytics.ts` (server `capture()`/`isFeatureEnabled()`) and `src/components/posthog-provider.tsx` (client, wired into `Providers`) — both **no-op when `NEXT_PUBLIC_POSTHOG_KEY` is unset**
+- `src/lib/analytics.ts` (server `capture()`/`isFeatureEnabled()`) and `src/components/posthog-provider.tsx` (client, wired into `Providers`) — both **no-op when `NEXT_PUBLIC_POSTHOG_KEY` is unset**; client code reads public values from `useRuntimeConfig()` so promoted images use the runtime environment instead of build-time-inlined values
 - `src/lib/flags.ts` — `flag(name, { distinctId, default })` resolves `FLAG_<UPPER_SNAKE>` env override → PostHog → default
 - `src/instrumentation.ts` — Next `register()` + `onRequestError` (routed through the pino logger); the documented hook for Sentry/OTel
