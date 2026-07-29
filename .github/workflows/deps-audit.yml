@@ -1,0 +1,94 @@
+name: deps-audit
+
+on:
+  schedule:
+    # Weekly, Monday 09:00 UTC — pairs with dependabot's Monday cadence.
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Run mechanical audit
+        id: scan
+        # Policy-as-code (.github/deps-policy.json) exits 2 on fail-class
+        # findings. Capture it; the issue/artifact must publish either way.
+        run: |
+          set +e
+          bun run deps:audit -- --json artifacts/dependency-audit.json > audit-report.md
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Upload machine-readable report (history)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-${{ github.run_id }}
+          path: |
+            artifacts/dependency-audit.json
+            audit-report.md
+          retention-days: 90
+
+      - name: Upsert canonical audit issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MARKER="quirk-dependency-audit"
+          CLEAN=$(jq -r '.clean' artifacts/dependency-audit.json)
+          CRITICALS=$(jq -r '.summary.critical' artifacts/dependency-audit.json)
+
+          TITLE="Dependency audit (canonical)"
+          if [ "$CRITICALS" -gt 0 ]; then
+            TITLE="🚨 $TITLE — CRITICAL advisories open"
+          fi
+
+          # Find the canonical issue by marker, any state.
+          NUMBER=$(gh issue list --repo "$GITHUB_REPOSITORY" \
+            --search "\"<!-- $MARKER -->\" in:body" \
+            --state all --json number --jq '.[0].number // empty' --limit 1)
+
+          if [ "$CLEAN" = "true" ]; then
+            if [ -n "$NUMBER" ]; then
+              gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --title "Dependency audit (canonical)" --body-file audit-report.md
+              gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --comment "Repository is clean as of this run — closing until findings return."
+            fi
+            exit 0
+          fi
+
+          if [ -n "$NUMBER" ]; then
+            gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" --body-file audit-report.md
+            gh issue reopen "$NUMBER" --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+            if [ "$CRITICALS" -gt 0 ]; then
+              gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --add-label security 2>/dev/null || true
+            fi
+          else
+            LABELS="dependencies"
+            if [ "$CRITICALS" -gt 0 ]; then LABELS="dependencies,security"; fi
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" --body-file audit-report.md --label "$LABELS"
+          fi
+
+      - name: Enforce escalation policy
+        if: steps.scan.outputs.exit_code != '0'
+        run: |
+          echo "::error::deps-policy fail-class findings present (see canonical audit issue)."
+          exit 1
+
+      # Immediate-alert layer lives elsewhere: bun audit --prod gates every
+      # PR (ci.yml security job) and Dependabot security alerts fire on
+      # advisory publication — this workflow is the weekly full-tree sweep.
