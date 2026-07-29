@@ -20,6 +20,9 @@
       "Bash(bun run test:run)",
       "Bash(bun run test:coverage)",
       "Bash(bun run validate)",
+      "Bash(bun run validate:full)",
+      "Bash(bun run test:e2e)",
+      "Bash(bun run format:check)",
       "Bash(bun run build)",
       "Bash(bun run deps:audit)",
       "Bash(bun audit)",
@@ -28,7 +31,8 @@
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(git rev-parse:*)"
     ]
   }
 }
