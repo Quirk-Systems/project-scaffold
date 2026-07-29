@@ -48,12 +48,22 @@ async function loadSchemas(): Promise<Map<string, object>> {
   return map;
 }
 
+const templateToSchema: Record<string, string> = {
+  "containment-contract.example.yaml": "quirk-containment-contract.schema.json",
+  "spawn-gate.example.yaml": "quirk-agent-spawn-gate.schema.json",
+  "model-substitution-test.example.yaml":
+    "quirk-model-substitution-test.schema.json",
+  "apprenticeship-continuity-test.example.yaml":
+    "quirk-apprenticeship-continuity-test.schema.json",
+  "reversibility-ledger.example.yaml": "quirk-reversibility-ledger.schema.json",
+};
+
 function schemaFileForTemplate(file: string): string {
-  const base = file
-    .replace(/\.example\.yaml$/, "")
-    .replace(/\.yaml$/, "")
-    .replace(/spawn-gate$/, "agent-spawn-gate");
-  return `quirk-${base}.schema.json`;
+  const schema = templateToSchema[file];
+  if (!schema) {
+    die(`No schema mapping configured for template: ${file}`);
+  }
+  return schema;
 }
 
 async function validateTemplates(schemas: Map<string, object>): Promise<void> {
