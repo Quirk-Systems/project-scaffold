@@ -88,7 +88,7 @@ export default function Home() {
       <div className="flex gap-2">
         <Button asChild>
           <a
-            href="https://github.com/Quirk-Systems/project-scaffold"
+            href="https://github.com/Quirk-Systems/quirk-os"
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -1,6 +1,6 @@
 {
-  "repository": "Quirk-Systems/project-scaffold",
-  "domain": "application-scaffold",
+  "repository": "Quirk-Systems/quirk-os",
+  "domain": "kernel",
   "registry": {
     "authority": "Quirk-Systems/.github",
     "path": ".quirk/registry.json",

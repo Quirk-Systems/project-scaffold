@@ -103,7 +103,7 @@ git bisect reset  # cleanup
 git worktree add ../project-hotfix hotfix/critical-bug
 
 # Now you have two working directories:
-# ./project-scaffold  — your current branch
+# ./quirk-os  — your current branch
 # ../project-hotfix   — hotfix branch
 
 # Remove when done

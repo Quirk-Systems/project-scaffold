@@ -8,7 +8,7 @@
 
 ```bash
 # 1. Clone the scaffold
-git clone https://github.com/quirk-systems/project-scaffold my-project
+git clone https://github.com/quirk-systems/quirk-os my-project
 cd my-project
 
 # 2. Reset git history
