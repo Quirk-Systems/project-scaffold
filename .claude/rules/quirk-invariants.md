@@ -50,8 +50,14 @@ Goldilocks band. Treat it as a data change with a plan, not a tuning tweak.
 
 ## Authenticated mutations fail closed
 
-Claim and retire are auth-gated through `auth()`. A missing or errored session
-is a 401 — never a fallthrough to the mutation. Auth.js has shipped an advisory
-in exactly this shape, where a configuration error populated the session object
-and existence-based checks passed; check for the user id, not for truthiness of
-the wrapper.
+Claim and retire are auth-gated through `auth()`. Check `session?.user?.id`,
+not the truthiness of the session wrapper: Auth.js has shipped an advisory in
+exactly that shape, where a configuration error populated the session object
+and existence-based checks passed anyway.
+
+What is enforced today is that a _missing_ session is a 401 and never falls
+through to the mutation. A session that _throws_ is not: `await auth()` sits
+outside the `try` in both routes, so a provider or configuration failure
+surfaces as a 500 from Next rather than a 401. That is a gap in the response
+contract, not a property to rely on — if you move that call inside the `try`,
+map the failure deliberately rather than letting it land in `serverError`.

@@ -22,6 +22,7 @@
       "Bash(bun run validate)",
       "Bash(bun run validate:full)",
       "Bash(bun run test:e2e)",
+      "Bash(bun run test:e2e -- --project=chromium)",
       "Bash(bun run format:check)",
       "Bash(bun run build)",
       "Bash(bun run deps:audit)",
