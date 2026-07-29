@@ -29,10 +29,16 @@
       "Bash(bun audit --prod)",
       "Bash(bun outdated)",
       "Bash(git status)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)",
-      "Bash(git show:*)",
-      "Bash(git rev-parse:*)"
+      "Bash(git status --short)",
+      "Bash(git diff)",
+      "Bash(git diff --stat)",
+      "Bash(git diff --name-only)",
+      "Bash(git diff --cached)",
+      "Bash(git diff --cached --stat)",
+      "Bash(git diff --cached --name-only)",
+      "Bash(git log --oneline)",
+      "Bash(git rev-parse HEAD)",
+      "Bash(git rev-parse --show-toplevel)"
     ]
   }
 }

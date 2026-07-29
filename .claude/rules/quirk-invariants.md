@@ -1,6 +1,8 @@
 ---
 paths:
   - "src/lib/quirk/**"
+  - "src/lib/db/**"
+  - "drizzle/**"
   - "src/app/api/offers/**"
   - "src/app/api/runs/**"
 ---

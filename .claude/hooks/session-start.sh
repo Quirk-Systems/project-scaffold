@@ -14,14 +14,24 @@ cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}"
 # falsy guard here would abort the whole hook before dependencies install.
 persist() {
   if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
-    echo "$1" >> "$CLAUDE_ENV_FILE"
+    # A clear or compact re-fires SessionStart against the same env file, so
+    # appending unconditionally would stack duplicate exports.
+    if ! grep -qxF "$1" "$CLAUDE_ENV_FILE" 2>/dev/null; then
+      echo "$1" >> "$CLAUDE_ENV_FILE"
+    fi
   fi
 }
+
+# SessionStart also fires on clear and compact, not just startup, and those
+# re-fires land in an already-provisioned container. The global install is the
+# only step with real network cost, so it runs once per container.
+BOOTSTRAP_MARKER="${TMPDIR:-/tmp}/.quirk-scaffold-bun-pinned"
 
 # CI resolves `bun-version: latest`, while the base image ships an older bun.
 # The two resolve this lockfile differently, so a frozen-lockfile failure here
 # would not reproduce in CI — and vice versa. Match CI instead of the image.
-if npm install -g bun@latest >/dev/null 2>&1; then
+if [ -f "$BOOTSTRAP_MARKER" ] || npm install -g bun@latest >/dev/null 2>&1; then
+  touch "$BOOTSTRAP_MARKER" 2>/dev/null || true
   BUN_BIN="$(npm prefix -g)/bin"
   if [ -x "$BUN_BIN/bun" ]; then
     export PATH="$BUN_BIN:$PATH"
@@ -43,7 +53,15 @@ fi
 export SKIP_ENV_VALIDATION=1
 persist 'export SKIP_ENV_VALIDATION=1'
 
-# Chromium ships with the image and PLAYWRIGHT_BROWSERS_PATH already points at
-# it; `playwright install` would re-download it for nothing. E2E still needs a
-# Postgres reachable at DATABASE_URL, which the container does not provide —
-# `bun run validate` (lint, type-check, unit tests, build) runs without one.
+# Playwright browsers are deliberately not installed. Only Chromium ships with
+# the image, and PLAYWRIGHT_BROWSERS_PATH already points at it, so installing
+# would mean downloading Firefox and WebKit plus system dependencies on every
+# fresh container for a gate that CI already runs across all three.
+#
+# The consequence, so it is not a surprise: `bun run test:e2e` cannot pass here.
+# It needs both the two missing browsers and a Postgres at DATABASE_URL, which
+# this container does not provide. Locally, run the Chromium project only:
+#
+#   bun run test:e2e -- --project=chromium
+#
+# `bun run validate` (lint, type-check, unit tests, build) needs neither.

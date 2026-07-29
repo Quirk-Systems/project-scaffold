@@ -9,8 +9,12 @@ Read it first; this file adds only what is specific to running it here.
 bun install --frozen-lockfile
 bun run validate        # lint, type-check, unit tests, build
 bun audit --prod        # must report no vulnerabilities
-bun run test:e2e        # needs a Postgres at DATABASE_URL
 ```
+
+`bun run test:e2e` runs Chromium, Firefox, and WebKit. A web session has only
+Chromium and no Postgres, so the full gate belongs to CI; locally the most you
+can prove is `bun run test:e2e -- --project=chromium` against a reachable
+`DATABASE_URL`. Report which of those you actually ran.
 
 A production-path advisory is a blocker, not a follow-up. `.github/deps-policy.json`
 classes critical and high production findings as fail-now; dev-only findings warn.
@@ -21,8 +25,11 @@ classes critical and high production findings as fail-now; dev-only findings war
    unrelated edits, and anything secret-bearing.
 2. Confirm `tsconfig.json` is not in the diff unless you changed it on purpose
    — `next build` rewrites it, and that rewrite is not a change worth carrying.
-3. Merge `origin/main` and re-run the gate. Checks build the merge of your head
-   into main, so a green local branch can still fail on a moved base.
+3. Compare against the current base without mutating the branch:
+   `git fetch origin main && git diff origin/main...HEAD --stat`. Checks build
+   the merge of your head into main, so a green local branch can still fail on
+   a moved base — but merging is a change to the branch, so ask before doing it
+   rather than doing it as part of preparing a review.
 4. Mirror `.github/PULL_REQUEST_TEMPLATE.md`. Treat it as a layout to fill in.
 
 ## Evidence
