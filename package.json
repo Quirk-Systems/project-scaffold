@@ -87,7 +87,7 @@
     "eslint-config-next": "^16.2.10",
     "eslint-config-prettier": "^10.1.8",
     "jsdom": "^29.1.1",
-    "lefthook": "^1.13.6",
+    "lefthook": "^2.1.10",
     "postcss": "^8.5.25",
     "prettier": "^3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.1",
