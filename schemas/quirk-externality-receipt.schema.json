@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-externality-receipt.schema.json",
+  "title": "Quirk Externality Receipt",
+  "description": "Record of an agent action that affects an external system.",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "agent_id",
+    "run_id",
+    "external_system",
+    "action",
+    "affected_resource",
+    "consent_ref",
+    "rollback_plan",
+    "timestamp"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string", "format": "uuid" },
+    "agent_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "external_system": { "type": "string" },
+    "action": { "type": "string" },
+    "affected_resource": { "type": "string" },
+    "consent_ref": { "type": "string" },
+    "rollback_plan": {
+      "type": "object",
+      "required": ["compensating_action", "pre_state_digest", "verified_at"],
+      "properties": {
+        "compensating_action": { "type": "string" },
+        "pre_state_digest": { "type": "string" },
+        "verified_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "timestamp": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

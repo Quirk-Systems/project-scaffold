@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-agent-spawn-gate.schema.json",
+  "title": "Quirk Agent Spawn Gate",
+  "description": "Checkpoint that authorizes an agent run before a run lock is granted.",
+  "type": "object",
+  "required": [
+    "spawn_id",
+    "agent_id",
+    "containment_contract_id",
+    "review_owner",
+    "evidence_sink",
+    "max_runtime_ms",
+    "approved_at",
+    "approval_signature"
+  ],
+  "properties": {
+    "spawn_id": { "type": "string", "format": "uuid" },
+    "agent_id": { "type": "string" },
+    "containment_contract_id": { "type": "string" },
+    "review_owner": { "type": "string", "format": "email" },
+    "evidence_sink": {
+      "type": "object",
+      "required": ["table", "retention_days", "encryption_key_id"],
+      "properties": {
+        "table": { "type": "string" },
+        "retention_days": { "type": "integer", "minimum": 1 },
+        "encryption_key_id": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "max_runtime_ms": { "type": "integer", "minimum": 1 },
+    "approved_at": { "type": "string", "format": "date-time" },
+    "approval_signature": { "type": "string" }
+  },
+  "additionalProperties": false
+}

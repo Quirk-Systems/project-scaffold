@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-evidence-receipt.schema.json",
+  "title": "Quirk Evidence Receipt",
+  "description": "Signed, timestamped record of an agent action.",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "agent_id",
+    "run_id",
+    "capability_ref",
+    "tool_call",
+    "input_digest",
+    "output_digest",
+    "lineage_hash",
+    "timestamp",
+    "signature"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string", "format": "uuid" },
+    "agent_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "capability_ref": { "type": "string" },
+    "tool_call": {
+      "type": "object",
+      "required": ["tool", "arguments_hash", "correlation_id"],
+      "properties": {
+        "tool": { "type": "string" },
+        "arguments_hash": { "type": "string" },
+        "correlation_id": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "input_digest": { "type": "string" },
+    "output_digest": { "type": "string" },
+    "lineage_hash": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "signature": { "type": "string" }
+  },
+  "additionalProperties": false
+}

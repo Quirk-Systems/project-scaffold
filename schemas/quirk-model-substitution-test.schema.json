@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-model-substitution-test.schema.json",
+  "title": "Quirk Model Substitution Test",
+  "description": "Cross-model-lane safety test comparing frontier and open-model outputs.",
+  "type": "object",
+  "required": [
+    "test_id",
+    "baseline_model",
+    "substitute_model",
+    "prompt_lane",
+    "input_fixture",
+    "expected_output_criteria",
+    "tolerance",
+    "result",
+    "evaluated_at"
+  ],
+  "properties": {
+    "test_id": { "type": "string", "format": "uuid" },
+    "baseline_model": { "type": "string" },
+    "substitute_model": { "type": "string" },
+    "prompt_lane": { "type": "string" },
+    "input_fixture": {
+      "type": "object",
+      "required": ["digest", "path"],
+      "properties": {
+        "digest": { "type": "string" },
+        "path": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "expected_output_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["criterion", "required"],
+        "properties": {
+          "criterion": { "type": "string" },
+          "required": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "tolerance": { "type": "object" },
+    "result": {
+      "type": "string",
+      "enum": ["pass", "fail", "inconclusive"]
+    },
+    "evaluated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

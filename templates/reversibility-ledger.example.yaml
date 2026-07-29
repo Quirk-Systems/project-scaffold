@@ -1,0 +1,12 @@
+ledger_id: 33333333-3333-3333-3333-333333333333
+action_receipt_id: 44444444-4444-4444-4444-444444444444
+compensating_action:
+  tool: quirk.runs.demote
+  arguments_template:
+    run_id: "{{run_id}}"
+  authorization: kill-switch-or-incident-commander
+pre_state_digest: sha256:pre11...
+post_state_digest: sha256:post22...
+rollback_window_ms: 3600000
+expires_at: "2026-07-29T11:07:31Z"
+status: pending

@@ -1,0 +1,64 @@
+---
+title: Quirk Agent Governance Layer
+---
+flowchart TB
+    subgraph Git["Git (source of truth)"]
+        CC[Containment Contract]
+        CS[Capability Surface]
+        PK[Permission Knife]
+        Templates[Templates + Schemas]
+    end
+
+    subgraph GitHub["GitHub"]
+        Issue[Agent Task Issue]
+        PR[PR Review Gate]
+    end
+
+    subgraph Vercel["Vercel"]
+        UI[Operator Console]
+        AI[AI SDK Tool Interface]
+    end
+
+    subgraph Cloudflare["Cloudflare"]
+        Fence[Runtime Fence]
+        DO[Durable Object Run Lock]
+        KS[Kill Switch]
+        Replay[Replay Path]
+        Logs[Logspush]
+    end
+
+    subgraph Supabase["Supabase"]
+        Ledger[Governance Ledger]
+        Receipts[quirk_receipts]
+        ToolCalls[quirk_tool_calls]
+        Approvals[quirk_approvals]
+        Incidents[quirk_incidents]
+        Sources[quirk_sources]
+    end
+
+    subgraph Models["Model Lanes"]
+        OAI[OpenAI Frontier]
+        HF[Hugging Face / Open Models]
+    end
+
+    Issue -->|requires| CC
+    PR -->|approves| CC
+    CC --> CS
+    CC --> PK
+    CC -->|evidence_policy| Receipts
+    CS --> Fence
+    PK --> DO
+    DO --> KS
+    KS --> Replay
+    DO --> Logs
+    Logs --> Receipts
+    UI --> AI
+    AI --> Fence
+    Fence --> OAI
+    Fence --> HF
+    AI --> ToolCalls
+    ToolCalls --> Receipts
+    Receipts --> Ledger
+    Ledger --> Approvals
+    Ledger --> Incidents
+    Sources --> Fence

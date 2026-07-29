@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-apprenticeship-continuity-test.schema.json",
+  "title": "Quirk Apprenticeship Continuity Test",
+  "description": "Shadow test proving a new agent version agrees with a trusted mentor.",
+  "type": "object",
+  "required": [
+    "test_id",
+    "apprentice_agent_id",
+    "mentor_id",
+    "task_domain",
+    "task_distribution",
+    "minimum_tasks",
+    "agreement_rate",
+    "threshold",
+    "evaluated_at"
+  ],
+  "properties": {
+    "test_id": { "type": "string", "format": "uuid" },
+    "apprentice_agent_id": { "type": "string" },
+    "mentor_id": { "type": "string" },
+    "task_domain": { "type": "string" },
+    "task_distribution": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "task_id",
+          "mentor_judgment",
+          "apprentice_judgment",
+          "aligned"
+        ],
+        "properties": {
+          "task_id": { "type": "string" },
+          "mentor_judgment": { "type": "string" },
+          "apprentice_judgment": { "type": "string" },
+          "aligned": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "minimum_tasks": { "type": "integer", "minimum": 1 },
+    "agreement_rate": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "threshold": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "evaluated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

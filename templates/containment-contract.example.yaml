@@ -1,0 +1,13 @@
+contract_id: cc-curator-v2-001
+version: 2.3.0
+agent_id: agent-curator-v2
+review_owner: alice@quirk.systems
+capability_surface_id: 12345678-1234-1234-1234-123456789abc
+permission_knife_ids:
+  - 55555555-5555-5555-5555-555555555555
+evidence_policy:
+  receipt_sink: quirk_receipts
+  retention_days: 365
+  lineage_required: true
+approved_at: "2026-07-29T10:00:00Z"
+approval_signature: sig-ed25519-...

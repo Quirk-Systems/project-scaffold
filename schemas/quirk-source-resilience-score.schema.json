@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-source-resilience-score.schema.json",
+  "title": "Quirk Source Resilience Score",
+  "description": "Ranking of sources by verifiability, diversity, latency, and mutation history.",
+  "type": "object",
+  "required": [
+    "source_id",
+    "score",
+    "dimensions",
+    "computed_at",
+    "evaluator_version",
+    "block_threshold"
+  ],
+  "properties": {
+    "source_id": { "type": "string" },
+    "score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "dimensions": {
+      "type": "object",
+      "required": ["verifiability", "diversity", "latency", "mutation_history"],
+      "properties": {
+        "verifiability": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "diversity": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "latency": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "mutation_history": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      },
+      "additionalProperties": false
+    },
+    "computed_at": { "type": "string", "format": "date-time" },
+    "evaluator_version": { "type": "string" },
+    "block_threshold": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    }
+  },
+  "additionalProperties": false
+}

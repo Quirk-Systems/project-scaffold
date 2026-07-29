@@ -1,0 +1,47 @@
+name: Validate governance contracts
+
+on:
+  pull_request:
+    paths:
+      - "docs/control-primitives/**"
+      - "schemas/**"
+      - "templates/**"
+      - "diagrams/**"
+      - "scripts/validate-governance-contracts.ts"
+      - ".github/workflows/validate-governance-contracts.yml"
+  push:
+    branches: [main]
+    paths:
+      - "docs/control-primitives/**"
+      - "schemas/**"
+      - "templates/**"
+      - "diagrams/**"
+      - "scripts/validate-governance-contracts.ts"
+      - ".github/workflows/validate-governance-contracts.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: bun install --frozen-lockfile
+
+      - name: Validate governance contracts
+        run: bun run scripts/validate-governance-contracts.ts

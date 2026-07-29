@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quirk.systems/schemas/quirk-judgment-ranker.schema.json",
+  "title": "Quirk Judgment Ranker",
+  "description": "Transparent rubric and ranking of candidate agent outputs.",
+  "type": "object",
+  "required": [
+    "rank_id",
+    "agent_id",
+    "run_id",
+    "candidates",
+    "rubric",
+    "scores",
+    "ranked_order",
+    "human_override",
+    "evaluated_at"
+  ],
+  "properties": {
+    "rank_id": { "type": "string", "format": "uuid" },
+    "agent_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "summary"],
+        "properties": {
+          "candidate_id": { "type": "string" },
+          "summary": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "rubric": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["criterion", "weight"],
+        "properties": {
+          "criterion": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "scores": { "type": "object" },
+    "ranked_order": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "human_override": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["overridden", "original_order", "override_by", "reason"],
+          "properties": {
+            "overridden": { "type": "boolean" },
+            "original_order": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "override_by": { "type": "string" },
+            "reason": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "evaluated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

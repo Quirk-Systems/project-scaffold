@@ -1,0 +1,72 @@
+name: Agent task
+description: Authorize, track, and review work performed by an agent.
+labels: ["agent-task", "governance"]
+body:
+  - type: input
+    id: scope
+    attributes:
+      label: Scope
+      description: Short statement of what the agent is allowed to do.
+      placeholder: Promote winning experiment runs to one-of-one offers.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk_class
+    attributes:
+      label: Risk class
+      description: Highest risk the task could create if the agent misbehaves.
+      options:
+        - low (read-only, internal data)
+        - medium (mutates internal state, no external systems)
+        - high (mutates external systems, billing, or user-facing state)
+        - critical (irreversible, regulatory, or safety-sensitive)
+    validations:
+      required: true
+
+  - type: input
+    id: review_owner
+    attributes:
+      label: Review owner
+      description: Human accountable for approving and reviewing this task.
+      placeholder: alice@quirk.systems
+    validations:
+      required: true
+
+  - type: input
+    id: containment_contract
+    attributes:
+      label: Containment contract
+      description: Contract that governs capability surface, permission knife, and evidence policy.
+      placeholder: cc-curator-v2-001
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Links to receipts, logs, or runs that will prove completion.
+      placeholder: |
+        - Run: run-2026-07-29-abc
+        - Receipt sink: quirk_receipts
+    validations:
+      required: true
+
+  - type: textarea
+    id: rollback_plan
+    attributes:
+      label: Rollback plan
+      description: Compensating action if the agent causes an incident.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      options:
+        - label: Spawn gate approved and signed
+        - label: Evidence receipts captured for every mutating action
+        - label: Externalities have rollback plans
+        - label: Review owner signed off before close
