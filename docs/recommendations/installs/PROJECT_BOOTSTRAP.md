@@ -38,6 +38,7 @@ bun run dev
 ## Customize the Scaffold
 
 ### 1. Update package.json
+
 ```json
 {
   "name": "my-project",
@@ -47,9 +48,11 @@ bun run dev
 ```
 
 ### 2. Update CLAUDE.md
+
 Replace the "Project Overview" section with your project's actual description, stack, and conventions.
 
 ### 3. Update app metadata
+
 ```typescript
 // src/app/layout.tsx
 export const metadata: Metadata = {
@@ -59,6 +62,7 @@ export const metadata: Metadata = {
 ```
 
 ### 4. Update home page
+
 ```tsx
 // src/app/page.tsx
 export default function Home() {
@@ -72,6 +76,7 @@ export default function Home() {
 ```
 
 ### 5. Configure Auth.js (if needed)
+
 ```typescript
 // src/lib/auth.ts
 import NextAuth from "next-auth";
@@ -88,12 +93,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 ```
 
 Add to `.env`:
+
 ```
 GITHUB_CLIENT_ID=...
 GITHUB_CLIENT_SECRET=...
 ```
 
 ### 6. Set up GitHub repo
+
 ```bash
 # Create repo on GitHub (via gh CLI or web)
 gh repo create my-project --private
@@ -108,6 +115,7 @@ git push -u origin main
 ### Branch Protection (GitHub)
 
 Required for real projects:
+
 1. Settings → Branches → Add rule for `main`
 2. Enable: "Require a pull request before merging"
 3. Enable: "Require status checks to pass" → select `validate` and `e2e`
@@ -118,11 +126,11 @@ Required for real projects:
 
 Go to Settings → Secrets and variables → Actions:
 
-| Secret | Value |
-|--------|-------|
-| `AUTH_SECRET` | `openssl rand -base64 32` |
-| `DATABASE_URL` | Production DB URL |
-| Any other env vars needed by build | ... |
+| Secret                             | Value                     |
+| ---------------------------------- | ------------------------- |
+| `AUTH_SECRET`                      | `openssl rand -base64 32` |
+| `DATABASE_URL`                     | Production DB URL         |
+| Any other env vars needed by build | ...                       |
 
 For `SKIP_ENV_VALIDATION`, it's set directly in the workflow yaml (not a secret).
 
@@ -146,6 +154,7 @@ For `SKIP_ENV_VALIDATION`, it's set directly in the workflow yaml (not a secret)
 ## Deployment Checklist
 
 ### Vercel (simplest for Next.js)
+
 ```bash
 bunx vercel
 
@@ -155,9 +164,11 @@ bunx vercel env add DATABASE_URL production
 ```
 
 ### Self-hosted (VPS/Docker)
+
 See `docs/recommendations/installs/DOCKER_SETUP.md`.
 
 ### Key env vars for production:
+
 ```bash
 NODE_ENV=production
 AUTH_SECRET=<random 32 bytes>

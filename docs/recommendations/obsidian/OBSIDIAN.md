@@ -33,6 +33,7 @@ vault/
 ## Essential Plugins
 
 ### Core (built-in, enable these)
+
 - **Daily notes** — your anchor note each day
 - **Templates** — snippet insertion
 - **Backlinks** — see what links here
@@ -40,34 +41,37 @@ vault/
 - **Canvas** — infinite whiteboard
 
 ### Community — Must Have
-| Plugin | What It Does |
-|--------|-------------|
-| **Dataview** | SQL-like queries over your notes |
-| **Templater** | Dynamic templates with JS |
-| **Excalidraw** | Hand-drawn diagrams in notes |
-| **Obsidian Git** | Auto-commit vault to GitHub |
-| **QuickAdd** | One-key capture + template actions |
-| **Tasks** | Task management with due dates, filters |
-| **Calendar** | Month view of daily notes |
-| **Hotkeys++** | Extra keyboard shortcuts |
-| **Advanced Tables** | Excel-like table editing |
-| **Iconize** | Icons for folders/files |
+
+| Plugin              | What It Does                            |
+| ------------------- | --------------------------------------- |
+| **Dataview**        | SQL-like queries over your notes        |
+| **Templater**       | Dynamic templates with JS               |
+| **Excalidraw**      | Hand-drawn diagrams in notes            |
+| **Obsidian Git**    | Auto-commit vault to GitHub             |
+| **QuickAdd**        | One-key capture + template actions      |
+| **Tasks**           | Task management with due dates, filters |
+| **Calendar**        | Month view of daily notes               |
+| **Hotkeys++**       | Extra keyboard shortcuts                |
+| **Advanced Tables** | Excel-like table editing                |
+| **Iconize**         | Icons for folders/files                 |
 
 ### Community — Power User
-| Plugin | What It Does |
-|--------|-------------|
-| **Juggl** | Interactive graph view |
-| **Omnisearch** | Full-text search that actually works |
-| **Breadcrumbs** | Hierarchical navigation |
-| **Kanban** | Kanban boards from markdown |
-| **Periodic Notes** | Weekly / monthly / quarterly notes |
-| **Smart Connections** | AI-powered related notes (local) |
+
+| Plugin                | What It Does                         |
+| --------------------- | ------------------------------------ |
+| **Juggl**             | Interactive graph view               |
+| **Omnisearch**        | Full-text search that actually works |
+| **Breadcrumbs**       | Hierarchical navigation              |
+| **Kanban**            | Kanban boards from markdown          |
+| **Periodic Notes**    | Weekly / monthly / quarterly notes   |
+| **Smart Connections** | AI-powered related notes (local)     |
 
 ---
 
 ## Dataview Queries
 
 ### All active projects
+
 ````markdown
 ```dataview
 TABLE file.mtime AS "Modified", status, priority
@@ -78,6 +82,7 @@ SORT priority ASC
 ````
 
 ### Tasks due this week
+
 ````markdown
 ```dataview
 TASK
@@ -87,6 +92,7 @@ SORT due ASC
 ````
 
 ### Notes created this month
+
 ````markdown
 ```dataview
 LIST
@@ -97,6 +103,7 @@ SORT file.cday DESC
 ````
 
 ### Index of all people notes
+
 ````markdown
 ```dataview
 TABLE role, company, last-contact
@@ -110,6 +117,7 @@ SORT last-contact DESC
 ## Templater Templates
 
 ### Daily Note
+
 ```markdown
 ---
 date: <% tp.date.now("YYYY-MM-DD") %>
@@ -120,9 +128,11 @@ type: daily
 # <% tp.date.now("dddd, MMMM D, YYYY") %>
 
 ## Focus
+
 > One thing that makes today a win:
 
 ## Tasks
+
 - [ ]
 
 ## Notes
@@ -131,6 +141,7 @@ type: daily
 ```
 
 ### Meeting Note
+
 ```markdown
 ---
 date: <% tp.date.now("YYYY-MM-DD") %>
@@ -145,18 +156,22 @@ project:
 **Attendees:**
 
 ## Agenda
+
 1.
 
 ## Notes
 
 ## Decisions
+
 -
 
 ## Action Items
+
 - [ ]
 ```
 
 ### Book Note
+
 ```markdown
 ---
 type: book

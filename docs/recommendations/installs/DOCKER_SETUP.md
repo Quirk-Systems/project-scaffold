@@ -47,6 +47,7 @@ CMD ["node", "server.js"]
 ```
 
 Enable standalone output in `next.config.ts`:
+
 ```typescript
 export default {
   output: "standalone",
@@ -64,7 +65,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder    # use builder stage for dev
+      target: builder # use builder stage for dev
     ports:
       - "3000:3000"
     volumes:
@@ -189,9 +190,7 @@ volumes:
       ]
     }
   },
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind"
-  ],
+  "mounts": ["source=${localWorkspaceFolder},target=/workspace,type=bind"],
   "workspaceFolder": "/workspace"
 }
 ```

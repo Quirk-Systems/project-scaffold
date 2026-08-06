@@ -8,35 +8,36 @@
 
 Score your repo 1 point per green item. 12+ = healthy. Under 10 = fix before shipping.
 
-| # | Check | How to Verify |
-|---|-------|--------------|
-| 1 | All CI checks pass | GitHub Actions: all green |
-| 2 | Zero TypeScript errors | `bun run type-check` exits 0 |
-| 3 | Zero ESLint errors | `bun run lint` exits 0 |
-| 4 | Test coverage ≥ 80% on core logic | `bun run test:coverage` |
-| 5 | No high/critical CVEs in deps | `bun audit` or `bunx better-npm-audit` |
-| 6 | All deps within 2 major versions of latest | `bunx npm-check-updates` |
-| 7 | No `.env` or secrets committed | `git log -p | grep -i secret` |
-| 8 | E2E tests pass on all 3 browsers | `bun run test:e2e` |
-| 9 | Production build succeeds | `bun run build` exits 0 |
-| 10 | Bundle size within budget (see below) | `bun run build` — check `.next/build-manifest` |
-| 11 | No `console.log` in src (only debug) | `grep -r "console.log" src/` |
-| 12 | No `TODO` / `FIXME` older than 30 days | `git log -S "TODO"` |
-| 13 | DB migrations are applied and committed | `bun run db:generate && git diff` |
-| 14 | README accurately describes project | Manual review |
-| 15 | CLAUDE.md up to date with stack | Manual review |
+| #   | Check                                      | How to Verify                                  |
+| --- | ------------------------------------------ | ---------------------------------------------- | --------------- |
+| 1   | All CI checks pass                         | GitHub Actions: all green                      |
+| 2   | Zero TypeScript errors                     | `bun run type-check` exits 0                   |
+| 3   | Zero ESLint errors                         | `bun run lint` exits 0                         |
+| 4   | Test coverage ≥ 80% on core logic          | `bun run test:coverage`                        |
+| 5   | No high/critical CVEs in deps              | `bun audit` or `bunx better-npm-audit`         |
+| 6   | All deps within 2 major versions of latest | `bunx npm-check-updates`                       |
+| 7   | No `.env` or secrets committed             | `git log -p                                    | grep -i secret` |
+| 8   | E2E tests pass on all 3 browsers           | `bun run test:e2e`                             |
+| 9   | Production build succeeds                  | `bun run build` exits 0                        |
+| 10  | Bundle size within budget (see below)      | `bun run build` — check `.next/build-manifest` |
+| 11  | No `console.log` in src (only debug)       | `grep -r "console.log" src/`                   |
+| 12  | No `TODO` / `FIXME` older than 30 days     | `git log -S "TODO"`                            |
+| 13  | DB migrations are applied and committed    | `bun run db:generate && git diff`              |
+| 14  | README accurately describes project        | Manual review                                  |
+| 15  | CLAUDE.md up to date with stack            | Manual review                                  |
 
 ---
 
 ## Bundle Budget
 
-| Route | JS Budget | Image Budget |
-|-------|-----------|--------------|
-| `/` (homepage) | < 150 kB gzipped | < 500 kB total |
-| Any page | < 250 kB gzipped | — |
-| First load JS shared | < 90 kB | — |
+| Route                | JS Budget        | Image Budget   |
+| -------------------- | ---------------- | -------------- |
+| `/` (homepage)       | < 150 kB gzipped | < 500 kB total |
+| Any page             | < 250 kB gzipped | —              |
+| First load JS shared | < 90 kB          | —              |
 
 Check with:
+
 ```bash
 bun run build
 # Look for "First Load JS" column in the output table
@@ -75,6 +76,7 @@ Targets:
 | Lines | ≥ 80% |
 
 Configure in `vitest.config.ts`:
+
 ```typescript
 coverage: {
   thresholds: {

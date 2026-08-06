@@ -23,7 +23,9 @@ const timestamps = {
 
 // Users table
 export const users = sqliteTable("users", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   email: text("email").notNull().unique(),
   name: text("name"),
   ...timestamps,
@@ -31,12 +33,16 @@ export const users = sqliteTable("users", {
 
 // Posts table with foreign key
 export const posts = sqliteTable("posts", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  authorId: text("author_id").notNull().references(() => users.id, {
-    onDelete: "cascade",
-  }),
+  authorId: text("author_id")
+    .notNull()
+    .references(() => users.id, {
+      onDelete: "cascade",
+    }),
   publishedAt: integer("published_at", { mode: "timestamp" }),
   ...timestamps,
 });
@@ -73,15 +79,13 @@ export const postsRelations = relations(posts, ({ one }) => ({
 ## Query Patterns
 
 ### Select
+
 ```typescript
 // All users
 const allUsers = await db.select().from(users);
 
 // With filter
-const activeUsers = await db
-  .select()
-  .from(users)
-  .where(isNotNull(users.name));
+const activeUsers = await db.select().from(users).where(isNotNull(users.name));
 
 // Select specific columns
 const emails = await db
@@ -107,6 +111,7 @@ const user = await db.query.users.findFirst({
 ```
 
 ### Insert
+
 ```typescript
 // Single insert
 const [newUser] = await db
@@ -117,10 +122,7 @@ const [newUser] = await db
 // Batch insert
 const newUsers = await db
   .insert(users)
-  .values([
-    { email: "alice@example.com" },
-    { email: "bob@example.com" },
-  ])
+  .values([{ email: "alice@example.com" }, { email: "bob@example.com" }])
   .returning();
 
 // Upsert
@@ -134,6 +136,7 @@ await db
 ```
 
 ### Update
+
 ```typescript
 const [updated] = await db
   .update(users)
@@ -145,6 +148,7 @@ if (!updated) throw new Error("User not found");
 ```
 
 ### Delete
+
 ```typescript
 await db.delete(users).where(eq(users.id, userId));
 
@@ -160,29 +164,48 @@ await db
 ## Filtering
 
 ```typescript
-import { eq, ne, gt, gte, lt, lte, like, ilike, inArray, notInArray,
-         isNull, isNotNull, and, or, not, between, sql } from "drizzle-orm";
+import {
+  eq,
+  ne,
+  gt,
+  gte,
+  lt,
+  lte,
+  like,
+  ilike,
+  inArray,
+  notInArray,
+  isNull,
+  isNotNull,
+  and,
+  or,
+  not,
+  between,
+  sql,
+} from "drizzle-orm";
 
 // Combining conditions
-const results = await db.select().from(users).where(
-  and(
-    isNotNull(users.name),
-    or(
-      like(users.email, "%@company.com"),
-      eq(users.role, "admin")
-    )
-  )
-);
+const results = await db
+  .select()
+  .from(users)
+  .where(
+    and(
+      isNotNull(users.name),
+      or(like(users.email, "%@company.com"), eq(users.role, "admin")),
+    ),
+  );
 
 // Full-text search (SQLite LIKE)
-const search = await db.select().from(posts).where(
-  like(posts.title, `%${query}%`)
-);
+const search = await db
+  .select()
+  .from(posts)
+  .where(like(posts.title, `%${query}%`));
 
 // Array filtering
-const specific = await db.select().from(users).where(
-  inArray(users.id, ["id1", "id2", "id3"])
-);
+const specific = await db
+  .select()
+  .from(users)
+  .where(inArray(users.id, ["id1", "id2", "id3"]));
 ```
 
 ---
@@ -209,7 +232,9 @@ async function getUsers(page: number, perPage = 20) {
 
 // Cursor pagination (better for infinite scroll)
 async function getUsersAfterCursor(cursor?: string, limit = 20) {
-  return db.select().from(users)
+  return db
+    .select()
+    .from(users)
     .where(cursor ? gt(users.id, cursor) : undefined)
     .orderBy(asc(users.id))
     .limit(limit);

@@ -12,6 +12,7 @@ cp .env.example .env && bun install && bun run db:push && bun run validate && ec
 ```
 
 What it does:
+
 1. Creates `.env` from the example
 2. Installs all dependencies
 3. Pushes DB schema (creates `local.db`)
@@ -34,6 +35,7 @@ openssl rand -base64 32
 ```
 
 Then add to `.env`:
+
 ```bash
 echo "AUTH_SECRET=$(openssl rand -base64 32)" >> .env
 ```

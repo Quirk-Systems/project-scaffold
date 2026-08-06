@@ -212,17 +212,17 @@ EOF
 
 ## Keyboard Shortcuts (Terminal)
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+R` | Fuzzy search history (install fzf for best results) |
-| `Ctrl+L` | Clear screen |
-| `Ctrl+A` | Jump to beginning of line |
-| `Ctrl+E` | Jump to end of line |
-| `Alt+←/→` | Move word by word |
-| `Ctrl+W` | Delete word backward |
-| `Ctrl+U` | Delete to beginning of line |
-| `!!` | Repeat last command |
-| `!$` | Last argument of previous command |
-| `cd -` | Go to previous directory |
+| Shortcut  | Action                                              |
+| --------- | --------------------------------------------------- |
+| `Ctrl+R`  | Fuzzy search history (install fzf for best results) |
+| `Ctrl+L`  | Clear screen                                        |
+| `Ctrl+A`  | Jump to beginning of line                           |
+| `Ctrl+E`  | Jump to end of line                                 |
+| `Alt+←/→` | Move word by word                                   |
+| `Ctrl+W`  | Delete word backward                                |
+| `Ctrl+U`  | Delete to beginning of line                         |
+| `!!`      | Repeat last command                                 |
+| `!$`      | Last argument of previous command                   |
+| `cd -`    | Go to previous directory                            |
 
 Install fzf for supercharged history: `brew install fzf && $(brew --prefix)/opt/fzf/install`

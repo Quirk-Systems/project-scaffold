@@ -9,28 +9,28 @@
 ```json
 {
   "scripts": {
-    "dev":           "next dev --turbopack",
-    "build":         "next build",
-    "start":         "next start",
-    "preview":       "next build && next start",
-    "lint":          "eslint .",
-    "lint:fix":      "eslint . --fix",
-    "format":        "prettier --write .",
-    "format:check":  "prettier --check .",
-    "type-check":    "tsc --noEmit",
-    "test":          "vitest",
-    "test:ui":       "vitest --ui",
-    "test:run":      "vitest run",
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "preview": "next build && next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:e2e":      "playwright test",
-    "test:e2e:ui":   "playwright test --ui",
-    "db:generate":   "drizzle-kit generate",
-    "db:push":       "drizzle-kit push",
-    "db:studio":     "drizzle-kit studio",
-    "db:migrate":    "drizzle-kit migrate",
-    "validate":      "bun run lint && bun run type-check && bun run test:run && bun run build",
-    "clean":         "rm -rf .next out node_modules",
-    "prepare":       "lefthook install"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate": "drizzle-kit migrate",
+    "validate": "bun run lint && bun run type-check && bun run test:run && bun run build",
+    "clean": "rm -rf .next out node_modules",
+    "prepare": "lefthook install"
   }
 }
 ```
@@ -42,13 +42,13 @@
 ```json
 {
   "scripts": {
-    "db:seed":       "bun run src/scripts/seed.ts",
-    "db:reset":      "bun run src/scripts/reset-db.ts",
-    "health":        "bun run type-check && bun run lint && bun run test:coverage && bun run build",
-    "audit:security":"bunx better-npm-audit audit --level moderate",
-    "audit:deps":    "bunx depcheck && bunx npm-check-updates",
-    "analyze":       "ANALYZE=true bun run build",
-    "ci":            "SKIP_ENV_VALIDATION=1 bun run validate"
+    "db:seed": "bun run src/scripts/seed.ts",
+    "db:reset": "bun run src/scripts/reset-db.ts",
+    "health": "bun run type-check && bun run lint && bun run test:coverage && bun run build",
+    "audit:security": "bunx better-npm-audit audit --level moderate",
+    "audit:deps": "bunx depcheck && bunx npm-check-updates",
+    "analyze": "ANALYZE=true bun run build",
+    "ci": "SKIP_ENV_VALIDATION=1 bun run validate"
   }
 }
 ```
@@ -58,23 +58,29 @@
 ## Script Composition Patterns
 
 ### Sequential (&&)
+
 ```json
 "preview": "next build && next start"
 ```
+
 Stops at first failure.
 
 ### Sequential (;)
+
 ```json
 "clean:all": "rm -rf .next; rm -rf node_modules; bun install"
 ```
+
 Continues even if rm fails.
 
 ### Parallel (with concurrently)
+
 ```json
 "dev:full": "bunx concurrently 'bun run dev' 'bun run db:studio' --names 'next,studio'"
 ```
 
 ### Pre/Post Hooks
+
 ```json
 "build":     "next build",
 "prebuild":  "bun run type-check",    // runs before build
@@ -86,6 +92,7 @@ Continues even if rm fails.
 ## Useful Script Templates
 
 ### Seed Database
+
 ```typescript
 // src/scripts/seed.ts
 import { db } from "@/lib/db";
@@ -117,6 +124,7 @@ bun run src/scripts/seed.ts
 ```
 
 ### Reset Database
+
 ```typescript
 // src/scripts/reset-db.ts
 import { db } from "@/lib/db";
@@ -139,6 +147,7 @@ reset().catch(console.error);
 ```
 
 ### Generate Component
+
 ```typescript
 // src/scripts/generate-component.ts
 import { $ } from "bun";
@@ -149,7 +158,10 @@ if (!name) {
   process.exit(1);
 }
 
-const kebab = name.replace(/([A-Z])/g, (m, l, i) => (i ? "-" : "") + l.toLowerCase());
+const kebab = name.replace(
+  /([A-Z])/g,
+  (m, l, i) => (i ? "-" : "") + l.toLowerCase(),
+);
 
 await Bun.write(
   `src/components/${kebab}.tsx`,
@@ -167,7 +179,7 @@ export function ${name}({ className, children }: ${name}Props) {
     </div>
   );
 }
-`
+`,
 );
 
 await Bun.write(
@@ -182,7 +194,7 @@ describe("${name}", () => {
     expect(screen.getByText("content")).toBeInTheDocument();
   });
 });
-`
+`,
 );
 
 console.log(`Created src/components/${kebab}.tsx and ${kebab}.test.tsx`);
@@ -195,10 +207,10 @@ console.log(`Created src/components/${kebab}.tsx and ${kebab}.test.tsx`);
 ```json
 {
   "scripts": {
-    "build":     "next build",
-    "build:ci":  "SKIP_ENV_VALIDATION=1 next build",
-    "build:prod":"NODE_ENV=production next build",
-    "dev":       "next dev --turbopack",
+    "build": "next build",
+    "build:ci": "SKIP_ENV_VALIDATION=1 next build",
+    "build:prod": "NODE_ENV=production next build",
+    "dev": "next dev --turbopack",
     "dev:debug": "NODE_OPTIONS='--inspect' next dev"
   }
 }

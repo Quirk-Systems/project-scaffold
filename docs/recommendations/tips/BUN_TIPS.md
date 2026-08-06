@@ -6,20 +6,21 @@
 
 ## Why Bun
 
-| Feature | Bun | Node |
-|---------|-----|------|
-| Install (cold) | ~1s | ~30s |
-| Install (warm) | ~100ms | ~5s |
-| Test runner | Built-in | Vitest/Jest |
-| Bundler | Built-in | webpack/esbuild |
-| TypeScript | Native (no compile step) | ts-node needed |
-| `.env` loading | Built-in | dotenv needed |
+| Feature        | Bun                      | Node            |
+| -------------- | ------------------------ | --------------- |
+| Install (cold) | ~1s                      | ~30s            |
+| Install (warm) | ~100ms                   | ~5s             |
+| Test runner    | Built-in                 | Vitest/Jest     |
+| Bundler        | Built-in                 | webpack/esbuild |
+| TypeScript     | Native (no compile step) | ts-node needed  |
+| `.env` loading | Built-in                 | dotenv needed   |
 
 ---
 
 ## Bun-Specific APIs
 
 ### File I/O
+
 ```typescript
 // Write a file
 await Bun.write("output.txt", "hello world");
@@ -36,6 +37,7 @@ const stream = file.stream(); // ReadableStream
 ```
 
 ### HTTP Server
+
 ```typescript
 // src/scripts/server.ts — standalone server (not Next.js)
 const server = Bun.serve({
@@ -58,6 +60,7 @@ console.log(`Listening on port ${server.port}`);
 ```
 
 ### Shell Commands
+
 ```typescript
 import { $ } from "bun";
 
@@ -76,12 +79,15 @@ if (exitCode !== 0) {
 ```
 
 ### SQLite
+
 ```typescript
 import { Database } from "bun:sqlite";
 
 // Bun has built-in SQLite (no better-sqlite3 needed for scripts)
 const db = new Database("local.db");
-const users = db.query("SELECT * FROM users WHERE email = ?").all("alice@example.com");
+const users = db
+  .query("SELECT * FROM users WHERE email = ?")
+  .all("alice@example.com");
 ```
 
 ---
@@ -122,7 +128,7 @@ bun test utils.test.ts      # run specific file
 await Bun.build({
   entrypoints: ["./src/cli.ts"],
   outdir: "./dist",
-  target: "bun",     // or "node", "browser"
+  target: "bun", // or "node", "browser"
   minify: true,
   sourcemap: "external",
   external: ["better-sqlite3"], // don't bundle native modules

@@ -138,10 +138,14 @@ function assertNever(value: never): never {
 
 function handleStatus(status: "active" | "inactive" | "pending") {
   switch (status) {
-    case "active": return "green";
-    case "inactive": return "gray";
-    case "pending": return "yellow";
-    default: return assertNever(status); // compile error if case missing
+    case "active":
+      return "green";
+    case "inactive":
+      return "gray";
+    case "pending":
+      return "yellow";
+    default:
+      return assertNever(status); // compile error if case missing
   }
 }
 ```
@@ -176,7 +180,10 @@ type Config = typeof CONFIG; // { readonly maxRetries: 3; readonly timeout: 5000
 
 ```typescript
 // Constraint: T must have id
-function findById<T extends { id: string }>(items: T[], id: string): T | undefined {
+function findById<T extends { id: string }>(
+  items: T[],
+  id: string,
+): T | undefined {
   return items.find((item) => item.id === id);
 }
 
@@ -235,7 +242,10 @@ try {
 }
 
 // Prefer interface for objects that can be extended
-interface User { id: string; email: string; }
+interface User {
+  id: string;
+  email: string;
+}
 
 // Prefer type for unions, intersections, mapped types
 type ID = string | number;

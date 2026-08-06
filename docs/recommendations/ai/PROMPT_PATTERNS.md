@@ -19,6 +19,7 @@ Then answer.
 ```
 
 Or inline:
+
 ```
 Solve this step by step. Show your reasoning as you go.
 ```
@@ -83,6 +84,7 @@ Output:`;
 ```
 
 Rules for good few-shot examples:
+
 - Cover edge cases, not just happy paths
 - Examples should span the difficulty range
 - Keep examples consistent in format
@@ -118,17 +120,20 @@ ${diff}
 ```
 
 For Zod validation of AI output:
+
 ```typescript
 import { z } from "zod";
 
 const BugSchema = z.object({
-  bugs: z.array(z.object({
-    severity: z.enum(["critical", "high", "medium", "low"]),
-    file: z.string(),
-    line: z.number(),
-    description: z.string(),
-    fix: z.string(),
-  })),
+  bugs: z.array(
+    z.object({
+      severity: z.enum(["critical", "high", "medium", "low"]),
+      file: z.string(),
+      line: z.number(),
+      description: z.string(),
+      fix: z.string(),
+    }),
+  ),
   summary: z.string(),
   clean: z.boolean(),
 });

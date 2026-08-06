@@ -51,7 +51,7 @@ const ReviewSchema = z.object({
       file: z.string(),
       description: z.string(),
       suggestion: z.string(),
-    })
+    }),
   ),
   approved: z.boolean(),
 });
@@ -91,6 +91,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
 ```
 
 ### Paired with pgvector
+
 ```sql
 -- Enable extension
 CREATE EXTENSION vector;
@@ -186,6 +187,7 @@ const job = await client.fineTuning.jobs.create({
 ## System Prompt Patterns
 
 ### Persona + Rules
+
 ```
 You are a principal engineer at a high-scale startup.
 You value: correctness, simplicity, observability.
@@ -199,6 +201,7 @@ Rules:
 ```
 
 ### Output Shaping
+
 ```
 Always respond with:
 1. A one-sentence TL;DR

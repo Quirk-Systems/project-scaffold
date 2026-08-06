@@ -22,6 +22,7 @@ Each `.md` file becomes a `/command`. The file content is the prompt Claude runs
 Run the full validation suite, then commit and push if everything passes.
 
 Steps:
+
 1. Run `bun run validate` (lint + type-check + test + build)
 2. If any step fails, stop and report which step failed with the full error
 3. If all pass, stage all modified tracked files
@@ -42,6 +43,7 @@ Do not push if validation fails.
 Run a full security and dependency audit on this codebase.
 
 Steps:
+
 1. Run `bun audit` and report any vulnerabilities (high/critical first)
 2. Run `bunx depcheck` to find unused dependencies
 3. Run `bunx npm-check-updates` to list outdated packages
@@ -61,11 +63,13 @@ Output a summary table at the end with counts per severity.
 # Scaffold Component
 
 Given a component name and description, generate:
+
 1. The component file in `src/components/`
 2. A unit test file alongside it
 3. Export from the appropriate index if one exists
 
 Requirements:
+
 - Follow existing patterns in `src/components/ui/`
 - Use `cn()` from `@/lib/utils` for class names
 - Use `"use client"` only if the component needs hooks or events
@@ -87,23 +91,27 @@ Ask me for the component name and description if not provided.
 Review the current git diff (or specified files) for:
 
 **Logic**
+
 - Correctness: does it do what it claims?
 - Edge cases: empty arrays, null, undefined, -1, 0, max values
 - Off-by-one errors
 - Async errors that aren't caught
 
 **Security**
+
 - User input validated with Zod?
 - Auth checked before data access?
 - No hardcoded secrets?
 - No SQL injection risk?
 
 **Performance**
+
 - Any N+1 queries?
 - Expensive computation in render path?
 - Unnecessary re-renders?
 
 **Code Quality**
+
 - Follows project conventions?
 - Uses @/ imports?
 - No magic numbers?

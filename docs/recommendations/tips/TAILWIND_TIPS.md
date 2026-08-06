@@ -10,10 +10,10 @@ Tailwind v4 drops `tailwind.config.ts`. Everything is in CSS.
 
 ```css
 /* src/app/globals.css */
-@import "tailwindcss";        /* pulls in all utilities */
-@import "tw-animate-css";     /* animation utilities */
+@import "tailwindcss"; /* pulls in all utilities */
+@import "tw-animate-css"; /* animation utilities */
 
-@custom-variant dark (&:where(.dark, .dark *));  /* dark mode via .dark class */
+@custom-variant dark (&:where(.dark, .dark *)); /* dark mode via .dark class */
 
 @theme inline {
   /* Override or extend the default theme */
@@ -85,7 +85,7 @@ Tailwind v4 uses content scanning to purge unused classes. Never build class nam
 ```tsx
 // ❌ Won't work — scanner can't detect these
 const color = "red";
-<div className={`bg-${color}-500`} />
+<div className={`bg-${color}-500`} />;
 
 // ✅ Use complete class names
 const classes = {
@@ -93,7 +93,7 @@ const classes = {
   blue: "bg-blue-500",
   green: "bg-green-500",
 } as const;
-<div className={classes[color]} />
+<div className={classes[color]} />;
 
 // ✅ Or use CVA (class-variance-authority) — see button.tsx
 import { cva } from "class-variance-authority";
@@ -141,13 +141,7 @@ const badge = cva("rounded-full px-2 py-0.5 text-xs font-medium", {
 
 ```tsx
 // Uses .dark class (set on <html> or any ancestor)
-<button className="
-  bg-white text-black        // light mode
-  dark:bg-gray-900           // dark mode
-  dark:text-white
-  border border-gray-200
-  dark:border-gray-700
-">
+<button className="// light mode // dark mode border border-gray-200 bg-white text-black dark:border-gray-700 dark:bg-gray-900 dark:text-white">
   Click me
 </button>
 
@@ -209,13 +203,13 @@ export function cn(...inputs: ClassValue[]) {
 
 ## Spacing Scale Reference
 
-| Class | Size |
-|-------|------|
-| `p-1` | 4px |
-| `p-2` | 8px |
-| `p-4` | 16px |
-| `p-6` | 24px |
-| `p-8` | 32px |
+| Class  | Size |
+| ------ | ---- |
+| `p-1`  | 4px  |
+| `p-2`  | 8px  |
+| `p-4`  | 16px |
+| `p-6`  | 24px |
+| `p-8`  | 32px |
 | `p-12` | 48px |
 | `p-16` | 64px |
 

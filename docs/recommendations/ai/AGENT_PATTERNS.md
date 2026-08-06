@@ -11,6 +11,7 @@ Input → Claude → Decision → Tool Call → Result → Claude → Decision �
 ```
 
 Every agent is a variation on this loop. The differences are:
+
 - What tools are available
 - When to stop
 - How errors are handled
@@ -26,7 +27,8 @@ One agent, one task, stops when done.
 async function simpleAgent(task: string, tools: Tool[]) {
   const messages: MessageParam[] = [{ role: "user", content: task }];
 
-  for (let turn = 0; turn < 20; turn++) {  // max turns as safety net
+  for (let turn = 0; turn < 20; turn++) {
+    // max turns as safety net
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 4096,
@@ -64,7 +66,7 @@ async function orchestrate(task: string) {
 
   // Step 2: Execute in parallel
   const results = await Promise.all(
-    plan.subtasks.map((subtask) => workerAgent(subtask))
+    plan.subtasks.map((subtask) => workerAgent(subtask)),
   );
 
   // Step 3: Synthesize
@@ -88,11 +90,11 @@ Each stage's output is the next stage's input. Good for transformation chains.
 
 ```typescript
 const pipeline: Array<(input: string) => Promise<string>> = [
-  (input) => researchAgent(input),      // gather information
-  (input) => structureAgent(input),     // organize it
-  (input) => draftAgent(input),         // write it
-  (input) => reviewAgent(input),        // critique it
-  (input) => refineAgent(input),        // improve it
+  (input) => researchAgent(input), // gather information
+  (input) => structureAgent(input), // organize it
+  (input) => draftAgent(input), // write it
+  (input) => reviewAgent(input), // critique it
+  (input) => refineAgent(input), // improve it
 ];
 
 async function runPipeline(initialInput: string): Promise<string> {
@@ -116,7 +118,7 @@ Generate, evaluate, improve. Loop until quality threshold met.
 async function evaluatorOptimizer(
   task: string,
   maxRounds = 5,
-  threshold = 0.85
+  threshold = 0.85,
 ) {
   let solution = await generatorAgent(task);
 
@@ -146,10 +148,10 @@ Process many items independently (map), combine results (reduce).
 async function mapReduce<T, R>(
   items: T[],
   mapper: (item: T) => Promise<R>,
-  reducer: (results: R[]) => Promise<string>
+  reducer: (results: R[]) => Promise<string>,
 ) {
   // Map: process each item (parallelized)
-  const BATCH_SIZE = 10;  // respect rate limits
+  const BATCH_SIZE = 10; // respect rate limits
   const results: R[] = [];
 
   for (let i = 0; i < items.length; i += BATCH_SIZE) {
@@ -166,7 +168,7 @@ async function mapReduce<T, R>(
 const summary = await mapReduce(
   sourceFiles,
   (file) => analyzeFileAgent(file),
-  (analyses) => synthesizeAgent(analyses)
+  (analyses) => synthesizeAgent(analyses),
 );
 ```
 
@@ -175,6 +177,7 @@ const summary = await mapReduce(
 ## Tool Design Principles
 
 ### Make tools atomic
+
 Each tool does one thing. Claude composes them.
 
 ```typescript
@@ -189,6 +192,7 @@ const runTestsTool = { name: "run_tests", ... };
 ```
 
 ### Describe tools for Claude, not for a function signature
+
 ```typescript
 // BAD description (too terse)
 { name: "search", description: "Search files" }
@@ -204,12 +208,13 @@ const runTestsTool = { name: "run_tests", ... };
 ```
 
 ### Return structured, typed results
+
 ```typescript
 interface ToolResult {
   success: boolean;
   data?: unknown;
   error?: string;
-  hint?: string;  // guidance for Claude on what to try next if failed
+  hint?: string; // guidance for Claude on what to try next if failed
 }
 ```
 
@@ -238,7 +243,7 @@ class RateLimitedAgent {
 
   private async waitForCapacity() {
     while (this.running >= this.MAX_CONCURRENT) {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
 }

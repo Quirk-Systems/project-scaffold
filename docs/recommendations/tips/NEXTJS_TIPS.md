@@ -37,6 +37,7 @@ export default async function UsersPage() {
 ```
 
 Gotchas:
+
 - Cannot use `useState`, `useEffect`, event handlers
 - Props must be serializable (no functions, no class instances)
 - Cannot import client-only packages (browser APIs, etc.)
@@ -53,11 +54,7 @@ import { useState } from "react";
 // Pattern: keep client components small and leaf-level
 export function LikeButton({ postId }: { postId: string }) {
   const [liked, setLiked] = useState(false);
-  return (
-    <button onClick={() => setLiked(!liked)}>
-      {liked ? "♥" : "♡"}
-    </button>
-  );
+  return <button onClick={() => setLiked(!liked)}>{liked ? "♥" : "♡"}</button>;
 }
 ```
 
@@ -81,7 +78,8 @@ export async function updateUserName(formData: FormData) {
   const parsed = schema.safeParse({ name: formData.get("name") });
   if (!parsed.success) return { error: parsed.error.flatten() };
 
-  await db.update(users)
+  await db
+    .update(users)
     .set({ name: parsed.data.name })
     .where(eq(users.id, session.user.id));
 
@@ -130,7 +128,7 @@ import { unstable_cache } from "next/cache";
 const getPosts = unstable_cache(
   async () => db.query.posts.findMany(),
   ["posts"],
-  { revalidate: 60, tags: ["posts"] }
+  { revalidate: 60, tags: ["posts"] },
 );
 ```
 

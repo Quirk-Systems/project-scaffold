@@ -11,9 +11,9 @@ Each Quirk MCP server lives in its own repo and is deployed independently
 of `project-scaffold`. The scaffold is for Next.js apps; MCP servers are
 their own deployable.
 
-| Server | Repo | What it bridges |
-| --- | --- | --- |
-| `quirk-mcp-server` | `Quirk-Systems/quirk-mcp-server` *(repo TBD)* | An Obsidian vault → Claude. Filesystem-direct read/write, search, backlinks, tags, daily notes, vault stats. |
+| Server             | Repo                                          | What it bridges                                                                                              |
+| ------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `quirk-mcp-server` | `Quirk-Systems/quirk-mcp-server` _(repo TBD)_ | An Obsidian vault → Claude. Filesystem-direct read/write, search, backlinks, tags, daily notes, vault stats. |
 
 > The `quirk-mcp-server` was prototyped inside this scaffold on branch
 > `claude/quirk-mcp-server-fHdiT` (commits `51bfadc` and `eba61dc`) and
@@ -45,11 +45,11 @@ Mandatory safety rails for any filesystem-touching server:
 
 ## Where to install
 
-| Client | Config |
-| --- | --- |
+| Client                 | Config                                                            |
+| ---------------------- | ----------------------------------------------------------------- |
 | Claude Desktop (macOS) | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-| Claude Desktop (Linux) | `~/.config/Claude/claude_desktop_config.json` |
-| Claude Code (global) | `claude mcp add <name> <command>` |
-| Claude Code (project) | `.mcp.json` at repo root |
+| Claude Desktop (Linux) | `~/.config/Claude/claude_desktop_config.json`                     |
+| Claude Code (global)   | `claude mcp add <name> <command>`                                 |
+| Claude Code (project)  | `.mcp.json` at repo root                                          |
 
 Restart the client after editing config; servers appear in the tools panel.

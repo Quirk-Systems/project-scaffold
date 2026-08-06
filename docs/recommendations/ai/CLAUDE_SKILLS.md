@@ -10,29 +10,35 @@ Drop `CLAUDE.md` at repo root. Claude reads it on every session.
 # CLAUDE.md
 
 ## Project Overview
+
 [What this project does in 2-3 sentences]
 
 ## Stack
+
 - Language: TypeScript / Python / Go
 - Framework: Next.js / FastAPI / Gin
 - DB: Postgres + Prisma
 - Infra: Vercel + Railway
 
 ## Commands
+
 - `npm run dev` — start dev server
 - `npm run test` — run tests
 - `npm run lint` — lint + typecheck
 
 ## Architecture
+
 [Brief description of folder layout and key patterns]
 
 ## Key Conventions
+
 - All API routes in `src/app/api/`
 - Zod for all validation
 - Never commit secrets — use `.env.local`
 - Prefer named exports
 
 ## What NOT to Do
+
 - Don't use `any` in TypeScript
 - Don't skip input validation
 - Don't add console.log to prod code
@@ -45,6 +51,7 @@ Drop `CLAUDE.md` at repo root. Claude reads it on every session.
 Create in `.claude/commands/` as `.md` files.
 
 ### `/commit`
+
 ```markdown
 # Commit
 
@@ -55,10 +62,12 @@ Run: git diff --staged first to understand changes.
 ```
 
 ### `/review`
+
 ```markdown
 # Code Review
 
 Review the current diff for:
+
 1. Logic errors and edge cases
 2. Security issues (injection, auth, validation)
 3. Performance problems
@@ -69,10 +78,12 @@ Be direct. Output as bullet points per file.
 ```
 
 ### `/spec`
+
 ```markdown
 # Write Spec
 
 Given a feature description, write:
+
 1. User stories (As a X, I want Y, so that Z)
 2. Acceptance criteria (Given/When/Then)
 3. Edge cases to test
@@ -80,10 +91,12 @@ Given a feature description, write:
 ```
 
 ### `/debug`
+
 ```markdown
 # Debug
 
 Given the error, systematically:
+
 1. Read the full stack trace
 2. Find the root cause (not just the symptom)
 3. Explain WHY it happens
@@ -92,10 +105,12 @@ Given the error, systematically:
 ```
 
 ### `/docs`
+
 ```markdown
 # Generate Docs
 
 For the selected code, write:
+
 1. A one-line summary
 2. Parameter descriptions with types
 3. Return value description
@@ -108,6 +123,7 @@ For the selected code, write:
 ## Effective Prompting Patterns
 
 ### Chain of Thought — Force Reasoning First
+
 ```
 Before answering, think through:
 1. What is actually being asked?
@@ -117,6 +133,7 @@ Then give your answer.
 ```
 
 ### Structured Output
+
 ```
 Respond ONLY as JSON with this shape:
 {
@@ -128,6 +145,7 @@ Respond ONLY as JSON with this shape:
 ```
 
 ### Role + Context
+
 ```
 You are a senior security engineer reviewing this PR.
 Focus on: auth bypass, injection, data exposure.
@@ -135,6 +153,7 @@ Ignore: style, formatting, naming.
 ```
 
 ### Iterative Refinement
+
 ```
 Draft 1: Write it fast, don't overthink.
 Draft 2: Cut 30% of words. Keep all meaning.
@@ -143,6 +162,7 @@ Output only Draft 3.
 ```
 
 ### Negative Constraints
+
 ```
 Do NOT:
 - Add new dependencies
@@ -156,6 +176,7 @@ Do NOT:
 ## Claude API Patterns (Code)
 
 ### Basic Streaming
+
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -178,6 +199,7 @@ for await (const chunk of stream) {
 ```
 
 ### Tool Use
+
 ```typescript
 const response = await client.messages.create({
   model: "claude-sonnet-4-6",
@@ -201,6 +223,7 @@ const response = await client.messages.create({
 ```
 
 ### System Prompt Template
+
 ```typescript
 const SYSTEM = `
 You are an expert ${domain} assistant embedded in a development workflow.
@@ -224,11 +247,13 @@ ${outputFormat}
 ## Memory Patterns
 
 ### Project Memory via CLAUDE.md
+
 - Root `CLAUDE.md` = global project context
 - `src/CLAUDE.md` = subsystem-specific rules
 - `src/api/CLAUDE.md` = API-specific patterns
 
 ### Conversation Memory (API)
+
 ```typescript
 const messages: MessageParam[] = [];
 

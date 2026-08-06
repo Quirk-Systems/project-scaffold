@@ -6,13 +6,13 @@
 
 ## Types of Memory
 
-| Type | What | Implementation |
-|------|------|---------------|
-| In-context | Current conversation history | Messages array |
-| Episodic | Past conversation summaries | DB + retrieval |
-| Semantic | Knowledge / facts about entities | Vector DB |
-| Procedural | How to do things | CLAUDE.md / system prompts |
-| Working | Current task state | Agent state object |
+| Type       | What                             | Implementation             |
+| ---------- | -------------------------------- | -------------------------- |
+| In-context | Current conversation history     | Messages array             |
+| Episodic   | Past conversation summaries      | DB + retrieval             |
+| Semantic   | Knowledge / facts about entities | Vector DB                  |
+| Procedural | How to do things                 | CLAUDE.md / system prompts |
+| Working    | Current task state               | Agent state object         |
 
 ---
 
@@ -50,9 +50,11 @@ When history gets long, summarize old turns:
 
 ```typescript
 const COMPRESSION_THRESHOLD = 50; // messages
-const KEEP_RECENT = 10;           // keep last N messages verbatim
+const KEEP_RECENT = 10; // keep last N messages verbatim
 
-async function compressMemory(messages: MessageParam[]): Promise<MessageParam[]> {
+async function compressMemory(
+  messages: MessageParam[],
+): Promise<MessageParam[]> {
   if (messages.length < COMPRESSION_THRESHOLD) return messages;
 
   const toCompress = messages.slice(0, -KEEP_RECENT);
@@ -88,11 +90,15 @@ Store and retrieve past conversations:
 ```typescript
 // Schema (Drizzle)
 export const conversationMemory = sqliteTable("conversation_memory", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull(),
   summary: text("summary").notNull(),
-  keyFacts: text("key_facts").notNull(),  // JSON array
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`),
+  keyFacts: text("key_facts").notNull(), // JSON array
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`(unixepoch())`,
+  ),
 });
 
 // After each conversation, store summary
@@ -107,7 +113,10 @@ async function storeMemory(userId: string, messages: MessageParam[]) {
 }
 
 // Retrieve relevant past context
-async function loadMemory(userId: string, currentTopic: string): Promise<string> {
+async function loadMemory(
+  userId: string,
+  currentTopic: string,
+): Promise<string> {
   const memories = await db.query.conversationMemory.findMany({
     where: eq(conversationMemory.userId, userId),
     orderBy: desc(conversationMemory.createdAt),
@@ -116,9 +125,7 @@ async function loadMemory(userId: string, currentTopic: string): Promise<string>
 
   if (!memories.length) return "";
 
-  return memories
-    .map(m => `[${m.createdAt}] ${m.summary}`)
-    .join("\n");
+  return memories.map((m) => `[${m.createdAt}] ${m.summary}`).join("\n");
 }
 ```
 
@@ -132,22 +139,28 @@ CLAUDE.md is how you give an AI persistent procedural memory — knowledge about
 # CLAUDE.md (project memory)
 
 ## What this project does
+
 [Prevents re-asking "what does this project do?"]
 
 ## Key architectural decisions
+
 [ADRs in brief — why we made specific choices]
 
 ## Patterns to follow
+
 [Code patterns to reuse]
 
 ## Patterns to avoid
+
 [Known footguns and why]
 
 ## Common tasks
+
 [How to do recurring tasks in this codebase]
 ```
 
 Layer CLAUDE.md files:
+
 ```
 CLAUDE.md               # global project context
 src/lib/CLAUDE.md       # library conventions
@@ -194,7 +207,7 @@ async function recall(query: string, limit = 5) {
   // For SQLite: brute force cosine similarity
   const all = await db.select().from(memories);
   return all
-    .map(m => ({
+    .map((m) => ({
       ...m,
       similarity: cosineSimilarity(queryEmbedding, JSON.parse(m.embedding)),
     }))
@@ -215,8 +228,8 @@ interface AgentState {
   plan: string[];
   completedSteps: string[];
   discoveredFacts: Record<string, string>;
-  errors: Array<{ step: string; error: string; }>;
-  context: string;  // accumulated relevant context
+  errors: Array<{ step: string; error: string }>;
+  context: string; // accumulated relevant context
 }
 
 // Inject state into system prompt
@@ -234,7 +247,9 @@ ${state.plan.map((step, i) => `${i + 1}. ${step}`).join("\n")}
 ${state.completedSteps.join("\n")}
 
 ## Known Facts
-${Object.entries(state.discoveredFacts).map(([k, v]) => `- ${k}: ${v}`).join("\n")}
+${Object.entries(state.discoveredFacts)
+  .map(([k, v]) => `- ${k}: ${v}`)
+  .join("\n")}
 
 ## Context
 ${state.context}
@@ -255,7 +270,7 @@ async function ragQuery(userQuestion: string, knowledgeBase: Document[]) {
 
   // 2. Build context from retrieved docs
   const context = relevant
-    .map(doc => `[${doc.title}]\n${doc.content}`)
+    .map((doc) => `[${doc.title}]\n${doc.content}`)
     .join("\n\n---\n\n");
 
   // 3. Answer with context
@@ -265,10 +280,12 @@ async function ragQuery(userQuestion: string, knowledgeBase: Document[]) {
     system: `Answer questions using only the provided context.
       If the context doesn't contain the answer, say so.
       Cite which document you're drawing from.`,
-    messages: [{
-      role: "user",
-      content: `Context:\n${context}\n\nQuestion: ${userQuestion}`,
-    }],
+    messages: [
+      {
+        role: "user",
+        content: `Context:\n${context}\n\nQuestion: ${userQuestion}`,
+      },
+    ],
   });
 }
 ```

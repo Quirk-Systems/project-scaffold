@@ -4,38 +4,41 @@
 
 ## The Modern SaaS Stack (2025)
 
-| Layer | Choice | Why |
-|-------|--------|-----|
-| Frontend | Next.js (App Router) | RSC, streaming, great DX |
-| Styling | Tailwind + shadcn/ui | Fast, composable, accessible |
-| Backend | Next.js API routes or Hono | Co-located or edge-ready |
-| Auth | Auth.js / Clerk | Clerk if you want to ship fast |
-| DB | Postgres (Neon / Supabase) | Real SQL, scales fine |
-| ORM | Prisma or Drizzle | Prisma for DX, Drizzle for speed |
-| Cache | Upstash Redis | Serverless, cheap |
-| Queue | Inngest / BullMQ | Inngest for serverless |
-| Storage | Cloudflare R2 | S3-compatible, no egress fees |
-| Email | Resend + React Email | Best DX for transactional |
-| Payments | Stripe | Still the one |
-| Analytics | PostHog | Open source, self-hostable |
-| Error tracking | Sentry | Standard |
-| Deploy | Vercel + Railway | Frontend + backend split |
+| Layer          | Choice                     | Why                              |
+| -------------- | -------------------------- | -------------------------------- |
+| Frontend       | Next.js (App Router)       | RSC, streaming, great DX         |
+| Styling        | Tailwind + shadcn/ui       | Fast, composable, accessible     |
+| Backend        | Next.js API routes or Hono | Co-located or edge-ready         |
+| Auth           | Auth.js / Clerk            | Clerk if you want to ship fast   |
+| DB             | Postgres (Neon / Supabase) | Real SQL, scales fine            |
+| ORM            | Prisma or Drizzle          | Prisma for DX, Drizzle for speed |
+| Cache          | Upstash Redis              | Serverless, cheap                |
+| Queue          | Inngest / BullMQ           | Inngest for serverless           |
+| Storage        | Cloudflare R2              | S3-compatible, no egress fees    |
+| Email          | Resend + React Email       | Best DX for transactional        |
+| Payments       | Stripe                     | Still the one                    |
+| Analytics      | PostHog                    | Open source, self-hostable       |
+| Error tracking | Sentry                     | Standard                         |
+| Deploy         | Vercel + Railway           | Frontend + backend split         |
 
 ---
 
 ## Starter Kits Worth Using
 
 ### Next.js
+
 - [create-t3-app](https://create.t3.gg) — Next + Prisma + tRPC + Auth.js + Tailwind
 - [shadcn-ui](https://ui.shadcn.com) — component system
 - [Taxonomy](https://github.com/shadcn/taxonomy) — shadcn's own SaaS example
 - [Vercel Commerce](https://github.com/vercel/commerce) — e-commerce reference
 
 ### Python
+
 - [FastAPI template](https://github.com/fastapi/full-stack-fastapi-template) — official
 - [Litestar](https://litestar.dev) — FastAPI alternative, batteries included
 
 ### Go
+
 - [golang-standards/project-layout](https://github.com/golang-standards/project-layout) — layout reference
 - [chi](https://github.com/go-chi/chi) — lightweight router
 
@@ -44,6 +47,7 @@
 ## App Architecture Patterns
 
 ### Feature Flags
+
 ```typescript
 // Simple env-based flags
 const FLAGS = {
@@ -63,16 +67,15 @@ import { PostHog } from "posthog-node";
 
 const client = new PostHog(process.env.POSTHOG_KEY!);
 
-const isEnabled = await client.isFeatureEnabled(
-  "new-checkout",
-  userId,
-  { groups: { company: companyId } }
-);
+const isEnabled = await client.isFeatureEnabled("new-checkout", userId, {
+  groups: { company: companyId },
+});
 ```
 
 ---
 
 ### Rate Limiting (Upstash)
+
 ```typescript
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -89,10 +92,16 @@ export async function POST(req: Request) {
   const { success, limit, remaining } = await ratelimit.limit(ip);
 
   if (!success) {
-    return Response.json({ error: "Rate limited" }, { status: 429, headers: {
-      "X-RateLimit-Limit": limit.toString(),
-      "X-RateLimit-Remaining": remaining.toString(),
-    }});
+    return Response.json(
+      { error: "Rate limited" },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Limit": limit.toString(),
+          "X-RateLimit-Remaining": remaining.toString(),
+        },
+      },
+    );
   }
   // ... handler
 }
@@ -101,6 +110,7 @@ export async function POST(req: Request) {
 ---
 
 ### Background Jobs (Inngest)
+
 ```typescript
 import { inngest } from "./inngest-client";
 
@@ -135,6 +145,7 @@ await inngest.send({ name: "user/created", data: { email, id } });
 ---
 
 ### Webhook Handler Pattern
+
 ```typescript
 // app/api/webhooks/stripe/route.ts
 import Stripe from "stripe";
@@ -150,7 +161,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch {
     return Response.json({ error: "Invalid signature" }, { status: 400 });
@@ -176,6 +187,7 @@ export async function POST(req: Request) {
 ---
 
 ### Optimistic Updates (React Query)
+
 ```typescript
 const queryClient = useQueryClient();
 
@@ -187,7 +199,7 @@ const mutation = useMutation({
 
     // Optimistically update
     queryClient.setQueryData(["todos"], (old: Todo[]) =>
-      old.map((t) => (t.id === newTodo.id ? { ...t, ...newTodo } : t))
+      old.map((t) => (t.id === newTodo.id ? { ...t, ...newTodo } : t)),
     );
 
     return { previous };
@@ -207,6 +219,7 @@ const mutation = useMutation({
 ## SaaS Pricing Patterns
 
 ### Free Tier Decision Framework
+
 ```
 Free tier purpose:
   → Acquisition tool (lead gen) → be generous
@@ -221,16 +234,14 @@ What to limit:
 ```
 
 ### Metered Billing (Stripe)
+
 ```typescript
 // Create usage record
-await stripe.subscriptionItems.createUsageRecord(
-  subscriptionItemId,
-  {
-    quantity: apiCallCount,
-    timestamp: Math.floor(Date.now() / 1000),
-    action: "increment",
-  }
-);
+await stripe.subscriptionItems.createUsageRecord(subscriptionItemId, {
+  quantity: apiCallCount,
+  timestamp: Math.floor(Date.now() / 1000),
+  action: "increment",
+});
 ```
 
 ---
@@ -238,33 +249,40 @@ await stripe.subscriptionItems.createUsageRecord(
 ## Recommended Libraries
 
 ### Validation
+
 - **Zod** — TypeScript-first schema validation
 - **Valibot** — smaller bundle alternative
 
 ### Forms
+
 - **React Hook Form** + Zod — best combo
 - **TanStack Form** — newer, fully type-safe
 
 ### State
+
 - **Zustand** — simple global state
 - **Jotai** — atomic state
 - **TanStack Query** — server state
 
 ### Auth
+
 - **Auth.js (NextAuth)** — flexible, open source
 - **Clerk** — fully managed, great DX
 - **Lucia** — lightweight, full control
 
 ### UI
+
 - **shadcn/ui** — copy-paste components
 - **Radix UI** — headless primitives
 - **Framer Motion** — animations
 
 ### Dates
+
 - **date-fns** — tree-shakeable functions
 - **Temporal API** — native JS (use polyfill)
 
 ### Testing
+
 - **Vitest** — fast, Jest-compatible
 - **Playwright** — E2E browser testing
 - **MSW** — mock service worker for API mocking
