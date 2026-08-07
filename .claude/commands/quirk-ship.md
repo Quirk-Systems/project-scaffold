@@ -30,7 +30,13 @@ classes critical and high production findings as fail-now; dev-only findings war
    the merge of your head into main, so a green local branch can still fail on
    a moved base — but merging is a change to the branch, so ask before doing it
    rather than doing it as part of preparing a review.
-4. Mirror `.github/PULL_REQUEST_TEMPLATE.md`. Treat it as a layout to fill in.
+4. Use `.github/PULL_REQUEST_TEMPLATE.md` for the description's headings —
+   Summary / Changes / Test plan / Notes for reviewer. The canonical prompt
+   proposes a different six-heading layout (Outcome, Implementation,
+   Verification, Risk, Review Focus, Follow-ups); that is the portable default
+   for repositories without a template, and this repository has one. Its
+   headings win here. Carry the intent of the six across anyway: what becomes
+   possible goes in Summary, risk and review focus go in Notes for reviewer.
 
 ## Evidence
 

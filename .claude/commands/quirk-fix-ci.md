@@ -32,7 +32,11 @@ To test against a moved base without touching the branch:
 git fetch origin main
 git worktree add --detach /tmp/ci-repro HEAD
 git -C /tmp/ci-repro merge origin/main   # conflicts stay inside the worktree
-git -C /tmp/ci-repro status              # then run the gate in there
+
+# Run the gate against the merged tree — this is the point of the exercise.
+# Testing the unmerged branch here would reproduce nothing.
+(cd /tmp/ci-repro && bun install --frozen-lockfile && bun run validate)
+
 git worktree remove --force /tmp/ci-repro
 ```
 
