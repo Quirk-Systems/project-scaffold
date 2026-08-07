@@ -1,4 +1,4 @@
-import type { QuirkScores } from "./scoring";
+import { round3, type QuirkScores } from "./scoring";
 
 // The Goldilocks gate: heuristics decide whether an asset's score profile
 // earns an automatic 1/1 mint. Too cold — nobody would claim it. Too hot —
@@ -22,10 +22,6 @@ const HOT_WEIRDNESS_CEILING = 0.85;
 const HOT_QUALITY_LAG = 0.5;
 const HOT_CHARGE_CEILING = 0.9;
 const HOT_COMMERCIAL_FLOOR = 0.2;
-
-function round3(n: number): number {
-  return Math.round(n * 1000) / 1000;
-}
 
 /**
  * Read an asset's temperature. Pure and deterministic — same profile, same

@@ -19,12 +19,10 @@ export function diffWitchCompare(input: {
 
   const fromLines = new Set(splitLines(fromText));
   const toLines = splitLines(toText);
-  const fromLineSet = fromLines;
+  const toLineSet = new Set(toLines);
 
-  const additions = toLines.filter((l) => !fromLineSet.has(l)).slice(0, 25);
-  const removals = [...fromLines]
-    .filter((l) => !new Set(toLines).has(l))
-    .slice(0, 25);
+  const additions = toLines.filter((l) => !fromLines.has(l)).slice(0, 25);
+  const removals = [...fromLines].filter((l) => !toLineSet.has(l)).slice(0, 25);
 
   const fromScores = scoreText(fromText);
   const toScores = scoreText(toText);
