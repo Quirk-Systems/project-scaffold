@@ -31,11 +31,18 @@ To test against a moved base without touching the branch:
 ```bash
 git fetch origin main
 git worktree add --detach /tmp/ci-repro HEAD
-git -C /tmp/ci-repro merge origin/main   # conflicts stay inside the worktree
 
-# Run the gate against the merged tree — this is the point of the exercise.
-# Testing the unmerged branch here would reproduce nothing.
-(cd /tmp/ci-repro && bun install --frozen-lockfile && bun run validate)
+# --no-verify because worktrees share the repository's hooks but not its
+# gitignored node_modules: lefthook's commit-msg hook fires here and its
+# `bunx commitlint` leaves the merge uncommitted. Conflicts stay inside the
+# worktree either way.
+git -C /tmp/ci-repro merge --no-verify origin/main
+
+# Run all three gates against the merged tree — this is the point of the
+# exercise, and testing the unmerged branch would reproduce nothing. The
+# audit is included because `security` is the job that fails when main
+# brings in a new advisory.
+(cd /tmp/ci-repro && bun install --frozen-lockfile && bun run validate && bun audit --prod)
 
 git worktree remove --force /tmp/ci-repro
 ```
