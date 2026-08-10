@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   createPipeline,
   ensureDefaultPipeline,
+  ensureSwervemeV1Pipeline,
   listPipelines,
 } from "@/lib/quirk/pipelines";
 import { parseBody, serverError } from "@/lib/quirk/http";
@@ -23,7 +24,7 @@ const createSchema = z.object({
 
 export async function GET() {
   try {
-    await ensureDefaultPipeline();
+    await Promise.all([ensureDefaultPipeline(), ensureSwervemeV1Pipeline()]);
     return NextResponse.json({ pipelines: await listPipelines() });
   } catch (e) {
     return serverError(e);

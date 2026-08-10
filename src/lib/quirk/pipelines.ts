@@ -13,6 +13,10 @@ import { getAsset, setAssetStatus } from "./assets";
 import { proposeAnnotations, saveAnnotations } from "./annotations";
 import { createDiff } from "./diffs";
 import { createExperiment } from "./experiments";
+import {
+  SWERVEME_COVENANT,
+  SWERVEME_V1_STEPS,
+} from "./swerveme";
 
 export const DEFAULT_PIPELINE_STEPS: {
   stepKey: string;
@@ -97,7 +101,7 @@ export async function ensureDefaultPipeline(): Promise<QuirkPipeline> {
   const existing = await db
     .select()
     .from(quirkPipelines)
-    .orderBy(asc(quirkPipelines.createdAt))
+    .where(eq(quirkPipelines.name, "Quirk Spine"))
     .limit(1);
   if (existing[0]) return existing[0];
 
@@ -105,6 +109,22 @@ export async function ensureDefaultPipeline(): Promise<QuirkPipeline> {
     name: "Quirk Spine",
     description:
       "capture → annotate → diff → experiment → review → promote → publish",
+  });
+}
+
+export async function ensureSwervemeV1Pipeline(): Promise<QuirkPipeline> {
+  const [existing] = await db
+    .select()
+    .from(quirkPipelines)
+    .where(eq(quirkPipelines.name, "SWERVEME_V1"))
+    .limit(1);
+  if (existing) return existing;
+
+  return createPipeline({
+    name: "SWERVEME_V1",
+    description:
+      "One Squirther source → covenant → four Sureslurpers → evidence → human council → exit.",
+    steps: SWERVEME_V1_STEPS.map((step) => ({ ...step })),
   });
 }
 
@@ -126,6 +146,12 @@ export async function runPipeline(input: {
     switch (step.stepKey) {
       case "capture":
         return { message: `Asset "${asset.asset.title}" already captured.` };
+      case "source_covenant":
+        return {
+          message: `Covenant fixed: preserve ${SWERVEME_COVENANT.preserve.join(
+            ", ",
+          )}; promotion requires the Sureslurper Council.`,
+        };
       case "annotate": {
         const proposals = await proposeAnnotations(input.assetId);
         const saved = proposals
@@ -133,6 +159,26 @@ export async function runPipeline(input: {
           : [];
         return { message: `Saved ${saved.length} annotations.` };
       }
+      case "spawn_fourmore": {
+        const { runs } = await createExperiment({
+          name: `SWERVEME_V1: ${asset.asset.title}`,
+          experimentType: "workflow",
+          objective: SWERVEME_COVENANT.coreClaim,
+          inputAssetId: input.assetId,
+          journey: "swerveme_v1",
+        });
+        return { message: `Spawned ${runs.length} pending Sureslurpers.` };
+      }
+      case "diff_four":
+        return {
+          message:
+            "Four candidates are ready for preserved/gained/lost/bent comparison.",
+        };
+      case "sure_test":
+        return {
+          message:
+            "Sure Test prepared; candidates remain pending until human council review.",
+        };
       case "diff": {
         const fresh = await getAsset(input.assetId);
         const versions = fresh?.versions ?? [];

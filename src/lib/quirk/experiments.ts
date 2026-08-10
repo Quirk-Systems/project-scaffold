@@ -6,12 +6,13 @@ import {
   type QuirkExperiment,
   type QuirkRun,
 } from "@/lib/db/schema";
-import { labRatGenerate, pickWinner } from "./agents";
+import { labRatGenerate } from "./agents";
 import { captureAsset, getAsset, setAssetStatus } from "./assets";
 import { mintOffer } from "./offers";
 import { readGoldilocks, type GoldilocksReading } from "./goldilocks";
 import { scoreText } from "./scoring";
 import type { QuirkOffer } from "@/lib/db/schema";
+import { generateSwervemeCandidates } from "./swerveme";
 
 export async function listExperiments(): Promise<QuirkExperiment[]> {
   return db
@@ -53,6 +54,7 @@ export async function createExperiment(input: {
   model?: string | null;
   persona?: string | null;
   mask?: string | null;
+  journey?: "swerveme_v1" | null;
 }): Promise<{ experiment: QuirkExperiment; runs: QuirkRun[] }> {
   const [experiment] = await db
     .insert(quirkExperiments)
@@ -68,11 +70,24 @@ export async function createExperiment(input: {
 
   const found = await getAsset(input.inputAssetId);
   const baseText = found?.asset.rawText ?? "";
-  const variants = labRatGenerate({
-    text: baseText,
-    count: input.variantCount,
-  });
-  const winnerIdx = pickWinner(variants);
+  const variants =
+    input.journey === "swerveme_v1"
+      ? generateSwervemeCandidates({
+          sourceId: input.inputAssetId,
+          text: baseText,
+        })
+      : labRatGenerate({
+          text: baseText,
+          count: input.variantCount,
+        });
+  const winnerIdx =
+    input.journey === "swerveme_v1"
+      ? -1
+      : variants.reduce(
+          (best, candidate, index, all) =>
+            candidate.score > all[best].score ? index : best,
+          0,
+        );
 
   const runs = await db
     .insert(quirkRuns)
@@ -84,13 +99,18 @@ export async function createExperiment(input: {
         persona: input.persona ?? null,
         mask: input.mask ?? null,
         prompt: v.prompt,
-        parameters: { variant: v.label, output: v.output },
+        parameters: {
+          variant: "strategy" in v ? v.strategy : v.label,
+          journey: input.journey ?? null,
+          lineage: "lineage" in v ? v.lineage : undefined,
+          output: v.output,
+        },
         metrics: v.scores,
         score: v.score,
         outcome: (i === winnerIdx
           ? "winner"
           : "pending") as QuirkRun["outcome"],
-        notes: v.label,
+        notes: "name" in v ? v.name : v.label,
       })),
     )
     .returning();
