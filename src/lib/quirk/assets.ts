@@ -244,8 +244,7 @@ export async function listPublishedAssets(): Promise<
   const assets = await db
     .select()
     .from(quirkAssets)
-    .where(eq(quirkAssets.status, "published"))
-    .orderBy(desc(quirkAssets.createdAt));
+    .where(eq(quirkAssets.status, "published"));
 
   if (assets.length === 0) return [];
   const ids = assets.map((a) => a.id);

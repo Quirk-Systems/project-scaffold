@@ -1,4 +1,4 @@
-import { asc, desc, eq, and } from "drizzle-orm";
+import { asc, desc, eq, and, gte } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   quirkExperiments,
@@ -185,22 +185,20 @@ export async function autoPromoteExperiment(
   offer: QuirkOffer | null;
   goldilocks: GoldilocksReading;
 } | null> {
-  const pendingRuns = await db
+  const [best] = await db
     .select()
     .from(quirkRuns)
     .where(
       and(
         eq(quirkRuns.experimentId, experimentId),
         eq(quirkRuns.outcome, "pending"),
+        gte(quirkRuns.score, qualityThreshold),
       ),
     )
-    .orderBy(desc(quirkRuns.score));
+    .orderBy(desc(quirkRuns.score))
+    .limit(1);
 
-  const eligible = pendingRuns.filter(
-    (r) => r.score !== null && r.score >= qualityThreshold,
-  );
-  if (eligible.length === 0) return null;
+  if (!best) return null;
 
-  const best = eligible[0];
   return promoteRun(best.id);
 }
