@@ -10,6 +10,16 @@ and validated in CI.
 
 ## What lives here
 
+### Proposed: Quirk Conversation Compiler
+
+`Quirk Wrap` specifies how consequential conversation deltas become typed,
+source-backed, evaluated repository changes. The proposed runner binds output
+to host-owned source hashes, exact canon grants, pinned repository state,
+scoped mutation authority, and executor receipts; it preserves corrections and
+contradictions and returns an honest no-op when no durable artifact is
+justified. See the
+[capability pack](docs/capabilities/conversation-compiler/README.md).
+
 ### The Quirk Data Engine
 
 A registry for unstructured assets with pgvector embeddings and full
