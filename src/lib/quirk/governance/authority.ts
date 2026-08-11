@@ -16,20 +16,30 @@ const authorityGrantSchema = z.object({
 
 export type AuthorityGrant = z.infer<typeof authorityGrantSchema>;
 
+export type AuthorityDenialReason =
+  | "missing_grant"
+  | "missing_verifier"
+  | "malformed_grant"
+  | "invalid_signature"
+  | "expired_grant"
+  | "subject_mismatch"
+  | "scope_mismatch";
+
 export type AuthorityDecision =
   | { authorized: true; grant: AuthorityGrant }
   | {
       authorized: false;
       never: typeof NEVER_0001;
-      reason:
-        | "missing_grant"
-        | "missing_verifier"
-        | "malformed_grant"
-        | "invalid_signature"
-        | "expired_grant"
-        | "subject_mismatch"
-        | "scope_mismatch";
+      reason: AuthorityDenialReason;
     };
+
+export class AuthorityDeniedError extends Error {
+  readonly never = NEVER_0001;
+  constructor(readonly reason: AuthorityDenialReason) {
+    super(`Authority denied by ${NEVER_0001}: ${reason}`);
+    this.name = "AuthorityDeniedError";
+  }
+}
 
 function encodeBase64Url(value: string | Buffer): string {
   return Buffer.from(value).toString("base64url");
@@ -39,10 +49,7 @@ function sign(payload: string, secret: string): string {
   return createHmac("sha256", secret).update(payload).digest("base64url");
 }
 
-export function issueAuthorityGrant(
-  input: AuthorityGrant,
-  secret: string,
-): string {
+export function issueAuthorityGrant(input: AuthorityGrant, secret: string): string {
   const grant = authorityGrantSchema.parse(input);
   const payload = encodeBase64Url(JSON.stringify(grant));
   return `${payload}.${sign(payload, secret)}`;
@@ -55,12 +62,8 @@ export function verifyAuthorityGrant(input: {
   requiredScope: string;
   now?: Date;
 }): AuthorityDecision {
-  if (!input.token) {
-    return { authorized: false, never: NEVER_0001, reason: "missing_grant" };
-  }
-  if (!input.secret) {
-    return { authorized: false, never: NEVER_0001, reason: "missing_verifier" };
-  }
+  if (!input.token) return { authorized: false, never: NEVER_0001, reason: "missing_grant" };
+  if (!input.secret) return { authorized: false, never: NEVER_0001, reason: "missing_verifier" };
 
   const [payload, suppliedSignature, extra] = input.token.split(".");
   if (!payload || !suppliedSignature || extra) {
@@ -70,17 +73,15 @@ export function verifyAuthorityGrant(input: {
   const expectedSignature = sign(payload, input.secret);
   const supplied = Buffer.from(suppliedSignature);
   const expected = Buffer.from(expectedSignature);
-  if (
-    supplied.length !== expected.length ||
-    !timingSafeEqual(supplied, expected)
-  ) {
+  if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) {
     return { authorized: false, never: NEVER_0001, reason: "invalid_signature" };
   }
 
   let grant: AuthorityGrant;
   try {
-    const json = Buffer.from(payload, "base64url").toString("utf8");
-    grant = authorityGrantSchema.parse(JSON.parse(json));
+    grant = authorityGrantSchema.parse(
+      JSON.parse(Buffer.from(payload, "base64url").toString("utf8")),
+    );
   } catch {
     return { authorized: false, never: NEVER_0001, reason: "malformed_grant" };
   }
@@ -112,4 +113,15 @@ export function requireRunPromotionAuthority(input: {
     requiredScope: PROMOTE_RUN_SCOPE,
     now: input.now,
   });
+}
+
+export function assertRunPromotionAuthority(input: {
+  token: string | null | undefined;
+  runId: string;
+  secret?: string | null;
+  now?: Date;
+}): AuthorityGrant {
+  const decision = requireRunPromotionAuthority(input);
+  if (!decision.authorized) throw new AuthorityDeniedError(decision.reason);
+  return decision.grant;
 }
