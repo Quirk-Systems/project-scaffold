@@ -16,6 +16,7 @@ const FILTERS = [
   "annotated",
   "mutated",
   "approved",
+  "published",
 ] as const;
 type Filter = (typeof FILTERS)[number];
 
@@ -25,11 +26,31 @@ export type AssetInboxProps = {
 
 export function AssetInbox({ filter: initial }: AssetInboxProps) {
   const [filter, setFilter] = useState<Filter>(initial ?? "all");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const queryClient = useQueryClient();
 
+  // Simple debounce — update the query string 300 ms after the last keystroke.
+  const searchRef = useState(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    return (value: string) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => setDebouncedSearch(value), 300);
+    };
+  })[0];
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    searchRef(value);
+  }
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["assets", filter],
-    queryFn: () => quirkApi.listAssets(filter === "all" ? undefined : filter),
+    queryKey: ["assets", filter, debouncedSearch],
+    queryFn: () =>
+      quirkApi.listAssets(
+        filter === "all" ? undefined : filter,
+        debouncedSearch || undefined,
+      ),
   });
 
   return (
@@ -40,17 +61,25 @@ export function AssetInbox({ filter: initial }: AssetInboxProps) {
         }
       />
 
-      <div className="flex flex-wrap gap-2">
-        {FILTERS.map((f) => (
-          <Button
-            key={f}
-            size="sm"
-            variant={filter === f ? "default" : "outline"}
-            onClick={() => setFilter(f)}
-          >
-            {f}
-          </Button>
-        ))}
+      <div className="flex flex-col gap-3">
+        <Input
+          placeholder="Search assets by title or content…"
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
+          className="max-w-sm"
+        />
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <Button
+              key={f}
+              size="sm"
+              variant={filter === f ? "default" : "outline"}
+              onClick={() => setFilter(f)}
+            >
+              {f}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {isLoading && (

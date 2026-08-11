@@ -3,9 +3,11 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV = [
   { href: "/quirk", label: "Inbox" },
+  { href: "/quirk/gallery", label: "Gallery" },
   { href: "/quirk/experiments", label: "Experiments" },
   { href: "/quirk/pipelines", label: "Pipelines" },
   { href: "/quirk/offers", label: "Offers" },
+  { href: "/quirk/voice-preview", label: "Voice" },
 ];
 
 export default function QuirkLayout({

@@ -47,10 +47,15 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 export const quirkApi = {
-  listAssets: (status?: string) =>
-    request<{ assets: AssetSummary[] }>(
-      `/api/assets${status ? `?status=${status}` : ""}`,
-    ),
+  listAssets: (status?: string, q?: string) => {
+    const params = new URLSearchParams();
+    if (status) params.set("status", status);
+    if (q) params.set("q", q);
+    const qs = params.toString();
+    return request<{ assets: AssetSummary[] }>(
+      `/api/assets${qs ? `?${qs}` : ""}`,
+    );
+  },
   capture: (body: Record<string, unknown>) =>
     request<{ asset: QuirkAsset; version: QuirkAssetVersion }>(
       "/api/assets/capture",
@@ -63,6 +68,18 @@ export const quirkApi = {
       annotations: QuirkAnnotation[];
       diffs: QuirkDiff[];
     }>(`/api/assets/${id}`),
+  publishAsset: (id: string) =>
+    request<{ asset: QuirkAsset }>(`/api/assets/${id}/publish`, {
+      method: "POST",
+    }),
+  batchCapture: (items: Record<string, unknown>[]) =>
+    request<{
+      captured: { asset: QuirkAsset; version: QuirkAssetVersion }[];
+      errors: { index: number; error: string }[];
+    }>("/api/assets/batch", {
+      method: "POST",
+      body: JSON.stringify({ items }),
+    }),
   mutate: (id: string, body: { rawText: string; changeSummary?: string }) =>
     request<{ version: QuirkAssetVersion }>(`/api/assets/${id}/mutate`, {
       method: "POST",
@@ -114,6 +131,20 @@ export const quirkApi = {
       offer: QuirkOffer | null;
       goldilocks: GoldilocksReading;
     }>(`/api/runs/${id}/promote`, { method: "POST" }),
+  autoPromoteExperiment: (
+    experimentId: string,
+    qualityThreshold?: number,
+  ) =>
+    request<{
+      run: QuirkRun;
+      offer: QuirkOffer | null;
+      goldilocks: GoldilocksReading;
+    }>(`/api/experiments/${experimentId}/auto-promote`, {
+      method: "POST",
+      body: JSON.stringify(
+        qualityThreshold != null ? { qualityThreshold } : {},
+      ),
+    }),
   listOffers: (status?: string) =>
     request<{ offers: OfferWithAsset[] }>(
       `/api/offers${status ? `?status=${status}` : ""}`,

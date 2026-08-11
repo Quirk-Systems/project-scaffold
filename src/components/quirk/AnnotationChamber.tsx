@@ -71,6 +71,14 @@ export function AnnotationChamber({ assetId }: { assetId: string }) {
               <p className="text-muted-foreground max-h-48 overflow-auto text-sm whitespace-pre-wrap">
                 {asset.data.asset.rawText ?? "(no extracted text)"}
               </p>
+              {asset.data.asset.status === "approved" && (
+                <PublishButton
+                  assetId={assetId}
+                  onPublished={() =>
+                    queryClient.invalidateQueries({ queryKey: ["asset", assetId] })
+                  }
+                />
+              )}
             </>
           )}
         </CardContent>
@@ -156,6 +164,36 @@ export function AnnotationChamber({ assetId }: { assetId: string }) {
       </Card>
 
       <SavedAnnotations annotations={asset.data?.annotations ?? []} />
+    </div>
+  );
+}
+
+function PublishButton({
+  assetId,
+  onPublished,
+}: {
+  assetId: string;
+  onPublished: () => void;
+}) {
+  const publish = useMutation({
+    mutationFn: () => quirkApi.publishAsset(assetId),
+    onSuccess: onPublished,
+  });
+
+  return (
+    <div className="flex flex-col gap-1">
+      <Button
+        size="sm"
+        onClick={() => publish.mutate()}
+        disabled={publish.isPending}
+      >
+        {publish.isPending ? "Publishing…" : "Publish"}
+      </Button>
+      {publish.error && (
+        <p className="text-destructive text-xs">
+          {(publish.error as Error).message}
+        </p>
+      )}
     </div>
   );
 }

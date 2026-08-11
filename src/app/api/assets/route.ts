@@ -16,11 +16,12 @@ const STATUSES: AssetStatus[] = [
 export async function GET(request: NextRequest) {
   try {
     const statusParam = request.nextUrl.searchParams.get("status");
+    const q = request.nextUrl.searchParams.get("q") ?? undefined;
     const status =
       statusParam && STATUSES.includes(statusParam as AssetStatus)
         ? (statusParam as AssetStatus)
         : undefined;
-    const assets = await listAssets(status);
+    const assets = await listAssets(status, q);
     return NextResponse.json({ assets });
   } catch (e) {
     return serverError(e);

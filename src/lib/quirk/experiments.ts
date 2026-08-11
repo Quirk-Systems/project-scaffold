@@ -1,4 +1,4 @@
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   quirkExperiments,
@@ -167,4 +167,40 @@ export async function promoteRun(runId: string): Promise<{
   }
 
   return { run: updated, offer, goldilocks };
+}
+
+/**
+ * Lab Rat King auto-promote: find the highest-scoring pending run in an
+ * experiment whose score meets or exceeds `qualityThreshold` (default 0.5),
+ * and promote it. Returns null if no eligible run exists.
+ *
+ * This is the automated path; manual promote via POST /api/runs/[id]/promote
+ * remains available for curator override.
+ */
+export async function autoPromoteExperiment(
+  experimentId: string,
+  qualityThreshold = 0.5,
+): Promise<{
+  run: QuirkRun;
+  offer: QuirkOffer | null;
+  goldilocks: GoldilocksReading;
+} | null> {
+  const pendingRuns = await db
+    .select()
+    .from(quirkRuns)
+    .where(
+      and(
+        eq(quirkRuns.experimentId, experimentId),
+        eq(quirkRuns.outcome, "pending"),
+      ),
+    )
+    .orderBy(desc(quirkRuns.score));
+
+  const eligible = pendingRuns.filter(
+    (r) => r.score !== null && r.score >= qualityThreshold,
+  );
+  if (eligible.length === 0) return null;
+
+  const best = eligible[0];
+  return promoteRun(best.id);
 }

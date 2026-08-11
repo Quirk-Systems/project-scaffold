@@ -29,6 +29,7 @@ export function ExperimentBoard({ experimentId }: { experimentId: string }) {
         <h2 className="text-lg font-semibold">{data.experiment.name}</h2>
         <Badge variant="secondary">{data.experiment.experimentType}</Badge>
         <Badge variant="muted">{data.experiment.status}</Badge>
+        <AutoPromoteButton experimentId={experimentId} />
       </div>
       {data.experiment.objective && (
         <p className="text-muted-foreground text-sm">
@@ -41,6 +42,33 @@ export function ExperimentBoard({ experimentId }: { experimentId: string }) {
           <RunCard key={run.id} run={run} experimentId={experimentId} />
         ))}
       </div>
+    </div>
+  );
+}
+
+function AutoPromoteButton({ experimentId }: { experimentId: string }) {
+  const queryClient = useQueryClient();
+  const promote = useMutation({
+    mutationFn: () => quirkApi.autoPromoteExperiment(experimentId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["experiment", experimentId] }),
+  });
+
+  return (
+    <div className="flex items-center gap-2">
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() => promote.mutate()}
+        disabled={promote.isPending}
+      >
+        {promote.isPending ? "Auto-promoting…" : "Auto-promote"}
+      </Button>
+      {promote.error && (
+        <span className="text-destructive text-xs">
+          {(promote.error as Error).message}
+        </span>
+      )}
     </div>
   );
 }
