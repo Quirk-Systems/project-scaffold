@@ -8,7 +8,7 @@
 ## Quirk MCP servers
 
 Each Quirk MCP server lives in its own repo and is deployed independently
-of `quirk-os`. The kernel is for Next.js apps; MCP servers are
+of `project-scaffold`. The scaffold is for Next.js apps; MCP servers are
 their own deployable.
 
 | Server | Repo | What it bridges |

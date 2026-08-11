@@ -161,8 +161,8 @@ function tag-release() {
 ## Docker Build + Run Locally
 
 ```bash
-docker build -t quirk-os:local . && \
-docker run -p 3000:3000 --env-file .env quirk-os:local
+docker build -t project-scaffold:local . && \
+docker run -p 3000:3000 --env-file .env project-scaffold:local
 ```
 
 ---

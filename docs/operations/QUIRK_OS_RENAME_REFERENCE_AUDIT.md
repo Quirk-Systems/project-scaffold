@@ -1,16 +1,16 @@
 # Quirk OS Rename Reference Audit
 
-Status: RESOLVED — kernel code references updated to `Quirk-Systems/quirk-os`. Repository rename and owner-only gate remain pending until Bryan Sayler completes the GitHub Settings cutover sequence.
+Status: BLOCKED pending owner verification and repository rename.
 
-This audit enumerates hardcoded references and connected hosting bindings before `Quirk-Systems/project-scaffold` became `Quirk-Systems/quirk-os`.
+This audit enumerates hardcoded references and connected hosting bindings before `Quirk-Systems/project-scaffold` may become `Quirk-Systems/quirk-os`.
 
 ## Verified repository identities
 
-- Implemented kernel: `Quirk-Systems/quirk-os` (formerly `project-scaffold`), repository ID `1061970258`.
-- Occupied placeholder: `Quirk-Systems/quirk-os`, repository ID `1316241620` — to be renamed `quirk-os-reserved` by owner before cutover.
-- The placeholder repository reports size `0`, no branches, and the commits endpoint returns `Git Repository is empty`.
+- Implemented kernel: `Quirk-Systems/project-scaffold`, repository ID `1061970258`.
+- Occupied target: `Quirk-Systems/quirk-os`, repository ID `1316241620`.
+- The target repository reports size `0`, no branches, and the commits endpoint returns `Git Repository is empty`.
 
-The Git history is empty. Owner-only settings and external local remotes still require inspection before the GitHub Settings rename.
+The Git history is empty. Owner-only settings and external local remotes still require inspection.
 
 ## Hardcoded `quirk-os` references
 
@@ -25,32 +25,26 @@ Current matches are confined to `.github`:
 
 ## Hardcoded `project-scaffold` references
 
-### Kernel: runtime and automation — RESOLVED
+### Kernel: runtime and automation
 
-All kernel runtime and automation references have been updated to `quirk-os`:
+- `.quirk/manifest.json`
+- `scripts/deps-audit.ts`
+- `.github/ISSUE_TEMPLATE/config.yml`
+- `src/app/page.tsx`
+- `package.json`
+- `bun.lock`
 
-- `.quirk/manifest.json` ✓
-- `scripts/deps-audit.ts` ✓
-- `.github/ISSUE_TEMPLATE/config.yml` ✓
-- `src/app/page.tsx` ✓
-- `package.json` ✓
-- `bun.lock` — regenerates from `package.json` on next install
+### Kernel: instructions and documentation
 
-### Kernel: instructions and documentation — RESOLVED
+- `CLAUDE.md`
+- `docs/recommendations/mcp/MCP.md`
+- `docs/recommendations/macros/ONE_CLICK.md`
+- `docs/recommendations/tips/GIT_TRICKS.md`
+- `docs/recommendations/installs/DOCKER_SETUP.md`
+- `docs/recommendations/installs/PROJECT_BOOTSTRAP.md`
+- `docs/recommendations/installs/LINUX_SETUP.md`
 
-All kernel instruction and documentation references have been updated:
-
-- `CLAUDE.md` ✓
-- `docs/recommendations/mcp/MCP.md` ✓
-- `docs/recommendations/macros/ONE_CLICK.md` ✓
-- `docs/recommendations/tips/GIT_TRICKS.md` ✓
-- `docs/recommendations/installs/DOCKER_SETUP.md` ✓
-- `docs/recommendations/installs/PROJECT_BOOTSTRAP.md` ✓
-- `docs/recommendations/installs/LINUX_SETUP.md` ✓
-
-### Child repository provenance references — PENDING (external repos)
-
-These live in separate repositories and must be updated after the GitHub Settings rename:
+### Child repository provenance references
 
 - `quirk-feed/CLAUDE.md`
 - `quirk-generator/CLAUDE.md`
@@ -58,7 +52,7 @@ These live in separate repositories and must be updated after the GitHub Setting
 - `quirk-pet/CLAUDE.md`
 - `quirk-town/CLAUDE.md`
 
-### Organization governance — PENDING (external `.github` repo)
+### Organization governance
 
 - `.github/profile/README.md`
 - `.github/docs/QUIRK_OS_RENAME_RUNBOOK.md`
@@ -89,7 +83,7 @@ No name matches either target. The connector does not expose Git bindings, so ea
 
 Bryan Sayler must confirm before rename:
 
-- `quirk-os` placeholder has no webhooks, deploy keys, environments, variables, app bindings, deployments, packages, releases, or rulesets that matter.
+- `quirk-os` has no webhooks, deploy keys, environments, variables, app bindings, deployments, packages, releases, or rulesets that matter.
 - No local clone or Git remote targets the empty placeholder.
 - The three Netlify projects do not bind to either target repository.
 - The Vercel project `giggitty-godmode-laundry` does not bind to either target repository.
@@ -99,7 +93,7 @@ Bryan Sayler must confirm before rename:
 
 Only after the gate is checked:
 
-1. Rename `Quirk-Systems/quirk-os` placeholder to `quirk-os-reserved` in Settings > General > Repository name.
+1. Rename `Quirk-Systems/quirk-os` to `quirk-os-reserved` in Settings > General > Repository name.
 2. Confirm it remains empty, mark it non-canonical, and archive it.
 3. Rename `Quirk-Systems/project-scaffold` to `quirk-os` through the same setting.
 4. Execute issue #75 post-cutover verification before reopening merges.

@@ -81,7 +81,7 @@ type FindingRecord = {
   priority: number;
 };
 
-const REPO = "Quirk-Systems/quirk-os";
+const REPO = "Quirk-Systems/project-scaffold";
 
 const SEVERITY_RANK: Record<Advisory["severity"], number> = {
   critical: 0,

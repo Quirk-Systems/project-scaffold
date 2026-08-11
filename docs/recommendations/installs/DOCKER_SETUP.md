@@ -170,7 +170,7 @@ volumes:
 ```json
 // .devcontainer/devcontainer.json
 {
-  "name": "quirk-os",
+  "name": "project-scaffold",
   "image": "oven/bun:1.2",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
