@@ -26,7 +26,11 @@ jobs:
   # code. `bun install --lockfile-only` resolves and writes bun.lock without
   # installing anything, so nothing from the dependency tree runs here.
   sync:
-    if: github.actor == 'dependabot[bot]'
+    # The PR's author, not the event's actor. `github.actor` is whoever
+    # triggered the run, so a maintainer reopening a Dependabot PR — or pushing
+    # a manifest tweak to its branch — would skip the sync and leave the
+    # lockfile stale, despite `reopened` and `synchronize` being triggers here.
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     # Dependabot runs get a read-only token by default, because a malicious
     # dependency would otherwise run with write access. Since October 2021 the
@@ -96,6 +100,24 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    # e2e runs here too, so it needs the same database CI gives it. Without
+    # this job the synced tree gets no e2e coverage at all: the original CI
+    # `validate` failed at its frozen install, `e2e` needs it and so never
+    # started, and the token push does not re-trigger either of them.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -110,6 +132,13 @@ jobs:
         with:
           bun-version: latest
 
+      # ci.yml pins Node 20 for both its jobs, and this job stands in for them
+      # — matching it keeps a passing verify from meaning something different
+      # than a passing CI run.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Prove the drift is gone
         # The exact command that fails on a drifted lockfile, and the first
         # step of every CI job.
@@ -123,3 +152,14 @@ jobs:
         run: bun run validate
         env:
           SKIP_ENV_VALIDATION: "1"
+
+      - run: bunx playwright install --with-deps
+
+      - name: Verify the update against the e2e gate
+        # `validate` stops at the build; `test:e2e` is the other half of
+        # `validate:full`. Run it explicitly rather than calling validate:full,
+        # which would repeat everything above.
+        run: bun run test:e2e
+        env:
+          SKIP_ENV_VALIDATION: "1"
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
