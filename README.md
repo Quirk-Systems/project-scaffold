@@ -11,6 +11,17 @@ product.
 See [Project Scaffold Identity](docs/canon/PROJECT_SCAFFOLD_IDENTITY.md) for the
 boundary, ownership rules, and change-control contract.
 
+### Proposed: Quirk Conversation Compiler
+
+`Quirk Wrap` specifies how consequential conversation deltas become typed,
+source-backed, evaluated repository changes. The proposed runner binds output
+to host-owned source hashes, exact canon grants, pinned repository state,
+scoped mutation authority, and executor receipts; it preserves corrections and
+contradictions and returns an honest no-op when no durable artifact is
+justified. See the
+[capability pack](docs/capabilities/conversation-compiler/README.md).
+
+### The Quirk Data Engine
 ## What this repository owns
 
 - a working Next.js application baseline with TypeScript, Tailwind, testing,

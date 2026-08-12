@@ -1,0 +1,1170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:quirk:schema:conversation-yield:v1",
+  "title": "Conversation Yield Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requestId",
+    "disposition",
+    "verdict",
+    "sourceBoundary",
+    "truthLedger",
+    "changeLedger",
+    "artifacts",
+    "changes",
+    "conflicts",
+    "boneyard",
+    "evaluation",
+    "nextMove"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "quirk.conversation-yield/v1" },
+    "requestId": { "type": "string", "minLength": 1 },
+    "disposition": { "enum": ["yield", "no_op"] },
+    "verdict": { "type": "string", "minLength": 1 },
+    "sourceBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["complete", "description", "references"],
+      "properties": {
+        "complete": { "type": "boolean" },
+        "description": { "type": "string", "minLength": 1 },
+        "references": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceReference" },
+          "minItems": 1
+        }
+      }
+    },
+    "truthLedger": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/truthUnit" }
+    },
+    "changeLedger": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/changeEntry" }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact" },
+      "maxItems": 11
+    },
+    "changes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/changeResult" }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conflict" }
+    },
+    "boneyard": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/boneyardEntry" }
+    },
+    "evaluation": { "$ref": "#/$defs/evaluation" },
+    "nextMove": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "disposition": { "const": "no_op" } },
+        "required": ["disposition"]
+      },
+      "then": {
+        "properties": {
+          "artifacts": { "type": "array", "maxItems": 0 },
+          "changes": { "type": "array", "maxItems": 0 }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sourceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "speakerRole",
+        "authorityClass",
+        "locator",
+        "contentHash",
+        "sensitivity"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^src_[a-zA-Z0-9._-]+$" },
+        "kind": {
+          "enum": [
+            "conversation",
+            "message",
+            "file",
+            "url",
+            "repository",
+            "artifact"
+          ]
+        },
+        "speakerRole": {
+          "enum": [
+            "user",
+            "assistant",
+            "system",
+            "tool",
+            "external",
+            "repository"
+          ]
+        },
+        "authorityClass": {
+          "enum": [
+            "user_instruction",
+            "user_correction",
+            "user_adoption",
+            "repository_canon",
+            "policy_canon",
+            "evidence_only",
+            "untrusted"
+          ]
+        },
+        "locator": { "type": "string", "minLength": 1 },
+        "contentHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "sensitivity": {
+          "enum": ["public", "internal", "private", "restricted"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "authorityClass": {
+                "enum": ["user_instruction", "user_correction", "user_adoption"]
+              }
+            },
+            "required": ["authorityClass"]
+          },
+          "then": { "properties": { "speakerRole": { "const": "user" } } }
+        },
+        {
+          "if": {
+            "properties": { "authorityClass": { "const": "repository_canon" } },
+            "required": ["authorityClass"]
+          },
+          "then": {
+            "properties": { "speakerRole": { "const": "repository" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "authorityClass": { "const": "policy_canon" } },
+            "required": ["authorityClass"]
+          },
+          "then": {
+            "properties": {
+              "speakerRole": { "enum": ["system", "repository"] }
+            }
+          }
+        }
+      ]
+    },
+    "truthUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "status",
+        "statement",
+        "confidence",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^unit_[a-zA-Z0-9._-]+$" },
+        "kind": {
+          "enum": [
+            "claim",
+            "preference",
+            "decision",
+            "correction",
+            "constraint",
+            "idea",
+            "question",
+            "risk"
+          ]
+        },
+        "status": {
+          "enum": [
+            "CANON",
+            "EVIDENCE",
+            "INFERENCE",
+            "PROPOSAL",
+            "OPEN",
+            "DEPRECATED",
+            "BONEYARD"
+          ]
+        },
+        "statement": { "type": "string", "minLength": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "authorityBasis": {
+          "enum": [
+            "user_adopted",
+            "user_corrected",
+            "repository_authority",
+            "policy_rule",
+            "none"
+          ]
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^src_[a-zA-Z0-9._-]+$" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "authorityRef": {
+          "type": "string",
+          "pattern": "^src_[a-zA-Z0-9._-]+$"
+        },
+        "supersedes": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^unit_[a-zA-Z0-9._-]+$" },
+          "uniqueItems": true
+        },
+        "contradicts": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^unit_[a-zA-Z0-9._-]+$" },
+          "uniqueItems": true
+        }
+      },
+      "dependentRequired": { "authorityRef": ["authorityBasis"] },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "const": "CANON" } },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["authorityBasis", "authorityRef"],
+            "properties": {
+              "authorityBasis": {
+                "enum": [
+                  "user_adopted",
+                  "user_corrected",
+                  "repository_authority",
+                  "policy_rule"
+                ]
+              },
+              "authorityRef": {}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "authorityBasis": {
+                "enum": [
+                  "user_adopted",
+                  "user_corrected",
+                  "repository_authority",
+                  "policy_rule"
+                ]
+              }
+            },
+            "required": ["authorityBasis"]
+          },
+          "then": {
+            "required": ["authorityRef"],
+            "properties": { "authorityRef": {} }
+          }
+        },
+        {
+          "if": {
+            "properties": { "authorityBasis": { "const": "none" } },
+            "required": ["authorityBasis"]
+          },
+          "then": {
+            "not": {
+              "properties": { "authorityRef": {} },
+              "required": ["authorityRef"]
+            }
+          }
+        }
+      ]
+    },
+    "changeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "action", "unitIds", "description"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^change_[a-zA-Z0-9._-]+$" },
+        "action": {
+          "enum": [
+            "introduced",
+            "revised",
+            "merged",
+            "deprecated",
+            "contradicted",
+            "opened",
+            "closed"
+          ]
+        },
+        "unitIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^unit_[a-zA-Z0-9._-]+$" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "objectType",
+        "semanticKey",
+        "repository",
+        "repositoryRevision",
+        "repositoryTreeOid",
+        "path",
+        "action",
+        "purpose",
+        "sourceUnitIds",
+        "dependencies",
+        "status",
+        "validation"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^artifact_[a-zA-Z0-9._-]+$" },
+        "objectType": { "type": "string", "minLength": 1 },
+        "semanticKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._:/-]*$"
+        },
+        "repository": { "$ref": "#/$defs/repositoryName" },
+        "repositoryRevision": { "type": "string", "minLength": 1 },
+        "repositoryTreeOid": { "type": "string", "minLength": 1 },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*\\\\)(?!.*//)(?!\\.{1,2}(?:/|$))(?!.*\\/\\.{1,2}(?:\\/|$))(?!.*[\\u0000-\\u001f\\u007f]).+$"
+        },
+        "action": {
+          "enum": [
+            "create",
+            "update",
+            "merge",
+            "preserve",
+            "deprecate",
+            "propose",
+            "no-op"
+          ]
+        },
+        "purpose": { "type": "string", "minLength": 1 },
+        "sourceUnitIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^unit_[a-zA-Z0-9._-]+$" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "drafted",
+            "patched",
+            "committed",
+            "pushed",
+            "published"
+          ]
+        },
+        "authorizationRef": {
+          "type": "string",
+          "pattern": "^src_[a-zA-Z0-9._-]+$"
+        },
+        "statusReceiptRef": {
+          "type": "string",
+          "pattern": "^receipt_[a-zA-Z0-9._-]+$"
+        },
+        "validation": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "action": { "const": "no-op" } },
+            "required": ["action"]
+          },
+          "then": {
+            "properties": { "status": { "enum": ["proposed", "drafted"] } }
+          }
+        }
+      ]
+    },
+    "changeResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "outcome", "summary", "evidence"],
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "pattern": "^artifact_[a-zA-Z0-9._-]+$"
+        },
+        "outcome": {
+          "enum": [
+            "no_op",
+            "proposed",
+            "drafted",
+            "patched",
+            "committed",
+            "pushed",
+            "published",
+            "failed"
+          ]
+        },
+        "attemptedOutcome": {
+          "enum": ["patched", "committed", "pushed", "published"]
+        },
+        "receiptRef": {
+          "type": "string",
+          "pattern": "^receipt_[a-zA-Z0-9._-]+$"
+        },
+        "resultRevision": { "type": "string", "minLength": 1 },
+        "resultTreeOid": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "delivery": { "$ref": "#/$defs/delivery" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "outcome": { "const": "failed" } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["attemptedOutcome", "receiptRef", "delivery"],
+            "properties": {
+              "attemptedOutcome": {},
+              "receiptRef": {},
+              "delivery": {}
+            }
+          },
+          "else": {
+            "not": {
+              "properties": { "attemptedOutcome": {} },
+              "required": ["attemptedOutcome"]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": ["patched", "committed", "pushed", "published"]
+              }
+            },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["receiptRef", "delivery"],
+            "properties": { "receiptRef": {}, "delivery": {} }
+          }
+        },
+        {
+          "if": {
+            "properties": { "outcome": { "const": "drafted" } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["delivery"],
+            "properties": {
+              "delivery": {
+                "oneOf": [
+                  { "$ref": "#/$defs/fullTextDelivery" },
+                  { "$ref": "#/$defs/unifiedDiffDelivery" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": { "enum": ["committed", "pushed", "published"] }
+            },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["resultRevision", "resultTreeOid"],
+            "properties": { "resultRevision": {}, "resultTreeOid": {} }
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "properties": { "resultRevision": {} },
+                  "required": ["resultRevision"]
+                },
+                {
+                  "properties": { "resultTreeOid": {} },
+                  "required": ["resultTreeOid"]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "unitIds", "status", "description"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^conflict_[a-zA-Z0-9._-]+$" },
+        "unitIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^unit_[a-zA-Z0-9._-]+$" },
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        "status": { "enum": ["OPEN", "RESOLVED"] },
+        "description": { "type": "string", "minLength": 1 },
+        "resolution": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "const": "RESOLVED" } },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["resolution"],
+            "properties": { "resolution": {} }
+          }
+        }
+      ]
+    },
+    "boneyardEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "unitId",
+        "reason",
+        "salvageableParts",
+        "reanimationTriggers"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^bone_[a-zA-Z0-9._-]+$" },
+        "unitId": { "type": "string", "pattern": "^unit_[a-zA-Z0-9._-]+$" },
+        "reason": {
+          "enum": [
+            "duplicate",
+            "superseded",
+            "failed_eval",
+            "weak_evidence",
+            "wrong_boundary",
+            "blocked_dependency",
+            "not_now",
+            "rejected_direction",
+            "unsafe",
+            "beautiful_but_useless"
+          ]
+        },
+        "salvageableParts": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "reanimationTriggers": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "replacementRef": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assessmentBasis",
+        "dimensionScores",
+        "weightedScore",
+        "hardGates",
+        "validationPerformed"
+      ],
+      "properties": {
+        "assessmentBasis": { "const": "compiler_self_assessment" },
+        "dimensionScores": { "$ref": "#/$defs/dimensionScores" },
+        "weightedScore": { "type": "number", "minimum": 0, "maximum": 100 },
+        "hardGates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "noFabricatedSource",
+            "noFalseCanon",
+            "correctionsWin",
+            "contradictionsSurvive",
+            "provenanceComplete",
+            "permissionFaithful",
+            "privateDataContained",
+            "injectionResistant",
+            "deprecatedContained",
+            "collisionSafe",
+            "outputValid"
+          ],
+          "properties": {
+            "noFabricatedSource": { "$ref": "#/$defs/gate" },
+            "noFalseCanon": { "$ref": "#/$defs/gate" },
+            "correctionsWin": { "$ref": "#/$defs/gate" },
+            "contradictionsSurvive": { "$ref": "#/$defs/gate" },
+            "provenanceComplete": { "$ref": "#/$defs/gate" },
+            "permissionFaithful": { "$ref": "#/$defs/gate" },
+            "privateDataContained": { "$ref": "#/$defs/gate" },
+            "injectionResistant": { "$ref": "#/$defs/gate" },
+            "deprecatedContained": { "$ref": "#/$defs/gate" },
+            "collisionSafe": { "$ref": "#/$defs/gate" },
+            "outputValid": { "$ref": "#/$defs/gate" }
+          }
+        },
+        "validationPerformed": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "delivery": {
+      "oneOf": [
+        { "$ref": "#/$defs/fullTextDelivery" },
+        { "$ref": "#/$defs/unifiedDiffDelivery" },
+        { "$ref": "#/$defs/referenceDelivery" }
+      ]
+    },
+    "fullTextDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "mediaType", "value"],
+      "properties": {
+        "kind": { "const": "full_text" },
+        "mediaType": { "type": "string", "minLength": 1 },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+    "unifiedDiffDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "mediaType", "value"],
+      "properties": {
+        "kind": { "const": "unified_diff" },
+        "mediaType": { "const": "text/x-diff" },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+    "referenceDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "mediaType", "value"],
+      "properties": {
+        "kind": { "const": "reference" },
+        "mediaType": { "type": "string", "minLength": 1 },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+    "compileRequest": {
+      "description": "Structural interchange request. Runtime validation additionally enforces trusted-authority compatibility, allowlist-to-snapshot correspondence, portable canonical uniqueness, mutation-grant scope, and execution-receipt binding.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requestId",
+        "conversation",
+        "sourceBoundaryComplete",
+        "trustedSources"
+      ],
+      "properties": {
+        "requestId": { "type": "string", "minLength": 1 },
+        "conversation": { "type": "string", "minLength": 1 },
+        "sourceBoundaryComplete": { "type": "boolean" },
+        "trustedSources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceReference" },
+          "minItems": 1
+        },
+        "canonGrants": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/canonGrant" },
+          "default": []
+        },
+        "mode": {
+          "enum": ["distill", "draft", "patch", "publish"],
+          "default": "distill"
+        },
+        "repositories": {
+          "oneOf": [
+            { "const": "auto" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/repositoryName" },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          ],
+          "default": "auto"
+        },
+        "repositoryState": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/repositorySnapshot" },
+          "default": []
+        },
+        "depth": {
+          "enum": ["quick", "deep", "make-real"],
+          "default": "deep"
+        },
+        "artifactBudget": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11,
+          "default": 7
+        },
+        "constraints": {
+          "description": "Free-form advisory constraints supplied to the compiler provider. They are not deterministically enforceable; use typed request fields for machine-enforced controls.",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "default": []
+        },
+        "authorizationRef": {
+          "type": "string",
+          "pattern": "^src_[a-zA-Z0-9._-]+$"
+        },
+        "mutationGrant": { "$ref": "#/$defs/mutationGrant" },
+        "executionReceipts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/executionReceipt" },
+          "default": []
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "mode": { "enum": ["patch", "publish"] } },
+            "required": ["mode"]
+          },
+          "then": {
+            "required": ["authorizationRef", "mutationGrant", "repositories"],
+            "properties": {
+              "authorizationRef": {},
+              "mutationGrant": {},
+              "repositories": { "type": "array" }
+            }
+          }
+        }
+      ]
+    },
+    "compileRunResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ok", "stage", "attempts", "issues"],
+          "properties": {
+            "ok": { "const": false },
+            "stage": { "const": "request" },
+            "attempts": { "const": 0 },
+            "issues": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ok", "stage", "attempts", "issues"],
+          "properties": {
+            "ok": { "const": false },
+            "stage": { "const": "generation" },
+            "attempts": { "type": "integer", "minimum": 1, "maximum": 3 },
+            "issues": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ok", "stage", "attempts", "validation"],
+          "properties": {
+            "ok": { "type": "boolean" },
+            "stage": { "const": "yield" },
+            "attempts": { "type": "integer", "minimum": 1, "maximum": 3 },
+            "validation": { "$ref": "#/$defs/yieldValidationResult" }
+          }
+        }
+      ]
+    },
+    "yieldValidationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["success", "structurallyValid", "issues"],
+      "properties": {
+        "success": { "type": "boolean" },
+        "structurallyValid": { "type": "boolean" },
+        "pack": { "$ref": "#" },
+        "issues": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/validationIssue" }
+        },
+        "assessment": { "$ref": "#/$defs/selfAssessment" }
+      }
+    },
+    "validationIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "path", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "CONTEXT_INVALID",
+            "SCHEMA_INVALID",
+            "DUPLICATE_ID",
+            "UNKNOWN_REFERENCE",
+            "UNTRUSTED_SOURCE",
+            "REQUEST_ID_MISMATCH",
+            "FALSE_CANON",
+            "INVALID_AUTHORITY_SOURCE",
+            "ARTIFACT_COLLISION",
+            "SEMANTIC_COLLISION",
+            "ARTIFACT_BUDGET_EXCEEDED",
+            "REPOSITORY_SCOPE_MISMATCH",
+            "REPOSITORY_STATE_INCOMPLETE",
+            "REPOSITORY_STATE_MISMATCH",
+            "ARTIFACT_TARGET_EXISTS",
+            "ARTIFACT_TARGET_MISSING",
+            "MUTATION_GRANT_MISMATCH",
+            "EXECUTION_RECEIPT_MISMATCH",
+            "EXECUTION_STATE_CONTRADICTION",
+            "MISSING_AUTHORIZATION",
+            "AUTHORIZATION_MISMATCH",
+            "MISSING_VALIDATION",
+            "MISSING_CHANGE_RESULT",
+            "SCORE_MISMATCH",
+            "POTENTIAL_SECRET"
+          ]
+        },
+        "path": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "selfAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "computedWeightedScore",
+        "allHardGatesPass",
+        "criticalDimensionsPass",
+        "selfAssessmentThresholdsMet",
+        "independentlyEvaluated",
+        "releaseDecision",
+        "findings"
+      ],
+      "properties": {
+        "computedWeightedScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "allHardGatesPass": { "type": "boolean" },
+        "criticalDimensionsPass": { "type": "boolean" },
+        "selfAssessmentThresholdsMet": { "type": "boolean" },
+        "independentlyEvaluated": { "const": false },
+        "releaseDecision": { "const": "not_evaluated" },
+        "findings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evaluationFinding" }
+        }
+      }
+    },
+    "evaluationFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "path", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "HARD_GATE_NOT_PASSED",
+            "CRITICAL_DIMENSION_BELOW_RELEASE",
+            "SCORE_BELOW_RELEASE"
+          ]
+        },
+        "path": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "canonGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceRef", "basis", "statement"],
+      "properties": {
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^src_[a-zA-Z0-9._-]+$"
+        },
+        "basis": {
+          "enum": [
+            "user_adopted",
+            "user_corrected",
+            "repository_authority",
+            "policy_rule"
+          ]
+        },
+        "statement": { "type": "string", "minLength": 1 }
+      }
+    },
+    "repositoryName": {
+      "type": "string",
+      "pattern": "^(?!\\.{1,2}/)(?![^/]+/\\.{1,2}$)[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$"
+    },
+    "repositoryPath": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*//)(?!\\.{1,2}(?:/|$))(?!.*\\/\\.{1,2}(?:\\/|$))(?!.*[\\u0000-\\u001f\\u007f]).+$"
+    },
+    "repositorySnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "revision",
+        "treeOid",
+        "complete",
+        "entries",
+        "objects"
+      ],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repositoryName" },
+        "revision": { "type": "string", "minLength": 1 },
+        "treeOid": { "type": "string", "minLength": 1 },
+        "complete": { "type": "boolean" },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "type", "oid"],
+            "properties": {
+              "path": { "$ref": "#/$defs/repositoryPath" },
+              "type": { "enum": ["blob", "tree", "symlink", "submodule"] },
+              "oid": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "objects": {
+          "description": "Semantic object index. Runtime validation requires semantic keys and portable-equivalent paths to be unique within the snapshot.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["semanticKey", "path"],
+            "properties": {
+              "semanticKey": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._:/-]*$"
+              },
+              "path": { "$ref": "#/$defs/repositoryPath" }
+            }
+          }
+        }
+      }
+    },
+    "mutationGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorizationRef", "modes", "actions", "targets"],
+      "properties": {
+        "authorizationRef": {
+          "type": "string",
+          "pattern": "^src_[a-zA-Z0-9._-]+$"
+        },
+        "modes": {
+          "type": "array",
+          "items": { "enum": ["patch", "publish"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "actions": {
+          "type": "array",
+          "items": { "enum": ["create", "update", "merge", "deprecate"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["repository", "pathPrefix"],
+            "properties": {
+              "repository": { "$ref": "#/$defs/repositoryName" },
+              "pathPrefix": {
+                "oneOf": [{ "const": "" }, { "$ref": "#/$defs/repositoryPath" }]
+              }
+            }
+          }
+        }
+      }
+    },
+    "executionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "repository",
+        "path",
+        "action",
+        "objectType",
+        "semanticKey",
+        "outcome",
+        "authorizationRef",
+        "repositoryRevision",
+        "repositoryTreeOid",
+        "evidence",
+        "delivery",
+        "receiptHash"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^receipt_[a-zA-Z0-9._-]+$"
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^artifact_[a-zA-Z0-9._-]+$"
+        },
+        "repository": { "$ref": "#/$defs/repositoryName" },
+        "path": { "$ref": "#/$defs/repositoryPath" },
+        "action": {
+          "enum": ["create", "update", "merge", "deprecate"]
+        },
+        "objectType": { "type": "string", "minLength": 1 },
+        "semanticKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._:/-]*$"
+        },
+        "outcome": {
+          "enum": ["patched", "committed", "pushed", "published", "failed"]
+        },
+        "attemptedOutcome": {
+          "enum": ["patched", "committed", "pushed", "published"]
+        },
+        "authorizationRef": {
+          "type": "string",
+          "pattern": "^src_[a-zA-Z0-9._-]+$"
+        },
+        "repositoryRevision": { "type": "string", "minLength": 1 },
+        "repositoryTreeOid": { "type": "string", "minLength": 1 },
+        "resultRevision": { "type": "string", "minLength": 1 },
+        "resultTreeOid": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "delivery": { "$ref": "#/$defs/delivery" },
+        "receiptHash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "outcome": { "const": "failed" } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["attemptedOutcome"],
+            "properties": { "attemptedOutcome": {} }
+          },
+          "else": {
+            "not": {
+              "properties": { "attemptedOutcome": {} },
+              "required": ["attemptedOutcome"]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": { "enum": ["committed", "pushed", "published"] }
+            },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["resultRevision", "resultTreeOid"],
+            "properties": { "resultRevision": {}, "resultTreeOid": {} }
+          }
+        }
+      ]
+    },
+    "dimensionScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "truthAndProvenance",
+        "intentAndOutcomeFidelity",
+        "canonicalBoundaryDiscipline",
+        "correctionAndContradictionPreservation",
+        "signalRetentionAndCompression",
+        "synthesisLeverage",
+        "repositoryAndArtifactReadiness",
+        "informationArchitecture",
+        "voiceAndSpecificityIntegrity",
+        "permissionPrivacyAndOperationalSafety",
+        "interoperabilityAndIdempotence"
+      ],
+      "properties": {
+        "truthAndProvenance": { "$ref": "#/$defs/dimensionScore" },
+        "intentAndOutcomeFidelity": { "$ref": "#/$defs/dimensionScore" },
+        "canonicalBoundaryDiscipline": { "$ref": "#/$defs/dimensionScore" },
+        "correctionAndContradictionPreservation": {
+          "$ref": "#/$defs/dimensionScore"
+        },
+        "signalRetentionAndCompression": {
+          "$ref": "#/$defs/dimensionScore"
+        },
+        "synthesisLeverage": { "$ref": "#/$defs/dimensionScore" },
+        "repositoryAndArtifactReadiness": {
+          "$ref": "#/$defs/dimensionScore"
+        },
+        "informationArchitecture": { "$ref": "#/$defs/dimensionScore" },
+        "voiceAndSpecificityIntegrity": {
+          "$ref": "#/$defs/dimensionScore"
+        },
+        "permissionPrivacyAndOperationalSafety": {
+          "$ref": "#/$defs/dimensionScore"
+        },
+        "interoperabilityAndIdempotence": {
+          "$ref": "#/$defs/dimensionScore"
+        }
+      }
+    },
+    "dimensionScore": { "type": "number", "minimum": 0, "maximum": 5 },
+    "gate": { "enum": ["pass", "fail", "not_applicable"] }
+  }
+}
