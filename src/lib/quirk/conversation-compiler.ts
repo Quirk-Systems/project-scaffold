@@ -1891,11 +1891,7 @@ function canonicalSemanticKey(key: string): string {
 }
 
 function portableStringKey(value: string): string {
-  return value
-    .normalize("NFKC")
-    .toLocaleLowerCase("en-US")
-    .toLocaleUpperCase("en-US")
-    .normalize("NFKC");
+  return value.normalize("NFKC").toLocaleLowerCase("en-US").normalize("NFKC");
 }
 
 function pathWithinPrefix(path: string, prefix: string): boolean {
