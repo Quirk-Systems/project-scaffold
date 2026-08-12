@@ -1,0 +1,67 @@
+{
+  "id": "review.quirk-control-shell.v1",
+  "artifactKind": "surface",
+  "artifactLocator": "src/app/control",
+  "brief": "Improve the Quirk Control shell without flattening information density or hiding authority state.",
+  "audience": "Bryan and authorized Quirk operators",
+  "desiredOutcome": "Faster orientation, safer governance actions, and reusable shell patterns.",
+  "baselineLocator": "git:main@current/src/app/control",
+  "designSystemVersion": "candidate.quirk-design-system.v0.1",
+  "prohibitedChanges": [
+    "Do not rename project-scaffold to Quirk OS.",
+    "Do not grant release or canon authority to an agent.",
+    "Do not invent metrics or operator states."
+  ],
+  "criteria": [
+    {
+      "id": "control.primary-action-visible",
+      "title": "Primary action remains legible",
+      "dimension": "usability",
+      "requirement": "The current primary action is visible and distinguishable at 320px, 768px, and 1440px without horizontal scrolling.",
+      "gate": "deterministic",
+      "evidenceRequired": [
+        "screenshot",
+        "test_result"
+      ],
+      "blocksRelease": true
+    },
+    {
+      "id": "control.authority-explicit",
+      "title": "Authority is explicit",
+      "dimension": "authority",
+      "requirement": "Proposed, approved, active, and rejected states cannot be confused through color alone.",
+      "gate": "critic",
+      "evidenceRequired": [
+        "rendered_output",
+        "code_reference"
+      ],
+      "blocksRelease": true
+    },
+    {
+      "id": "control.quirk-specific",
+      "title": "Distinctive without decorative noise",
+      "dimension": "distinctiveness",
+      "requirement": "The shell contains at least two reusable decisions tied to Quirk governance rather than generic dashboard styling.",
+      "gate": "critic",
+      "evidenceRequired": [
+        "rendered_output",
+        "source_reference"
+      ],
+      "blocksRelease": false
+    }
+  ],
+  "mode": "standard",
+  "budget": {
+    "maxRounds": 2,
+    "maxCandidates": 1,
+    "maxInputTokens": 400000,
+    "maxOutputTokens": 100000,
+    "maxWallClockMs": 1800000
+  },
+  "humanApprovalRequired": true,
+  "humanAuthorityId": "bryan",
+  "sourceRefs": [
+    "docs/quirk/design-tribunal/README.md",
+    ".claude/rules/design-system.md"
+  ]
+}
