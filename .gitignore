@@ -57,3 +57,6 @@ next-env.d.ts
 
 # lefthook
 .lefthook-local/
+
+# generated dependency-audit output
+/artifacts/
