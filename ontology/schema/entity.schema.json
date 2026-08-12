@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/ontology/entity.schema.json",
+  "title": "Canonical ontology entity",
+  "type": "object",
+  "required": [
+    "id",
+    "namespace",
+    "canonical_name",
+    "primary_type",
+    "secondary_facets",
+    "definition",
+    "purpose",
+    "owner",
+    "governed_by",
+    "contained_by",
+    "lifecycle_status",
+    "truth_status",
+    "authority_level",
+    "inputs",
+    "outputs",
+    "relations",
+    "capabilities_used",
+    "evidence_required",
+    "permissions",
+    "lineage",
+    "conflicts",
+    "aliases",
+    "prohibited_meanings",
+    "supersedes",
+    "superseded_by",
+    "schema_version",
+    "content_hash"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+    },
+    "namespace": { "type": "string", "minLength": 1 },
+    "canonical_name": { "type": "string", "minLength": 1 },
+    "primary_type": { "type": "string", "minLength": 1 },
+    "secondary_facets": { "$ref": "#/$defs/stringArray" },
+    "definition": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1 },
+    "governed_by": { "$ref": "#/$defs/stringArray" },
+    "contained_by": { "type": ["string", "null"] },
+    "lifecycle_status": { "type": "string", "minLength": 1 },
+    "truth_status": { "type": "string", "minLength": 1 },
+    "authority_level": { "type": "string", "minLength": 1 },
+    "inputs": { "$ref": "#/$defs/stringArray" },
+    "outputs": { "$ref": "#/$defs/stringArray" },
+    "relations": {
+      "type": "array",
+      "items": { "$ref": "relation.schema.json" }
+    },
+    "capabilities_used": { "$ref": "#/$defs/stringArray" },
+    "evidence_required": { "$ref": "#/$defs/stringArray" },
+    "permissions": { "$ref": "#/$defs/stringArray" },
+    "lineage": {
+      "type": "object",
+      "properties": {
+        "derived_from": { "$ref": "#/$defs/stringArray" },
+        "source": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "with"],
+        "properties": {
+          "type": { "type": "string", "minLength": 1 },
+          "with": { "type": "string", "minLength": 1 },
+          "resolution": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "aliases": { "$ref": "#/$defs/stringArray" },
+    "prohibited_meanings": { "$ref": "#/$defs/stringArray" },
+    "supersedes": { "type": ["string", "null"] },
+    "superseded_by": { "type": ["string", "null"] },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
