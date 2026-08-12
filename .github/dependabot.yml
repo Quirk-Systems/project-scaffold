@@ -37,6 +37,12 @@ updates:
       # with the vite override, not on its own.
       - dependency-name: "@vitejs/plugin-react"
         update-types: ["version-update:semver-major"]
+      # typescript-eslint refuses to load against TS 7.0 and peers
+      # `typescript: >=4.8.4 <6.1.0`, so a TS 7 bump fails `bun run lint`
+      # before any rule executes — eslint-config-next pulls it in. Support is
+      # tracked in typescript-eslint#10940; lift when it ships.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore(deps)
       prefix-development: chore(deps-dev)

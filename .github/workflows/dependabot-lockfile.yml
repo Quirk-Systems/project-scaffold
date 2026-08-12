@@ -1,0 +1,165 @@
+# Dependabot does not know how to update bun.lock. It edits package.json alone,
+# so every such merge lands a manifest that the committed lockfile no longer
+# satisfies, and `bun install --frozen-lockfile` — the first step of every CI
+# job — fails before anything else runs. That has taken main red four times.
+#
+# This workflow regenerates the lockfile on the Dependabot branch, before the
+# merge, so the drift never reaches main.
+name: Dependabot lockfile
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - package.json
+
+# No workflow-level permissions: the write scope is granted to the one job that
+# needs it and withheld from the one that runs dependency code. See below.
+permissions: {}
+
+concurrency:
+  group: dependabot-lockfile-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Holds a write token, and therefore must never execute dependency-controlled
+  # code. `bun install --lockfile-only` resolves and writes bun.lock without
+  # installing anything, so nothing from the dependency tree runs here.
+  sync:
+    # The PR's author, not the event's actor. `github.actor` is whoever
+    # triggered the run, so a maintainer reopening a Dependabot PR — or pushing
+    # a manifest tweak to its branch — would skip the sync and leave the
+    # lockfile stale, despite `reopened` and `synchronize` being triggers here.
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    # Dependabot runs get a read-only token by default, because a malicious
+    # dependency would otherwise run with write access. Since October 2021 the
+    # permissions key is respected for these runs, so this grants exactly the
+    # one scope needed to push the lockfile back — and nothing else. That is
+    # why this uses `pull_request` rather than `pull_request_target`, which
+    # would run with full repository privileges.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The branch itself, not the merge ref — this job pushes back to it.
+          ref: ${{ github.head_ref }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Regenerate the lockfile
+        run: bun install --lockfile-only
+
+      - name: Refuse to commit anything but the lockfile
+        # Defence in depth: the only file this workflow is allowed to change is
+        # bun.lock. Anything else means the resolution did something unexpected,
+        # and a write-token job should stop rather than commit it.
+        run: |
+          unexpected="$(git diff --name-only -- . ':!bun.lock')"
+          if [ -n "$unexpected" ]; then
+            echo "::error::refusing to commit; unexpected changes outside bun.lock:"
+            echo "$unexpected"
+            exit 1
+          fi
+
+      - name: Commit and push
+        id: sync
+        run: |
+          if git diff --quiet -- bun.lock; then
+            echo "lockfile already matches package.json — nothing to do"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "chore(deps): sync bun.lock with package.json"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Note the stale-checks caveat
+        if: steps.sync.outputs.changed == 'true'
+        # Pushes made with GITHUB_TOKEN deliberately do not trigger new workflow
+        # runs, so the PR's own validate/security/e2e checks still show their
+        # result from before this commit. The verify job below covers the synced
+        # tree. Dependabot's next rebase re-triggers the rest; a repository that
+        # would rather not wait can push this step with an App token or PAT
+        # instead, which does trigger normally.
+        run: |
+          echo "::notice::bun.lock synced and pushed. The PR's validate/security/e2e checks predate this commit — GITHUB_TOKEN pushes do not re-trigger workflows. The verify job covers the synced tree."
+
+  # Runs dependency-controlled code — ESLint plugins, the test suite, the Next
+  # build — so it is deliberately a separate job with no write scope and no
+  # persisted credential. A compromised dependency executing here has nothing
+  # to steal and nothing to push with.
+  verify:
+    needs: sync
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    # e2e runs here too, so it needs the same database CI gives it. Without
+    # this job the synced tree gets no e2e coverage at all: the original CI
+    # `validate` failed at its frozen install, `e2e` needs it and so never
+    # started, and the token push does not re-trigger either of them.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The synced branch, as the sync job left it.
+          ref: ${{ github.head_ref }}
+          # actions/checkout stores the token in .git/config by default, where
+          # any code running later in the job can read it. This job runs
+          # dependency code, so the credential must not be on disk.
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # ci.yml pins Node 20 for both its jobs, and this job stands in for them
+      # — matching it keeps a passing verify from meaning something different
+      # than a passing CI run.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Prove the drift is gone
+        # The exact command that fails on a drifted lockfile, and the first
+        # step of every CI job.
+        run: bun install --frozen-lockfile
+
+      - name: Verify the update against the real gate
+        # Worth the runner minutes on a dependency PR: a lockfile that installs
+        # is not the same as a dependency update that works. This is how the
+        # plugin-react major was caught — it resolved fine and then vitest
+        # could not load its config.
+        run: bun run validate
+        env:
+          SKIP_ENV_VALIDATION: "1"
+
+      - run: bunx playwright install --with-deps
+
+      - name: Verify the update against the e2e gate
+        # `validate` stops at the build; `test:e2e` is the other half of
+        # `validate:full`. Run it explicitly rather than calling validate:full,
+        # which would repeat everything above.
+        run: bun run test:e2e
+        env:
+          SKIP_ENV_VALIDATION: "1"
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
