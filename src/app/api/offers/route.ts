@@ -7,10 +7,11 @@ import {
 } from "@/lib/quirk/offers";
 import { registerNames } from "@/lib/ai";
 import { parseBody, serverError } from "@/lib/quirk/http";
+import { offerStatusEnum } from "@/lib/db/schema";
 
 export const dynamic = "force-dynamic";
 
-const STATUSES = ["open", "claimed", "retired"] as const;
+const STATUSES = offerStatusEnum.enumValues;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

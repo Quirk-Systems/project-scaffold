@@ -1,6 +1,8 @@
 import { contentWords } from "./text";
 
-export const EMBEDDING_DIMENSIONS = 1536;
+import { EMBEDDING_DIMENSIONS } from "@/lib/db/schema";
+
+export { EMBEDDING_DIMENSIONS };
 
 /**
  * Deterministic, dependency-free embedding. Hashes content words into a fixed

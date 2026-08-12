@@ -1,4 +1,4 @@
-import type { QuirkAsset } from "@/lib/db/schema";
+import { assetTypeEnum, type QuirkAsset } from "@/lib/db/schema";
 
 export type AssetType = QuirkAsset["assetType"];
 
@@ -18,21 +18,8 @@ export function detectAssetType(input: {
   storagePath?: string | null;
   rawText?: string | null;
 }): AssetType {
-  const allowed: AssetType[] = [
-    "text",
-    "image",
-    "audio",
-    "video",
-    "pdf",
-    "web_clip",
-    "prompt",
-    "song",
-    "dataset",
-    "other",
-  ];
-  if (input.hint && allowed.includes(input.hint as AssetType)) {
-    return input.hint as AssetType;
-  }
+  const hinted = assetTypeEnum.enumValues.find((t) => t === input.hint);
+  if (hinted) return hinted;
 
   const path = `${input.sourceUrl ?? ""} ${input.storagePath ?? ""}`;
   if (PDF_EXT.test(path)) return "pdf";
@@ -41,9 +28,6 @@ export function detectAssetType(input: {
   if (VIDEO_EXT.test(path)) return "video";
 
   const text = (input.rawText ?? "").trim();
-  if (input.sourceUrl && URL_RE.test(input.sourceUrl) && !text) {
-    return "web_clip";
-  }
   if (input.sourceUrl && URL_RE.test(input.sourceUrl)) return "web_clip";
   if (looksLikeDataset(text)) return "dataset";
   if (looksLikeSong(text)) return "song";

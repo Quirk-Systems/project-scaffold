@@ -158,6 +158,13 @@ export const subscriptions = pgTable(
 // 1. Quirk Data Engine — Unstructured Asset Registry
 // ---------------------------------------------------------------------------
 
+/**
+ * Width of the `quirk_assets.embedding` pgvector column. Declared here, next
+ * to the column itself, because an embedder that produces a different width
+ * fails at insert time rather than at compile time.
+ */
+export const EMBEDDING_DIMENSIONS = 1536;
+
 export const quirkAssets = pgTable(
   "quirk_assets",
   {
@@ -171,7 +178,7 @@ export const quirkAssets = pgTable(
       .$type<Record<string, unknown>>()
       .notNull()
       .default({}),
-    embedding: vector("embedding", { dimensions: 1536 }),
+    embedding: vector("embedding", { dimensions: EMBEDDING_DIMENSIONS }),
     status: assetStatusEnum("status").notNull().default("captured"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
