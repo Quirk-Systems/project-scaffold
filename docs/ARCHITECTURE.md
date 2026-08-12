@@ -1,13 +1,14 @@
-# Quirk OS Architecture
+# Project Scaffold Reference Architecture
 
-The public monorepo layout, the module boundaries that matter, and the asset
-lifecycle that everything serves.
+The bundled reference application's layout, the module boundaries that matter,
+and the asset lifecycle used to exercise the scaffold.
 
 ## Shape: single app, workspace-shaped on purpose
 
-Quirk OS is one Next.js 16 application today. It is deliberately structured
-so each `src/lib/` module has a clean boundary — the graduation path to bun
-workspaces is mechanical, not a rewrite:
+The scaffold's bundled reference application is one Next.js 16 application
+today. It demonstrates Quirk-domain capabilities; it is not Quirk OS and does
+not own Quirk OS canon or kernel authority. Each `src/lib/` module has a clean
+boundary so the graduation path to bun workspaces is mechanical, not a rewrite:
 
 ```
 Today (single app)                Target (when a second app exists)

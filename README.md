@@ -1,14 +1,15 @@
-# Quirk OS
+# Project Scaffold
 
-**The public monorepo for Quirk Systems** — an asset registry and mutation
-engine where unstructured material (prose, photography, graphic design,
-audio, prompts, datasets) is captured, annotated, semantically versioned,
-mutated, and promoted through data-supported curation.
+**A runnable application scaffold and reference implementation for Quirk Systems. This repository is not Quirk OS.**
 
-Built on a production Next.js 16 scaffold: everything here is real, wired,
-and validated in CI.
+The canonical repository identity remains
+[`Quirk-Systems/project-scaffold`](https://github.com/Quirk-Systems/project-scaffold).
+It exists to provide a reusable baseline for starting, testing, and evolving
+Quirk projects without forcing every generated project to become the same
+product.
 
-## What lives here
+See [Project Scaffold Identity](docs/canon/PROJECT_SCAFFOLD_IDENTITY.md) for the
+boundary, ownership rules, and change-control contract.
 
 ### Proposed: Quirk Conversation Compiler
 
@@ -21,77 +22,70 @@ justified. See the
 [capability pack](docs/capabilities/conversation-compiler/README.md).
 
 ### The Quirk Data Engine
+## What this repository owns
 
-A registry for unstructured assets with pgvector embeddings and full
-lifecycle tracking:
+- a working Next.js application baseline with TypeScript, Tailwind, testing,
+  CI, security checks, database wiring, and common integrations;
+- executable examples of Quirk-domain modules and agent patterns;
+- project-start conventions, validation commands, and extraction seams;
+- a reference implementation that downstream templates and generated
+  repositories may reuse, fork, replace, or omit.
 
-```
+## What this repository does not own
+
+- Quirk OS canon, kernel authority, or organization-wide runtime governance;
+- the central catalog and lifecycle for templates, variables, boilerplates,
+  playbooks, agents, apps, capabilities, or cross-platform skills;
+- permission to rename itself because Quirk OS-shaped capabilities happen to
+  be implemented here.
+
+Capability does not imply authority. A reference module can prove a pattern
+without promoting its containing repository into the system it demonstrates.
+
+## Bundled Quirk reference implementation
+
+The current scaffold includes a substantial asset-lifecycle example:
+
+```text
 capture → annotate → mutate → diff → experiment → promote → publish
 ```
 
-| Piece                     | What it does                                                                                                                  |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `quirk_assets` + versions | Canonical rows for text/image/audio/video/pdf/prompt/song/dataset assets, embedded (pgvector 1536) and semantically versioned |
-| Annotations & tags        | `persona_fit`, `spawn_path`, `risk`, `quality`, `theme` — the research signal that drives curation                            |
-| Quirk Diff                | Semantic version control: additions/removals/meaning-shift between versions, not line diffs                                   |
-| Experiments & runs        | Track persona/mask/prompt/model variations; promote winners                                                                   |
-| Pipelines                 | Multi-step asset processing with run tracking                                                                                 |
-| Media storage             | Binary assets (photography, design work) in private object storage, served via signed URLs                                    |
-| Offers                    | One-of-one claimable drops minted from curated assets — persona-voiced, atomically claimed by exactly one person              |
-
-### The agent crew (`src/lib/quirk/agents/`)
-
-Named agents own lifecycle stages: **Archivist Goblin** (ingest/normalize),
-**Curator** (annotation), **Diff Witch** (semantic diffing), **Foreman**
-(pipelines), **Lab Rat King** (experiments).
-
-### The voice layer (`src/lib/ai/`)
-
-A persona/register composition layer over the Claude API: a frozen,
-prompt-cacheable house persona modulated by tonal registers (deadpan, warm,
-hype, mock_panic, swoon), each with an animation vocabulary the UI keys
-motion off. Personality as configuration, not copy-paste.
-
-### Production integrations
-
-Stripe billing (checkout, order-safe webhooks, billing portal), Resend +
-react-email, PostHog analytics/flags, structured pino logging, Auth.js —
-all lazy-initialized so the repo builds and validates with zero secrets.
+It includes versioned assets, annotations, semantic diffs, experiments,
+pipelines, media storage, agent roles, voice composition, billing, email,
+analytics, and authentication. These modules are deliberately inspectable
+working examples. Their presence does not change the repository identity.
 
 ## Getting started
 
 ```bash
 bun install
-cp .env.example .env   # everything optional; features no-op until configured
-bun run dev            # http://localhost:3000 — /quirk is the registry UI
+cp .env.example .env
+bun run dev
 ```
 
-Media capture (requires `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`):
-
-```bash
-curl -F "file=@photo.jpg" -F "title=Golden hour test" \
-  http://localhost:3000/api/assets/upload
-```
+Most integrations are lazy-initialized so the scaffold can build with no
+secrets. Individual features become active when their required environment
+variables are configured.
 
 ## Commands
 
-| Command                          | Description                                        |
-| -------------------------------- | -------------------------------------------------- |
-| `bun run dev`                    | Dev server (runs migrations first)                 |
-| `bun run validate`               | lint + type-check + tests + build — the merge gate |
-| `bun run db:migrate` / `db:seed` | Schema + Quirk OS seed data                        |
-| `bun run test:e2e`               | Playwright suite                                   |
-| `bun run email:dev`              | Preview react-email templates                      |
+| Command | Description |
+| --- | --- |
+| `bun run dev` | Run the development server |
+| `bun run identity:check` | Verify the repository identity invariants |
+| `bun run validate` | Identity guard, lint, type-check, tests, and build |
+| `bun run db:migrate` / `db:seed` | Apply migrations / seed example data |
+| `bun run test:e2e` | Run the Playwright suite |
+| `bun run email:dev` | Preview email templates |
 
 ## Repository structure
 
-Single-app today, workspace-shaped on purpose — see
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the layout, the module
-boundaries that graduate to packages, and the asset lifecycle in depth.
-[CLAUDE.md](CLAUDE.md) is the source of truth for conventions and is kept
-current by the agents that work this repo.
+The repository is a single application with extraction-ready module
+boundaries. See [Architecture](docs/ARCHITECTURE.md) for the implemented
+reference application's topology and [CLAUDE.md](CLAUDE.md) for working
+conventions.
 
-## Contributing & security
+## Contributing and security
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
