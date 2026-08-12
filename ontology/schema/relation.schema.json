@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/ontology/relation.schema.json",
+  "title": "Ontology relation",
+  "type": "object",
+  "required": ["type", "target"],
+  "properties": {
+    "type": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "external": { "type": "boolean", "default": false },
+    "qualifiers": { "type": "object", "default": {} }
+  },
+  "additionalProperties": false
+}

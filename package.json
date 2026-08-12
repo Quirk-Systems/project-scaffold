@@ -26,6 +26,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:reset": "rm -f local.db local.db-journal && bun run db:migrate",
     "db:seed": "bun run scripts/seed.ts",
+    "ontology:validate": "bun run scripts/validate-ontology.ts",
     "deps:audit": "bun run scripts/deps-audit.ts",
     "docs:ideas": "bun run scripts/generate-ideas-doc.ts && prettier --write docs/recommendations/wild/IDEAS.md",
     "email:dev": "email dev --dir src/emails --port 3001",
