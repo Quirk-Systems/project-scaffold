@@ -1,0 +1,99 @@
+# Dependabot does not know how to update bun.lock. It edits package.json alone,
+# so every such merge lands a manifest that the committed lockfile no longer
+# satisfies, and `bun install --frozen-lockfile` — the first step of every CI
+# job — fails before anything else runs. That has taken main red three times.
+#
+# This workflow regenerates the lockfile on the Dependabot branch, before the
+# merge, so the drift never reaches main.
+name: Dependabot lockfile
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - package.json
+
+# Workflows triggered by Dependabot get a read-only token by default, because
+# a malicious dependency would otherwise run with write access. Since October
+# 2021 the permissions key is respected for these runs, so this grants exactly
+# the one scope needed to push the lockfile back — and nothing else. That is
+# why this uses `pull_request` rather than `pull_request_target`, which would
+# run with full repository privileges.
+permissions:
+  contents: write
+
+concurrency:
+  group: dependabot-lockfile-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The branch itself, not the merge ref — this job pushes back to it.
+          ref: ${{ github.head_ref }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Regenerate the lockfile
+        # --lockfile-only resolves and writes bun.lock without installing
+        # anything, so no dependency code is ever placed on disk or executed
+        # in a job that holds a write token.
+        run: bun install --lockfile-only
+
+      - name: Refuse to commit anything but the lockfile
+        # Defence in depth: the only file this workflow is allowed to change is
+        # bun.lock. Anything else means the resolution did something unexpected,
+        # and a write-token job should stop rather than commit it.
+        run: |
+          unexpected="$(git diff --name-only -- . ':!bun.lock')"
+          if [ -n "$unexpected" ]; then
+            echo "::error::refusing to commit; unexpected changes outside bun.lock:"
+            echo "$unexpected"
+            exit 1
+          fi
+
+      - name: Commit and push
+        id: sync
+        run: |
+          if git diff --quiet -- bun.lock; then
+            echo "lockfile already matches package.json — nothing to do"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "chore(deps): sync bun.lock with package.json"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Prove the drift is gone
+        # The exact command that fails on a drifted lockfile, and the first
+        # step of every CI job.
+        run: bun install --frozen-lockfile
+
+      - name: Verify the update against the real gate
+        # Worth the runner minutes on a dependency PR: a lockfile that installs
+        # is not the same as a dependency update that works. This is how the
+        # plugin-react major was caught — it resolved fine and then vitest
+        # could not load its config.
+        run: bun run validate
+        env:
+          SKIP_ENV_VALIDATION: "1"
+
+      - name: Note the stale-checks caveat
+        if: steps.sync.outputs.changed == 'true'
+        # Pushes made with GITHUB_TOKEN deliberately do not trigger new workflow
+        # runs, so the PR's own validate/security/e2e checks still show their
+        # result from before this commit. This job's own result covers the
+        # synced tree. Dependabot's next rebase re-triggers them; a repository
+        # that would rather not wait can push this step with an App token or PAT
+        # instead, which does trigger normally.
+        run: |
+          echo "::notice::bun.lock synced and pushed. The PR's validate/security/e2e checks predate this commit — GITHUB_TOKEN pushes do not re-trigger workflows. This job validated the synced tree."
