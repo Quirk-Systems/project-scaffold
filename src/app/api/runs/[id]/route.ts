@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { scoreRun } from "@/lib/quirk/experiments";
 import { notFound, parseBody, serverError } from "@/lib/quirk/http";
+import { runOutcomeEnum } from "@/lib/db/schema";
 
 export const dynamic = "force-dynamic";
 
 const scoreSchema = z.object({
-  outcome: z.enum(["pending", "winner", "reject", "mutate_again"]).optional(),
+  outcome: z.enum(runOutcomeEnum.enumValues).optional(),
   score: z.number().optional(),
   notes: z.string().optional(),
 });

@@ -2,20 +2,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { listAnnotations, saveAnnotations } from "@/lib/quirk/annotations";
 import { parseBody, serverError } from "@/lib/quirk/http";
+import { annotationTypeEnum } from "@/lib/db/schema";
 
 export const dynamic = "force-dynamic";
 
 const annotationSchema = z.object({
-  annotationType: z.enum([
-    "tag",
-    "rating",
-    "comment",
-    "persona_fit",
-    "spawn_path",
-    "risk",
-    "quality",
-    "theme",
-  ]),
+  annotationType: z.enum(annotationTypeEnum.enumValues),
   label: z.string().nullable().optional(),
   value: z.record(z.unknown()).default({}),
   confidence: z.number().min(0).max(1).optional(),

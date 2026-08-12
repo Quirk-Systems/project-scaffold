@@ -1,4 +1,4 @@
-# Contributing to Quirk OS
+# Contributing to Project Scaffold
 
 ## The short version
 

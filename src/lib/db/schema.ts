@@ -12,6 +12,7 @@ import {
   index,
   check,
   boolean,
+  pgSchema,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import type Stripe from "stripe";
@@ -125,30 +126,44 @@ export const customers = pgTable("customers", {
     .defaultNow(),
 });
 
-export const subscriptions = pgTable("subscriptions", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  customerId: uuid("customer_id")
-    .notNull()
-    .references(() => customers.id, { onDelete: "cascade" }),
-  stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
-  stripePriceId: text("stripe_price_id").notNull(),
-  status: text("status").notNull().$type<Stripe.Subscription.Status>(),
-  currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
-  cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
+export const subscriptions = pgTable(
+  "subscriptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    customerId: uuid("customer_id")
+      .notNull()
+      .references(() => customers.id, { onDelete: "cascade" }),
+    stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
+    stripePriceId: text("stripe_price_id").notNull(),
+    status: text("status").notNull().$type<Stripe.Subscription.Status>(),
+    currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
+    cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("subscriptions_user_idx").on(t.userId),
+    index("subscriptions_customer_idx").on(t.customerId),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // 1. Quirk Data Engine — Unstructured Asset Registry
 // ---------------------------------------------------------------------------
+
+/**
+ * Width of the `quirk_assets.embedding` pgvector column. Declared here, next
+ * to the column itself, because an embedder that produces a different width
+ * fails at insert time rather than at compile time.
+ */
+export const EMBEDDING_DIMENSIONS = 1536;
 
 export const quirkAssets = pgTable(
   "quirk_assets",
@@ -163,7 +178,7 @@ export const quirkAssets = pgTable(
       .$type<Record<string, unknown>>()
       .notNull()
       .default({}),
-    embedding: vector("embedding", { dimensions: 1536 }),
+    embedding: vector("embedding", { dimensions: EMBEDDING_DIMENSIONS }),
     status: assetStatusEnum("status").notNull().default("captured"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -197,6 +212,7 @@ export const quirkAssetVersions = pgTable(
       t.assetId,
       t.versionNumber,
     ),
+    index("quirk_asset_versions_asset_idx").on(t.assetId),
   ],
 );
 
@@ -243,31 +259,39 @@ export const quirkTags = pgTable("quirk_tags", {
 // 3. Quirk Diff — Semantic Version Control
 // ---------------------------------------------------------------------------
 
-export const quirkDiffs = pgTable("quirk_diffs", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  assetId: uuid("asset_id")
-    .notNull()
-    .references(() => quirkAssets.id, { onDelete: "cascade" }),
-  fromVersionId: uuid("from_version_id").references(
-    () => quirkAssetVersions.id,
-  ),
-  toVersionId: uuid("to_version_id").references(() => quirkAssetVersions.id),
-  diffType: text("diff_type").notNull().default("semantic"),
-  summary: text("summary"),
-  additions: jsonb("additions").$type<string[]>().notNull().default([]),
-  removals: jsonb("removals").$type<string[]>().notNull().default([]),
-  meaningShift: jsonb("meaning_shift")
-    .$type<Record<string, unknown>>()
-    .notNull()
-    .default({}),
-  scoreDelta: jsonb("score_delta")
-    .$type<Record<string, number>>()
-    .notNull()
-    .default({}),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
+export const quirkDiffs = pgTable(
+  "quirk_diffs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    assetId: uuid("asset_id")
+      .notNull()
+      .references(() => quirkAssets.id, { onDelete: "cascade" }),
+    fromVersionId: uuid("from_version_id").references(
+      () => quirkAssetVersions.id,
+    ),
+    toVersionId: uuid("to_version_id").references(() => quirkAssetVersions.id),
+    diffType: text("diff_type").notNull().default("semantic"),
+    summary: text("summary"),
+    additions: jsonb("additions").$type<string[]>().notNull().default([]),
+    removals: jsonb("removals").$type<string[]>().notNull().default([]),
+    meaningShift: jsonb("meaning_shift")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    scoreDelta: jsonb("score_delta")
+      .$type<Record<string, number>>()
+      .notNull()
+      .default({}),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("quirk_diffs_asset_idx").on(t.assetId),
+    index("quirk_diffs_from_version_idx").on(t.fromVersionId),
+    index("quirk_diffs_to_version_idx").on(t.toVersionId),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // 4. Experiment Tracking
@@ -312,7 +336,11 @@ export const quirkRuns = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (t) => [index("quirk_runs_experiment_idx").on(t.experimentId)],
+  (t) => [
+    index("quirk_runs_experiment_idx").on(t.experimentId),
+    index("quirk_runs_input_asset_idx").on(t.inputAssetId),
+    index("quirk_runs_output_asset_idx").on(t.outputAssetId),
+  ],
 );
 
 // ---------------------------------------------------------------------------
@@ -351,21 +379,29 @@ export const quirkPipelineSteps = pgTable(
   },
   (t) => [
     unique("quirk_pipeline_steps_order_uq").on(t.pipelineId, t.stepOrder),
+    index("quirk_pipeline_steps_pipeline_idx").on(t.pipelineId),
   ],
 );
 
-export const quirkPipelineRuns = pgTable("quirk_pipeline_runs", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  pipelineId: uuid("pipeline_id")
-    .notNull()
-    .references(() => quirkPipelines.id, { onDelete: "cascade" }),
-  assetId: uuid("asset_id").references(() => quirkAssets.id),
-  status: pipelineRunStatusEnum("status").notNull().default("queued"),
-  currentStep: text("current_step"),
-  logs: jsonb("logs").$type<PipelineLogEntry[]>().notNull().default([]),
-  startedAt: timestamp("started_at", { withTimezone: true }),
-  completedAt: timestamp("completed_at", { withTimezone: true }),
-});
+export const quirkPipelineRuns = pgTable(
+  "quirk_pipeline_runs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    pipelineId: uuid("pipeline_id")
+      .notNull()
+      .references(() => quirkPipelines.id, { onDelete: "cascade" }),
+    assetId: uuid("asset_id").references(() => quirkAssets.id),
+    status: pipelineRunStatusEnum("status").notNull().default("queued"),
+    currentStep: text("current_step"),
+    logs: jsonb("logs").$type<PipelineLogEntry[]>().notNull().default([]),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("quirk_pipeline_runs_pipeline_idx").on(t.pipelineId),
+    index("quirk_pipeline_runs_asset_idx").on(t.assetId),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // 6. Quirk Offers — one-of-one claimable drops
@@ -406,9 +442,232 @@ export const quirkOffers = pgTable(
   },
   (t) => [
     index("quirk_offers_status_idx").on(t.status),
+    index("quirk_offers_claimed_by_idx").on(t.claimedBy),
     // One offer per asset — the 1/1 is minted once, ever.
     unique("quirk_offers_asset_uq").on(t.assetId),
   ],
+);
+
+// ---------------------------------------------------------------------------
+// Private Ontology Projection — Git remains canonical
+// ---------------------------------------------------------------------------
+
+export const ontologySchema = pgSchema("ontology");
+
+export const ontologyEntityTypes = ontologySchema.table("entity_types", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  canonicalName: text("canonical_name").notNull().unique(),
+  description: text("description"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const ontologyRelationTypes = ontologySchema.table("relation_types", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  canonicalName: text("canonical_name").notNull().unique(),
+  description: text("description"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const ontologyEntities = ontologySchema.table(
+  "entities",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    canonicalId: text("canonical_id").notNull().unique(),
+    namespace: text("namespace").notNull(),
+    canonicalName: text("canonical_name").notNull(),
+    primaryTypeId: uuid("primary_type_id")
+      .notNull()
+      .references(() => ontologyEntityTypes.id),
+    truthStatus: text("truth_status").notNull(),
+    lifecycleStatus: text("lifecycle_status").notNull(),
+    authorityLevel: text("authority_level").notNull(),
+    canonicalPath: text("canonical_path").notNull(),
+    contentHash: text("content_hash").notNull(),
+    schemaVersion: integer("schema_version").notNull(),
+    currentVersion: integer("current_version").notNull(),
+    payload: jsonb("payload").$type<Record<string, unknown>>().notNull(),
+    commitSha: text("commit_sha").notNull(),
+    projectedAt: timestamp("projected_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [
+    index("ontology_entities_primary_type_idx").on(t.primaryTypeId),
+    index("ontology_entities_namespace_idx").on(t.namespace),
+    check(
+      "ontology_entities_schema_version_check",
+      sql`${t.schemaVersion} > 0`,
+    ),
+    check(
+      "ontology_entities_current_version_check",
+      sql`${t.currentVersion} > 0`,
+    ),
+  ],
+);
+
+export const ontologyEntityVersions = ontologySchema.table(
+  "entity_versions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => ontologyEntities.id, { onDelete: "cascade" }),
+    version: integer("version").notNull(),
+    contentHash: text("content_hash").notNull(),
+    payload: jsonb("payload").$type<Record<string, unknown>>().notNull(),
+    changeSummary: text("change_summary"),
+    commitSha: text("commit_sha").notNull(),
+    projectedAt: timestamp("projected_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [
+    unique("ontology_entity_versions_entity_version_uq").on(
+      t.entityId,
+      t.version,
+    ),
+    index("ontology_entity_versions_entity_idx").on(t.entityId),
+  ],
+);
+
+export const ontologyRelations = ontologySchema.table(
+  "relations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    subjectEntityId: uuid("subject_entity_id")
+      .notNull()
+      .references(() => ontologyEntities.id, { onDelete: "cascade" }),
+    relationTypeId: uuid("relation_type_id")
+      .notNull()
+      .references(() => ontologyRelationTypes.id),
+    objectEntityId: uuid("object_entity_id").references(
+      () => ontologyEntities.id,
+    ),
+    objectCanonicalId: text("object_canonical_id").notNull(),
+    isExternal: boolean("is_external").notNull().default(false),
+    qualifiers: jsonb("qualifiers")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    sourcePath: text("source_path").notNull(),
+    contentHash: text("content_hash").notNull(),
+    validFrom: timestamp("valid_from", { withTimezone: true }),
+    validTo: timestamp("valid_to", { withTimezone: true }),
+  },
+  (t) => [
+    unique("ontology_relations_content_uq").on(
+      t.subjectEntityId,
+      t.relationTypeId,
+      t.objectCanonicalId,
+      t.contentHash,
+    ),
+    index("ontology_relations_subject_idx").on(t.subjectEntityId),
+    index("ontology_relations_type_idx").on(t.relationTypeId),
+    index("ontology_relations_object_idx").on(t.objectEntityId),
+    check(
+      "ontology_relations_target_check",
+      sql`${t.isExternal} or ${t.objectEntityId} is not null`,
+    ),
+  ],
+);
+
+export const ontologyAliases = ontologySchema.table(
+  "aliases",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => ontologyEntities.id, { onDelete: "cascade" }),
+    namespace: text("namespace").notNull(),
+    alias: text("alias").notNull(),
+    ambiguityRecord: jsonb("ambiguity_record").$type<Record<string, unknown>>(),
+  },
+  (t) => [
+    unique("ontology_aliases_entity_alias_uq").on(t.entityId, t.alias),
+    index("ontology_aliases_entity_idx").on(t.entityId),
+    index("ontology_aliases_lookup_idx").on(
+      t.namespace,
+      sql`lower(${t.alias})`,
+    ),
+  ],
+);
+
+export const ontologyConstraints = ontologySchema.table("constraints", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  canonicalName: text("canonical_name").notNull().unique(),
+  description: text("description").notNull(),
+  rule: jsonb("rule").$type<Record<string, unknown>>().notNull(),
+  authorityLevel: text("authority_level").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const ontologyEvidenceLinks = ontologySchema.table(
+  "evidence_links",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => ontologyEntities.id, { onDelete: "cascade" }),
+    evidenceType: text("evidence_type").notNull(),
+    uri: text("uri").notNull(),
+    contentHash: text("content_hash"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("ontology_evidence_links_entity_idx").on(t.entityId)],
+);
+
+export const ontologyChangeRequests = ontologySchema.table(
+  "change_requests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    canonicalId: text("canonical_id").notNull(),
+    status: text("status").notNull().default("proposed"),
+    proposedPayload: jsonb("proposed_payload")
+      .$type<Record<string, unknown>>()
+      .notNull(),
+    requestedBy: text("requested_by").notNull(),
+    approvedBy: text("approved_by"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("ontology_change_requests_canonical_idx").on(t.canonicalId, t.status),
+  ],
+);
+
+export const ontologyProjectionRuns = ontologySchema.table("projection_runs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  commitSha: text("commit_sha").notNull(),
+  status: text("status").notNull(),
+  entityCount: integer("entity_count").notNull().default(0),
+  startedAt: timestamp("started_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  completedAt: timestamp("completed_at", { withTimezone: true }),
+});
+
+export const ontologyLintFindings = ontologySchema.table(
+  "lint_findings",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectionRunId: uuid("projection_run_id")
+      .notNull()
+      .references(() => ontologyProjectionRuns.id, { onDelete: "cascade" }),
+    canonicalId: text("canonical_id"),
+    code: text("code").notNull(),
+    message: text("message").notNull(),
+    severity: text("severity").notNull().default("error"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("ontology_lint_findings_run_idx").on(t.projectionRunId)],
 );
 
 // ---------------------------------------------------------------------------

@@ -2,20 +2,13 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createExperiment, listExperiments } from "@/lib/quirk/experiments";
 import { parseBody, serverError } from "@/lib/quirk/http";
+import { experimentTypeEnum } from "@/lib/db/schema";
 
 export const dynamic = "force-dynamic";
 
 const createSchema = z.object({
   name: z.string().min(1),
-  experimentType: z.enum([
-    "prompt",
-    "song",
-    "image",
-    "agent",
-    "workflow",
-    "ui",
-    "dataset",
-  ]),
+  experimentType: z.enum(experimentTypeEnum.enumValues),
   objective: z.string().optional(),
   inputAssetId: z.string().uuid().optional(),
   variantCount: z.number().int().min(2).max(11).optional(),

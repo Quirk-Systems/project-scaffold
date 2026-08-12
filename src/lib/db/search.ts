@@ -15,10 +15,15 @@ import type { Result } from "@/lib/result";
 import { tryCatchAsync } from "@/lib/result";
 
 import { db } from "./index";
-import { quirkAnnotations, quirkAssets, type QuirkAsset } from "./schema";
+import {
+  EMBEDDING_DIMENSIONS,
+  quirkAnnotations,
+  quirkAssets,
+  type QuirkAsset,
+} from "./schema";
 
-/** Dimensionality of the `quirk_assets.embedding` pgvector column. */
-export const EMBEDDING_DIMENSIONS = 1536;
+export { EMBEDDING_DIMENSIONS };
+
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
