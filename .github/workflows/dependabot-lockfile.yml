@@ -135,7 +135,7 @@ jobs:
       # ci.yml pins Node 20 for both its jobs, and this job stands in for them
       # — matching it keeps a passing verify from meaning something different
       # than a passing CI run.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
 
