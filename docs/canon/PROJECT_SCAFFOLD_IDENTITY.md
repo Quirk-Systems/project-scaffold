@@ -1,7 +1,8 @@
 # Project Scaffold Identity
 
-Status: **Accepted**  
+Status: **Accepted; frozen for archive transition**  
 Decision date: **2026-08-11**  
+Archive approval date: **2026-08-12**  
 Authority: **Quirk Systems repository owner**  
 Supersedes: [Issue #75](https://github.com/Quirk-Systems/project-scaffold/issues/75) and [PR #76](https://github.com/Quirk-Systems/project-scaffold/pull/76)
 
@@ -14,8 +15,9 @@ features.
 ```yaml
 id: toolkit.project_scaffold
 type: toolkit
-version: 1.0.0
-status: active
+version: 1.1.0
+status: frozen
+target_status: archived
 owner: Quirk-Systems
 repository: Quirk-Systems/project-scaffold
 purpose: >
@@ -95,3 +97,19 @@ A future identity change requires all of the following:
 5. a reversible migration plan and a separately approved execution gate.
 
 Absent that complete decision, the identity guard fails closed.
+
+## Archive decision
+
+The repository owner approved retirement on 2026-08-12 after successor
+repositories were established. Approval freezes this repository immediately;
+the lifecycle becomes `archived` only when the objective archive gate in the
+[archive transition ledger](../operations/ARCHIVE_TRANSITION.md) is complete.
+This sequencing prevents a documentation claim from outrunning GitHub state,
+open work, successor validation, or release evidence.
+
+Retirement does not alter the identity decision:
+
+- Project Scaffold remains distinct from Quirk OS throughout its history.
+- Issue #75 and PR #76 remain closed, superseded decision evidence.
+- Archived examples do not become Quirk canon.
+- Git remains canonical; Supabase remains a runtime projection.

@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 const expected = {
   repository: "Quirk-Systems/project-scaffold",
   domain: "application-scaffold",
+  lifecycle: "frozen",
+  targetLifecycle: "archived",
   packageName: "project-scaffold",
   readmeTitle: "# Project Scaffold",
 };
@@ -26,6 +28,18 @@ if (manifest.repository !== expected.repository) {
 if (manifest.domain !== expected.domain) {
   failures.push(
     `.quirk/manifest.json domain must be "${expected.domain}", received "${manifest.domain}"`,
+  );
+}
+
+if (manifest.lifecycle !== expected.lifecycle) {
+  failures.push(
+    `.quirk/manifest.json lifecycle must be "${expected.lifecycle}", received "${manifest.lifecycle}"`,
+  );
+}
+
+if (manifest.target_lifecycle !== expected.targetLifecycle) {
+  failures.push(
+    `.quirk/manifest.json target_lifecycle must be "${expected.targetLifecycle}", received "${manifest.target_lifecycle}"`,
   );
 }
 

@@ -1,14 +1,22 @@
 # Quirk Design Tribunal
 
-**Status:** PROPOSAL — candidate Capability + Workflow Object  
+**Status:** TRANSFER CANDIDATE — not admitted or released  
 **Owner:** Quirk Control  
 **Human authority:** Bryan  
 **Source ingest:** 2026-08-11 video and repository study  
-**Repository role:** reusable project-scaffold capability pack; not a repo rename and not a new primary system
+**Repository role:** frozen historical proof; transfer target is
+[`Quirk-Systems/quirk-os`](https://github.com/Quirk-Systems/quirk-os), subject
+to fresh validation there
 
 ## Decision
 
 Adopt the useful core of the “gauntlet” technique—fresh-context independent criticism—without adopting its expensive, endless, or self-congratulatory failure modes.
+
+The archive decision supersedes local admission. This pack must not be promoted
+inside Project Scaffold. Its contracts, skill, critics, docs, fixtures, and
+private-ledger candidate may be transferred to Quirk OS as one provenance-bound
+candidate. Quirk OS must run the admission requirements below independently;
+files merely existing here or being copied there are not evidence of admission.
 
 The Quirk mutation is **Design Tribunal**: an evidence-budgeted review and admission capability that separates building, measuring, criticizing, refereeing, repairing, and human authority.
 

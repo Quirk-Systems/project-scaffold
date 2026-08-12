@@ -38,7 +38,17 @@ This pack places the private ledger in `supabase/migrations/` as a reviewable ca
 1. **Supabase owns `quirk_internal`:** keep this migration and exclude the private schema from Drizzle generation; or
 2. **Drizzle owns it:** translate the migration into Drizzle schema plus generated journal/snapshot and remove the Supabase migration.
 
-The draft must not claim complete database integration until that authority decision and an isolated apply/rollback test are evidenced.
+**Decision (2026-08-12):** Supabase migrations own the private
+`quirk_internal` schema and its security DDL. Drizzle continues to own the
+Project Scaffold application schema and must exclude `quirk_internal` from
+generation. Git remains canonical for contracts; Supabase stores projections
+and evidence only.
+
+The migration in this frozen repository is retained as an unexecuted historical
+candidate. A transfer to Quirk OS must preserve its provenance, use the
+destination repository's own Supabase migration sequence, and complete an
+isolated apply/rollback test. This repository does not claim complete database
+integration.
 
 ## Required verification
 

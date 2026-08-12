@@ -1,5 +1,12 @@
 # Project Scaffold
 
+> [!IMPORTANT]
+> **Archive transition approved 2026-08-12.** This repository is frozen while
+> the [archive gate](docs/operations/ARCHIVE_TRANSITION.md#archive-gate) is
+> completed. It is a historical application scaffold and reference
+> implementation—not Quirk OS and not a source of current Quirk canon. No new
+> feature work is accepted.
+
 **A runnable application scaffold and reference implementation for Quirk Systems. This repository is not Quirk OS.**
 
 The canonical repository identity remains
@@ -10,6 +17,23 @@ product.
 
 See [Project Scaffold Identity](docs/canon/PROJECT_SCAFFOLD_IDENTITY.md) for the
 boundary, ownership rules, and change-control contract.
+
+## Successors and support
+
+- [`Quirk-Systems/quirk-os`](https://github.com/Quirk-Systems/quirk-os) owns
+  active Quirk OS runtime and governance work.
+- [`Quirk-Systems/quirk-core`](https://github.com/Quirk-Systems/quirk-core) is
+  the candidate home for shared canonical contracts when real consumer evidence
+  satisfies its extraction gates.
+- [`Quirk-Systems/.github`](https://github.com/Quirk-Systems/.github) owns
+  organization policy and portfolio metadata.
+
+This repository receives archive-transition, critical security, and historical
+integrity fixes only. Existing users should pin the terminal release once it is
+published; there is no compatibility or security-support commitment after the
+GitHub repository is archived. See the
+[archive transition ledger](docs/operations/ARCHIVE_TRANSITION.md) for
+provenance, migration guidance, unsupported surfaces, and remaining gates.
 
 ## What this repository owns
 

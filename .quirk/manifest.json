@@ -1,6 +1,9 @@
 {
   "repository": "Quirk-Systems/project-scaffold",
   "domain": "application-scaffold",
+  "lifecycle": "frozen",
+  "target_lifecycle": "archived",
+  "retirement_record": "docs/operations/ARCHIVE_TRANSITION.md",
   "registry": {
     "authority": "Quirk-Systems/.github",
     "path": ".quirk/registry.json",
