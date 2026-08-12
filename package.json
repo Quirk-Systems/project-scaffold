@@ -81,7 +81,7 @@
     "@types/node": "^22.20.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.4",
+    "@vitejs/plugin-react": "^5.2.0",
     "@vitest/coverage-v8": "~3.2.7",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.5",
@@ -107,6 +107,7 @@
     "vite": "^6.4.3",
     "sharp": "^0.35.3",
     "@auth/core": "^0.41.3",
-    "dompurify": "^3.4.12"
+    "dompurify": "^3.4.13",
+    "nanoid": "^3.3.18"
   }
 }

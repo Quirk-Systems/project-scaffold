@@ -1,9 +1,13 @@
 # Project Scaffold Identity
 
-Status: **Accepted; frozen for archive transition**  
-Decision date: **2026-08-11**  
-Archive approval date: **2026-08-12**  
-Authority: **Quirk Systems repository owner**  
+Status: **Accepted; frozen for archive transition**
+
+Decision date: **2026-08-11**
+
+Archive approval date: **2026-08-12**
+
+Authority: **Quirk Systems repository owner**
+
 Supersedes: [Issue #75](https://github.com/Quirk-Systems/project-scaffold/issues/75) and [PR #76](https://github.com/Quirk-Systems/project-scaffold/pull/76)
 
 ## CANON
@@ -53,12 +57,12 @@ Project Scaffold does not own:
 
 ## Relationship contract
 
-| Object | Relationship to Project Scaffold |
-| --- | --- |
-| Quirk OS | Separate downstream system and repository with its own canon, runtime, evidence, permissions, and release lifecycle |
-| Quirk construction catalog | Separate upstream catalog/composer that may publish versioned construction objects consumed by this repository |
-| Generated repositories | Independent consumers; adoption never creates a permanent reverse dependency |
-| Quirk canon | External authority; projections in this repository cannot silently rewrite it |
+| Object                     | Relationship to Project Scaffold                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Quirk OS                   | Separate downstream system and repository with its own canon, runtime, evidence, permissions, and release lifecycle |
+| Quirk construction catalog | Separate upstream catalog/composer that may publish versioned construction objects consumed by this repository      |
+| Generated repositories     | Independent consumers; adoption never creates a permanent reverse dependency                                        |
+| Quirk canon                | External authority; projections in this repository cannot silently rewrite it                                       |
 
 ## Identity invariants
 
@@ -76,13 +80,13 @@ The repository must retain all of these invariants:
 
 ## Failure modes
 
-| Failure | Detection | Required response |
-| --- | --- | --- |
-| Identity drift | Manifest, package, or README stops naming Project Scaffold | Block validation and repair the identity fields |
-| Domain capture | A bundled example is treated as authority for the entire repo | Split the product into its own repository |
-| Reference inflation | A demonstration is advertised as the canonical system | Constrain the claim and record the true evidence level |
-| Reverse dependency | Generated repos cannot evolve without this repo's private context | Extract a versioned contract or document the bounded dependency |
-| Authority laundering | Maintainer capability is treated as approval to rename or promote | Deny the transition and require explicit owner decision |
+| Failure              | Detection                                                         | Required response                                               |
+| -------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------- |
+| Identity drift       | Manifest, package, or README stops naming Project Scaffold        | Block validation and repair the identity fields                 |
+| Domain capture       | A bundled example is treated as authority for the entire repo     | Split the product into its own repository                       |
+| Reference inflation  | A demonstration is advertised as the canonical system             | Constrain the claim and record the true evidence level          |
+| Reverse dependency   | Generated repos cannot evolve without this repo's private context | Extract a versioned contract or document the bounded dependency |
+| Authority laundering | Maintainer capability is treated as approval to rename or promote | Deny the transition and require explicit owner decision         |
 
 ## Change control
 

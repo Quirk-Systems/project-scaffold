@@ -82,14 +82,14 @@ variables are configured.
 
 ## Commands
 
-| Command | Description |
-| --- | --- |
-| `bun run dev` | Run the development server |
-| `bun run identity:check` | Verify the repository identity invariants |
-| `bun run validate` | Identity guard, lint, type-check, tests, and build |
-| `bun run db:migrate` / `db:seed` | Apply migrations / seed example data |
-| `bun run test:e2e` | Run the Playwright suite |
-| `bun run email:dev` | Preview email templates |
+| Command                          | Description                                        |
+| -------------------------------- | -------------------------------------------------- |
+| `bun run dev`                    | Run the development server                         |
+| `bun run identity:check`         | Verify the repository identity invariants          |
+| `bun run validate`               | Identity guard, lint, type-check, tests, and build |
+| `bun run db:migrate` / `db:seed` | Apply migrations / seed example data               |
+| `bun run test:e2e`               | Run the Playwright suite                           |
+| `bun run email:dev`              | Preview email templates                            |
 
 ## Repository structure
 

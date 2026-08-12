@@ -1,6 +1,7 @@
 # Quirk Design Tribunal
 
-**Status:** TRANSFER CANDIDATE — not admitted or released  
+**Status:** TRANSFER CANDIDATE — not admitted or released
+
 **Owner:** Quirk Control  
 **Human authority:** Bryan  
 **Source ingest:** 2026-08-11 video and repository study  
@@ -46,18 +47,18 @@ Design Tribunal solves both sides:
 
 ## Object contract
 
-| Field | Definition |
-| --- | --- |
-| Type | Candidate `CapabilityObject` implemented by a `WorkflowObject` and reusable Claude Skill |
-| Purpose | Convert design intent and taste into evidence-backed release/admission decisions |
-| Inputs | Brief, artifact, baseline, quality bar, design-system snapshot, constraints, budget, authority |
-| Outputs | Evidence dossier, findings, repair queue, release status, decision request |
-| Lifecycle | candidate → trial → evaluated → approved/rejected/superseded; never auto-canon |
-| Interfaces | Claude Design, Claude Code, Cowork, GitHub, Supabase, Google Drive, Quirk UI |
-| Evidence | deterministic tests, renders, screenshots, accessibility tree, token/component diffs, source references, human decision |
-| Permissions | critics read-only; builders edit; referee read-only; only human authority releases/canonizes |
-| Failure states | fail, unresolved, budget_exhausted, critic conflict, missing baseline, missing authority, evidence gap |
-| Evaluation | 11 fixtures plus live surface trials; compare defects caught, repair cost, latency, token cost, and human acceptance |
+| Field          | Definition                                                                                                              |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Type           | Candidate `CapabilityObject` implemented by a `WorkflowObject` and reusable Claude Skill                                |
+| Purpose        | Convert design intent and taste into evidence-backed release/admission decisions                                        |
+| Inputs         | Brief, artifact, baseline, quality bar, design-system snapshot, constraints, budget, authority                          |
+| Outputs        | Evidence dossier, findings, repair queue, release status, decision request                                              |
+| Lifecycle      | candidate → trial → evaluated → approved/rejected/superseded; never auto-canon                                          |
+| Interfaces     | Claude Design, Claude Code, Cowork, GitHub, Supabase, Google Drive, Quirk UI                                            |
+| Evidence       | deterministic tests, renders, screenshots, accessibility tree, token/component diffs, source references, human decision |
+| Permissions    | critics read-only; builders edit; referee read-only; only human authority releases/canonizes                            |
+| Failure states | fail, unresolved, budget_exhausted, critic conflict, missing baseline, missing authority, evidence gap                  |
+| Evaluation     | 11 fixtures plus live surface trials; compare defects caught, repair cost, latency, token cost, and human acceptance    |
 
 ## Operating topology
 
