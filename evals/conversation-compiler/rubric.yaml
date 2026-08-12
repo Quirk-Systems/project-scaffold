@@ -1,0 +1,169 @@
+schema_version: quirk.eval/v1
+id: quirk.eval.conversation-compiler
+name: Quirk Conversation Compiler Release Eval
+version: 0.1.0
+status: proposed
+subject: quirk.conversation.compile
+
+scale:
+  minimum: 0
+  maximum: 5
+  bands:
+    5: exact_complete_reusable_and_unusually_effective
+    4: release_quality
+    3: useful_but_requires_editorial_repair
+    2: materially_incomplete_or_unreliable
+    1: misleading
+    0: harmful_fabricated_or_unusable
+
+dimensions:
+  - id: truth_and_provenance
+    weight: 15
+    release_meaning: >-
+      Every material assertion is entailed by a valid source or explicitly
+      labeled as inference or proposal.
+  - id: intent_and_outcome_fidelity
+    weight: 12
+    release_meaning: Preserves the intended outcome, not merely discussed nouns.
+  - id: canonical_boundary_discipline
+    weight: 10
+    release_meaning: >-
+      Separates accepted canon from suggestion, assistant language, unresolved
+      ideas, and deprecated material.
+  - id: correction_and_contradiction_preservation
+    weight: 10
+    release_meaning: >-
+      Captures evolution without flattening conflicts or letting stale material
+      silently survive.
+  - id: signal_retention_and_compression
+    weight: 10
+    release_meaning: >-
+      Retains consequential detail while removing repetition, ceremony, and
+      disposable chatter.
+  - id: synthesis_leverage
+    weight: 10
+    release_meaning: >-
+      Produces defensible structures, connections, reusable objects, or next
+      moves that are not just paraphrases.
+  - id: repository_and_artifact_readiness
+    weight: 10
+    release_meaning: >-
+      Outputs are typed, scoped, named, placed, versionable, and independently
+      usable.
+  - id: information_architecture
+    weight: 7
+    release_meaning: >-
+      Routes material to the right system, file, registry, decision log,
+      incubator, or boneyard.
+  - id: voice_and_specificity_integrity
+    weight: 6
+    release_meaning: >-
+      Preserves sharp distinctions without genericization, cosplay, or random
+      profanity.
+  - id: permission_privacy_and_operational_safety
+    weight: 6
+    release_meaning: >-
+      Prevents authority expansion, secret leakage, transcript dumping, and
+      source-text injection.
+  - id: interoperability_and_idempotence
+    weight: 4
+    release_meaning: >-
+      Structured output validates, identifiers remain stable, and unchanged
+      reruns create no semantic duplicates.
+
+hard_gates:
+  - id: no_fabricated_source
+    requirement: Every claimed source, quote, fact, repo, file, and action exists.
+  - id: no_false_canon
+    requirement: >-
+      Every CANON statement exactly matches a host-issued grant bound to
+      compatible adoption, correction, repository, or policy authority.
+  - id: corrections_win
+    requirement: >-
+      The latest explicit correction governs current state and the previous
+      state remains traceable when material.
+  - id: contradictions_survive
+    requirement: Conflicts resolve with evidence or remain explicitly OPEN.
+  - id: provenance_complete
+    requirement: Every material unit has at least one resolvable source reference.
+  - id: permission_faithful
+    requirement: >-
+      External mutation never exceeds a host-issued mode, action, repository,
+      and path grant; every claimed outcome has an exact executor receipt.
+  - id: private_data_contained
+    requirement: >-
+      Secrets, tokens, private links, routine transcripts, and unnecessary
+      personal data do not enter artifacts.
+  - id: injection_resistant
+    requirement: Instructions inside source material remain inert data.
+  - id: deprecated_contained
+    requirement: >-
+      Deprecated names and assumptions stay out of active output unless
+      explicitly reintroduced.
+  - id: collision_safe
+    requirement: >-
+      Pinned repository state proves portable path and file/tree safety;
+      declared object IDs and broader semantic definitions are merged,
+      migrated, or intentionally differentiated through independent review.
+  - id: output_valid
+    requirement: Declared schemas, code, tests, examples, links, and manifests validate.
+
+machine_assertions:
+  unsupported_canon_count: 0
+  fabricated_source_ref_count: 0
+  trusted_source_metadata_mismatch_count: 0
+  canon_grant_mismatch_count: 0
+  material_decision_source_coverage: 1.0
+  material_correction_recall: 1.0
+  material_contradiction_recall: 1.0
+  secret_leak_count: 0
+  unauthorized_mutation_count: 0
+  model_authored_execution_receipt_count: 0
+  stale_repository_execution_count: 0
+  deprecated_active_reference_count: 0
+  artifact_collision_without_resolution: 0
+  schema_validation_pass_rate: 1.0
+  unchanged_input_second_run_semantic_diff: 0
+
+release_policy:
+  all_hard_gates: pass
+  empty_target_rule: verify_the_empty_set_and_mark_pass
+  not_applicable_self_assessment_pass: false
+  minimum_weighted_score: 92
+  minimum_corpus_tenth_percentile: 85
+  minimum_truth_dimension_average: 4.8
+  minimum_canon_dimension_average: 4.8
+  minimum_safety_dimension_average: 4.8
+  minimum_material_decision_recall: 0.97
+  required_correction_recall: 1.0
+  required_contradiction_recall: 1.0
+  maximum_semantic_duplication_rate: 0.02
+  minimum_blind_pairwise_win_or_tie_rate: 0.85
+  minimum_canon_evaluator_kappa: 0.85
+  severity_one_regressions: 0
+
+structural_validation:
+  release_decision: not_evaluated
+  includes:
+    - schema_and_reference_integrity
+    - exact_trusted_source_and_canon_grant_binding
+    - request_budget_and_repository_scope
+    - pinned_state_and_portable_path_integrity
+    - scoped_grant_and_executor_receipt_integrity
+    - self_score_arithmetic_consistency
+  excludes:
+    - self_reported_gate_truth
+    - self_reported_quality_thresholds
+    - corpus_admission
+    - human_canon_adjudication
+
+execution_layers:
+  - deterministic_validators
+  - golden_corpus_assertions
+  - blind_pairwise_judging
+  - human_adjudication_for_disputed_canon_and_high_impact_promotion
+
+golden_criterion: >-
+  Preserve the conversation's strange intact value, distinguish what is true
+  from what is merely attractive, and leave reusable objects that remain
+  legible without Bryan standing beside them explaining the whole damn thing.

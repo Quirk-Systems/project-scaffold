@@ -35,6 +35,16 @@ GitHub repository is archived. See the
 [archive transition ledger](docs/operations/ARCHIVE_TRANSITION.md) for
 provenance, migration guidance, unsupported surfaces, and remaining gates.
 
+### Proposed: Quirk Conversation Compiler
+
+`Quirk Wrap` specifies how consequential conversation deltas become typed,
+source-backed, evaluated repository changes. The proposed runner binds output
+to host-owned source hashes, exact canon grants, pinned repository state,
+scoped mutation authority, and executor receipts; it preserves corrections and
+contradictions and returns an honest no-op when no durable artifact is
+justified. See the
+[capability pack](docs/capabilities/conversation-compiler/README.md).
+
 ## What this repository owns
 
 - a working Next.js application baseline with TypeScript, Tailwind, testing,
