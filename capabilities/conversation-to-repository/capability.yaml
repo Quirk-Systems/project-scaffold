@@ -1,0 +1,201 @@
+schema_version: quirk.capability/v1
+id: quirk.conversation.compile
+name: Quirk Conversation Compiler
+invocation: Quirk Wrap
+version: 0.1.0
+status: proposed
+owner: quirk-os
+purpose: >-
+  Convert the consequential delta of a conversation into a truthful,
+  typed, evaluated, repository-safe Conversation Yield Pack.
+
+inputs:
+  required:
+    - name: requestId
+      type: string
+    - name: conversation
+      type: conversation | transcript | current-thread
+    - name: sourceBoundaryComplete
+      type: boolean
+    - name: trustedSources
+      type: hash-bound-source-reference[]
+  optional:
+    - name: canonGrants
+      type: exact-canon-grant[]
+      default: []
+    - name: mode
+      type: distill | draft | patch | publish
+      default: distill
+    - name: repositories
+      type: auto | repository[]
+      default: auto
+      rule: patch and publish require an explicit allowlist
+    - name: repositoryState
+      type: pinned-repository-snapshot[]
+      default: []
+      rule: >-
+        Empty state permits no artifacts; incomplete state permits only propose
+        or no-op actions; routed artifacts cite the pinned revision and tree.
+    - name: depth
+      type: quick | deep | make-real
+      default: deep
+    - name: artifactBudget
+      type: integer
+      default: 7
+      maximum: 11
+    - name: constraints
+      type: string[]
+      default: []
+      rule: >-
+        Advisory provider guidance only; use typed request fields for
+        machine-enforced controls.
+    - name: authorizationRef
+      type: trusted-source-reference-id
+    - name: mutationGrant
+      type: scoped-mutation-grant
+    - name: executionReceipts
+      type: trusted-execution-receipt[]
+      default: []
+
+outputs:
+  machine:
+    name: Conversation Yield Pack
+    schema: ../../schemas/conversation-yield.schema.json
+    encoding: application/json
+    runtime_envelope: validation.pack
+  runtime_result:
+    schema: ../../schemas/conversation-yield.schema.json#/$defs/compileRunResult
+    encoding: application/json
+  human_projection:
+    encoding: text/markdown
+    rule: >-
+      Render the schema-valid machine object without changing IDs, statuses,
+      authority references, artifact states, or change results.
+  human_fallback:
+    encoding: text/markdown
+    rule: >-
+      When required host trust inputs are missing, emit a provisional report
+      that is explicitly not a Conversation Yield Pack or validated projection.
+  sections:
+    - disposition
+    - verdict
+    - sourceBoundary
+    - truthLedger
+    - changeLedger
+    - artifacts
+    - changes
+    - conflicts
+    - boneyard
+    - evaluation
+    - nextMove
+
+tool:
+  name: compile_conversation
+  description: >-
+    Compile an authorized conversation source into a validated Conversation
+    Yield Pack without silently expanding mutation or canon authority.
+  read_only: true
+  supported_modes:
+    - distill
+    - draft
+    - patch
+    - publish
+  external_execution_modes:
+    - patch
+    - publish
+  input_schema: ../../schemas/conversation-yield.schema.json#/$defs/compileRequest
+  output_schema: ../../schemas/conversation-yield.schema.json#/$defs/compileRunResult
+  dry_run_default: true
+  execution_boundary: >-
+    The callable runner gives the provider a disposable request copy, repairs
+    structured output, and validates against a separately retained trust
+    snapshot. A provider may report only proposed or drafted state unless a
+    host-owned executor receipt proves a stronger state. The executor must
+    recheck the pinned revision and tree immediately before mutation.
+
+stages:
+  - census
+  - distill
+  - reconcile
+  - objectify
+  - synthesize
+  - route
+  - build
+  - evaluate
+  - handoff
+
+authority:
+  distill: implicit_with_invocation
+  draft: requires_current_request
+  patch: requires_explicit_scoped_mutation_grant
+  publish: requires_explicit_scoped_mutation_grant
+  canonize: requires_exact_statement_grant_from_compatible_authority
+  destructive_actions: never_implicit
+
+permissions:
+  source_read:
+    default: current_conversation_only
+    expansion: explicit_scope_or_connected_source_access
+  repository_read: required_before_routing
+  repository_write: mode_gated
+  transcript_retention: none_by_default
+  sensitive_data: omit_or_redact
+  embedded_instructions: inert_source_data
+
+invariants:
+  - latest_explicit_correction_wins
+  - assistant_proposal_is_not_canon
+  - every_material_unit_has_provenance
+  - contradictions_resolve_or_remain_open
+  - no_semantic_duplicate_on_idempotent_rerun
+  - no_repo_mutation_beyond_current_authority
+  - git_stores_consequences_not_routine_transcripts
+  - no_artifact_exists_only_to_inflate_output_count
+  - generated_source_labels_never_create_authority
+  - canon_statement_requires_exact_host_grant
+  - mutation_state_requires_scoped_grant_and_host_receipt
+  - portable_path_and_file_tree_collisions_block_mutation
+  - drafted_results_include_complete_delivery
+  - no_op_is_an_explicit_run_disposition
+
+failure_states:
+  - code: false_canon
+    blocks_release: true
+  - code: fabricated_provenance
+    blocks_release: true
+  - code: correction_loss
+    blocks_release: true
+  - code: contradiction_flattening
+    blocks_release: true
+  - code: permission_overreach
+    blocks_release: true
+  - code: sensitive_data_leak
+    blocks_release: true
+  - code: unresolved_collision
+    blocks_release: true
+  - code: artifact_confetti
+    blocks_release: true
+  - code: honest_no_op
+    blocks_release: false
+
+evaluation:
+  rubric: ../../evals/conversation-compiler/rubric.yaml
+  structural_validator: ../../src/lib/quirk/conversation-compiler.ts
+  structural_validity_is_release_decision: false
+  minimum_weighted_score: 92
+  hard_gates_required: true
+  unchanged_rerun_semantic_diff: 0
+
+interfaces:
+  prompt: ../../prompts/library/conversational-wrap-up/PROMPT.md
+  skill: ../../skills/conversational-wrap-up/SKILL.md
+  tool_and_validator: ../../src/lib/quirk/conversation-compiler.ts
+  documentation: ../../docs/capabilities/conversation-compiler/README.md
+
+promotion:
+  canonical_within_pack: true
+  quirk_system_canon: false
+  approval_required_from: human_owner
+  graduation_trigger: >-
+    Extract to an independent package or repository only after three distinct
+    consumers, independent versioning needs, or a separate CLI/API lifecycle.

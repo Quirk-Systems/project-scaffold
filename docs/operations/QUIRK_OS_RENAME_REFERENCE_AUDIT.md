@@ -1,103 +1,68 @@
-# Quirk OS Rename Reference Audit
+# Project Scaffold Rename Proposal Closure Audit
 
-Status: BLOCKED pending owner verification and repository rename.
+Status: **SUPERSEDED — DO NOT EXECUTE**  
+Decision date: **2026-08-11**  
+Canonical decision: [Project Scaffold Identity](../canon/PROJECT_SCAFFOLD_IDENTITY.md)
 
-This audit enumerates hardcoded references and connected hosting bindings before `Quirk-Systems/project-scaffold` may become `Quirk-Systems/quirk-os`.
+## Decision
 
-## Verified repository identities
+The proposed `Quirk-Systems/project-scaffold` → `Quirk-Systems/quirk-os`
+rename is cancelled.
 
-- Implemented kernel: `Quirk-Systems/project-scaffold`, repository ID `1061970258`.
-- Occupied target: `Quirk-Systems/quirk-os`, repository ID `1316241620`.
-- The target repository reports size `0`, no branches, and the commits endpoint returns `Git Repository is empty`.
+- `Quirk-Systems/project-scaffold` remains the public application scaffold,
+  GitHub template, and reference implementation.
+- `Quirk-Systems/quirk-os` remains a separate repository and must be evaluated
+  on its own contents, authority, and release lifecycle.
+- No repository gains Quirk OS identity because it contains Quirk OS-shaped
+  capabilities.
 
-The Git history is empty. Owner-only settings and external local remotes still require inspection.
+## Closed execution paths
 
-## Hardcoded `quirk-os` references
+The following instructions are retired and must not be executed:
 
-No application, workflow, package, or realm repository contains `Quirk-Systems/quirk-os`.
+1. moving or archiving `Quirk-Systems/quirk-os` to clear its name;
+2. renaming `Quirk-Systems/project-scaffold`;
+3. rewriting the scaffold manifest or package identity to `quirk-os`;
+4. relying on GitHub redirects as an identity migration;
+5. treating issue #75 or PR #76 as active authority.
 
-Current matches are confined to `.github`:
+Issue #75 is closed as not planned. PR #76 is closed unmerged. Their history is
+retained as decision evidence.
 
-- `profile/README.md`
-- `docs/QUIRK_OS_RENAME_RUNBOOK.md`
-- `docs/REPOSITORY_STRATEGY.md`
-- `.quirk/repositories.json`
+## Current identity evidence
 
-## Hardcoded `project-scaffold` references
+| Check | Required value |
+| --- | --- |
+| Repository | `Quirk-Systems/project-scaffold` |
+| Manifest domain | `application-scaffold` |
+| Package name | `project-scaffold` |
+| README identity | Project Scaffold |
+| Repository role | Runnable scaffold and reference toolkit |
+| Quirk OS relationship | Separate system and repository |
 
-### Kernel: runtime and automation
+`bun run identity:check` verifies the machine-checkable fields and fails
+closed during `bun run validate`.
 
-- `.quirk/manifest.json`
-- `scripts/deps-audit.ts`
-- `.github/ISSUE_TEMPLATE/config.yml`
-- `src/app/page.tsx`
-- `package.json`
-- `bun.lock`
+## Remaining literal “Quirk OS” references
 
-### Kernel: instructions and documentation
+Literal references must be classified, not globally replaced:
 
-- `CLAUDE.md`
-- `docs/recommendations/mcp/MCP.md`
-- `docs/recommendations/macros/ONE_CLICK.md`
-- `docs/recommendations/tips/GIT_TRICKS.md`
-- `docs/recommendations/installs/DOCKER_SETUP.md`
-- `docs/recommendations/installs/PROJECT_BOOTSTRAP.md`
-- `docs/recommendations/installs/LINUX_SETUP.md`
+- **repository identity:** invalid; repair to Project Scaffold;
+- **bundled reference application or UI label:** permitted when it clearly
+  describes the example domain rather than repository authority;
+- **historical decision evidence:** retained with superseded status;
+- **external Quirk OS repository:** permitted when linked to
+  `Quirk-Systems/quirk-os`.
 
-### Child repository provenance references
+## Cross-repository correction
 
-- `quirk-feed/CLAUDE.md`
-- `quirk-generator/CLAUDE.md`
-- `quirk-beauty/CLAUDE.md`
-- `quirk-pet/CLAUDE.md`
-- `quirk-town/CLAUDE.md`
+Organization profile, portfolio registry, repository strategy, and the former
+rename runbook in `Quirk-Systems/.github` must carry the same separation
+decision. Repository-local correctness does not override stale organization
+canon.
 
-### Organization governance
+## Reopening rule
 
-- `.github/profile/README.md`
-- `.github/docs/QUIRK_OS_RENAME_RUNBOOK.md`
-- `.github/docs/REPOSITORY_STRATEGY.md`
-- `.github/.quirk/repositories.json`
-
-## CI result
-
-No `.github/workflows/**` file across the organization contains either rename target as a hardcoded repository string. The semantic-governance workflow references `Quirk-Systems/.github`, which is unaffected.
-
-## Vercel result
-
-Both connected Vercel teams were inspected. No project is named `project-scaffold` or `quirk-os`, and no surfaced deployment binding uses repository ID `1061970258` or `1316241620`.
-
-Observed bindings were to `Quirk-Systems/quirk-generator` and unrelated repositories. `giggitty-godmode-laundry` exposed no Git metadata and requires a manual project-settings check.
-
-## Netlify result
-
-Connected projects:
-
-- `sanity-kitchen-sink-studio-gcv8i7a3`
-- `sanity-kitchen-sink-web-gfepih4d`
-- `diversion-compliance`
-
-No name matches either target. The connector does not expose Git bindings, so each project's continuous-deployment repository setting must be inspected manually.
-
-## Owner-only gate
-
-Bryan Sayler must confirm before rename:
-
-- `quirk-os` has no webhooks, deploy keys, environments, variables, app bindings, deployments, packages, releases, or rulesets that matter.
-- No local clone or Git remote targets the empty placeholder.
-- The three Netlify projects do not bind to either target repository.
-- The Vercel project `giggitty-godmode-laundry` does not bind to either target repository.
-- Merges are paused on `project-scaffold` during cutover.
-
-## Cutover
-
-Only after the gate is checked:
-
-1. Rename `Quirk-Systems/quirk-os` to `quirk-os-reserved` in Settings > General > Repository name.
-2. Confirm it remains empty, mark it non-canonical, and archive it.
-3. Rename `Quirk-Systems/project-scaffold` to `quirk-os` through the same setting.
-4. Execute issue #75 post-cutover verification before reopening merges.
-
-## Source-of-truth correction
-
-Per-repository manifests are authored. Any organization registry must be generated from those manifests and fail CI when edited manually. The current `.github/.quirk/repositories.json` is not authoritative; its correction remains parked until after rename and the kernel-only validation workflow.
+Reopening the rename requires a new owner-approved decision that satisfies the
+change-control contract in the canonical identity document. Capability,
+maintainer access, or a stale plan is not authority.
