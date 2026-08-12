@@ -37,7 +37,7 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.110.0",
+    "@anthropic-ai/sdk": "^0.116.0",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-label": "^2.1.11",
     "@radix-ui/react-separator": "^1.1.11",
