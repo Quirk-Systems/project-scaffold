@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/ontology/registry.schema.json",
+  "title": "Quirk Ontology Registry",
+  "type": "object",
+  "required": ["schema_version", "entities"],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "entities": {
+      "type": "array",
+      "items": { "$ref": "entity.schema.json" }
+    }
+  },
+  "additionalProperties": false
+}
