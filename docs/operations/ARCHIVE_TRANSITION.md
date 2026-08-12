@@ -34,12 +34,11 @@ destination link; copying code without that link does not satisfy closure.
 
 ### Open issues
 
-| Item                                                                                      | Classification | Owner                      | Dependency                                             | Closure criterion                                                                               |
-| ----------------------------------------------------------------------------------------- | -------------- | -------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| [#64 Agent Governance Layer](https://github.com/Quirk-Systems/project-scaffold/issues/64) | transfer       | `@bryansayler`, Quirk OS   | destination issue in `quirk-os`; reconcile PR #66      | Destination tracks the 11 primitives and links the preserved source, then close here            |
-| [#59 Containment Contract](https://github.com/Quirk-Systems/project-scaffold/issues/59)   | transfer       | `@bryansayler`, Quirk OS   | destination issue in `quirk-os`; reconcile PR #60      | Destination owns contract enforcement and links source evidence, then close here                |
-| [#57 Ontology Registry](https://github.com/Quirk-Systems/project-scaffold/issues/57)      | transfer       | `@bryansayler`, Quirk Core | verified second independent consumer; reconcile PR #61 | Create a provenance-linked `quirk-core` candidate only after consumer evidence, then close here |
-| [#56 Formatting baseline](https://github.com/Quirk-Systems/project-scaffold/issues/56)    | superseded     | `@bryansayler`             | archive validation; PR #62                             | Terminal release validates without broad historical reformatting; close with archive decision   |
+| Item                                                                                      | Classification | Owner                    | Dependency                                        | Closure criterion                                                                             |
+| ----------------------------------------------------------------------------------------- | -------------- | ------------------------ | ------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [#64 Agent Governance Layer](https://github.com/Quirk-Systems/project-scaffold/issues/64) | transfer       | `@bryansayler`, Quirk OS | destination issue in `quirk-os`; reconcile PR #66 | Destination tracks the 11 primitives and links the preserved source, then close here          |
+| [#59 Containment Contract](https://github.com/Quirk-Systems/project-scaffold/issues/59)   | transfer       | `@bryansayler`, Quirk OS | destination issue in `quirk-os`; reconcile PR #60 | Destination owns contract enforcement and links source evidence, then close here              |
+| [#56 Formatting baseline](https://github.com/Quirk-Systems/project-scaffold/issues/56)    | superseded     | `@bryansayler`           | archive validation; PR #62                        | Terminal release validates without broad historical reformatting; close with archive decision |
 
 ### Open pull requests
 
@@ -47,30 +46,29 @@ No open PR is accepted as-is. All are based on pre-freeze work and must be
 closed after the action below. Closing also dismisses outstanding review
 requests; no unresolved review thread may be carried into the archive.
 
-| PR                                                                                            | Classification       | Owner                      | Dependency                         | Closure criterion                                                               |
-| --------------------------------------------------------------------------------------------- | -------------------- | -------------------------- | ---------------------------------- | ------------------------------------------------------------------------------- |
-| [#77 Anthropic SDK](https://github.com/Quirk-Systems/project-scaffold/pull/77)                | close as not planned | `@dependabot`              | none                               | Close; successors choose their own supported SDK                                |
-| [#72 Claude setup/schema refactor](https://github.com/Quirk-Systems/project-scaffold/pull/72) | superseded           | `@bryansayler`             | archive validation                 | Preserve useful learnings through successor-local work; close mixed PR          |
-| [#71 TypeScript 7](https://github.com/Quirk-Systems/project-scaffold/pull/71)                 | close as not planned | `@dependabot`              | none                               | Close major upgrade                                                             |
-| [#70 vite-tsconfig-paths 6](https://github.com/Quirk-Systems/project-scaffold/pull/70)        | close as not planned | `@dependabot`              | none                               | Close major upgrade                                                             |
-| [#67 workflow permissions](https://github.com/Quirk-Systems/project-scaffold/pull/67)         | superseded           | `@bryansayler`             | terminal archive commit            | Confirm equivalent `contents: read` hardening is on the terminal branch; close  |
-| [#66 governance scaffold](https://github.com/Quirk-Systems/project-scaffold/pull/66)          | transfer             | `@bryansayler`, Quirk OS   | destination issue for #64          | Re-evaluate against current Quirk OS contracts; preserve provenance; close here |
-| [#65 testing group](https://github.com/Quirk-Systems/project-scaffold/pull/65)                | close as not planned | `@dependabot`              | none                               | Close major test-stack update                                                   |
-| [#62 Prettier baseline](https://github.com/Quirk-Systems/project-scaffold/pull/62)            | superseded           | `@bryansayler`             | issue #56 disposition              | Close without a repository-wide historical rewrite                              |
-| [#61 ontology registry](https://github.com/Quirk-Systems/project-scaffold/pull/61)            | transfer             | `@bryansayler`, Quirk Core | second-consumer proof for #57      | Rebuild as a scoped, provenance-linked candidate in `quirk-core`; close here    |
-| [#60 containment contract](https://github.com/Quirk-Systems/project-scaffold/pull/60)         | transfer             | `@bryansayler`, Quirk OS   | destination issue for #59          | Re-evaluate against Quirk OS runtime; preserve provenance; close here           |
-| [#55 foundational architecture](https://github.com/Quirk-Systems/project-scaffold/pull/55)    | transfer             | `@bryansayler`, Quirk OS   | destination architecture inventory | Transfer only still-relevant contracts, never repository identity; close draft  |
-| [#52 setup-node 7](https://github.com/Quirk-Systems/project-scaffold/pull/52)                 | close as not planned | `@dependabot`              | none                               | Close; no terminal toolchain major                                              |
-| [#49 SWERVEME proof](https://github.com/Quirk-Systems/project-scaffold/pull/49)               | close as not planned | `@bryansayler`             | none                               | Preserve branch/PR history as an unsupported experiment; close draft            |
-| [#46 Lefthook 2](https://github.com/Quirk-Systems/project-scaffold/pull/46)                   | close as not planned | `@dependabot`              | none                               | Close major upgrade                                                             |
-| [#44 commitlint CLI 21](https://github.com/Quirk-Systems/project-scaffold/pull/44)            | close as not planned | `@dependabot`              | none                               | Close major upgrade                                                             |
-| [#37 commitlint config 21](https://github.com/Quirk-Systems/project-scaffold/pull/37)         | close as not planned | `@dependabot`              | none                               | Close peer-coupled major upgrade                                                |
-| [#32 checkout 7](https://github.com/Quirk-Systems/project-scaffold/pull/32)                   | close as not planned | `@dependabot`              | none                               | Close terminal workflow major                                                   |
-| [#16 t3-env 0.13](https://github.com/Quirk-Systems/project-scaffold/pull/16)                  | close as not planned | `@dependabot`              | none                               | Close stale integration upgrade                                                 |
+| PR                                                                                            | Classification       | Owner                    | Dependency                         | Closure criterion                                                               |
+| --------------------------------------------------------------------------------------------- | -------------------- | ------------------------ | ---------------------------------- | ------------------------------------------------------------------------------- |
+| [#77 Anthropic SDK](https://github.com/Quirk-Systems/project-scaffold/pull/77)                | close as not planned | `@dependabot`            | none                               | Close; successors choose their own supported SDK                                |
+| [#72 Claude setup/schema refactor](https://github.com/Quirk-Systems/project-scaffold/pull/72) | superseded           | `@bryansayler`           | archive validation                 | Preserve useful learnings through successor-local work; close mixed PR          |
+| [#71 TypeScript 7](https://github.com/Quirk-Systems/project-scaffold/pull/71)                 | close as not planned | `@dependabot`            | none                               | Close major upgrade                                                             |
+| [#70 vite-tsconfig-paths 6](https://github.com/Quirk-Systems/project-scaffold/pull/70)        | close as not planned | `@dependabot`            | none                               | Close major upgrade                                                             |
+| [#67 workflow permissions](https://github.com/Quirk-Systems/project-scaffold/pull/67)         | superseded           | `@bryansayler`           | terminal archive commit            | Confirm equivalent `contents: read` hardening is on the terminal branch; close  |
+| [#66 governance scaffold](https://github.com/Quirk-Systems/project-scaffold/pull/66)          | transfer             | `@bryansayler`, Quirk OS | destination issue for #64          | Re-evaluate against current Quirk OS contracts; preserve provenance; close here |
+| [#65 testing group](https://github.com/Quirk-Systems/project-scaffold/pull/65)                | close as not planned | `@dependabot`            | none                               | Close major test-stack update                                                   |
+| [#62 Prettier baseline](https://github.com/Quirk-Systems/project-scaffold/pull/62)            | superseded           | `@bryansayler`           | issue #56 disposition              | Close without a repository-wide historical rewrite                              |
+| [#60 containment contract](https://github.com/Quirk-Systems/project-scaffold/pull/60)         | transfer             | `@bryansayler`, Quirk OS | destination issue for #59          | Re-evaluate against Quirk OS runtime; preserve provenance; close here           |
+| [#55 foundational architecture](https://github.com/Quirk-Systems/project-scaffold/pull/55)    | transfer             | `@bryansayler`, Quirk OS | destination architecture inventory | Transfer only still-relevant contracts, never repository identity; close draft  |
+| [#52 setup-node 7](https://github.com/Quirk-Systems/project-scaffold/pull/52)                 | close as not planned | `@dependabot`            | none                               | Close; no terminal toolchain major                                              |
+| [#49 SWERVEME proof](https://github.com/Quirk-Systems/project-scaffold/pull/49)               | close as not planned | `@bryansayler`           | none                               | Preserve branch/PR history as an unsupported experiment; close draft            |
+| [#46 Lefthook 2](https://github.com/Quirk-Systems/project-scaffold/pull/46)                   | close as not planned | `@dependabot`            | none                               | Close major upgrade                                                             |
+| [#44 commitlint CLI 21](https://github.com/Quirk-Systems/project-scaffold/pull/44)            | close as not planned | `@dependabot`            | none                               | Close major upgrade                                                             |
+| [#37 commitlint config 21](https://github.com/Quirk-Systems/project-scaffold/pull/37)         | close as not planned | `@dependabot`            | none                               | Close peer-coupled major upgrade                                                |
+| [#32 checkout 7](https://github.com/Quirk-Systems/project-scaffold/pull/32)                   | close as not planned | `@dependabot`            | none                               | Close terminal workflow major                                                   |
+| [#16 t3-env 0.13](https://github.com/Quirk-Systems/project-scaffold/pull/16)                  | close as not planned | `@dependabot`            | none                               | Close stale integration upgrade                                                 |
 
 ### Resolved during the transition
 
-Concurrent work merged three PRs after the initial freeze inventory and before
+Concurrent work merged four PRs after the initial freeze inventory and before
 the archive branch incorporated current `main`:
 
 | PR                                                                                          | Resolution | Main commit                                                                                                    | Archive treatment                                                                                |
@@ -78,12 +76,14 @@ the archive branch incorporated current `main`:
 | [#80 Never #0001 authority gate](https://github.com/Quirk-Systems/project-scaffold/pull/80) | merged     | [`826022f`](https://github.com/Quirk-Systems/project-scaffold/commit/826022f3f9310be43bd68944a4255f3dedcc7534) | Preserve as terminal history; Quirk OS transfer still requires destination review and provenance |
 | [#79 Conversation Compiler](https://github.com/Quirk-Systems/project-scaffold/pull/79)      | merged     | [`abff877`](https://github.com/Quirk-Systems/project-scaffold/commit/abff8779b7aa3f9a593e5e0bafe8046f3e241378) | Remains proposed, not canon; destination must run its own corpus and admission                   |
 | [#78 `@types/node` 26](https://github.com/Quirk-Systems/project-scaffold/pull/78)           | merged     | [`64b09bc`](https://github.com/Quirk-Systems/project-scaffold/commit/64b09bc790ddc303c220348101dc333df50806f7) | Include in terminal validation; no additional migration work                                     |
+| [#61 ontology registry](https://github.com/Quirk-Systems/project-scaffold/pull/61)          | merged     | [`b79b635`](https://github.com/Quirk-Systems/project-scaffold/commit/b79b635beb9caa7289a2e28010b3640108c7467e) | Preserve as terminal history; closed issue #57 does not prove a second consumer or extraction    |
 
 The initial inventory was four issues plus 21 PRs. A second query after those
 merges found four issues plus 18 PRs. Draft PRs #79 and #80 had no review
-threads or submitted reviews before merge. No remaining PR may be merged merely
-to make the count zero; transferred value must first receive a destination and
-all other work must close with its recorded rationale.
+threads or submitted reviews before merge. A third query after #61 merged found
+three issues plus 17 PRs. No remaining PR may be merged merely to make the count
+zero; transferred value must first receive a destination and all other work
+must close with its recorded rationale.
 
 ## Extraction map
 
@@ -186,7 +186,7 @@ The archive branch produced the following local evidence on 2026-08-12:
 
 - `bun install --frozen-lockfile` passed with Bun 1.3.14 after regenerating the
   inconsistent lockfile and restoring a Vite-compatible React plugin;
-- `bun run validate` passed: identity, lint (zero errors), strict types, 146 unit
+- `bun run validate` passed: identity, lint (zero errors), strict types, 155 unit
   tests, and the production build;
 - `bun audit --prod` reported no vulnerabilities after safe transitive
   `dompurify` and `nanoid` overrides;
@@ -216,7 +216,7 @@ Supabase rows and copied files are not canonical authority.
 - [x] Extraction targets and second-consumer gates are documented.
 - [x] Design Tribunal has a candidate destination and migration-authority decision.
 - [ ] Every transferred item has a live destination issue and provenance link.
-- [ ] All four issues and 18 remaining PRs are closed; no review request or thread remains.
+- [ ] All three issues and 17 remaining PRs are closed; no review request or thread remains.
 - [ ] `quirk-os` passes its independent validation, security, migration, and deployment gates.
 - [ ] `quirk-core` passes independent validation and has second-consumer evidence before ontology extraction.
 - [ ] `.github` profile, strategy, runbook, and portfolio registry carry the separation decision.
