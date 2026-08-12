@@ -1,14 +1,11 @@
-import { defineConfig, type UserConfig } from "vitest/config";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
-
-// vitest/config bundles its own vite typings while the plugins type against
-// the installed vite — the identities diverge on toolchain bumps even with a
-// single vite copy resolved. Cast at this one boundary; runtime is unaffected.
-const plugins = [tsconfigPaths(), react()] as UserConfig["plugins"];
 
 export default defineConfig({
-  plugins,
+  plugins: [react()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   test: {
     environment: "jsdom",
     setupFiles: ["./src/__tests__/setup.ts"],

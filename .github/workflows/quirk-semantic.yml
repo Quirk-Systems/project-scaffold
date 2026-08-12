@@ -8,4 +8,4 @@ on:
 
 jobs:
   semantic-governance:
-    uses: Quirk-Systems/.github/.github/workflows/quirk-semantic-governance.yml@main
+    uses: Quirk-Systems/.github/.github/workflows/quirk-semantic-governance.yml@2d15e56aa6159d820b0bb5ef7dcebee1cb2de258
