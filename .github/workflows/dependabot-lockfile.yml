@@ -1,7 +1,7 @@
 # Dependabot does not know how to update bun.lock. It edits package.json alone,
 # so every such merge lands a manifest that the committed lockfile no longer
 # satisfies, and `bun install --frozen-lockfile` — the first step of every CI
-# job — fails before anything else runs. That has taken main red three times.
+# job — fails before anything else runs. That has taken main red four times.
 #
 # This workflow regenerates the lockfile on the Dependabot branch, before the
 # merge, so the drift never reaches main.
@@ -13,23 +13,29 @@ on:
     paths:
       - package.json
 
-# Workflows triggered by Dependabot get a read-only token by default, because
-# a malicious dependency would otherwise run with write access. Since October
-# 2021 the permissions key is respected for these runs, so this grants exactly
-# the one scope needed to push the lockfile back — and nothing else. That is
-# why this uses `pull_request` rather than `pull_request_target`, which would
-# run with full repository privileges.
-permissions:
-  contents: write
+# No workflow-level permissions: the write scope is granted to the one job that
+# needs it and withheld from the one that runs dependency code. See below.
+permissions: {}
 
 concurrency:
   group: dependabot-lockfile-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
+  # Holds a write token, and therefore must never execute dependency-controlled
+  # code. `bun install --lockfile-only` resolves and writes bun.lock without
+  # installing anything, so nothing from the dependency tree runs here.
   sync:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
+    # Dependabot runs get a read-only token by default, because a malicious
+    # dependency would otherwise run with write access. Since October 2021 the
+    # permissions key is respected for these runs, so this grants exactly the
+    # one scope needed to push the lockfile back — and nothing else. That is
+    # why this uses `pull_request` rather than `pull_request_target`, which
+    # would run with full repository privileges.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,9 +47,6 @@ jobs:
           bun-version: latest
 
       - name: Regenerate the lockfile
-        # --lockfile-only resolves and writes bun.lock without installing
-        # anything, so no dependency code is ever placed on disk or executed
-        # in a job that holds a write token.
         run: bun install --lockfile-only
 
       - name: Refuse to commit anything but the lockfile
@@ -73,6 +76,40 @@ jobs:
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
+      - name: Note the stale-checks caveat
+        if: steps.sync.outputs.changed == 'true'
+        # Pushes made with GITHUB_TOKEN deliberately do not trigger new workflow
+        # runs, so the PR's own validate/security/e2e checks still show their
+        # result from before this commit. The verify job below covers the synced
+        # tree. Dependabot's next rebase re-triggers the rest; a repository that
+        # would rather not wait can push this step with an App token or PAT
+        # instead, which does trigger normally.
+        run: |
+          echo "::notice::bun.lock synced and pushed. The PR's validate/security/e2e checks predate this commit — GITHUB_TOKEN pushes do not re-trigger workflows. The verify job covers the synced tree."
+
+  # Runs dependency-controlled code — ESLint plugins, the test suite, the Next
+  # build — so it is deliberately a separate job with no write scope and no
+  # persisted credential. A compromised dependency executing here has nothing
+  # to steal and nothing to push with.
+  verify:
+    needs: sync
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The synced branch, as the sync job left it.
+          ref: ${{ github.head_ref }}
+          # actions/checkout stores the token in .git/config by default, where
+          # any code running later in the job can read it. This job runs
+          # dependency code, so the credential must not be on disk.
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: Prove the drift is gone
         # The exact command that fails on a drifted lockfile, and the first
         # step of every CI job.
@@ -86,14 +123,3 @@ jobs:
         run: bun run validate
         env:
           SKIP_ENV_VALIDATION: "1"
-
-      - name: Note the stale-checks caveat
-        if: steps.sync.outputs.changed == 'true'
-        # Pushes made with GITHUB_TOKEN deliberately do not trigger new workflow
-        # runs, so the PR's own validate/security/e2e checks still show their
-        # result from before this commit. This job's own result covers the
-        # synced tree. Dependabot's next rebase re-triggers them; a repository
-        # that would rather not wait can push this step with an App token or PAT
-        # instead, which does trigger normally.
-        run: |
-          echo "::notice::bun.lock synced and pushed. The PR's validate/security/e2e checks predate this commit — GITHUB_TOKEN pushes do not re-trigger workflows. This job validated the synced tree."
