@@ -6,18 +6,16 @@ import {
   type QuirkExperiment,
   type QuirkRun,
 } from "@/lib/db/schema";
+import type { QuirkOffer } from "@/lib/db/schema";
 import { labRatGenerate, pickWinner } from "./agents";
 import { captureAsset, getAsset, setAssetStatus } from "./assets";
+import { assertRunPromotionAuthority } from "./governance/authority";
 import { mintOffer } from "./offers";
 import { readGoldilocks, type GoldilocksReading } from "./goldilocks";
 import { scoreText } from "./scoring";
-import type { QuirkOffer } from "@/lib/db/schema";
 
 export async function listExperiments(): Promise<QuirkExperiment[]> {
-  return db
-    .select()
-    .from(quirkExperiments)
-    .orderBy(desc(quirkExperiments.createdAt));
+  return db.select().from(quirkExperiments).orderBy(desc(quirkExperiments.createdAt));
 }
 
 export async function getExperiment(id: string): Promise<{
@@ -40,10 +38,6 @@ export async function getExperiment(id: string): Promise<{
   return { experiment, runs };
 }
 
-/**
- * Lab Rat King entrypoint: create an experiment and, when an input asset is
- * given, generate scored variants as runs.
- */
 export async function createExperiment(input: {
   name: string;
   experimentType: QuirkExperiment["experimentType"];
@@ -68,10 +62,7 @@ export async function createExperiment(input: {
 
   const found = await getAsset(input.inputAssetId);
   const baseText = found?.asset.rawText ?? "";
-  const variants = labRatGenerate({
-    text: baseText,
-    count: input.variantCount,
-  });
+  const variants = labRatGenerate({ text: baseText, count: input.variantCount });
   const winnerIdx = pickWinner(variants);
 
   const runs = await db
@@ -87,9 +78,7 @@ export async function createExperiment(input: {
         parameters: { variant: v.label, output: v.output },
         metrics: v.scores,
         score: v.score,
-        outcome: (i === winnerIdx
-          ? "winner"
-          : "pending") as QuirkRun["outcome"],
+        outcome: (i === winnerIdx ? "winner" : "pending") as QuirkRun["outcome"],
         notes: v.label,
       })),
     )
@@ -115,16 +104,22 @@ export async function scoreRun(
 }
 
 /**
- * Promote a winning run's output into a new canonical asset, and — if the
- * Goldilocks gate reads it just right — mint its one-of-one offer. Too-cold
- * and too-hot winners still promote; they just wait for a human to mint
- * manually (POST /api/offers bypasses the gate).
+ * Promote a winning run's output into a new canonical asset.
+ *
+ * Never #0001 is enforced here, inside the domain boundary: technical access
+ * to this function cannot become promotion authority. The caller must supply
+ * an independently issued, signed, scoped and current authority grant.
  */
-export async function promoteRun(runId: string): Promise<{
+export async function promoteRun(
+  runId: string,
+  authorityToken: string | null | undefined,
+): Promise<{
   run: QuirkRun;
   offer: QuirkOffer | null;
   goldilocks: GoldilocksReading;
 } | null> {
+  const grant = assertRunPromotionAuthority({ token: authorityToken, runId });
+
   const [run] = await db
     .select()
     .from(quirkRuns)
@@ -138,7 +133,12 @@ export async function promoteRun(runId: string): Promise<{
   const { asset } = await captureAsset({
     title: `Promoted: ${run.notes ?? "winning run"}`,
     rawText: text,
-    metadata: { promoted_from_run: run.id, experiment_id: run.experimentId },
+    metadata: {
+      promoted_from_run: run.id,
+      experiment_id: run.experimentId,
+      authority_grant_id: grant.grantId,
+      authority_issuer: grant.issuer,
+    },
   });
   await setAssetStatus(asset.id, "approved");
 
@@ -151,8 +151,6 @@ export async function promoteRun(runId: string): Promise<{
 
   const goldilocks = readGoldilocks(text ? scoreText(text) : null);
 
-  // Best-effort: promotion must never fail because minting did (e.g. a
-  // transient voice-layer error). The manual mint endpoint is the recovery.
   let offer: QuirkOffer | null = null;
   if (goldilocks.verdict === "just_right") {
     try {
