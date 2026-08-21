@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Quirk-Systems/quirk-core/blob/main/schemas/preference-evidence-wedge.v1.schema.json",
+  "title": "Candidate preference evidence wedge v1",
+  "description": "Closed structural mirror for a non-admitted, non-runtime preference evidence simulation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_status", "admission_effect", "runtime_authority", "candidate", "proposal", "decision", "projection", "receipt", "edge_confirmation", "learned_edge"],
+  "properties": {
+    "schema_version": {"const": "preference-evidence-wedge.v1"},
+    "contract_status": {"const": "candidate"},
+    "admission_effect": {"const": "none"},
+    "runtime_authority": {"const": "none"},
+    "candidate": {"$ref": "#/$defs/candidate"},
+    "proposal": {"$ref": "#/$defs/proposal"},
+    "decision": {"$ref": "#/$defs/decision"},
+    "projection": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/projection"}]},
+    "receipt": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/receipt"}]},
+    "edge_confirmation": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/confirmation"}]},
+    "learned_edge": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/edge"}]}
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "decision": {"properties": {"outcome": {"const": "rejected"}, "approved_effects": {"const": []}}},
+        "projection": {"type": "null"}, "receipt": {"type": "null"},
+        "edge_confirmation": {"type": "null"}, "learned_edge": {"type": "null"}
+      }
+    },
+    {
+      "properties": {
+        "decision": {"properties": {"outcome": {"const": "approved"}, "approved_effects": {"const": ["project_only"]}}},
+        "projection": {"$ref": "#/$defs/projection"}, "receipt": {"$ref": "#/$defs/receipt"},
+        "edge_confirmation": {"type": "null"}, "learned_edge": {"type": "null"}
+      }
+    },
+    {
+      "properties": {
+        "decision": {"properties": {"outcome": {"const": "approved"}, "approved_effects": {"const": ["project_only"]}}},
+        "projection": {"$ref": "#/$defs/projection"}, "receipt": {"$ref": "#/$defs/receipt"},
+        "edge_confirmation": {"$ref": "#/$defs/confirmation"}, "learned_edge": {"$ref": "#/$defs/edge"}
+      }
+    }
+  ],
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "time": {"type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$"},
+    "value": {"enum": ["concise", "balanced", "detailed"]},
+    "ref": {
+      "type": "object", "additionalProperties": false, "required": ["id", "content_sha256"],
+      "properties": {"id": {"type": "string", "pattern": "^[a-z-]+:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["project", "purpose", "context", "surface", "task"],
+      "properties": {
+        "project": {"const": "Quirk-Systems/project-scaffold"},
+        "purpose": {"const": "repository-audit-reporting"},
+        "context": {"const": "project-scaffold-reference"},
+        "surface": {"const": "repository-audit-report"},
+        "task": {"const": "render-repository-audit-report"}
+      }
+    },
+    "subject": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "subject_id"],
+      "properties": {"kind": {"const": "authenticated_self"}, "subject_id": {"type": "string", "pattern": "^user:[a-z0-9][a-z0-9._-]{0,63}$"}}
+    },
+    "authentication": {
+      "type": "object", "additionalProperties": false, "required": ["status", "session_ref"],
+      "properties": {"status": {"const": "authenticated"}, "session_ref": {"type": "string", "pattern": "^authn:[A-Za-z0-9._:-]{1,128}$"}}
+    },
+    "actor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_type", "actor_id", "subject_relation", "authentication"],
+      "properties": {
+        "actor_type": {"const": "human"}, "actor_id": {"type": "string", "pattern": "^user:[a-z0-9][a-z0-9._-]{0,63}$"},
+        "subject_relation": {"const": "self"}, "authentication": {"$ref": "#/$defs/authentication"}
+      }
+    },
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["object_version", "id", "content_sha256", "predicate", "value", "subject", "scope", "evidence", "authority", "validity", "system_default"],
+      "properties": {
+        "object_version": {"const": "preference-candidate.v1"}, "id": {"type": "string", "pattern": "^candidate:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"},
+        "predicate": {"const": "presentation.response_density"}, "value": {"$ref": "#/$defs/value"}, "subject": {"$ref": "#/$defs/subject"}, "scope": {"$ref": "#/$defs/scope"},
+        "evidence": {
+          "type": "object", "additionalProperties": false, "required": ["type", "sensitivity", "statement", "statement_sha256", "captured_at", "actor"],
+          "properties": {"type": {"const": "explicit_user_statement"}, "sensitivity": {"const": "non_sensitive"}, "statement": {"type": "string", "pattern": "^.+$"}, "statement_sha256": {"$ref": "#/$defs/hash"}, "captured_at": {"$ref": "#/$defs/time"}, "actor": {"$ref": "#/$defs/actor"}}
+        },
+        "authority": {
+          "type": "object", "additionalProperties": false, "required": ["kind", "effect", "runtime_authority"],
+          "properties": {"kind": {"const": "human_self_statement"}, "effect": {"const": "evidence_only"}, "runtime_authority": {"const": "none"}}
+        },
+        "validity": {
+          "type": "object", "additionalProperties": false, "required": ["not_before", "expires_at"],
+          "properties": {"not_before": {"$ref": "#/$defs/time"}, "expires_at": {"$ref": "#/$defs/time"}}
+        },
+        "system_default": {"const": false}
+      }
+    },
+    "proposal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["object_version", "id", "content_sha256", "candidate_ref", "requested_effect", "scope", "proposed_at", "runtime_authority"],
+      "properties": {"object_version": {"const": "preference-proposal.v1"}, "id": {"type": "string", "pattern": "^proposal:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"}, "candidate_ref": {"$ref": "#/$defs/ref"}, "requested_effect": {"const": "project_only"}, "scope": {"$ref": "#/$defs/scope"}, "proposed_at": {"$ref": "#/$defs/time"}, "runtime_authority": {"const": "none"}}
+    },
+    "decision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["object_version", "id", "content_sha256", "proposal_ref", "outcome", "actor", "explicit", "scope", "decided_at", "expires_at", "approved_effects", "runtime_authority"],
+      "properties": {"object_version": {"const": "preference-decision.v1"}, "id": {"type": "string", "pattern": "^decision:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"}, "proposal_ref": {"$ref": "#/$defs/ref"}, "outcome": {"enum": ["approved", "rejected"]}, "actor": {"$ref": "#/$defs/actor"}, "explicit": {"const": true}, "scope": {"$ref": "#/$defs/scope"}, "decided_at": {"$ref": "#/$defs/time"}, "expires_at": {"$ref": "#/$defs/time"}, "approved_effects": {"oneOf": [{"const": []}, {"const": ["project_only"]}]}, "runtime_authority": {"const": "none"}}
+    },
+    "projection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["object_version", "id", "content_sha256", "decision_ref", "mode", "effect", "scope", "result", "result_sha256", "simulated_at", "applied", "consumer_authority", "runtime_authority"],
+      "properties": {"object_version": {"const": "preference-projection.v1"}, "id": {"type": "string", "pattern": "^projection:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"}, "decision_ref": {"$ref": "#/$defs/ref"}, "mode": {"const": "deterministic_simulation"}, "effect": {"const": "project_only"}, "scope": {"$ref": "#/$defs/scope"}, "result": {"type": "object", "additionalProperties": false, "required": ["predicate", "value"], "properties": {"predicate": {"const": "presentation.response_density"}, "value": {"$ref": "#/$defs/value"}}}, "result_sha256": {"$ref": "#/$defs/hash"}, "simulated_at": {"$ref": "#/$defs/time"}, "applied": {"const": false}, "consumer_authority": {"const": "none"}, "runtime_authority": {"const": "none"}}
+    },
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["object_version", "id", "content_sha256", "candidate_ref", "proposal_ref", "decision_ref", "projection_ref", "candidate_statement_sha256", "projection_result_sha256", "effect", "recorded_at", "applied", "authority_effect"],
+      "properties": {"object_version": {"const": "preference-projection-receipt.v1"}, "id": {"type": "string", "pattern": "^receipt:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"}, "candidate_ref": {"$ref": "#/$defs/ref"}, "proposal_ref": {"$ref": "#/$defs/ref"}, "decision_ref": {"$ref": "#/$defs/ref"}, "projection_ref": {"$ref": "#/$defs/ref"}, "candidate_statement_sha256": {"$ref": "#/$defs/hash"}, "projection_result_sha256": {"$ref": "#/$defs/hash"}, "effect": {"const": "project_only"}, "recorded_at": {"$ref": "#/$defs/time"}, "applied": {"const": false}, "authority_effect": {"const": "none"}}
+    },
+    "confirmation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["object_version", "id", "content_sha256", "receipt_ref", "effect", "actor", "explicit", "predicate", "value", "scope", "confirmed_at", "expires_at", "runtime_authority"],
+      "properties": {"object_version": {"const": "preference-edge-confirmation.v1"}, "id": {"type": "string", "pattern": "^edge-confirmation:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"}, "receipt_ref": {"$ref": "#/$defs/ref"}, "effect": {"const": "create_edge"}, "actor": {"$ref": "#/$defs/actor"}, "explicit": {"const": true}, "predicate": {"const": "presentation.response_density"}, "value": {"$ref": "#/$defs/value"}, "scope": {"$ref": "#/$defs/scope"}, "confirmed_at": {"$ref": "#/$defs/time"}, "expires_at": {"$ref": "#/$defs/time"}, "runtime_authority": {"const": "none"}}
+    },
+    "edge": {
+      "type": "object", "additionalProperties": false,
+      "required": ["object_version", "id", "content_sha256", "subject", "predicate", "value", "scope", "validity", "reference", "receipt_ref", "confirmation_ref", "authority", "system_default", "state", "applied", "consumer_authority", "runtime_authority"],
+      "properties": {"object_version": {"const": "preference-edge.v1"}, "id": {"type": "string", "pattern": "^edge:sha256:[0-9a-f]{64}$"}, "content_sha256": {"$ref": "#/$defs/hash"}, "subject": {"$ref": "#/$defs/subject"}, "predicate": {"const": "presentation.response_density"}, "value": {"$ref": "#/$defs/value"}, "scope": {"$ref": "#/$defs/scope"}, "validity": {"type": "object", "additionalProperties": false, "required": ["not_before", "expires_at"], "properties": {"not_before": {"$ref": "#/$defs/time"}, "expires_at": {"$ref": "#/$defs/time"}}}, "reference": {"type": "object", "additionalProperties": false, "required": ["type", "candidate_ref"], "properties": {"type": {"const": "explicit_user_statement"}, "candidate_ref": {"$ref": "#/$defs/ref"}}}, "receipt_ref": {"$ref": "#/$defs/ref"}, "confirmation_ref": {"$ref": "#/$defs/ref"}, "authority": {"type": "object", "additionalProperties": false, "required": ["kind", "runtime_authority"], "properties": {"kind": {"const": "explicit_human_confirmation"}, "runtime_authority": {"const": "none"}}}, "system_default": {"const": false}, "state": {"const": "recorded"}, "applied": {"const": false}, "consumer_authority": {"const": "none"}, "runtime_authority": {"const": "none"}}
+    }
+  }
+}
