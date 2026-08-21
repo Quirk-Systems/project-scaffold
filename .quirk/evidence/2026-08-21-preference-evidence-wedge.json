@@ -1,0 +1,212 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.project-scaffold-preference-evidence-wedge-2026-08-21",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "18636ffe64b37fdd0a85dff9798b6a604b59a073",
+    "commit": "156670f7c9f7fe05f0555d9b3c8059a95d2c5ea0",
+    "changed_paths": [
+      ".github/workflows/evidence-binding.yml",
+      ".quirk/manifest.json",
+      "docs/quirk/PREFERENCE_EVIDENCE_WEDGE.md",
+      "package.json",
+      "scripts/check-preference-contract.mjs",
+      "scripts/run-preference-evidence-wedge.ts",
+      "src/lib/quirk/governance/authority.test.ts",
+      "src/lib/quirk/governance/authority.ts",
+      "src/lib/quirk/preference-evidence/__tests__/wedge.test.ts",
+      "src/lib/quirk/preference-evidence/contracts.ts",
+      "src/lib/quirk/preference-evidence/index.ts",
+      "src/lib/quirk/preference-evidence/wedge.ts",
+      "vendor/quirk-core/PIN.json",
+      "vendor/quirk-core/preference-evidence-wedge.v1.schema.json"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.preference-evidence-reference-wedge",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Candidate reference wedge emits a deterministic unapplied project-only projection and recorded receipt, captures each public transition in a closed immutable descriptor snapshot that prevents Proxy-varying check/use state, preserves opaque frozen governed stages, and requires separately bound event-time-valid explicit human confirmation before recording an unapplied edge; this evidence grants no admission or runtime or consumer authority.",
+      "evidence_paths": [
+        ".github/workflows/evidence-binding.yml",
+        ".quirk/manifest.json",
+        "docs/quirk/PREFERENCE_EVIDENCE_WEDGE.md",
+        "package.json",
+        "scripts/check-preference-contract.mjs",
+        "scripts/run-preference-evidence-wedge.ts",
+        "src/lib/quirk/governance/authority.test.ts",
+        "src/lib/quirk/governance/authority.ts",
+        "src/lib/quirk/preference-evidence/__tests__/wedge.test.ts",
+        "src/lib/quirk/preference-evidence/contracts.ts",
+        "src/lib/quirk/preference-evidence/index.ts",
+        "src/lib/quirk/preference-evidence/wedge.ts",
+        "vendor/quirk-core/PIN.json",
+        "vendor/quirk-core/preference-evidence-wedge.v1.schema.json"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/evidence-binding.yml",
+      "state": "present",
+      "git_blob": "2a84cbe59bbaeabeb7363c16f831818ccf9ef8cf",
+      "sha256": "sha256:b0a2e67e1f93d3ff19b44184968ae812f5d4e7b08cd743927c59c24ff96e7087"
+    },
+    {
+      "path": ".quirk/manifest.json",
+      "state": "present",
+      "git_blob": "19d7869bb51f37e40053b257ee99bc7e17571155",
+      "sha256": "sha256:a6b3117fa20aa6999e76d384efa42637e5754ad7d5c3753fa16f7d69899fdc6b"
+    },
+    {
+      "path": "docs/quirk/PREFERENCE_EVIDENCE_WEDGE.md",
+      "state": "present",
+      "git_blob": "0bba83a8cb4c3eb0b48403228553e4c9be697658",
+      "sha256": "sha256:a6ee8af669ecf5defea07d711835efaa27d734543443ce6b6b0cd5f7460b6ebf"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "af3aa2b8d02fb33a1f05ccfd5e2c1531f7850dd2",
+      "sha256": "sha256:468bafe66206f2c6cddad2d525e793364c8c0dafd2e10a6f65c777b6edba7176"
+    },
+    {
+      "path": "scripts/check-preference-contract.mjs",
+      "state": "present",
+      "git_blob": "e0dc232f7701c249aeb84bd4632ed7ca164860aa",
+      "sha256": "sha256:7e6cee5b19e39c1dfea7ae51887712277f3a0bdc30508ef888104e78c6b1c989"
+    },
+    {
+      "path": "scripts/run-preference-evidence-wedge.ts",
+      "state": "present",
+      "git_blob": "0e982c4a379266eb1ee134b4bcb3af96621cc06a",
+      "sha256": "sha256:27ebf9b39ac84f98b0351636ade62d29acd1e8c4c471fc752b7cb7eea74a9979"
+    },
+    {
+      "path": "src/lib/quirk/governance/authority.test.ts",
+      "state": "present",
+      "git_blob": "ab01956b2eebcc0fbfb313d2dd77176f1d028d11",
+      "sha256": "sha256:5fdfa3ec8fd1361d78e9df33c5443d2e44ebdf2bee898991abf4d810494961dd"
+    },
+    {
+      "path": "src/lib/quirk/governance/authority.ts",
+      "state": "present",
+      "git_blob": "24084c33384f0176e1e3bd0c7f0d6d11250fc819",
+      "sha256": "sha256:0f30a7966a8aacb8315f1b349de559da315621313d1315b3e0147eaaa67f60d7"
+    },
+    {
+      "path": "src/lib/quirk/preference-evidence/__tests__/wedge.test.ts",
+      "state": "present",
+      "git_blob": "9ec731260e26293a8c4d9879baa4712d49e0d3d8",
+      "sha256": "sha256:9e6fcd130fba8fdef6a40e11cf9f4fec30e3de81c691c298c59c78735d6e7cb0"
+    },
+    {
+      "path": "src/lib/quirk/preference-evidence/contracts.ts",
+      "state": "present",
+      "git_blob": "5832d929db8c50310544dc436371099ddbbc5af7",
+      "sha256": "sha256:23c904d4a4abe67758cffcfe7cc960a863ec505e1aebe4945d9b175ad8025df4"
+    },
+    {
+      "path": "src/lib/quirk/preference-evidence/index.ts",
+      "state": "present",
+      "git_blob": "d8c93cd1e79e6ec822ff4e32fd96d49e5eb9ca34",
+      "sha256": "sha256:53891295d7796161dd87fb6bc6798747432b98d338eb197086f0790e29c08ea4"
+    },
+    {
+      "path": "src/lib/quirk/preference-evidence/wedge.ts",
+      "state": "present",
+      "git_blob": "8f680e4d48cdb7088cddbc6387de1dce6870f76c",
+      "sha256": "sha256:f918c07dc1f782b054951cca345d780fa21443048fb3579e8000d06bca7b6169"
+    },
+    {
+      "path": "vendor/quirk-core/PIN.json",
+      "state": "present",
+      "git_blob": "8161b36c962240f939f7379c61f53ffe086e9f4f",
+      "sha256": "sha256:446461ccb306bdb7b256daf55b09cbe92a03008b913a1b2059295644bd0d5d65"
+    },
+    {
+      "path": "vendor/quirk-core/preference-evidence-wedge.v1.schema.json",
+      "state": "present",
+      "git_blob": "8b04608ffee9a326f5562e1a496a49d8e1db098c",
+      "sha256": "sha256:db5cf4cd2b2d7131bef945b828b17a35fa02a08f1bfa5b7af5bcb9c6dde87ca7"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun test src/lib/quirk/preference-evidence/__tests__/wedge.test.ts src/lib/quirk/governance/authority.test.ts",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run preference-contract:check",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run test:run",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run type-check",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run lint",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run preference-wedge:demo > /tmp/preference-wedge-remote-final-1.json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run preference-wedge:demo > /tmp/preference-wedge-remote-final-2.json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "cmp /tmp/preference-wedge-remote-final-1.json /tmp/preference-wedge-remote-final-2.json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "sha256sum /tmp/preference-wedge-remote-final-1.json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "python /workspace/scratch/6f6fa2996563/worktrees/quirk-core-remote-final/scripts/validate_preference_wedge.py --schema vendor/quirk-core/preference-evidence-wedge.v1.schema.json /tmp/preference-wedge-remote-final-1.json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "cmp vendor/quirk-core/preference-evidence-wedge.v1.schema.json /workspace/scratch/6f6fa2996563/worktrees/quirk-core-remote-final/schemas/preference-evidence-wedge.v1.schema.json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "test \"$(sed -n 's/^[[:space:]]*uses: Quirk-Systems\\/.github\\/.github\\/workflows\\/reusable-evidence-binding.yml@//p' .github/workflows/evidence-binding.yml)\" = \"6136fa5fa77116abfbc103c822d9d244a0e870b3\"",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --check 18636ffe64b37fdd0a85dff9798b6a604b59a073..156670f7c9f7fe05f0555d9b3c8059a95d2c5ea0",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-08-21T06:45:35Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:ce03a0664588791a1ecf809fb899e06ad23e0a136a609142285bde2221472f5c"
+}
