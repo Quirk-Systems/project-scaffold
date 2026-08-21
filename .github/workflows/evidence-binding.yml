@@ -1,0 +1,11 @@
+name: Evidence Binding
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    uses: Quirk-Systems/.github/.github/workflows/reusable-evidence-binding.yml@6136fa5fa77116abfbc103c822d9d244a0e870b3

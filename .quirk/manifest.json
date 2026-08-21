@@ -6,10 +6,31 @@
     "path": ".quirk/registry.json",
     "version": "0.1.0"
   },
-  "policy": {"mode": "required"},
+  "policy": { "mode": "required" },
+  "preference_evidence_wedge": {
+    "role": "reference_implementation",
+    "lifecycle": "candidate",
+    "admission": "not_admitted",
+    "authority": "Quirk-Systems/.github",
+    "source": {
+      "repository": "Quirk-Systems/quirk-core",
+      "commit": "0b4fc6debf5c93b94463c9a460d022cfbdf4a37b",
+      "path": "schemas/preference-evidence-wedge.v1.schema.json"
+    },
+    "owner_state": "open",
+    "runtime_authority": "none",
+    "deployment_evidence": "none",
+    "consumer_authority": "none"
+  },
   "semantic_impact": {
     "default_change_class": "projection-or-domain-extension",
     "local_extensions": [".quirk/extensions.json"],
-    "projections": ["scaffold", "agent-instructions", "schemas", "docs", "generated-repositories"]
+    "projections": [
+      "scaffold",
+      "agent-instructions",
+      "schemas",
+      "docs",
+      "generated-repositories"
+    ]
   }
 }
