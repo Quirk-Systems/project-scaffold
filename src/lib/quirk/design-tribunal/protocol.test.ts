@@ -398,6 +398,7 @@ describe("Tribunal protocol v1", () => {
   it("fails closed on a missing evaluator declaration instead of throwing", () => {
     const harness = makeHarness();
     harness.tribunalCase.verdicts[0].evaluatorDeclarationId = "evaluator.missing";
+    sealCase(harness.tribunalCase);
     expectCodes(harness, ["UNKNOWN_EVALUATOR_DECLARATION_REF"]);
   });
 
@@ -469,6 +470,10 @@ describe("Tribunal protocol v1", () => {
   it("rejects authority advertised by a declaration but absent from its grant", () => {
     const harness = makeHarness();
     harness.tribunalCase.evaluatorDeclarations[0].authority.declaredEffects.push("approve");
+    harness.tribunalCase.evaluatorDeclarations[0].authority.prohibitedEffects =
+      harness.tribunalCase.evaluatorDeclarations[0].authority.prohibitedEffects.filter(
+        (effect) => effect !== "approve",
+      );
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["DECLARATION_EFFECT_EXCEEDS_GRANT"]);
   });
@@ -637,6 +642,7 @@ describe("Tribunal protocol v1", () => {
     const declaration = harness.tribunalCase.evaluatorDeclarations[0];
     declaration.authority.grantDigest = grantDigest;
     declaration.authority.declaredEffects.push("block");
+    harness.tribunalCase.verdicts[0].authorityBasis.grantDigest = grantDigest;
     const contradicted = structuredClone(harness.tribunalCase.verdicts[0]);
     contradicted.id = "verdict.block.v1";
     contradicted.claim = "Different prose, same stable claim.";
@@ -657,6 +663,7 @@ describe("Tribunal protocol v1", () => {
     const grantDigest = digestCanonical(grant);
     harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = grantDigest;
     harness.tribunalCase.evaluatorDeclarations[0].authority.declaredEffects.push("block");
+    harness.tribunalCase.verdicts[0].authorityBasis.grantDigest = grantDigest;
     const contradicted = structuredClone(harness.tribunalCase.verdicts[0]);
     contradicted.id = "verdict.block.v1";
     contradicted.disposition = "CONTRADICTED";
