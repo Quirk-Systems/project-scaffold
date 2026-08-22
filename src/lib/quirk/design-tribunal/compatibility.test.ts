@@ -176,37 +176,48 @@ describe("Design Tribunal compatibility adapters", () => {
     ["pass", "SUPPORTED"],
     ["fail", "CONTRADICTED"],
     ["unresolved", "INSUFFICIENT"],
-  ] as const)("maps DesignFinding %s without turning blocksRelease into authority", (sourceVerdict, disposition) => {
-    const source = fixture.tribunalCase;
-    const result = adaptDesignFinding({
-      finding: { ...finding, verdict: sourceVerdict },
-      bindings: {
-        evidenceClaimIds: ["evidence.fixture.v1"],
-        evaluatorDeclarationId: "evaluator.contract.v1",
-        authorityGrantId: "grant.evaluator.v1",
-        grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
-        subjectDigest: source.subject.digest,
-        claimId: "claim.contract-valid",
-        authorityEffectRequested:
-          sourceVerdict === "fail" ? "block" : sourceVerdict === "pass" ? "recommend" : "observe",
-        declarationDigest:
-          source.evaluatorDeclarations[0].provenance.declarationDigest,
-        evidenceDigests: [source.evidenceClaims[0].contentDigest],
-        trajectoryId: source.trajectoryId,
-        evaluatorVersion: source.evaluatorDeclarations[0].version,
-      },
-    });
+  ] as const)(
+    "maps DesignFinding %s without turning blocksRelease into authority",
+    (sourceVerdict, disposition) => {
+      const source = fixture.tribunalCase;
+      const result = adaptDesignFinding({
+        finding: { ...finding, verdict: sourceVerdict },
+        bindings: {
+          evidenceClaimIds: ["evidence.fixture.v1"],
+          evaluatorDeclarationId: "evaluator.contract.v1",
+          authorityGrantId: "grant.evaluator.v1",
+          grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
+          subjectDigest: source.subject.digest,
+          claimId: "claim.contract-valid",
+          authorityEffectRequested:
+            sourceVerdict === "fail"
+              ? "block"
+              : sourceVerdict === "pass"
+                ? "recommend"
+                : "observe",
+          declarationDigest:
+            source.evaluatorDeclarations[0].provenance.declarationDigest,
+          evidenceDigests: [source.evidenceClaims[0].contentDigest],
+          trajectoryId: source.trajectoryId,
+          evaluatorVersion: source.evaluatorDeclarations[0].version,
+        },
+      });
 
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.value.disposition).toBe(disposition);
-    expect(result.value.authorityEffectRequested).toBe(
-      sourceVerdict === "fail" ? "block" : sourceVerdict === "pass" ? "recommend" : "observe",
-    );
-    expect(result.value.provenance.contentDigest).toBe(
-      computeVerdictContentDigest(result.value),
-    );
-  });
+      expect(result.ok).toBe(true);
+      if (!result.ok) return;
+      expect(result.value.disposition).toBe(disposition);
+      expect(result.value.authorityEffectRequested).toBe(
+        sourceVerdict === "fail"
+          ? "block"
+          : sourceVerdict === "pass"
+            ? "recommend"
+            : "observe",
+      );
+      expect(result.value.provenance.contentDigest).toBe(
+        computeVerdictContentDigest(result.value),
+      );
+    },
+  );
 
   it("does not let adapter bindings replace the canonical finding trajectory", () => {
     const source = fixture.tribunalCase;
@@ -270,3 +281,4 @@ describe("Design Tribunal compatibility adapters", () => {
     );
   });
 });
+

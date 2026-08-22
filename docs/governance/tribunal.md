@@ -14,13 +14,13 @@ Use the already-merged authority and Design Tribunal contracts as canon. Add
 only the missing cross-domain bindings and a `TribunalCase` envelope. The five
 roles remain, but they do not get five competing wire formats.
 
-| Tribunal role | Canonical source | Compatibility responsibility |
-| --- | --- | --- |
-| `AuthorityGrant` | `governance/authority.ts` | Existing signed camelCase grant, unchanged and verified at runtime |
-| `EvaluatorDeclaration` | `design-tribunal/protocol.ts` | Declares identity, inspection boundary, fallibility, calibration, provenance, and requested grant subset |
-| `EvidenceClaim` | `DesignEvidence` plus protocol bindings | Preserves the Design evidence object and binds subject, inspector, freshness, retention, derivation, and hashes |
-| `TribunalVerdict` | `DesignFinding` adapter plus protocol bindings | Binds stable claim, evaluator, grant, subject revision, evidence, uncertainty, dissent, and requested evaluator effect |
-| `DecisionReceipt` | canonical `HumanDecision` plus protocol bindings | Binds the exact case, verdicts, evidence, grants, effect, time, replay nonce, reversibility, content hash, and an out-of-band human attestation |
+| Tribunal role          | Canonical source                                 | Compatibility responsibility                                                                                                                    |
+| ---------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AuthorityGrant`       | `governance/authority.ts`                        | Existing signed camelCase grant, unchanged and verified at runtime                                                                              |
+| `EvaluatorDeclaration` | `design-tribunal/protocol.ts`                    | Declares identity, inspection boundary, fallibility, calibration, provenance, and requested grant subset                                        |
+| `EvidenceClaim`        | `DesignEvidence` plus protocol bindings          | Preserves the Design evidence object and binds subject, inspector, freshness, retention, derivation, and hashes                                 |
+| `TribunalVerdict`      | `DesignFinding` adapter plus protocol bindings   | Binds stable claim, evaluator, grant, subject revision, evidence, uncertainty, dissent, and requested evaluator effect                          |
+| `DecisionReceipt`      | canonical `HumanDecision` plus protocol bindings | Binds the exact case, verdicts, evidence, grants, effect, time, replay nonce, reversibility, content hash, and an out-of-band human attestation |
 
 `TribunalCase` is the non-authority-bearing root. It carries the case ID,
 purpose, requester, named human authority, trajectory, deterministic evaluation
@@ -189,3 +189,4 @@ schema projection. PR #66 is conceptual provenance only, not ancestry.
 **Constrain.** The contract is a draft compatibility candidate until the exact
 PR head passes full CI and receives independent review. Do not merge, deploy,
 admit to canon, or enable autonomous effects from this document.
+

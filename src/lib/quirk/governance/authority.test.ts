@@ -37,7 +37,12 @@ function signRawGrant(grant: unknown): string {
 describe("Never #0001 — capability does not imply authority", () => {
   it("denies promotion when the caller has capability but no grant", () => {
     expect(
-      requireRunPromotionAuthority({ token: null, runId: "run-123", secret, now }),
+      requireRunPromotionAuthority({
+        token: null,
+        runId: "run-123",
+        secret,
+        now,
+      }),
     ).toEqual({
       authorized: false,
       never: NEVER_0001,
@@ -101,7 +106,12 @@ describe("Never #0001 — capability does not imply authority", () => {
     );
 
     expect(
-      requireRunPromotionAuthority({ token: expired, runId: "run-123", secret, now }),
+      requireRunPromotionAuthority({
+        token: expired,
+        runId: "run-123",
+        secret,
+        now,
+      }),
     ).toEqual({
       authorized: false,
       never: NEVER_0001,
@@ -237,3 +247,4 @@ describe("Never #0001 — capability does not imply authority", () => {
     }
   });
 });
+

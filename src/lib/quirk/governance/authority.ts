@@ -54,7 +54,10 @@ function sign(payload: string, secret: string): string {
   return createHmac("sha256", secret).update(payload).digest("base64url");
 }
 
-export function issueAuthorityGrant(input: AuthorityGrant, secret: string): string {
+export function issueAuthorityGrant(
+  input: AuthorityGrant,
+  secret: string,
+): string {
   const grant = AuthorityGrantSchema.parse(input);
   const payload = encodeBase64Url(JSON.stringify(grant));
   return `${payload}.${sign(payload, secret)}`;
@@ -67,8 +70,10 @@ export function verifyAuthorityGrant(input: {
   requiredScope: string;
   now?: Date;
 }): AuthorityDecision {
-  if (!input.token) return { authorized: false, never: NEVER_0001, reason: "missing_grant" };
-  if (!input.secret) return { authorized: false, never: NEVER_0001, reason: "missing_verifier" };
+  if (!input.token)
+    return { authorized: false, never: NEVER_0001, reason: "missing_grant" };
+  if (!input.secret)
+    return { authorized: false, never: NEVER_0001, reason: "missing_verifier" };
 
   const [payload, suppliedSignature, extra] = input.token.split(".");
   if (!payload || !suppliedSignature || extra) {
@@ -78,8 +83,15 @@ export function verifyAuthorityGrant(input: {
   const expectedSignature = sign(payload, input.secret);
   const supplied = Buffer.from(suppliedSignature);
   const expected = Buffer.from(expectedSignature);
-  if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) {
-    return { authorized: false, never: NEVER_0001, reason: "invalid_signature" };
+  if (
+    supplied.length !== expected.length ||
+    !timingSafeEqual(supplied, expected)
+  ) {
+    return {
+      authorized: false,
+      never: NEVER_0001,
+      reason: "invalid_signature",
+    };
   }
 
   let grant: AuthorityGrant;
@@ -102,10 +114,18 @@ export function verifyAuthorityGrant(input: {
     };
   }
   if (issuedAt >= expiresAt) {
-    return { authorized: false, never: NEVER_0001, reason: "invalid_grant_window" };
+    return {
+      authorized: false,
+      never: NEVER_0001,
+      reason: "invalid_grant_window",
+    };
   }
   if (issuedAt > now) {
-    return { authorized: false, never: NEVER_0001, reason: "not_yet_valid_grant" };
+    return {
+      authorized: false,
+      never: NEVER_0001,
+      reason: "not_yet_valid_grant",
+    };
   }
   if (expiresAt <= now) {
     return { authorized: false, never: NEVER_0001, reason: "expired_grant" };
@@ -145,3 +165,4 @@ export function assertRunPromotionAuthority(input: {
   if (!decision.authorized) throw new AuthorityDeniedError(decision.reason);
   return decision.grant;
 }
+

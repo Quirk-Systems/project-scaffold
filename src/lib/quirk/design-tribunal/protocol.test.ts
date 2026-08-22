@@ -52,7 +52,11 @@ type Harness = {
   context: MutableContext;
 };
 
-function grantScopes(tribunalCase: TribunalCase, evaluatorId: string, effects = ["recommend"] as const) {
+function grantScopes(
+  tribunalCase: TribunalCase,
+  evaluatorId: string,
+  effects = ["recommend"] as const,
+) {
   return [
     TRIBUNAL_EVALUATE_SCOPE,
     tribunalEvaluatorScope(evaluatorId),
@@ -71,7 +75,8 @@ function grantScopes(tribunalCase: TribunalCase, evaluatorId: string, effects = 
 
 function sealCase(tribunalCase: TribunalCase): void {
   for (const declaration of tribunalCase.evaluatorDeclarations) {
-    declaration.provenance.declarationDigest = computeDeclarationDigest(declaration);
+    declaration.provenance.declarationDigest =
+      computeDeclarationDigest(declaration);
   }
 
   for (const claim of tribunalCase.evidenceClaims) {
@@ -82,13 +87,16 @@ function sealCase(tribunalCase: TribunalCase): void {
     const declaration = tribunalCase.evaluatorDeclarations.find(
       (candidate) => candidate.id === verdict.evaluatorDeclarationId,
     );
-    verdict.provenance.evaluatorVersion = declaration?.version ?? verdict.provenance.evaluatorVersion;
+    verdict.provenance.evaluatorVersion =
+      declaration?.version ?? verdict.provenance.evaluatorVersion;
     verdict.provenance.declarationDigest =
-      declaration?.provenance.declarationDigest ?? verdict.provenance.declarationDigest;
+      declaration?.provenance.declarationDigest ??
+      verdict.provenance.declarationDigest;
     verdict.provenance.evidenceDigests = verdict.evidenceClaimIds
       .map(
         (id) =>
-          tribunalCase.evidenceClaims.find((claim) => claim.id === id)?.contentDigest,
+          tribunalCase.evidenceClaims.find((claim) => claim.id === id)
+            ?.contentDigest,
       )
       .filter((digest): digest is string => Boolean(digest));
     verdict.provenance.contentDigest = computeVerdictContentDigest(verdict);
@@ -115,14 +123,18 @@ function resignGrant(harness: Harness, grant: AuthorityGrant): void {
 
 function makeHarness(): Harness {
   const subjectDigest = digestCanonical("artifact:v7");
-  const actionDigest = digestCanonical({ action: "recommend-review", subjectDigest });
+  const actionDigest = digestCanonical({
+    action: "recommend-review",
+    subjectDigest,
+  });
   const sourceDigest = digestCanonical(EVIDENCE_BYTES);
 
   const tribunalCase = {
     kind: "TribunalCase",
     protocolVersion: "1.0.0",
     caseId: "case.design.review.v1",
-    purpose: "Evaluate a design artifact without transferring decision authority.",
+    purpose:
+      "Evaluate a design artifact without transferring decision authority.",
     requesterId: "requester.product.v1",
     humanAuthorityId: "human:bryan",
     trajectoryId: "trajectory.release.v1",
@@ -180,7 +192,12 @@ function makeHarness(): Harness {
           grantId: "grant.evaluator.v1",
           grantDigest: PLACEHOLDER_DIGEST,
           declaredEffects: ["recommend"],
-          prohibitedEffects: ["approve", "publish", "mutate_canon", "promote_verdict"],
+          prohibitedEffects: [
+            "approve",
+            "publish",
+            "mutate_canon",
+            "promote_verdict",
+          ],
         },
         provenance: {
           canonicalVersion: "design-tribunal@1",
@@ -257,7 +274,8 @@ function makeHarness(): Harness {
           decision: "approved",
           authorityType: "human",
           authorityId: "human:bryan",
-          rationale: "The evaluator may recommend; the human decides what happens next.",
+          rationale:
+            "The evaluator may recommend; the human decides what happens next.",
           decidedAt: "2026-08-21T13:02:00.000Z",
         },
         effect: "recommend",
@@ -293,7 +311,8 @@ function makeHarness(): Harness {
   const grantDigest = computeAuthorityGrantDigest(grant);
   tribunalCase.evaluatorDeclarations[0].authority.grantDigest = grantDigest;
   tribunalCase.verdicts[0].authorityBasis.grantDigest = grantDigest;
-  tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest = grantDigest;
+  tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
+    grantDigest;
   sealCase(tribunalCase);
 
   return {
@@ -307,7 +326,9 @@ function makeHarness(): Harness {
       verifyGrant: verifyAuthorityGrant,
       resolveGrantState: () => "active",
       resolveEvidence: (locator) =>
-        locator === "fixture://tribunal/positive-basic" ? EVIDENCE_BYTES : undefined,
+        locator === "fixture://tribunal/positive-basic"
+          ? EVIDENCE_BYTES
+          : undefined,
       trustedAuthorityIssuers: ["human:bryan"],
       trustedHumanAuthorities: ["human:bryan"],
       consumedReceiptDigests: new Map(),
@@ -403,13 +424,17 @@ describe("Tribunal protocol v1", () => {
 
   it("rejects mixed canonical and legacy aliases as ambiguous", () => {
     const harness = makeHarness();
-    (harness.tribunalCase as unknown as Record<string, unknown>).authority_grants = [];
+    (
+      harness.tribunalCase as unknown as Record<string, unknown>
+    ).authority_grants = [];
     expectCodes(harness, ["AMBIGUOUS_ALIAS"]);
   });
 
   it("rejects unknown protocol fields", () => {
     const harness = makeHarness();
-    (harness.tribunalCase as unknown as Record<string, unknown>).confidenceAuthority = true;
+    (
+      harness.tribunalCase as unknown as Record<string, unknown>
+    ).confidenceAuthority = true;
     expectCodes(harness, ["PROTOCOL_SCHEMA_INVALID"]);
   });
 
@@ -423,19 +448,25 @@ describe("Tribunal protocol v1", () => {
 
   it("fails closed on a missing evaluator declaration instead of throwing", () => {
     const harness = makeHarness();
-    harness.tribunalCase.verdicts[0].evaluatorDeclarationId = "evaluator.missing";
+    harness.tribunalCase.verdicts[0].evaluatorDeclarationId =
+      "evaluator.missing";
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["UNKNOWN_EVALUATOR_DECLARATION_REF"]);
   });
 
   it("binds the signed grant to the exact Tribunal case", () => {
     const harness = makeHarness();
-    const grant = { ...harness.tribunalCase.authorityGrants[0], subject: "tribunal-case:other" };
+    const grant = {
+      ...harness.tribunalCase.authorityGrants[0],
+      subject: "tribunal-case:other",
+    };
     resignGrant(harness, grant);
     const digest = computeAuthorityGrantDigest(grant);
-    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = digest;
+    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      digest;
     harness.tribunalCase.verdicts[0].authorityBasis.grantDigest = digest;
-    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest = digest;
+    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
+      digest;
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["GRANT_CASE_BINDING_MISMATCH"]);
   });
@@ -450,11 +481,16 @@ describe("Tribunal protocol v1", () => {
     );
     resignGrant(harness, grant);
     const digest = computeAuthorityGrantDigest(grant);
-    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = digest;
+    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      digest;
     harness.tribunalCase.verdicts[0].authorityBasis.grantDigest = digest;
-    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest = digest;
+    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
+      digest;
     sealCase(harness.tribunalCase);
-    expectCodes(harness, ["GRANT_EVALUATOR_SCOPE_MISMATCH", "PROXY_GRANT_FORBIDDEN"]);
+    expectCodes(harness, [
+      "GRANT_EVALUATOR_SCOPE_MISMATCH",
+      "PROXY_GRANT_FORBIDDEN",
+    ]);
   });
 
   it("rejects cross-grant borrowing by a verdict", () => {
@@ -470,7 +506,10 @@ describe("Tribunal protocol v1", () => {
     harness.tribunalCase.verdicts[0].authorityBasis.grantDigest =
       computeAuthorityGrantDigest(other);
     harness.tribunalCase.decisionReceipts[0].authorityGrantRefs = [
-      { grantId: other.grantId, grantDigest: computeAuthorityGrantDigest(other) },
+      {
+        grantId: other.grantId,
+        grantDigest: computeAuthorityGrantDigest(other),
+      },
     ];
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["VERDICT_GRANT_BINDING_MISMATCH"]);
@@ -496,7 +535,9 @@ describe("Tribunal protocol v1", () => {
 
   it("rejects authority advertised by a declaration but absent from its grant", () => {
     const harness = makeHarness();
-    harness.tribunalCase.evaluatorDeclarations[0].authority.declaredEffects.push("approve");
+    harness.tribunalCase.evaluatorDeclarations[0].authority.declaredEffects.push(
+      "approve",
+    );
     harness.tribunalCase.evaluatorDeclarations[0].authority.prohibitedEffects =
       harness.tribunalCase.evaluatorDeclarations[0].authority.prohibitedEffects.filter(
         (effect) => effect !== "approve",
@@ -511,10 +552,12 @@ describe("Tribunal protocol v1", () => {
     grant.scopes.push(tribunalEffectScope("approve"));
     resignGrant(harness, grant);
     const grantDigest = computeAuthorityGrantDigest(grant);
-    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = grantDigest;
+    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      grantDigest;
     harness.tribunalCase.verdicts[0].authorityEffectRequested = "approve";
     harness.tribunalCase.verdicts[0].authorityBasis.grantDigest = grantDigest;
-    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest = grantDigest;
+    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
+      grantDigest;
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["REQUESTED_EFFECT_UNDECLARED"]);
   });
@@ -548,7 +591,9 @@ describe("Tribunal protocol v1", () => {
   it("rejects dangling evidence references without crashing", () => {
     const harness = makeHarness();
     harness.tribunalCase.verdicts[0].evidenceClaimIds = ["evidence.missing"];
-    harness.tribunalCase.decisionReceipts[0].acceptedEvidenceClaimIds = ["evidence.missing"];
+    harness.tribunalCase.decisionReceipts[0].acceptedEvidenceClaimIds = [
+      "evidence.missing",
+    ];
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["UNKNOWN_EVIDENCE_CLAIM_REF"]);
   });
@@ -673,7 +718,9 @@ describe("Tribunal protocol v1", () => {
       summary: "Derived from the second claim.",
       digest: digestCanonical(second.id),
     };
-    harness.tribunalCase.evidenceClaims[0].derivedFromEvidenceClaimIds = [second.id];
+    harness.tribunalCase.evidenceClaims[0].derivedFromEvidenceClaimIds = [
+      second.id,
+    ];
     harness.tribunalCase.evidenceClaims.push(second);
     harness.tribunalCase.evaluatorDeclarations[0].inspection.evidenceKinds.push(
       "evidence_claim",
@@ -724,7 +771,9 @@ describe("Tribunal protocol v1", () => {
 
   it("rejects evaluator identities that only look independent", () => {
     const harness = makeHarness();
-    const declaration = structuredClone(harness.tribunalCase.evaluatorDeclarations[0]);
+    const declaration = structuredClone(
+      harness.tribunalCase.evaluatorDeclarations[0],
+    );
     declaration.id = "evaluator.contract.v2";
     declaration.version = "2.0.0";
     declaration.authority.grantId = "grant.evaluator.v2";
@@ -743,7 +792,9 @@ describe("Tribunal protocol v1", () => {
 
   it("treats shared operators and model families as correlated", () => {
     const harness = makeHarness();
-    const declaration = structuredClone(harness.tribunalCase.evaluatorDeclarations[0]);
+    const declaration = structuredClone(
+      harness.tribunalCase.evaluatorDeclarations[0],
+    );
     declaration.id = "evaluator.contract.v2";
     declaration.version = "2.0.0";
     declaration.independence.key = "independence.contract.v2";
@@ -768,15 +819,19 @@ describe("Tribunal protocol v1", () => {
     grant.scopes.push(tribunalEvaluatorScope("evaluator.proxy.v1"));
     resignGrant(proxyScope, grant);
     const grantDigest = computeAuthorityGrantDigest(grant);
-    proxyScope.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = grantDigest;
-    proxyScope.tribunalCase.verdicts[0].authorityBasis.grantDigest = grantDigest;
+    proxyScope.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      grantDigest;
+    proxyScope.tribunalCase.verdicts[0].authorityBasis.grantDigest =
+      grantDigest;
     proxyScope.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
       grantDigest;
     sealCase(proxyScope.tribunalCase);
     expectCodes(proxyScope, ["PROXY_GRANT_FORBIDDEN"]);
 
     const shared = makeHarness();
-    const declaration = structuredClone(shared.tribunalCase.evaluatorDeclarations[0]);
+    const declaration = structuredClone(
+      shared.tribunalCase.evaluatorDeclarations[0],
+    );
     declaration.id = "evaluator.other.v1";
     declaration.independence = {
       key: "independence.other.v1",
@@ -821,8 +876,11 @@ describe("Tribunal protocol v1", () => {
     grant.scopes.push(tribunalEffectScope("block"));
     resignGrant(harness, grant);
     const grantDigest = computeAuthorityGrantDigest(grant);
-    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = grantDigest;
-    harness.tribunalCase.evaluatorDeclarations[0].authority.declaredEffects.push("block");
+    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      grantDigest;
+    harness.tribunalCase.evaluatorDeclarations[0].authority.declaredEffects.push(
+      "block",
+    );
     harness.tribunalCase.verdicts[0].authorityBasis.grantDigest = grantDigest;
     const contradicted = structuredClone(harness.tribunalCase.verdicts[0]);
     contradicted.id = "verdict.block.v1";
@@ -830,7 +888,8 @@ describe("Tribunal protocol v1", () => {
     contradicted.authorityEffectRequested = "block";
     contradicted.authorityBasis.grantDigest = grantDigest;
     harness.tribunalCase.verdicts.push(contradicted);
-    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest = grantDigest;
+    harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
+      grantDigest;
     sealCase(harness.tribunalCase);
     expectCodes(harness, [
       "DISPUTED_VERDICTS_UNACKNOWLEDGED",
@@ -867,7 +926,9 @@ describe("Tribunal protocol v1", () => {
     const harness = makeHarness();
     harness.tribunalCase.decisionReceipts[0].decision.decision = "rejected";
     harness.tribunalCase.decisionReceipts[0].contentDigest =
-      computeDecisionReceiptContentDigest(harness.tribunalCase.decisionReceipts[0]);
+      computeDecisionReceiptContentDigest(
+        harness.tribunalCase.decisionReceipts[0],
+      );
 
     const result = validateTribunalCase(harness.tribunalCase, harness.context);
     expect(result.issues).toEqual([]);
@@ -887,25 +948,32 @@ describe("Tribunal protocol v1", () => {
     const caseDigest = makeHarness();
     caseDigest.tribunalCase.decisionReceipts[0].caseDigest = PLACEHOLDER_DIGEST;
     caseDigest.tribunalCase.decisionReceipts[0].contentDigest =
-      computeDecisionReceiptContentDigest(caseDigest.tribunalCase.decisionReceipts[0]);
+      computeDecisionReceiptContentDigest(
+        caseDigest.tribunalCase.decisionReceipts[0],
+      );
     expectCodes(caseDigest, ["RECEIPT_CASE_DIGEST_MISMATCH"]);
 
     const evidence = makeHarness();
     evidence.tribunalCase.decisionReceipts[0].acceptedEvidenceClaimIds = [];
     evidence.tribunalCase.decisionReceipts[0].contentDigest =
-      computeDecisionReceiptContentDigest(evidence.tribunalCase.decisionReceipts[0]);
+      computeDecisionReceiptContentDigest(
+        evidence.tribunalCase.decisionReceipts[0],
+      );
     expectCodes(evidence, ["RECEIPT_EVIDENCE_ACCOUNTING_INCOMPLETE"]);
 
     const effect = makeHarness();
     effect.tribunalCase.decisionReceipts[0].effect = "observe";
     effect.tribunalCase.decisionReceipts[0].contentDigest =
-      computeDecisionReceiptContentDigest(effect.tribunalCase.decisionReceipts[0]);
+      computeDecisionReceiptContentDigest(
+        effect.tribunalCase.decisionReceipts[0],
+      );
     expectCodes(effect, ["RECEIPT_EFFECT_MISMATCH"]);
   });
 
   it("rejects receipt tampering, replay, and missing replay infrastructure", () => {
     const tampered = makeHarness();
-    tampered.tribunalCase.decisionReceipts[0].contentDigest = PLACEHOLDER_DIGEST;
+    tampered.tribunalCase.decisionReceipts[0].contentDigest =
+      PLACEHOLDER_DIGEST;
     expectCodes(tampered, ["RECEIPT_CONTENT_HASH_MISMATCH"]);
 
     const replayed = makeHarness();
@@ -966,9 +1034,11 @@ describe("Tribunal protocol v1", () => {
     rejected.decision.decidedAt = rejected.issuedAt;
     rejected.decision.decision = "rejected";
     harness.tribunalCase.decisionReceipts.push(rejected);
-    (harness.tribunalCase as TribunalCase & {
-      effectiveDecisionReceiptId?: string;
-    }).effectiveDecisionReceiptId = rejected.id;
+    (
+      harness.tribunalCase as TribunalCase & {
+        effectiveDecisionReceiptId?: string;
+      }
+    ).effectiveDecisionReceiptId = rejected.id;
     sealCase(harness.tribunalCase);
 
     const result = validateTribunalCase(harness.tribunalCase, harness.context);
@@ -978,9 +1048,11 @@ describe("Tribunal protocol v1", () => {
         .caseEffectAuthorized,
     ).toBe(false);
 
-    (harness.tribunalCase as TribunalCase & {
-      effectiveDecisionReceiptId?: string;
-    }).effectiveDecisionReceiptId = approved.id;
+    (
+      harness.tribunalCase as TribunalCase & {
+        effectiveDecisionReceiptId?: string;
+      }
+    ).effectiveDecisionReceiptId = approved.id;
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["EFFECTIVE_RECEIPT_MISMATCH"]);
   });
@@ -989,7 +1061,9 @@ describe("Tribunal protocol v1", () => {
     const harness = makeHarness();
     delete harness.tribunalCase.decisionReceipts[0].reversibility.rollbackRef;
     harness.tribunalCase.decisionReceipts[0].contentDigest =
-      computeDecisionReceiptContentDigest(harness.tribunalCase.decisionReceipts[0]);
+      computeDecisionReceiptContentDigest(
+        harness.tribunalCase.decisionReceipts[0],
+      );
     expectCodes(harness, ["RECEIPT_ROLLBACK_REQUIRED"]);
   });
 
@@ -1000,7 +1074,9 @@ describe("Tribunal protocol v1", () => {
     harness.tribunalCase.decisionReceipts[0].decision.decidedAt =
       "2026-08-21T12:59:59.999Z";
     harness.tribunalCase.decisionReceipts[0].contentDigest =
-      computeDecisionReceiptContentDigest(harness.tribunalCase.decisionReceipts[0]);
+      computeDecisionReceiptContentDigest(
+        harness.tribunalCase.decisionReceipts[0],
+      );
     expectCodes(harness, ["TEMPORAL_ORDER_INVALID"]);
   });
 
@@ -1032,7 +1108,8 @@ describe("Tribunal protocol v1", () => {
     };
     resignGrant(harness, grant);
     const grantDigest = computeAuthorityGrantDigest(grant);
-    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = grantDigest;
+    harness.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      grantDigest;
     harness.tribunalCase.verdicts[0].authorityBasis.grantDigest = grantDigest;
     harness.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
       grantDigest;
@@ -1072,9 +1149,11 @@ describe("Tribunal protocol v1", () => {
     selfIssued.context.trustedAuthorityIssuers.push("evaluator.contract.v1");
     resignGrant(selfIssued, grant);
     const digest = computeAuthorityGrantDigest(grant);
-    selfIssued.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = digest;
+    selfIssued.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      digest;
     selfIssued.tribunalCase.verdicts[0].authorityBasis.grantDigest = digest;
-    selfIssued.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest = digest;
+    selfIssued.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
+      digest;
     sealCase(selfIssued.tribunalCase);
     expectCodes(selfIssued, ["GRANT_SELF_ISSUED"]);
 
@@ -1085,8 +1164,10 @@ describe("Tribunal protocol v1", () => {
     };
     resignGrant(untrusted, untrustedGrant);
     const untrustedDigest = computeAuthorityGrantDigest(untrustedGrant);
-    untrusted.tribunalCase.evaluatorDeclarations[0].authority.grantDigest = untrustedDigest;
-    untrusted.tribunalCase.verdicts[0].authorityBasis.grantDigest = untrustedDigest;
+    untrusted.tribunalCase.evaluatorDeclarations[0].authority.grantDigest =
+      untrustedDigest;
+    untrusted.tribunalCase.verdicts[0].authorityBasis.grantDigest =
+      untrustedDigest;
     untrusted.tribunalCase.decisionReceipts[0].authorityGrantRefs[0].grantDigest =
       untrustedDigest;
     sealCase(untrusted.tribunalCase);
@@ -1096,7 +1177,8 @@ describe("Tribunal protocol v1", () => {
     const operatorGrant = {
       ...structuredClone(operatorIssued.tribunalCase.authorityGrants[0]),
       issuer:
-        operatorIssued.tribunalCase.evaluatorDeclarations[0].independence.operatorId,
+        operatorIssued.tribunalCase.evaluatorDeclarations[0].independence
+          .operatorId,
     };
     operatorIssued.context.trustedAuthorityIssuers.push(operatorGrant.issuer);
     resignGrant(operatorIssued, operatorGrant);
@@ -1140,7 +1222,8 @@ describe("Tribunal protocol v1", () => {
     expectCodes(version, ["EVALUATOR_VERSION_MISMATCH"]);
 
     const subject = makeHarness();
-    subject.tribunalCase.verdicts[0].subjectDigest = digestCanonical("other-subject");
+    subject.tribunalCase.verdicts[0].subjectDigest =
+      digestCanonical("other-subject");
     subject.tribunalCase.verdicts[0].provenance.contentDigest =
       computeVerdictContentDigest(subject.tribunalCase.verdicts[0]);
     sealCase({
@@ -1156,12 +1239,16 @@ describe("Tribunal protocol v1", () => {
     harness.tribunalCase.evidenceClaims[0].claim =
       "NEXT_PUBLIC_OPENAI_API_KEY=sk-proj-not-a-real-secret";
     sealCase(harness.tribunalCase);
-    expectCodes(harness, ["BROWSER_EXPOSED_SECRET_FORBIDDEN", "SECRET_MATERIAL_FORBIDDEN"]);
+    expectCodes(harness, [
+      "BROWSER_EXPOSED_SECRET_FORBIDDEN",
+      "SECRET_MATERIAL_FORBIDDEN",
+    ]);
   });
 
   it("rejects native authority tokens before invoking ports and redacts issue refs", () => {
     const harness = makeHarness();
-    const token = harness.context.authorityTokensByGrantId["grant.evaluator.v1"];
+    const token =
+      harness.context.authorityTokensByGrantId["grant.evaluator.v1"];
     harness.tribunalCase.purpose = token;
     let resolverCalled = false;
     harness.context.resolveEvidence = () => {
@@ -1201,3 +1288,4 @@ describe("Tribunal protocol v1", () => {
     );
   });
 });
+

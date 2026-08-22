@@ -58,7 +58,10 @@ function failure(
   return { ok: false, issues: [{ code, path, message }] };
 }
 
-function adapterOutputFailure(path: string, message: string): TribunalCompatibilityResult<never> {
+function adapterOutputFailure(
+  path: string,
+  message: string,
+): TribunalCompatibilityResult<never> {
   return failure("TRIBUNAL_ADAPTER_OUTPUT_INVALID", path, message);
 }
 
@@ -119,10 +122,7 @@ export function adaptDesignReviewRequest(input: {
     (input.roles.decisionReceipts.length === 1
       ? input.roles.decisionReceipts[0].id
       : undefined);
-  if (
-    input.roles.decisionReceipts.length > 1 &&
-    !effectiveDecisionReceiptId
-  ) {
+  if (input.roles.decisionReceipts.length > 1 && !effectiveDecisionReceiptId) {
     return failure(
       "EFFECTIVE_DECISION_REQUIRED",
       "bindings.effectiveDecisionReceiptId",
@@ -335,3 +335,4 @@ export function adaptDesignHumanDecision(input: {
   }
   return { ok: true, value: parsed.data, issues: [] };
 }
+

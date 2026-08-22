@@ -128,7 +128,8 @@ export const DesignReviewRequestSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["baselineLocator"],
-        message: "Provide a baseline locator or explain why no baseline exists.",
+        message:
+          "Provide a baseline locator or explain why no baseline exists.",
       });
     }
 
@@ -136,7 +137,8 @@ export const DesignReviewRequestSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["noBaselineReason"],
-        message: "Use either a baseline locator or a no-baseline reason, not both.",
+        message:
+          "Use either a baseline locator or a no-baseline reason, not both.",
       });
     }
 
@@ -144,7 +146,8 @@ export const DesignReviewRequestSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["budget", "maxCandidates"],
-        message: "One-of-one mode requires at least two independent candidates.",
+        message:
+          "One-of-one mode requires at least two independent candidates.",
       });
     }
 
@@ -264,3 +267,4 @@ export function deriveReleaseStatus(input: {
 
   return "pass";
 }
+

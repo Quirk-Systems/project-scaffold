@@ -26,13 +26,8 @@
       "locator": "src/app/page.tsx",
       "digest": "sha256:8ef08a37f9acc821c6097d42c28c01b59634d90c7981439dc46cc4f35953146b"
     },
-    "criterionRefs": [
-      "criterion.authority",
-      "criterion.evidence"
-    ],
-    "sourceRefs": [
-      "docs/quirk/design-tribunal/README.md"
-    ],
+    "criterionRefs": ["criterion.authority", "criterion.evidence"],
+    "sourceRefs": ["docs/quirk/design-tribunal/README.md"],
     "authorityGrants": [
       {
         "grantId": "grant.evaluator.v1",
@@ -70,43 +65,26 @@
           "modelFamily": "deterministic"
         },
         "inspection": {
-          "canInspect": [
-            "repository fixtures"
-          ],
-          "cannotInspect": [
-            "secrets",
-            "unprovided runtime state"
-          ],
-          "tools": [
-            "vitest"
-          ],
-          "evidenceKinds": [
-            "test_result"
-          ],
+          "canInspect": ["repository fixtures"],
+          "cannotInspect": ["secrets", "unprovided runtime state"],
+          "tools": ["vitest"],
+          "evidenceKinds": ["test_result"],
           "temporalBoundary": "2026-08-21T13:00:00.000Z"
         },
         "fallibility": {
-          "knownFailureModes": [
-            "A fixture can miss a semantic failure."
-          ],
+          "knownFailureModes": ["A fixture can miss a semantic failure."],
           "calibrationEvidence": "fixtures/tribunal/protocol.v1.fixture.json",
           "calibratedAt": "2026-08-20T12:00:00.000Z",
           "calibrationValidUntil": "2026-09-20T12:00:00.000Z",
           "holdoutDigest": "sha256:9f2046e8efe1b2cd763937861f5c4b686351b1b2377f2e78ada13b74b57b5c3e",
           "maxConfidence": 0.95,
-          "errorTendencies": [
-            "false confidence after fixture drift"
-          ],
-          "unresolvedBlindSpots": [
-            "subjective design quality"
-          ]
+          "errorTendencies": ["false confidence after fixture drift"],
+          "unresolvedBlindSpots": ["subjective design quality"]
         },
         "authority": {
           "grantId": "grant.evaluator.v1",
           "grantDigest": "sha256:1b271504ad276386da6e65a923e97334355c3965995c3d652da33b9f05ad7e71",
-          "declaredEffects": [
-            "recommend"
-          ],
+          "declaredEffects": ["recommend"],
           "prohibitedEffects": [
             "approve",
             "publish",
@@ -140,9 +118,7 @@
         "observedAt": "2026-08-21T12:45:00.000Z",
         "validUntil": "2026-08-22T12:45:00.000Z",
         "confidence": 0.9,
-        "limitations": [
-          "Does not prove subjective design quality."
-        ],
+        "limitations": ["Does not prove subjective design quality."],
         "retentionClass": "project",
         "derivedFromEvidenceClaimIds": [],
         "contentDigest": "sha256:9450673819aff7d135521c6e5a0207374e47dfb7cfabf93143a226a67280c956"
@@ -159,9 +135,7 @@
         "claimId": "claim.contract-valid",
         "claim": "The compatibility contract is structurally ready for review.",
         "disposition": "SUPPORTED",
-        "evidenceClaimIds": [
-          "evidence.fixture.v1"
-        ],
+        "evidenceClaimIds": ["evidence.fixture.v1"],
         "confidence": 0.86,
         "uncertainty": "Semantic quality still requires human judgment.",
         "dissent": [],
@@ -199,12 +173,8 @@
           "decidedAt": "2026-08-21T13:02:00.000Z"
         },
         "effect": "recommend",
-        "consideredVerdictIds": [
-          "verdict.recommend.v1"
-        ],
-        "acceptedEvidenceClaimIds": [
-          "evidence.fixture.v1"
-        ],
+        "consideredVerdictIds": ["verdict.recommend.v1"],
+        "acceptedEvidenceClaimIds": ["evidence.fixture.v1"],
         "rejectedOrDisputedEvidence": [],
         "authorityGrantRefs": [
           {
