@@ -1,3 +1,4 @@
+import { createHmac } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -8,6 +9,7 @@ import {
 } from "../governance/authority";
 import {
   TRIBUNAL_EVALUATE_SCOPE,
+  TRIBUNAL_LIMITS,
   computeAuthorityGrantDigest,
   computeDecisionReceiptContentDigest,
   computeDecisionReceiptReplayKey,
@@ -16,6 +18,7 @@ import {
   computeTribunalCaseDigest,
   computeVerdictContentDigest,
   digestCanonical,
+  digestEvidenceBytes,
   tribunalActionScope,
   tribunalAudienceScope,
   tribunalCaseSubject,
@@ -34,23 +37,38 @@ import {
 } from "./protocol";
 
 const SECRET = "tribunal-test-secret-that-is-long-enough";
+const RECEIPT_ATTESTATION_SECRET =
+  "tribunal-receipt-attestation-secret-that-is-long-enough";
 const NOW = new Date("2026-08-21T13:05:00.000Z");
 const EVALUATED_AT = "2026-08-21T13:00:00.000Z";
 const PLACEHOLDER_DIGEST = `sha256:${"0".repeat(64)}`;
 const EVIDENCE_BYTES = "observable fixture bytes";
+const CALIBRATION_BYTES = "calibration fixture bytes";
 
 type MutableContext = TribunalValidationContext & {
   authorityTokensByGrantId: Record<string, string>;
   trustedAuthorityIssuers: string[];
   trustedHumanAuthorities: string[];
   consumedReceiptDigests?: Map<string, string>;
-  verifyDecisionReceipt?: () => boolean;
+  verifyDecisionReceipt?: TribunalValidationContext["verifyDecisionReceipt"];
 };
 
 type Harness = {
   tribunalCase: TribunalCase;
   context: MutableContext;
+  decisionAttestations: Map<string, string>;
 };
+
+const decisionAttestationsByCase = new WeakMap<
+  TribunalCase,
+  Map<string, string>
+>();
+
+function computeTestReceiptAttestation(contentDigest: string): string {
+  return createHmac("sha256", RECEIPT_ATTESTATION_SECRET)
+    .update(contentDigest)
+    .digest("hex");
+}
 
 function grantScopes(
   tribunalCase: TribunalCase,
@@ -103,10 +121,41 @@ function sealCase(tribunalCase: TribunalCase): void {
   }
 
   const caseDigest = computeTribunalCaseDigest(tribunalCase);
-  for (const receipt of tribunalCase.decisionReceipts) {
+  const orderedReceipts = [...tribunalCase.decisionReceipts].sort(
+    (left, right) => Date.parse(left.issuedAt) - Date.parse(right.issuedAt),
+  );
+  let previousReceiptDigest: string | null = null;
+  for (const receipt of orderedReceipts) {
     receipt.caseDigest = caseDigest;
+    receipt.previousReceiptDigest = previousReceiptDigest;
     receipt.contentDigest = computeDecisionReceiptContentDigest(receipt);
+    previousReceiptDigest = receipt.contentDigest;
   }
+  const attestations = decisionAttestationsByCase.get(tribunalCase);
+  if (attestations) {
+    attestations.clear();
+    for (const receipt of tribunalCase.decisionReceipts) {
+      attestations.set(
+        receipt.id,
+        computeTestReceiptAttestation(receipt.contentDigest),
+      );
+    }
+  }
+}
+
+function attestReceipts(harness: Harness): void {
+  harness.decisionAttestations.clear();
+  for (const receipt of harness.tribunalCase.decisionReceipts) {
+    harness.decisionAttestations.set(
+      receipt.id,
+      computeTestReceiptAttestation(receipt.contentDigest),
+    );
+  }
+}
+
+function sealHarness(harness: Harness): void {
+  sealCase(harness.tribunalCase);
+  attestReceipts(harness);
 }
 
 function resignGrant(harness: Harness, grant: AuthorityGrant): void {
@@ -127,7 +176,7 @@ function makeHarness(): Harness {
     action: "recommend-review",
     subjectDigest,
   });
-  const sourceDigest = digestCanonical(EVIDENCE_BYTES);
+  const sourceDigest = digestEvidenceBytes(EVIDENCE_BYTES);
 
   const tribunalCase = {
     kind: "TribunalCase",
@@ -174,13 +223,18 @@ function makeHarness(): Harness {
         inspection: {
           canInspect: ["repository fixtures"],
           cannotInspect: ["secrets", "unprovided runtime state"],
+          allowedSourceLocatorPrefixes: ["fixture://tribunal/"],
+          deniedSourceLocatorPrefixes: ["secret://", "env://"],
           tools: ["vitest"],
           evidenceKinds: ["test_result"],
           temporalBoundary: EVALUATED_AT,
         },
         fallibility: {
           knownFailureModes: ["A fixture can miss a semantic failure."],
-          calibrationEvidence: "fixtures/tribunal/protocol.v1.fixture.json",
+          calibrationEvidence: {
+            locator: "fixture://tribunal/calibration-v1",
+            digest: digestEvidenceBytes(CALIBRATION_BYTES),
+          },
           calibratedAt: "2026-08-20T12:00:00.000Z",
           calibrationValidUntil: "2026-09-20T12:00:00.000Z",
           holdoutDigest: digestCanonical("tribunal-holdout-v1"),
@@ -239,6 +293,7 @@ function makeHarness(): Harness {
         evaluatorDeclarationId: "evaluator.contract.v1",
         authorityGrantId: "grant.evaluator.v1",
         subjectDigest,
+        criterionRef: "criterion.authority",
         claimId: "claim.contract-valid",
         claim: "The compatibility contract is structurally ready for review.",
         disposition: "SUPPORTED",
@@ -292,6 +347,7 @@ function makeHarness(): Harness {
         },
         issuedAt: "2026-08-21T13:02:00.000Z",
         nonce: "receipt-nonce-0001",
+        previousReceiptDigest: null,
         contentDigest: PLACEHOLDER_DIGEST,
       },
     ],
@@ -315,7 +371,8 @@ function makeHarness(): Harness {
     grantDigest;
   sealCase(tribunalCase);
 
-  return {
+  const decisionAttestations = new Map<string, string>();
+  const harness: Harness = {
     tribunalCase,
     context: {
       now: NOW,
@@ -328,13 +385,21 @@ function makeHarness(): Harness {
       resolveEvidence: (locator) =>
         locator === "fixture://tribunal/positive-basic"
           ? EVIDENCE_BYTES
+          : locator === "fixture://tribunal/calibration-v1"
+            ? CALIBRATION_BYTES
           : undefined,
       trustedAuthorityIssuers: ["human:bryan"],
       trustedHumanAuthorities: ["human:bryan"],
       consumedReceiptDigests: new Map(),
-      verifyDecisionReceipt: () => true,
+      verifyDecisionReceipt: ({ receipt }) =>
+        decisionAttestations.get(receipt.id) ===
+        computeTestReceiptAttestation(receipt.contentDigest),
     },
+    decisionAttestations,
   };
+  decisionAttestationsByCase.set(tribunalCase, decisionAttestations);
+  attestReceipts(harness);
+  return harness;
 }
 
 function validationCodes(harness: Harness): string[] {
@@ -378,6 +443,34 @@ describe("Tribunal protocol v1", () => {
     expect(versionedDigest({ b: 2, a: "é" }, "test.vector")).toBe(
       "sha256:b543a77767206cb9fb1f2e32ba0d47e6ba67cc21c411c54c0bc5e33c4ab1b4b1",
     );
+    expect(
+      versionedDigest(
+        {
+          "\ufffd": 2,
+          "😀": 1,
+          tiny: 1e-27,
+          n: 333333333.33333329,
+        },
+        "test.portability",
+      ),
+    ).toBe(
+      "sha256:d7eda4511925a3146e0a41dac15c0045226a0aeb297511bf19c90379e2096cfc",
+    );
+  });
+
+  it("normalizes equivalent string and binary evidence as the same bytes", () => {
+    const expected = digestEvidenceBytes(EVIDENCE_BYTES);
+    expect(digestEvidenceBytes(Buffer.from(EVIDENCE_BYTES, "utf8"))).toBe(
+      expected,
+    );
+
+    const stringResolver = makeHarness();
+    expectCodes(stringResolver, []);
+
+    const binaryResolver = makeHarness();
+    binaryResolver.context.resolveEvidence = () =>
+      Buffer.from(EVIDENCE_BYTES, "utf8");
+    expectCodes(binaryResolver, []);
   });
 
   it("executes the checked-in canonical fixture through the runtime validator", () => {
@@ -390,6 +483,12 @@ describe("Tribunal protocol v1", () => {
         issueAuthorityGrant(grant, SECRET),
       ]),
     );
+    const fixtureAttestations = new Map(
+      fixture.tribunalCase.decisionReceipts.map((receipt) => [
+        receipt.id,
+        computeTestReceiptAttestation(receipt.contentDigest),
+      ]),
+    );
     const fixtureContext: MutableContext = {
       now: NOW,
       authoritySecret: SECRET,
@@ -400,7 +499,9 @@ describe("Tribunal protocol v1", () => {
       trustedAuthorityIssuers: ["human:bryan"],
       trustedHumanAuthorities: ["human:bryan"],
       consumedReceiptDigests: new Map(),
-      verifyDecisionReceipt: () => true,
+      verifyDecisionReceipt: ({ receipt }) =>
+        fixtureAttestations.get(receipt.id) ===
+        computeTestReceiptAttestation(receipt.contentDigest),
     };
     const result = validateTribunalCase(fixture.tribunalCase, fixtureContext);
 
@@ -435,6 +536,38 @@ describe("Tribunal protocol v1", () => {
     (
       harness.tribunalCase as unknown as Record<string, unknown>
     ).confidenceAuthority = true;
+    expectCodes(harness, ["PROTOCOL_SCHEMA_INVALID"]);
+  });
+
+  it("bounds shallow collections and strings before expensive validation", () => {
+    const oversizedArray = makeHarness();
+    oversizedArray.tribunalCase.sourceRefs = Array.from(
+      { length: TRIBUNAL_LIMITS.roleItems + 1 },
+      (_, index) => `source:${index}`,
+    );
+    expectCodes(oversizedArray, ["PROTOCOL_SCHEMA_INVALID"]);
+
+    const oversizedString = makeHarness();
+    oversizedString.tribunalCase.purpose = "x".repeat(
+      TRIBUNAL_LIMITS.longTextChars + 1,
+    );
+    expectCodes(oversizedString, ["PROTOCOL_SCHEMA_INVALID"]);
+
+    const raw = {
+      kind: "TribunalCase",
+      values: new Array(TRIBUNAL_LIMITS.rawArrayItems + 1).fill("scalar"),
+    };
+    const result = validateTribunalCase(raw, makeHarness().context);
+    expect(result.issues.map(({ code }) => code)).toEqual([
+      "INPUT_GRAPH_UNSAFE",
+    ]);
+  });
+
+  it("rejects duplicate verdict evidence IDs before multiset binding", () => {
+    const harness = makeHarness();
+    harness.tribunalCase.verdicts[0].evidenceClaimIds.push(
+      harness.tribunalCase.verdicts[0].evidenceClaimIds[0],
+    );
     expectCodes(harness, ["PROTOCOL_SCHEMA_INVALID"]);
   });
 
@@ -608,6 +741,21 @@ describe("Tribunal protocol v1", () => {
     ]);
   });
 
+  it("does not let explicitly unobservable evidence support a verdict", () => {
+    const harness = makeHarness();
+    harness.tribunalCase.evidenceClaims[0].observable = false;
+    sealHarness(harness);
+
+    const result = validateTribunalCase(harness.tribunalCase, harness.context);
+    expect(result.issues.map(({ code }) => code)).toContain(
+      "EVIDENCE_UNOBSERVABLE",
+    );
+    expect(result.authorityEffectPermittedByVerdict).toEqual({
+      "verdict.recommend.v1": false,
+    });
+    expect(result.caseEffectAuthorized).toBe(false);
+  });
+
   it("requires evidence bytes to be resolvable and digest-matched", () => {
     const harness = makeHarness();
     harness.context.resolveEvidence = () => undefined;
@@ -740,6 +888,11 @@ describe("Tribunal protocol v1", () => {
       "trajectory.unrelated.v1";
     sealCase(trajectory.tribunalCase);
     expectCodes(trajectory, ["TRAJECTORY_MISMATCH"]);
+
+    const criterion = makeHarness();
+    criterion.tribunalCase.verdicts[0].criterionRef = "criterion.unrelated";
+    sealHarness(criterion);
+    expectCodes(criterion, ["UNKNOWN_CRITERION_REF"]);
   });
 
   it("enforces the evaluator's declared evidence cutoff", () => {
@@ -748,6 +901,32 @@ describe("Tribunal protocol v1", () => {
       "2026-08-21T12:44:59.999Z";
     sealCase(harness.tribunalCase);
     expectCodes(harness, ["EVIDENCE_AFTER_INSPECTION_BOUNDARY"]);
+  });
+
+  it("enforces structured source inspection policy with deny precedence", () => {
+    const denied = makeHarness();
+    denied.tribunalCase.evidenceClaims[0].source.locator =
+      "secret://tribunal/positive-basic";
+    denied.context.resolveEvidence = (locator) =>
+      locator === "secret://tribunal/positive-basic"
+        ? EVIDENCE_BYTES
+        : locator === "fixture://tribunal/calibration-v1"
+          ? CALIBRATION_BYTES
+          : undefined;
+    sealHarness(denied);
+    expectCodes(denied, ["OUT_OF_SCOPE_EVIDENCE"]);
+
+    const notAllowed = makeHarness();
+    notAllowed.tribunalCase.evidenceClaims[0].source.locator =
+      "other://tribunal/positive-basic";
+    notAllowed.context.resolveEvidence = (locator) =>
+      locator === "other://tribunal/positive-basic"
+        ? EVIDENCE_BYTES
+        : locator === "fixture://tribunal/calibration-v1"
+          ? CALIBRATION_BYTES
+          : undefined;
+    sealHarness(notAllowed);
+    expectCodes(notAllowed, ["OUT_OF_SCOPE_EVIDENCE"]);
   });
 
   it("bounds verdict confidence by fresh calibration evidence", () => {
@@ -767,6 +946,35 @@ describe("Tribunal protocol v1", () => {
       contaminated.tribunalCase.subject.digest;
     sealCase(contaminated.tribunalCase);
     expectCodes(contaminated, ["CALIBRATION_HOLDOUT_CONTAMINATED"]);
+
+    const calibrationBoundary = makeHarness();
+    calibrationBoundary.tribunalCase.evaluatorDeclarations[0].fallibility.calibrationValidUntil =
+      EVALUATED_AT;
+    sealHarness(calibrationBoundary);
+    expectCodes(calibrationBoundary, ["CALIBRATION_STALE"]);
+
+    const evidenceBoundary = makeHarness();
+    evidenceBoundary.tribunalCase.evidenceClaims[0].validUntil = EVALUATED_AT;
+    sealHarness(evidenceBoundary);
+    expectCodes(evidenceBoundary, ["EVIDENCE_STALE"]);
+  });
+
+  it("requires calibration evidence to resolve to its declared bytes", () => {
+    const unresolved = makeHarness();
+    unresolved.context.resolveEvidence = (locator) =>
+      locator === "fixture://tribunal/positive-basic"
+        ? EVIDENCE_BYTES
+        : undefined;
+    expectCodes(unresolved, ["CALIBRATION_EVIDENCE_UNRESOLVED"]);
+
+    const changed = makeHarness();
+    changed.context.resolveEvidence = (locator) =>
+      locator === "fixture://tribunal/positive-basic"
+        ? EVIDENCE_BYTES
+        : locator === "fixture://tribunal/calibration-v1"
+          ? "different calibration bytes"
+          : undefined;
+    expectCodes(changed, ["CALIBRATION_EVIDENCE_DIGEST_MISMATCH"]);
   });
 
   it("rejects evaluator identities that only look independent", () => {
@@ -847,6 +1055,21 @@ describe("Tribunal protocol v1", () => {
     ]);
   });
 
+  it("rejects a signed grant that no evaluator declaration owns", () => {
+    const harness = makeHarness();
+    const orphan = {
+      ...structuredClone(harness.tribunalCase.authorityGrants[0]),
+      grantId: "grant.orphan.v1",
+      nonce: "grant-nonce-orphan",
+    };
+    resignGrant(harness, orphan);
+    sealHarness(harness);
+
+    expectCodes(harness, ["GRANT_UNOWNED"]);
+    const result = validateTribunalCase(harness.tribunalCase, harness.context);
+    expect(result.verifiedAuthorityGrants).toEqual([]);
+  });
+
   it("detects disputes by stable claim ID, not prose", () => {
     const harness = makeHarness();
     const grant = structuredClone(harness.tribunalCase.authorityGrants[0]);
@@ -922,6 +1145,20 @@ describe("Tribunal protocol v1", () => {
     expectCodes(throwing, ["DECISION_AUTHENTICATION_FAILED"]);
   });
 
+  it("authenticates full receipt content beyond its public content hash", () => {
+    const harness = makeHarness();
+    const receipt = harness.tribunalCase.decisionReceipts[0];
+    const originalAttestation = harness.decisionAttestations.get(receipt.id);
+
+    receipt.decision.rationale = "A forged rationale with a recomputed hash.";
+    receipt.contentDigest = computeDecisionReceiptContentDigest(receipt);
+
+    expect(harness.decisionAttestations.get(receipt.id)).toBe(
+      originalAttestation,
+    );
+    expectCodes(harness, ["DECISION_AUTHENTICATION_FAILED"]);
+  });
+
   it("keeps a valid negative human decision non-executable", () => {
     const harness = makeHarness();
     harness.tribunalCase.decisionReceipts[0].decision.decision = "rejected";
@@ -929,6 +1166,7 @@ describe("Tribunal protocol v1", () => {
       computeDecisionReceiptContentDigest(
         harness.tribunalCase.decisionReceipts[0],
       );
+    attestReceipts(harness);
 
     const result = validateTribunalCase(harness.tribunalCase, harness.context);
     expect(result.issues).toEqual([]);
@@ -951,6 +1189,7 @@ describe("Tribunal protocol v1", () => {
       computeDecisionReceiptContentDigest(
         caseDigest.tribunalCase.decisionReceipts[0],
       );
+    attestReceipts(caseDigest);
     expectCodes(caseDigest, ["RECEIPT_CASE_DIGEST_MISMATCH"]);
 
     const evidence = makeHarness();
@@ -959,6 +1198,7 @@ describe("Tribunal protocol v1", () => {
       computeDecisionReceiptContentDigest(
         evidence.tribunalCase.decisionReceipts[0],
       );
+    attestReceipts(evidence);
     expectCodes(evidence, ["RECEIPT_EVIDENCE_ACCOUNTING_INCOMPLETE"]);
 
     const effect = makeHarness();
@@ -967,6 +1207,7 @@ describe("Tribunal protocol v1", () => {
       computeDecisionReceiptContentDigest(
         effect.tribunalCase.decisionReceipts[0],
       );
+    attestReceipts(effect);
     expectCodes(effect, ["RECEIPT_EFFECT_MISMATCH"]);
   });
 
@@ -995,6 +1236,83 @@ describe("Tribunal protocol v1", () => {
     const noLedger = makeHarness();
     noLedger.context.consumedReceiptDigests = undefined;
     expectCodes(noLedger, ["REPLAY_CHECK_REQUIRED"]);
+  });
+
+  it("appends an authenticated receipt without rewriting consumed history", () => {
+    const harness = makeHarness();
+    const first = harness.tribunalCase.decisionReceipts[0];
+    first.reversibility.deadline = "2026-08-21T13:04:00.000Z";
+    sealHarness(harness);
+    const originalCaseDigest = computeTribunalCaseDigest(harness.tribunalCase);
+    const originalReceiptDigest = first.contentDigest;
+    const originalAttestation = harness.decisionAttestations.get(first.id);
+    harness.context.consumedReceiptDigests?.set(
+      computeDecisionReceiptReplayKey(first),
+      first.contentDigest,
+    );
+
+    const second = structuredClone(first);
+    second.id = "receipt.review.v2";
+    second.nonce = "receipt-nonce-0002";
+    second.issuedAt = "2026-08-21T13:03:00.000Z";
+    second.decision.decidedAt = second.issuedAt;
+    second.decision.decision = "rejected";
+    second.reversibility.rollbackRef = "git://revert/receipt.review.v2";
+    second.reversibility.deadline = "2026-09-21T13:03:00.000Z";
+    harness.tribunalCase.decisionReceipts.push(second);
+    harness.tribunalCase.effectiveDecisionReceiptId = second.id;
+    sealCase(harness.tribunalCase);
+    harness.decisionAttestations.set(
+      second.id,
+      computeTestReceiptAttestation(second.contentDigest),
+    );
+
+    expect(computeTribunalCaseDigest(harness.tribunalCase)).toBe(
+      originalCaseDigest,
+    );
+    expect(first.contentDigest).toBe(originalReceiptDigest);
+    expect(harness.decisionAttestations.get(first.id)).toBe(
+      originalAttestation,
+    );
+    expect(second.previousReceiptDigest).toBe(first.contentDigest);
+
+    const result = validateTribunalCase(harness.tribunalCase, harness.context);
+    expect(result.issues).toEqual([]);
+    expect(result.caseEffectAuthorized).toBe(false);
+    expect(result.receiptReplayKeysToConsume).toEqual([
+      computeDecisionReceiptReplayKey(second),
+    ]);
+
+    harness.tribunalCase.decisionReceipts.reverse();
+    expect(validateTribunalCase(harness.tribunalCase, harness.context).issues).toEqual(
+      [],
+    );
+  });
+
+  it("rejects a broken receipt-history link", () => {
+    const chained = makeHarness();
+    const first = chained.tribunalCase.decisionReceipts[0];
+    chained.context.consumedReceiptDigests?.set(
+      computeDecisionReceiptReplayKey(first),
+      first.contentDigest,
+    );
+    const second = structuredClone(first);
+    second.id = "receipt.review.v2";
+    second.nonce = "receipt-nonce-0002";
+    second.issuedAt = "2026-08-21T13:03:00.000Z";
+    second.decision.decidedAt = second.issuedAt;
+    second.reversibility.rollbackRef = "git://revert/receipt.review.v2";
+    chained.tribunalCase.decisionReceipts.push(second);
+    chained.tribunalCase.effectiveDecisionReceiptId = second.id;
+    sealHarness(chained);
+
+    second.previousReceiptDigest = PLACEHOLDER_DIGEST;
+    second.contentDigest = computeDecisionReceiptContentDigest(second);
+    chained.decisionAttestations.set(
+      second.id,
+      computeTestReceiptAttestation(second.contentDigest),
+    );
+    expectCodes(chained, ["RECEIPT_CHAIN_MISMATCH"]);
   });
 
   it("uses the human, case, and nonce replay identity rather than receipt ID", () => {
@@ -1057,14 +1375,35 @@ describe("Tribunal protocol v1", () => {
     expectCodes(harness, ["EFFECTIVE_RECEIPT_MISMATCH"]);
   });
 
-  it("requires explicit rollback data for a reversible decision", () => {
+  it.each(["rollbackRef", "deadline"] as const)(
+    "requires reversible receipt %s data",
+    (field) => {
+      const harness = makeHarness();
+      delete harness.tribunalCase.decisionReceipts[0].reversibility[field];
+      harness.tribunalCase.decisionReceipts[0].contentDigest =
+        computeDecisionReceiptContentDigest(
+          harness.tribunalCase.decisionReceipts[0],
+        );
+      attestReceipts(harness);
+      expectCodes(harness, ["RECEIPT_ROLLBACK_REQUIRED"]);
+    },
+  );
+
+  it("does not authorize after the effective rollback window expires", () => {
     const harness = makeHarness();
-    delete harness.tribunalCase.decisionReceipts[0].reversibility.rollbackRef;
+    harness.tribunalCase.decisionReceipts[0].reversibility.deadline =
+      "2026-08-21T13:04:59.999Z";
     harness.tribunalCase.decisionReceipts[0].contentDigest =
       computeDecisionReceiptContentDigest(
         harness.tribunalCase.decisionReceipts[0],
       );
-    expectCodes(harness, ["RECEIPT_ROLLBACK_REQUIRED"]);
+    attestReceipts(harness);
+
+    const result = validateTribunalCase(harness.tribunalCase, harness.context);
+    expect(result.issues.map(({ code }) => code)).toContain(
+      "EFFECTIVE_ROLLBACK_WINDOW_EXPIRED",
+    );
+    expect(result.caseEffectAuthorized).toBe(false);
   });
 
   it("enforces temporal ordering with the injected clock", () => {
@@ -1077,6 +1416,7 @@ describe("Tribunal protocol v1", () => {
       computeDecisionReceiptContentDigest(
         harness.tribunalCase.decisionReceipts[0],
       );
+    attestReceipts(harness);
     expectCodes(harness, ["TEMPORAL_ORDER_INVALID"]);
   });
 
@@ -1138,6 +1478,21 @@ describe("Tribunal protocol v1", () => {
       inherited.context.authorityTokensByGrantId,
     ) as Record<string, string>;
     expectCodes(inherited, ["AUTHORITY_TOKEN_MISSING"]);
+  });
+
+  it("rejects oversized authority tokens before invoking the verifier", () => {
+    const harness = makeHarness();
+    harness.context.authorityTokensByGrantId["grant.evaluator.v1"] = "x".repeat(
+      TRIBUNAL_LIMITS.authorityTokenChars + 1,
+    );
+    let verifierCalled = false;
+    harness.context.verifyGrant = (input) => {
+      verifierCalled = true;
+      return verifyAuthorityGrant(input);
+    };
+
+    expectCodes(harness, ["AUTHORITY_TOKEN_TOO_LARGE"]);
+    expect(verifierCalled).toBe(false);
   });
 
   it("rejects self-issued and untrusted grants", () => {
@@ -1288,4 +1643,3 @@ describe("Tribunal protocol v1", () => {
     );
   });
 });
-

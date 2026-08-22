@@ -182,8 +182,8 @@ describe("Design Tribunal compatibility adapters", () => {
       const source = fixture.tribunalCase;
       const result = adaptDesignFinding({
         finding: { ...finding, verdict: sourceVerdict },
+        evidenceClaims: [source.evidenceClaims[0]],
         bindings: {
-          evidenceClaimIds: ["evidence.fixture.v1"],
           evaluatorDeclarationId: "evaluator.contract.v1",
           authorityGrantId: "grant.evaluator.v1",
           grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
@@ -197,7 +197,6 @@ describe("Design Tribunal compatibility adapters", () => {
                 : "observe",
           declarationDigest:
             source.evaluatorDeclarations[0].provenance.declarationDigest,
-          evidenceDigests: [source.evidenceClaims[0].contentDigest],
           trajectoryId: source.trajectoryId,
           evaluatorVersion: source.evaluatorDeclarations[0].version,
         },
@@ -206,6 +205,13 @@ describe("Design Tribunal compatibility adapters", () => {
       expect(result.ok).toBe(true);
       if (!result.ok) return;
       expect(result.value.disposition).toBe(disposition);
+      expect(result.value.criterionRef).toBe(finding.criterionId);
+      expect(result.value.evidenceClaimIds).toEqual([
+        source.evidenceClaims[0].id,
+      ]);
+      expect(result.value.provenance.evidenceDigests).toEqual([
+        source.evidenceClaims[0].contentDigest,
+      ]);
       expect(result.value.authorityEffectRequested).toBe(
         sourceVerdict === "fail"
           ? "block"
@@ -223,8 +229,8 @@ describe("Design Tribunal compatibility adapters", () => {
     const source = fixture.tribunalCase;
     const result = adaptDesignFinding({
       finding,
+      evidenceClaims: [source.evidenceClaims[0]],
       bindings: {
-        evidenceClaimIds: ["evidence.fixture.v1"],
         evaluatorDeclarationId: "evaluator.contract.v1",
         authorityGrantId: "grant.evaluator.v1",
         grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
@@ -233,7 +239,6 @@ describe("Design Tribunal compatibility adapters", () => {
         authorityEffectRequested: "recommend",
         declarationDigest:
           source.evaluatorDeclarations[0].provenance.declarationDigest,
-        evidenceDigests: [source.evidenceClaims[0].contentDigest],
         trajectoryId: "trajectory.unrelated.v1",
         evaluatorVersion: source.evaluatorDeclarations[0].version,
       },
@@ -244,6 +249,85 @@ describe("Design Tribunal compatibility adapters", () => {
       issues: [{ code: "DESIGN_FINDING_TRAJECTORY_MISMATCH" }],
     });
   });
+
+  it("derives verdict evidence one-to-one from the canonical finding", () => {
+    const source = fixture.tribunalCase;
+    const unrelated = structuredClone(source.evidenceClaims[0]);
+    unrelated.source.locator = "fixture://tribunal/unrelated";
+    unrelated.contentDigest = computeEvidenceClaimContentDigest(unrelated);
+
+    const substituted = adaptDesignFinding({
+      finding,
+      evidenceClaims: [unrelated],
+      bindings: {
+        evaluatorDeclarationId: "evaluator.contract.v1",
+        authorityGrantId: "grant.evaluator.v1",
+        grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
+        subjectDigest: source.subject.digest,
+        claimId: "claim.contract-valid",
+        authorityEffectRequested: "recommend",
+        declarationDigest:
+          source.evaluatorDeclarations[0].provenance.declarationDigest,
+        trajectoryId: source.trajectoryId,
+        evaluatorVersion: source.evaluatorDeclarations[0].version,
+      },
+    });
+    expect(substituted).toMatchObject({
+      ok: false,
+      issues: [{ code: "DESIGN_FINDING_EVIDENCE_MISMATCH" }],
+    });
+
+    const missingDigest = adaptDesignFinding({
+      finding: {
+        ...finding,
+        evidence: [{ ...designEvidence, digest: undefined }],
+      },
+      evidenceClaims: [source.evidenceClaims[0]],
+      bindings: {
+        evaluatorDeclarationId: "evaluator.contract.v1",
+        authorityGrantId: "grant.evaluator.v1",
+        grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
+        subjectDigest: source.subject.digest,
+        claimId: "claim.contract-valid",
+        authorityEffectRequested: "recommend",
+        declarationDigest:
+          source.evaluatorDeclarations[0].provenance.declarationDigest,
+        trajectoryId: source.trajectoryId,
+        evaluatorVersion: source.evaluatorDeclarations[0].version,
+      },
+    });
+    expect(missingDigest).toMatchObject({
+      ok: false,
+      issues: [{ code: "DESIGN_FINDING_EVIDENCE_DIGEST_REQUIRED" }],
+    });
+  });
+
+  it.each(["fixed", "waived", "false_alarm"] as const)(
+    "does not reactivate a %s DesignFinding",
+    (resolutionStatus) => {
+      const source = fixture.tribunalCase;
+      const result = adaptDesignFinding({
+        finding: { ...finding, resolutionStatus },
+        evidenceClaims: [source.evidenceClaims[0]],
+        bindings: {
+          evaluatorDeclarationId: "evaluator.contract.v1",
+          authorityGrantId: "grant.evaluator.v1",
+          grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
+          subjectDigest: source.subject.digest,
+          claimId: "claim.contract-valid",
+          authorityEffectRequested: "recommend",
+          declarationDigest:
+            source.evaluatorDeclarations[0].provenance.declarationDigest,
+          trajectoryId: source.trajectoryId,
+          evaluatorVersion: source.evaluatorDeclarations[0].version,
+        },
+      });
+      expect(result).toMatchObject({
+        ok: false,
+        issues: [{ code: "DESIGN_FINDING_RESOLUTION_INACTIVE" }],
+      });
+    },
+  );
 
   it("embeds the exact canonical human decision in a hash-bound receipt", () => {
     const source = fixture.tribunalCase;
@@ -270,6 +354,7 @@ describe("Design Tribunal compatibility adapters", () => {
         },
         issuedAt: humanDecision.decidedAt,
         nonce: "receipt-nonce-0001",
+        previousReceiptDigest: null,
       },
     });
 
@@ -281,4 +366,3 @@ describe("Design Tribunal compatibility adapters", () => {
     );
   });
 });
-
