@@ -4,17 +4,19 @@ import { z } from "zod";
 export const NEVER_0001 = "never.capability_implies_authority" as const;
 export const PROMOTE_RUN_SCOPE = "quirk.run.promote" as const;
 
-const authorityGrantSchema = z.object({
-  grantId: z.string().min(1),
-  issuer: z.string().min(1),
-  subject: z.string().min(1),
-  scopes: z.array(z.string().min(1)).min(1),
-  issuedAt: z.string().datetime(),
-  expiresAt: z.string().datetime(),
-  nonce: z.string().min(8),
-});
+export const AuthorityGrantSchema = z
+  .object({
+    grantId: z.string().min(1),
+    issuer: z.string().min(1),
+    subject: z.string().min(1),
+    scopes: z.array(z.string().min(1)).min(1),
+    issuedAt: z.string().datetime(),
+    expiresAt: z.string().datetime(),
+    nonce: z.string().min(8),
+  })
+  .strict();
 
-export type AuthorityGrant = z.infer<typeof authorityGrantSchema>;
+export type AuthorityGrant = z.infer<typeof AuthorityGrantSchema>;
 
 export type AuthorityDenialReason =
   | "missing_grant"
@@ -22,6 +24,8 @@ export type AuthorityDenialReason =
   | "malformed_grant"
   | "invalid_signature"
   | "expired_grant"
+  | "not_yet_valid_grant"
+  | "invalid_grant_window"
   | "subject_mismatch"
   | "scope_mismatch";
 
@@ -50,7 +54,7 @@ function sign(payload: string, secret: string): string {
 }
 
 export function issueAuthorityGrant(input: AuthorityGrant, secret: string): string {
-  const grant = authorityGrantSchema.parse(input);
+  const grant = AuthorityGrantSchema.parse(input);
   const payload = encodeBase64Url(JSON.stringify(grant));
   return `${payload}.${sign(payload, secret)}`;
 }
@@ -79,15 +83,23 @@ export function verifyAuthorityGrant(input: {
 
   let grant: AuthorityGrant;
   try {
-    grant = authorityGrantSchema.parse(
+    grant = AuthorityGrantSchema.parse(
       JSON.parse(Buffer.from(payload, "base64url").toString("utf8")),
     );
   } catch {
     return { authorized: false, never: NEVER_0001, reason: "malformed_grant" };
   }
 
-  const now = input.now ?? new Date();
-  if (new Date(grant.expiresAt).getTime() <= now.getTime()) {
+  const issuedAt = new Date(grant.issuedAt).getTime();
+  const expiresAt = new Date(grant.expiresAt).getTime();
+  const now = (input.now ?? new Date()).getTime();
+  if (issuedAt >= expiresAt) {
+    return { authorized: false, never: NEVER_0001, reason: "invalid_grant_window" };
+  }
+  if (issuedAt > now) {
+    return { authorized: false, never: NEVER_0001, reason: "not_yet_valid_grant" };
+  }
+  if (expiresAt <= now) {
     return { authorized: false, never: NEVER_0001, reason: "expired_grant" };
   }
   if (grant.subject !== input.subject) {

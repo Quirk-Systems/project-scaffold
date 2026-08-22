@@ -1,5 +1,228 @@
 {
-  "$comment": "The tests-first commit intentionally leaves this fixture unimplemented; the compatibility implementation must replace it with a fully hash-bound canonical case.",
-  "tribunalCase": {},
-  "evidence": {}
+  "$schema": "quirk://contracts/design-tribunal/protocol/1.0.0",
+  "tribunalCase": {
+    "kind": "TribunalCase",
+    "protocolVersion": "1.0.0",
+    "caseId": "case.design.review.v1",
+    "purpose": "Evaluate a design artifact without transferring decision authority.",
+    "requesterId": "requester.product.v1",
+    "humanAuthorityId": "human:bryan",
+    "trajectoryId": "trajectory.release.v1",
+    "openedAt": "2026-08-21T12:30:00.000Z",
+    "evaluatedAt": "2026-08-21T13:00:00.000Z",
+    "proposedEffect": "recommend",
+    "operatingScope": {
+      "purposeId": "purpose.design-review",
+      "tenantId": "tenant.quirk",
+      "audienceId": "audience.internal",
+      "destinationId": "destination.pull-request",
+      "actionDigest": "sha256:b9b393f5276d6ceb780ab7526cf77929332477f013c622df60188d425b7c1d40"
+    },
+    "subject": {
+      "id": "artifact.design.v7",
+      "realm": "quirk-os",
+      "targetClass": "app",
+      "revision": "v7",
+      "locator": "src/app/page.tsx",
+      "digest": "sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1"
+    },
+    "criterionRefs": [
+      "criterion.authority",
+      "criterion.evidence"
+    ],
+    "sourceRefs": [
+      "docs/quirk/design-tribunal/README.md"
+    ],
+    "authorityGrants": [
+      {
+        "grantId": "grant.evaluator.v1",
+        "issuer": "human:bryan",
+        "subject": "tribunal-case:case.design.review.v1",
+        "scopes": [
+          "quirk.tribunal.evaluate",
+          "quirk.tribunal.evaluator:evaluator.contract.v1",
+          "quirk.tribunal.realm:quirk-os",
+          "quirk.tribunal.subject-id:artifact.design.v7",
+          "quirk.tribunal.subject:sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1",
+          "quirk.tribunal.target-class:app",
+          "quirk.tribunal.purpose:purpose.design-review",
+          "quirk.tribunal.tenant:tenant.quirk",
+          "quirk.tribunal.audience:audience.internal",
+          "quirk.tribunal.destination:destination.pull-request",
+          "quirk.tribunal.action:sha256:b9b393f5276d6ceb780ab7526cf77929332477f013c622df60188d425b7c1d40",
+          "quirk.tribunal.effect:recommend"
+        ],
+        "issuedAt": "2026-08-21T12:00:00.000Z",
+        "expiresAt": "2026-08-21T14:00:00.000Z",
+        "nonce": "grant-nonce-0001"
+      }
+    ],
+    "evaluatorDeclarations": [
+      {
+        "kind": "EvaluatorDeclaration",
+        "protocolVersion": "1.0.0",
+        "id": "evaluator.contract.v1",
+        "evaluatorType": "deterministic_validator",
+        "version": "1.0.0",
+        "independence": {
+          "key": "independence.contract.v1",
+          "operatorId": "operator.ci",
+          "modelFamily": "deterministic"
+        },
+        "inspection": {
+          "canInspect": [
+            "repository fixtures"
+          ],
+          "cannotInspect": [
+            "secrets",
+            "unprovided runtime state"
+          ],
+          "tools": [
+            "vitest"
+          ],
+          "evidenceKinds": [
+            "test_result"
+          ],
+          "temporalBoundary": "2026-08-21T13:00:00.000Z"
+        },
+        "fallibility": {
+          "knownFailureModes": [
+            "A fixture can miss a semantic failure."
+          ],
+          "calibrationEvidence": "fixtures/tribunal/protocol.v1.fixture.json",
+          "calibratedAt": "2026-08-20T12:00:00.000Z",
+          "calibrationValidUntil": "2026-09-20T12:00:00.000Z",
+          "holdoutDigest": "sha256:b787c7e10cf9066ca03581794bc944ba98a5dd4d506c4cc83fa80eff145d8bde",
+          "maxConfidence": 0.95,
+          "errorTendencies": [
+            "false confidence after fixture drift"
+          ],
+          "unresolvedBlindSpots": [
+            "subjective design quality"
+          ]
+        },
+        "authority": {
+          "grantId": "grant.evaluator.v1",
+          "grantDigest": "sha256:49d045a78b4ab316842da884b5e39ec997351c9be492dbf22bff70c85e392faf",
+          "declaredEffects": [
+            "recommend"
+          ],
+          "prohibitedEffects": [
+            "approve",
+            "publish",
+            "mutate_canon",
+            "promote_verdict"
+          ]
+        },
+        "provenance": {
+          "canonicalVersion": "design-tribunal@1",
+          "declarationDigest": "sha256:d056bdba88a833ad18cf6c7ad48661921ba56203adbcf285c6d994a10c81f999"
+        }
+      }
+    ],
+    "evidenceClaims": [
+      {
+        "kind": "EvidenceClaim",
+        "protocolVersion": "1.0.0",
+        "id": "evidence.fixture.v1",
+        "claimId": "claim.contract-valid",
+        "claim": "The canonical fixture passes deterministic validation.",
+        "subjectDigest": "sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1",
+        "source": {
+          "kind": "test_result",
+          "locator": "fixture://tribunal/positive-basic",
+          "summary": "The positive fixture validates.",
+          "digest": "sha256:2b70fc37c97b49c10f77336e6fe508d974845dab80b42d126a7151af54ceed9f"
+        },
+        "observable": true,
+        "inspectedBy": "evaluator.contract.v1",
+        "inspectionMethod": "vitest fixture execution",
+        "observedAt": "2026-08-21T12:45:00.000Z",
+        "validUntil": "2026-08-22T12:45:00.000Z",
+        "confidence": 0.9,
+        "limitations": [
+          "Does not prove subjective design quality."
+        ],
+        "retentionClass": "project",
+        "derivedFromEvidenceClaimIds": [],
+        "contentDigest": "sha256:6e3ea7111fecbb53ff03635c875e9a59d9b86d9c8c07588bb06740bdbe010304"
+      }
+    ],
+    "verdicts": [
+      {
+        "kind": "TribunalVerdict",
+        "protocolVersion": "1.0.0",
+        "id": "verdict.recommend.v1",
+        "evaluatorDeclarationId": "evaluator.contract.v1",
+        "authorityGrantId": "grant.evaluator.v1",
+        "subjectDigest": "sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1",
+        "claimId": "claim.contract-valid",
+        "claim": "The compatibility contract is structurally ready for review.",
+        "disposition": "SUPPORTED",
+        "evidenceClaimIds": [
+          "evidence.fixture.v1"
+        ],
+        "confidence": 0.86,
+        "uncertainty": "Semantic quality still requires human judgment.",
+        "dissent": [],
+        "authorityEffectRequested": "recommend",
+        "authorityBasis": {
+          "kind": "grant",
+          "grantId": "grant.evaluator.v1",
+          "grantDigest": "sha256:49d045a78b4ab316842da884b5e39ec997351c9be492dbf22bff70c85e392faf"
+        },
+        "provenance": {
+          "trajectoryId": "trajectory.release.v1",
+          "evaluatorVersion": "1.0.0",
+          "declarationDigest": "sha256:d056bdba88a833ad18cf6c7ad48661921ba56203adbcf285c6d994a10c81f999",
+          "evidenceDigests": [
+            "sha256:6e3ea7111fecbb53ff03635c875e9a59d9b86d9c8c07588bb06740bdbe010304"
+          ],
+          "createdAt": "2026-08-21T13:00:00.000Z",
+          "contentDigest": "sha256:afdbe821284de573f51eb28455e4f6f32549876fb3224a7fd3d34c5545e01f59"
+        }
+      }
+    ],
+    "decisionReceipts": [
+      {
+        "kind": "DecisionReceipt",
+        "protocolVersion": "1.0.0",
+        "id": "receipt.review.v1",
+        "caseId": "case.design.review.v1",
+        "caseDigest": "sha256:86517648612ceb3f256c8e995854d240b21922aa4066df9ef366f6122787215d",
+        "decision": {
+          "decision": "approved",
+          "authorityType": "human",
+          "authorityId": "human:bryan",
+          "rationale": "The evaluator may recommend; the human decides what happens next.",
+          "decidedAt": "2026-08-21T13:02:00.000Z"
+        },
+        "effect": "recommend",
+        "consideredVerdictIds": [
+          "verdict.recommend.v1"
+        ],
+        "acceptedEvidenceClaimIds": [
+          "evidence.fixture.v1"
+        ],
+        "rejectedOrDisputedEvidence": [],
+        "authorityGrantRefs": [
+          {
+            "grantId": "grant.evaluator.v1",
+            "grantDigest": "sha256:49d045a78b4ab316842da884b5e39ec997351c9be492dbf22bff70c85e392faf"
+          }
+        ],
+        "reversibility": {
+          "kind": "reversible",
+          "rollbackRef": "git://revert/receipt.review.v1",
+          "deadline": "2026-09-21T13:02:00.000Z"
+        },
+        "issuedAt": "2026-08-21T13:02:00.000Z",
+        "nonce": "receipt-nonce-0001",
+        "contentDigest": "sha256:c794338ae55c172b7616b73180ee207b94691a910f7e2e7bc2e67b49184efeda"
+      }
+    ]
+  },
+  "evidence": {
+    "fixture://tribunal/positive-basic": "observable fixture bytes"
+  }
 }

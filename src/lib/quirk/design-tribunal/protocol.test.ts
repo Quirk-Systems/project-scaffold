@@ -793,12 +793,8 @@ describe("Tribunal protocol v1", () => {
       PLACEHOLDER_DIGEST;
     declaration.tribunalCase.verdicts[0].provenance.declarationDigest =
       PLACEHOLDER_DIGEST;
-    sealCase({
-      ...declaration.tribunalCase,
-      evaluatorDeclarations: [],
-      verdicts: [],
-      decisionReceipts: [],
-    } as TribunalCase);
+    declaration.tribunalCase.verdicts[0].provenance.contentDigest =
+      computeVerdictContentDigest(declaration.tribunalCase.verdicts[0]);
     expectCodes(declaration, ["DECLARATION_HASH_MISMATCH"]);
 
     const evidenceSet = makeHarness();

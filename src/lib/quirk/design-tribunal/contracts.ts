@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const StableIdSchema = z
+export const StableIdSchema = z
   .string()
   .min(1)
   .regex(/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/);
@@ -128,8 +128,7 @@ export const DesignReviewRequestSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["baselineLocator"],
-        message:
-          "Provide a baseline locator or explain why no baseline exists.",
+        message: "Provide a baseline locator or explain why no baseline exists.",
       });
     }
 
@@ -183,13 +182,18 @@ export const DesignReleaseStatusSchema = z.enum([
   "human_required",
 ]);
 
-export const DesignHumanDecisionSchema = z.object({
-  decision: z.enum(["approved", "rejected", "waived", "superseded"]),
-  authorityType: z.literal("human"),
-  authorityId: z.string().min(1),
-  rationale: z.string().min(1),
-  decidedAt: z.string().datetime({ offset: true }),
-});
+export const HumanDecisionSchema = z
+  .object({
+    decision: z.enum(["approved", "rejected", "waived", "superseded"]),
+    authorityType: z.literal("human"),
+    authorityId: z.string().min(1),
+    rationale: z.string().min(1),
+    decidedAt: z.string().datetime({ offset: true }),
+  })
+  .strict();
+
+/** Backward-compatible name for the canonical human decision schema. */
+export const DesignHumanDecisionSchema = HumanDecisionSchema;
 
 export const DesignReviewReportSchema = z.object({
   runId: StableIdSchema,
@@ -211,6 +215,8 @@ export type DesignCriterion = z.infer<typeof DesignCriterionSchema>;
 export type DesignReviewRequest = z.infer<typeof DesignReviewRequestSchema>;
 export type DesignFinding = z.infer<typeof DesignFindingSchema>;
 export type DesignReleaseStatus = z.infer<typeof DesignReleaseStatusSchema>;
+export type HumanDecision = z.infer<typeof HumanDecisionSchema>;
+export type DesignHumanDecision = HumanDecision;
 export type DesignReviewReport = z.infer<typeof DesignReviewReportSchema>;
 
 const TERMINAL_RESOLUTIONS = new Set<DesignFinding["resolutionStatus"]>([
@@ -230,8 +236,7 @@ export function deriveReleaseStatus(input: {
     (finding) => !TERMINAL_RESOLUTIONS.has(finding.resolutionStatus),
   );
   const blocking = actionable.filter(
-    (finding) =>
-      finding.blocksRelease || finding.severity === "blocker",
+    (finding) => finding.blocksRelease || finding.severity === "blocker",
   );
 
   if (
