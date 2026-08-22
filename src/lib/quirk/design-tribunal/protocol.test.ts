@@ -387,7 +387,7 @@ function makeHarness(): Harness {
           ? EVIDENCE_BYTES
           : locator === "fixture://tribunal/calibration-v1"
             ? CALIBRATION_BYTES
-          : undefined,
+            : undefined,
       trustedAuthorityIssuers: ["human:bryan"],
       trustedHumanAuthorities: ["human:bryan"],
       consumedReceiptDigests: new Map(),
@@ -468,8 +468,13 @@ describe("Tribunal protocol v1", () => {
     expectCodes(stringResolver, []);
 
     const binaryResolver = makeHarness();
-    binaryResolver.context.resolveEvidence = () =>
-      Buffer.from(EVIDENCE_BYTES, "utf8");
+    binaryResolver.context.resolveEvidence = (locator) =>
+      Buffer.from(
+        locator === "fixture://tribunal/calibration-v1"
+          ? CALIBRATION_BYTES
+          : EVIDENCE_BYTES,
+        "utf8",
+      );
     expectCodes(binaryResolver, []);
   });
 
@@ -645,7 +650,7 @@ describe("Tribunal protocol v1", () => {
       },
     ];
     sealCase(harness.tribunalCase);
-    expectCodes(harness, ["VERDICT_GRANT_BINDING_MISMATCH"]);
+    expectCodes(harness, ["GRANT_UNOWNED", "VERDICT_GRANT_BINDING_MISMATCH"]);
   });
 
   it.each([
@@ -758,16 +763,25 @@ describe("Tribunal protocol v1", () => {
 
   it("requires evidence bytes to be resolvable and digest-matched", () => {
     const harness = makeHarness();
-    harness.context.resolveEvidence = () => undefined;
+    harness.context.resolveEvidence = (locator) =>
+      locator === "fixture://tribunal/calibration-v1"
+        ? CALIBRATION_BYTES
+        : undefined;
     expectCodes(harness, ["EVIDENCE_SOURCE_UNRESOLVED"]);
 
-    harness.context.resolveEvidence = () => "different bytes";
+    harness.context.resolveEvidence = (locator) =>
+      locator === "fixture://tribunal/calibration-v1"
+        ? CALIBRATION_BYTES
+        : "different bytes";
     expectCodes(harness, ["EVIDENCE_DIGEST_MISMATCH"]);
   });
 
   it("fails closed when evidence infrastructure throws", () => {
     const harness = makeHarness();
-    harness.context.resolveEvidence = () => {
+    harness.context.resolveEvidence = (locator) => {
+      if (locator === "fixture://tribunal/calibration-v1") {
+        return CALIBRATION_BYTES;
+      }
       throw new Error("adapter failure containing secret material");
     };
 
@@ -1284,9 +1298,9 @@ describe("Tribunal protocol v1", () => {
     ]);
 
     harness.tribunalCase.decisionReceipts.reverse();
-    expect(validateTribunalCase(harness.tribunalCase, harness.context).issues).toEqual(
-      [],
-    );
+    expect(
+      validateTribunalCase(harness.tribunalCase, harness.context).issues,
+    ).toEqual([]);
   });
 
   it("rejects a broken receipt-history link", () => {
