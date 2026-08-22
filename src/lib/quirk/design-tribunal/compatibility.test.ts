@@ -208,6 +208,32 @@ describe("Design Tribunal compatibility adapters", () => {
     );
   });
 
+  it("does not let adapter bindings replace the canonical finding trajectory", () => {
+    const source = fixture.tribunalCase;
+    const result = adaptDesignFinding({
+      finding,
+      bindings: {
+        evidenceClaimIds: ["evidence.fixture.v1"],
+        evaluatorDeclarationId: "evaluator.contract.v1",
+        authorityGrantId: "grant.evaluator.v1",
+        grantDigest: source.evaluatorDeclarations[0].authority.grantDigest,
+        subjectDigest: source.subject.digest,
+        claimId: "claim.contract-valid",
+        authorityEffectRequested: "recommend",
+        declarationDigest:
+          source.evaluatorDeclarations[0].provenance.declarationDigest,
+        evidenceDigests: [source.evidenceClaims[0].contentDigest],
+        trajectoryId: "trajectory.unrelated.v1",
+        evaluatorVersion: source.evaluatorDeclarations[0].version,
+      },
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      issues: [{ code: "DESIGN_FINDING_TRAJECTORY_MISMATCH" }],
+    });
+  });
+
   it("embeds the exact canonical human decision in a hash-bound receipt", () => {
     const source = fixture.tribunalCase;
     const result = adaptDesignHumanDecision({

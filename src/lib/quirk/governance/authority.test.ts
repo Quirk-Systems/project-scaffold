@@ -179,6 +179,22 @@ describe("Never #0001 — capability does not imply authority", () => {
     expect(decision.authorized).toBe(true);
   });
 
+  it("rejects an invalid verification clock", () => {
+    expect(
+      verifyAuthorityGrant({
+        token: validGrant(),
+        secret,
+        subject: "run:run-123",
+        requiredScope: PROMOTE_RUN_SCOPE,
+        now: new Date(Number.NaN),
+      }),
+    ).toEqual({
+      authorized: false,
+      never: NEVER_0001,
+      reason: "invalid_verification_time",
+    });
+  });
+
   it("rejects undeclared delegation metadata instead of stripping it", () => {
     const delegated = signRawGrant({
       grantId: "grant-delegated",
