@@ -937,7 +937,8 @@ describe("Tribunal protocol v1", () => {
       receipt.contentDigest,
     );
     receipt.id = "receipt.rewrapped.v1";
-    receipt.contentDigest = computeDecisionReceiptContentDigest(receipt);
+    harness.tribunalCase.effectiveDecisionReceiptId = receipt.id;
+    sealCase(harness.tribunalCase);
 
     expectCodes(harness, ["DECISION_RECEIPT_TAMPERED"]);
   });
