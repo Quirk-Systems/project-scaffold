@@ -267,4 +267,3 @@ export function deriveReleaseStatus(input: {
 
   return "pass";
 }
-

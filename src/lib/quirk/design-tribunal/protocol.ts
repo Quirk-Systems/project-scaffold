@@ -16,6 +16,27 @@ import {
 export const TRIBUNAL_PROTOCOL_VERSION = "1.0.0" as const;
 export const TRIBUNAL_EVALUATE_SCOPE = "quirk.tribunal.evaluate" as const;
 
+export const TRIBUNAL_LIMITS = Object.freeze({
+  stableIdChars: 128,
+  shortTextChars: 2_048,
+  longTextChars: 8_192,
+  locatorChars: 2_048,
+  roleItems: 256,
+  authorityGrants: 64,
+  evaluatorDeclarations: 64,
+  evidenceClaims: 1_024,
+  verdicts: 256,
+  decisionReceipts: 64,
+  grantScopes: 128,
+  rawDepth: 100,
+  rawValues: 20_000,
+  rawArrayItems: 2_048,
+  rawObjectKeys: 128,
+  rawStringBytes: 65_536,
+  serializedBytes: 2_000_000,
+  authorityTokenChars: 32_768,
+} as const);
+
 export const TribunalEffectSchema = z.enum([
   "observe",
   "recommend",
@@ -35,10 +56,98 @@ export const TribunalDispositionSchema = z.enum([
 ]);
 
 const ProtocolVersionSchema = z.literal(TRIBUNAL_PROTOCOL_VERSION);
-const NonEmptyStringSchema = z.string().min(1);
-const TimestampSchema = z.string().datetime({ offset: true });
+const StableProtocolIdSchema = StableIdSchema.max(
+  TRIBUNAL_LIMITS.stableIdChars,
+);
+const NonEmptyStringSchema = z
+  .string()
+  .min(1)
+  .max(TRIBUNAL_LIMITS.longTextChars);
+const ShortStringSchema = z.string().min(1).max(TRIBUNAL_LIMITS.shortTextChars);
+const LocatorStringSchema = z.string().min(1).max(TRIBUNAL_LIMITS.locatorChars);
+const TimestampSchema = z.string().max(64).datetime({ offset: true });
 const DigestSchema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
-const DigestCandidateSchema = z.string().min(1).optional();
+const DigestCandidateSchema = z.string().min(1).max(71).optional();
+
+function boundedUniqueArray<T extends z.ZodTypeAny>(
+  item: T,
+  options: {
+    min?: number;
+    max?: number;
+    key?: (value: z.infer<T>) => string;
+  } = {},
+) {
+  const minimum = options.min ?? 0;
+  const maximum = options.max ?? TRIBUNAL_LIMITS.roleItems;
+  return z
+    .array(item)
+    .min(minimum)
+    .max(maximum)
+    .superRefine((values, context) => {
+      const seen = new Set<string>();
+      values.forEach((value, index) => {
+        const key = options.key
+          ? options.key(value)
+          : typeof value === "string"
+            ? value
+            : (JSON.stringify(value) ?? String(value));
+        if (seen.has(key)) {
+          context.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: [index],
+            message: "Collection entries must be unique.",
+          });
+        }
+        seen.add(key);
+      });
+    });
+}
+
+const TribunalAuthorityGrantSchema = AuthorityGrantSchema.superRefine(
+  (grant, context) => {
+    for (const field of ["grantId", "issuer", "subject", "nonce"] as const) {
+      if (grant[field].length > TRIBUNAL_LIMITS.shortTextChars) {
+        context.addIssue({
+          code: z.ZodIssueCode.too_big,
+          maximum: TRIBUNAL_LIMITS.shortTextChars,
+          inclusive: true,
+          type: "string",
+          path: [field],
+          message: "Authority grant field exceeds the Tribunal input budget.",
+        });
+      }
+    }
+    if (grant.scopes.length > TRIBUNAL_LIMITS.grantScopes) {
+      context.addIssue({
+        code: z.ZodIssueCode.too_big,
+        maximum: TRIBUNAL_LIMITS.grantScopes,
+        inclusive: true,
+        type: "array",
+        path: ["scopes"],
+        message: "Authority grant scopes exceed the Tribunal input budget.",
+      });
+    }
+    if (new Set(grant.scopes).size !== grant.scopes.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["scopes"],
+        message: "Authority grant scopes must be unique.",
+      });
+    }
+    grant.scopes.forEach((scope, index) => {
+      if (scope.length > TRIBUNAL_LIMITS.shortTextChars) {
+        context.addIssue({
+          code: z.ZodIssueCode.too_big,
+          maximum: TRIBUNAL_LIMITS.shortTextChars,
+          inclusive: true,
+          type: "string",
+          path: ["scopes", index],
+          message: "Authority scope exceeds the Tribunal input budget.",
+        });
+      }
+    });
+  },
+);
 
 const InternalEvidenceKindSchema = z.enum([
   "evidence_claim",
@@ -52,13 +161,15 @@ export const TribunalEvidenceKindSchema = z.union([
 ]);
 
 const StrictDesignEvidenceSourceSchema = DesignEvidenceSchema.extend({
+  locator: LocatorStringSchema,
+  summary: NonEmptyStringSchema,
   digest: DigestCandidateSchema,
 }).strict();
 
 const InternalEvidenceSourceSchema = z
   .object({
     kind: InternalEvidenceKindSchema,
-    locator: StableIdSchema,
+    locator: StableProtocolIdSchema,
     summary: NonEmptyStringSchema,
     digest: DigestCandidateSchema,
   })
@@ -71,21 +182,21 @@ export const TribunalEvidenceSourceSchema = z.union([
 
 export const TribunalOperatingScopeSchema = z
   .object({
-    purposeId: StableIdSchema,
-    tenantId: StableIdSchema,
-    audienceId: StableIdSchema,
-    destinationId: StableIdSchema,
+    purposeId: StableProtocolIdSchema,
+    tenantId: StableProtocolIdSchema,
+    audienceId: StableProtocolIdSchema,
+    destinationId: StableProtocolIdSchema,
     actionDigest: DigestSchema,
   })
   .strict();
 
 export const TribunalSubjectSchema = z
   .object({
-    id: StableIdSchema,
-    realm: StableIdSchema,
-    targetClass: StableIdSchema,
-    revision: NonEmptyStringSchema,
-    locator: NonEmptyStringSchema,
+    id: StableProtocolIdSchema,
+    realm: StableProtocolIdSchema,
+    targetClass: StableProtocolIdSchema,
+    revision: ShortStringSchema,
+    locator: LocatorStringSchema,
     digest: DigestSchema,
   })
   .strict();
@@ -94,7 +205,7 @@ export const EvaluatorDeclarationSchema = z
   .object({
     kind: z.literal("EvaluatorDeclaration"),
     protocolVersion: ProtocolVersionSchema,
-    id: StableIdSchema,
+    id: StableProtocolIdSchema,
     evaluatorType: z.enum([
       "deterministic_validator",
       "model",
@@ -103,46 +214,57 @@ export const EvaluatorDeclarationSchema = z
       "ensemble",
       "meta_evaluator",
     ]),
-    version: NonEmptyStringSchema,
+    version: ShortStringSchema,
     independence: z
       .object({
-        key: StableIdSchema,
-        operatorId: StableIdSchema,
-        modelFamily: StableIdSchema,
+        key: StableProtocolIdSchema,
+        operatorId: StableProtocolIdSchema,
+        modelFamily: StableProtocolIdSchema,
       })
       .strict(),
     inspection: z
       .object({
-        canInspect: z.array(NonEmptyStringSchema).min(1),
-        cannotInspect: z.array(NonEmptyStringSchema),
-        tools: z.array(NonEmptyStringSchema),
-        evidenceKinds: z.array(TribunalEvidenceKindSchema).min(1),
+        canInspect: boundedUniqueArray(ShortStringSchema, { min: 1 }),
+        cannotInspect: boundedUniqueArray(ShortStringSchema),
+        allowedSourceLocatorPrefixes: boundedUniqueArray(LocatorStringSchema, {
+          min: 1,
+        }),
+        deniedSourceLocatorPrefixes: boundedUniqueArray(LocatorStringSchema),
+        tools: boundedUniqueArray(ShortStringSchema),
+        evidenceKinds: boundedUniqueArray(TribunalEvidenceKindSchema, {
+          min: 1,
+        }),
         temporalBoundary: TimestampSchema,
       })
       .strict(),
     fallibility: z
       .object({
-        knownFailureModes: z.array(NonEmptyStringSchema).min(1),
-        calibrationEvidence: NonEmptyStringSchema,
+        knownFailureModes: boundedUniqueArray(ShortStringSchema, { min: 1 }),
+        calibrationEvidence: z
+          .object({
+            locator: LocatorStringSchema,
+            digest: DigestSchema,
+          })
+          .strict(),
         calibratedAt: TimestampSchema,
         calibrationValidUntil: TimestampSchema,
         holdoutDigest: DigestSchema,
         maxConfidence: z.number().min(0).max(1),
-        errorTendencies: z.array(NonEmptyStringSchema),
-        unresolvedBlindSpots: z.array(NonEmptyStringSchema),
+        errorTendencies: boundedUniqueArray(ShortStringSchema),
+        unresolvedBlindSpots: boundedUniqueArray(ShortStringSchema),
       })
       .strict(),
     authority: z
       .object({
-        grantId: StableIdSchema,
+        grantId: StableProtocolIdSchema,
         grantDigest: DigestSchema,
-        declaredEffects: z.array(TribunalEffectSchema).min(1),
-        prohibitedEffects: z.array(TribunalEffectSchema),
+        declaredEffects: boundedUniqueArray(TribunalEffectSchema, { min: 1 }),
+        prohibitedEffects: boundedUniqueArray(TribunalEffectSchema),
       })
       .strict(),
     provenance: z
       .object({
-        canonicalVersion: NonEmptyStringSchema,
+        canonicalVersion: ShortStringSchema,
         declarationDigest: DigestSchema,
       })
       .strict(),
@@ -153,20 +275,20 @@ export const EvidenceClaimSchema = z
   .object({
     kind: z.literal("EvidenceClaim"),
     protocolVersion: ProtocolVersionSchema,
-    id: StableIdSchema,
-    claimId: StableIdSchema,
+    id: StableProtocolIdSchema,
+    claimId: StableProtocolIdSchema,
     claim: NonEmptyStringSchema,
     subjectDigest: DigestSchema,
     source: TribunalEvidenceSourceSchema,
     observable: z.boolean(),
-    inspectedBy: StableIdSchema,
-    inspectionMethod: NonEmptyStringSchema,
+    inspectedBy: StableProtocolIdSchema,
+    inspectionMethod: ShortStringSchema,
     observedAt: TimestampSchema,
     validUntil: TimestampSchema,
     confidence: z.number().min(0).max(1),
-    limitations: z.array(NonEmptyStringSchema),
+    limitations: boundedUniqueArray(ShortStringSchema),
     retentionClass: z.enum(["ephemeral", "session", "project", "permanent"]),
-    derivedFromEvidenceClaimIds: z.array(StableIdSchema),
+    derivedFromEvidenceClaimIds: boundedUniqueArray(StableProtocolIdSchema),
     contentDigest: DigestSchema,
   })
   .strict();
@@ -175,17 +297,18 @@ export const TribunalVerdictSchema = z
   .object({
     kind: z.literal("TribunalVerdict"),
     protocolVersion: ProtocolVersionSchema,
-    id: StableIdSchema,
-    evaluatorDeclarationId: StableIdSchema,
-    authorityGrantId: StableIdSchema,
+    id: StableProtocolIdSchema,
+    evaluatorDeclarationId: StableProtocolIdSchema,
+    authorityGrantId: StableProtocolIdSchema,
     subjectDigest: DigestSchema,
-    claimId: StableIdSchema,
+    criterionRef: StableProtocolIdSchema,
+    claimId: StableProtocolIdSchema,
     claim: NonEmptyStringSchema,
     disposition: TribunalDispositionSchema,
-    evidenceClaimIds: z.array(StableIdSchema),
+    evidenceClaimIds: boundedUniqueArray(StableProtocolIdSchema),
     confidence: z.number().min(0).max(1),
     uncertainty: NonEmptyStringSchema,
-    dissent: z.array(NonEmptyStringSchema),
+    dissent: boundedUniqueArray(ShortStringSchema),
     authorityEffectRequested: TribunalEffectSchema,
     authorityBasis: z
       .object({
@@ -195,16 +318,16 @@ export const TribunalVerdictSchema = z
           "consensus",
           "historical_accuracy",
         ]),
-        grantId: StableIdSchema,
+        grantId: StableProtocolIdSchema,
         grantDigest: DigestSchema,
       })
       .strict(),
     provenance: z
       .object({
-        trajectoryId: StableIdSchema,
-        evaluatorVersion: NonEmptyStringSchema,
+        trajectoryId: StableProtocolIdSchema,
+        evaluatorVersion: ShortStringSchema,
         declarationDigest: DigestSchema,
-        evidenceDigests: z.array(DigestSchema),
+        evidenceDigests: boundedUniqueArray(DigestSchema),
         createdAt: TimestampSchema,
         contentDigest: DigestSchema,
       })
@@ -214,7 +337,7 @@ export const TribunalVerdictSchema = z
 
 export const AuthorityGrantReferenceSchema = z
   .object({
-    grantId: StableIdSchema,
+    grantId: StableProtocolIdSchema,
     grantDigest: DigestSchema,
   })
   .strict();
@@ -223,22 +346,32 @@ export const DecisionReceiptSchema = z
   .object({
     kind: z.literal("DecisionReceipt"),
     protocolVersion: ProtocolVersionSchema,
-    id: StableIdSchema,
-    caseId: StableIdSchema,
+    id: StableProtocolIdSchema,
+    caseId: StableProtocolIdSchema,
     caseDigest: DigestSchema,
-    decision: HumanDecisionSchema,
+    decision: HumanDecisionSchema.extend({
+      authorityId: ShortStringSchema,
+      rationale: NonEmptyStringSchema,
+      decidedAt: TimestampSchema,
+    }).strict(),
     effect: TribunalEffectSchema,
-    consideredVerdictIds: z.array(StableIdSchema).min(1),
-    acceptedEvidenceClaimIds: z.array(StableIdSchema),
-    rejectedOrDisputedEvidence: z.array(
+    consideredVerdictIds: boundedUniqueArray(StableProtocolIdSchema, {
+      min: 1,
+    }),
+    acceptedEvidenceClaimIds: boundedUniqueArray(StableProtocolIdSchema),
+    rejectedOrDisputedEvidence: boundedUniqueArray(
       z
         .object({
-          evidenceClaimId: StableIdSchema,
+          evidenceClaimId: StableProtocolIdSchema,
           reason: NonEmptyStringSchema,
         })
         .strict(),
+      { key: ({ evidenceClaimId }) => evidenceClaimId },
     ),
-    authorityGrantRefs: z.array(AuthorityGrantReferenceSchema).min(1),
+    authorityGrantRefs: boundedUniqueArray(AuthorityGrantReferenceSchema, {
+      min: 1,
+      key: ({ grantId }) => grantId,
+    }),
     reversibility: z
       .object({
         kind: z.enum(["reversible", "irreversible"]),
@@ -247,7 +380,8 @@ export const DecisionReceiptSchema = z
       })
       .strict(),
     issuedAt: TimestampSchema,
-    nonce: z.string().min(8),
+    nonce: z.string().min(8).max(TRIBUNAL_LIMITS.shortTextChars),
+    previousReceiptDigest: DigestSchema.nullable(),
     contentDigest: DigestSchema,
   })
   .strict();
@@ -256,24 +390,37 @@ export const TribunalCaseSchema = z
   .object({
     kind: z.literal("TribunalCase"),
     protocolVersion: ProtocolVersionSchema,
-    caseId: StableIdSchema,
+    caseId: StableProtocolIdSchema,
     purpose: NonEmptyStringSchema,
-    requesterId: StableIdSchema,
-    humanAuthorityId: NonEmptyStringSchema,
-    trajectoryId: StableIdSchema,
+    requesterId: StableProtocolIdSchema,
+    humanAuthorityId: ShortStringSchema,
+    trajectoryId: StableProtocolIdSchema,
     openedAt: TimestampSchema,
     evaluatedAt: TimestampSchema,
     proposedEffect: TribunalEffectSchema,
     operatingScope: TribunalOperatingScopeSchema,
     subject: TribunalSubjectSchema,
-    criterionRefs: z.array(StableIdSchema).min(1),
-    sourceRefs: z.array(NonEmptyStringSchema),
-    authorityGrants: z.array(AuthorityGrantSchema).min(1),
-    evaluatorDeclarations: z.array(EvaluatorDeclarationSchema).min(1),
-    evidenceClaims: z.array(EvidenceClaimSchema),
-    verdicts: z.array(TribunalVerdictSchema).min(1),
-    decisionReceipts: z.array(DecisionReceiptSchema),
-    effectiveDecisionReceiptId: StableIdSchema.optional(),
+    criterionRefs: boundedUniqueArray(StableProtocolIdSchema, { min: 1 }),
+    sourceRefs: boundedUniqueArray(LocatorStringSchema),
+    authorityGrants: z
+      .array(TribunalAuthorityGrantSchema)
+      .min(1)
+      .max(TRIBUNAL_LIMITS.authorityGrants),
+    evaluatorDeclarations: z
+      .array(EvaluatorDeclarationSchema)
+      .min(1)
+      .max(TRIBUNAL_LIMITS.evaluatorDeclarations),
+    evidenceClaims: z
+      .array(EvidenceClaimSchema)
+      .max(TRIBUNAL_LIMITS.evidenceClaims),
+    verdicts: z
+      .array(TribunalVerdictSchema)
+      .min(1)
+      .max(TRIBUNAL_LIMITS.verdicts),
+    decisionReceipts: z
+      .array(DecisionReceiptSchema)
+      .max(TRIBUNAL_LIMITS.decisionReceipts),
+    effectiveDecisionReceiptId: StableProtocolIdSchema.optional(),
   })
   .strict();
 
@@ -304,9 +451,13 @@ export const TRIBUNAL_ISSUE_CODES = [
   "AUTHORITY_GRANT_WINDOW_INVALID",
   "AUTHORITY_LIFECYCLE_UNVERIFIED",
   "AUTHORITY_TOKEN_MISSING",
+  "AUTHORITY_TOKEN_TOO_LARGE",
   "AUTHORITY_UNION_FORBIDDEN",
   "AUTHORITY_VERIFIER_UNAVAILABLE",
   "BROWSER_EXPOSED_SECRET_FORBIDDEN",
+  "CALIBRATION_EVIDENCE_DIGEST_MISMATCH",
+  "CALIBRATION_EVIDENCE_OUT_OF_SCOPE",
+  "CALIBRATION_EVIDENCE_UNRESOLVED",
   "CALIBRATION_HOLDOUT_CONTAMINATED",
   "CALIBRATION_STALE",
   "CONFIDENCE_EXCEEDS_CALIBRATION",
@@ -328,6 +479,7 @@ export const TRIBUNAL_ISSUE_CODES = [
   "DUPLICATE_RECEIPT_NONCE",
   "EFFECTIVE_RECEIPT_MISMATCH",
   "EFFECTIVE_RECEIPT_REQUIRED",
+  "EFFECTIVE_ROLLBACK_WINDOW_EXPIRED",
   "EVALUATOR_INDEPENDENCE_COLLISION",
   "EVALUATOR_VERSION_MISMATCH",
   "EVIDENCE_AFTER_INSPECTION_BOUNDARY",
@@ -341,10 +493,12 @@ export const TRIBUNAL_ISSUE_CODES = [
   "EVIDENCE_REQUIRED",
   "EVIDENCE_SOURCE_UNRESOLVED",
   "EVIDENCE_STALE",
+  "EVIDENCE_UNOBSERVABLE",
   "GRANT_CASE_BINDING_MISMATCH",
   "GRANT_EVALUATOR_SCOPE_MISMATCH",
   "GRANT_SHARED_BETWEEN_EVALUATORS",
   "GRANT_SELF_ISSUED",
+  "GRANT_UNOWNED",
   "INPUT_GRAPH_UNSAFE",
   "LEGACY_DIALECT_UNSUPPORTED",
   "OUT_OF_SCOPE_EVIDENCE",
@@ -352,6 +506,7 @@ export const TRIBUNAL_ISSUE_CODES = [
   "PROXY_GRANT_FORBIDDEN",
   "PURPOSE_OUT_OF_SCOPE",
   "RECEIPT_CASE_DIGEST_MISMATCH",
+  "RECEIPT_CHAIN_MISMATCH",
   "RECEIPT_CONTENT_HASH_MISMATCH",
   "RECEIPT_EFFECT_MISMATCH",
   "RECEIPT_EVIDENCE_ACCOUNTING_INCOMPLETE",
@@ -371,6 +526,7 @@ export const TRIBUNAL_ISSUE_CODES = [
   "TENANT_OUT_OF_SCOPE",
   "TRAJECTORY_MISMATCH",
   "UNKNOWN_AUTHORITY_GRANT_REF",
+  "UNKNOWN_CRITERION_REF",
   "UNKNOWN_DECISION_RECEIPT_REF",
   "UNKNOWN_EVALUATOR_DECLARATION_REF",
   "UNKNOWN_EVIDENCE_CLAIM_REF",
@@ -432,13 +588,25 @@ export type TribunalValidationResult = {
   receiptReplayKeysToConsume: string[];
 };
 
+function compareUtf16(left: string, right: string): number {
+  const length = Math.min(left.length, right.length);
+  for (let index = 0; index < length; index += 1) {
+    const difference = left.charCodeAt(index) - right.charCodeAt(index);
+    if (difference !== 0) return difference;
+  }
+  return left.length - right.length;
+}
+
 function canonicalize(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(canonicalize);
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new TypeError("Canonical hashing requires finite numbers.");
+  }
   if (value && typeof value === "object" && !ArrayBuffer.isView(value)) {
     return Object.fromEntries(
       Object.entries(value as Record<string, unknown>)
         .filter(([, child]) => child !== undefined)
-        .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+        .sort(([left], [right]) => compareUtf16(left, right))
         .map(([key, child]) => [key, canonicalize(child)]),
     );
   }
@@ -468,6 +636,12 @@ export function digestCanonical(
   hash.update(`quirk-canonical-v1\0${domain}\0${encoding}\0`);
   hash.update(encoded);
   return `sha256:${hash.digest("hex")}`;
+}
+
+export function digestEvidenceBytes(value: string | Uint8Array): string {
+  const bytes =
+    typeof value === "string" ? new TextEncoder().encode(value) : value;
+  return digestCanonical(bytes, "quirk.tribunal.evidence-bytes.v1");
 }
 
 export function computeAuthorityGrantDigest(grant: AuthorityGrant): string {
@@ -510,8 +684,12 @@ export function computeVerdictContentDigest(verdict: TribunalVerdict): string {
 
 export function computeTribunalCaseDigest(tribunalCase: TribunalCase): string {
   return digestCanonical(
-    { ...tribunalCase, decisionReceipts: undefined },
-    "quirk.tribunal.case.v1",
+    {
+      ...tribunalCase,
+      decisionReceipts: undefined,
+      effectiveDecisionReceiptId: undefined,
+    },
+    "quirk.tribunal.case-basis.v1",
   );
 }
 
@@ -578,46 +756,92 @@ function findLegacyDialect(
 ): "ambiguous" | "legacy" | "unsafe" | null {
   let legacy = false;
   let ambiguous = false;
-  let visitedNodes = 0;
+  let visitedValues = 0;
+  let cumulativeStringBytes = 0;
   const seen = new WeakSet<object>();
   const stack: Array<{ current: unknown; depth: number }> = [
     { current: value, depth: 0 },
   ];
   while (stack.length > 0) {
     const { current, depth } = stack.pop()!;
-    if (!current || typeof current !== "object") continue;
-    if (depth > 100 || visitedNodes >= 10_000 || seen.has(current)) {
+    visitedValues += 1;
+    if (
+      depth > TRIBUNAL_LIMITS.rawDepth ||
+      visitedValues > TRIBUNAL_LIMITS.rawValues
+    ) {
       return "unsafe";
     }
-    seen.add(current);
-    visitedNodes += 1;
-    if (Array.isArray(current)) {
-      try {
-        for (const child of current) {
-          stack.push({ current: child, depth: depth + 1 });
-        }
-      } catch {
+    if (typeof current === "string") {
+      const byteLength = new TextEncoder().encode(current).byteLength;
+      cumulativeStringBytes += byteLength;
+      if (
+        byteLength > TRIBUNAL_LIMITS.rawStringBytes ||
+        cumulativeStringBytes > TRIBUNAL_LIMITS.serializedBytes
+      ) {
         return "unsafe";
       }
       continue;
     }
-    const object = current as Record<string, unknown>;
+    if (!current || typeof current !== "object") continue;
+    if (seen.has(current)) return "unsafe";
+    seen.add(current);
+    if (Array.isArray(current)) {
+      let length: number;
+      let descriptors: Record<string, PropertyDescriptor>;
+      let symbols: symbol[];
+      try {
+        length = current.length;
+        descriptors = Object.getOwnPropertyDescriptors(current);
+        symbols = Object.getOwnPropertySymbols(current);
+      } catch {
+        return "unsafe";
+      }
+      if (
+        length > TRIBUNAL_LIMITS.rawArrayItems ||
+        symbols.length > 0 ||
+        Object.values(descriptors).some(
+          (descriptor) => descriptor.get || descriptor.set,
+        )
+      ) {
+        return "unsafe";
+      }
+      for (const [key, descriptor] of Object.entries(descriptors)) {
+        if (key === "length") continue;
+        if (!/^(?:0|[1-9][0-9]*)$/.test(key)) return "unsafe";
+        stack.push({ current: descriptor.value, depth: depth + 1 });
+      }
+      continue;
+    }
+    let prototype: object | null;
+    let descriptors: Record<string, PropertyDescriptor>;
+    let symbols: symbol[];
+    try {
+      prototype = Object.getPrototypeOf(current);
+      descriptors = Object.getOwnPropertyDescriptors(current);
+      symbols = Object.getOwnPropertySymbols(current);
+    } catch {
+      return "unsafe";
+    }
+    if (
+      (prototype !== Object.prototype && prototype !== null) ||
+      symbols.length > 0 ||
+      Object.keys(descriptors).length > TRIBUNAL_LIMITS.rawObjectKeys ||
+      Object.values(descriptors).some(
+        (descriptor) => descriptor.get || descriptor.set,
+      )
+    ) {
+      return "unsafe";
+    }
     for (const [oldKey, canonicalKey] of LEGACY_ALIASES) {
-      if (Object.prototype.hasOwnProperty.call(object, oldKey)) {
+      if (Object.prototype.hasOwnProperty.call(descriptors, oldKey)) {
         legacy = true;
-        if (Object.prototype.hasOwnProperty.call(object, canonicalKey)) {
+        if (Object.prototype.hasOwnProperty.call(descriptors, canonicalKey)) {
           ambiguous = true;
         }
       }
     }
-    let children: unknown[];
-    try {
-      children = Object.values(object);
-    } catch {
-      return "unsafe";
-    }
-    for (const child of children) {
-      stack.push({ current: child, depth: depth + 1 });
+    for (const descriptor of Object.values(descriptors)) {
+      stack.push({ current: descriptor.value, depth: depth + 1 });
     }
   }
   if (ambiguous) return "ambiguous";
@@ -629,12 +853,16 @@ function hasExactMembers(
   actual: readonly string[],
   expected: readonly string[],
 ): boolean {
-  return (
-    actual.length === expected.length &&
-    [...actual]
-      .sort()
-      .every((value, index) => value === [...expected].sort()[index])
-  );
+  if (actual.length !== expected.length) return false;
+  const counts = new Map<string, number>();
+  for (const value of actual) counts.set(value, (counts.get(value) ?? 0) + 1);
+  for (const value of expected) {
+    const count = counts.get(value);
+    if (!count) return false;
+    if (count === 1) counts.delete(value);
+    else counts.set(value, count - 1);
+  }
+  return counts.size === 0;
 }
 
 function issueCollector() {
@@ -658,17 +886,27 @@ function issueCollector() {
     path = "$",
     refs: string[] = [],
   ): void => {
-    const normalizedRefs = refs.map(safeRef).sort();
+    const normalizedRefs = refs.map(safeRef).sort(compareUtf16);
     const normalizedPath = safePath(path);
     const key = `${code}|${normalizedPath}|${normalizedRefs.join(",")}`;
     issues.set(key, { code, path: normalizedPath, refs: normalizedRefs });
   };
   const values = (): TribunalIssue[] =>
-    [...issues.values()].sort((left, right) =>
-      `${left.code}|${left.path}|${left.refs.join(",")}`.localeCompare(
-        `${right.code}|${right.path}|${right.refs.join(",")}`,
-      ),
-    );
+    [...issues.values()].sort((left, right) => {
+      const code = compareUtf16(left.code, right.code);
+      if (code !== 0) return code;
+      const path = compareUtf16(left.path, right.path);
+      if (path !== 0) return path;
+      for (
+        let index = 0;
+        index < Math.min(left.refs.length, right.refs.length);
+        index += 1
+      ) {
+        const ref = compareUtf16(left.refs[index], right.refs[index]);
+        if (ref !== 0) return ref;
+      }
+      return left.refs.length - right.refs.length;
+    });
   return { add, values };
 }
 
@@ -702,7 +940,10 @@ function authorityFailureCode(
 function detectProtocolCycle(tribunalCase: TribunalCase): boolean {
   const graph = new Map<string, string[]>();
   const edge = (from: string, to: string): void => {
-    graph.set(from, [...(graph.get(from) ?? []), to]);
+    const edges = graph.get(from);
+    if (edges) edges.push(to);
+    else graph.set(from, [to]);
+    if (!graph.has(to)) graph.set(to, []);
   };
 
   for (const claim of tribunalCase.evidenceClaims) {
@@ -731,26 +972,50 @@ function detectProtocolCycle(tribunalCase: TribunalCase): boolean {
     );
   }
 
-  const visiting = new Set<string>();
-  const visited = new Set<string>();
-  const visit = (node: string): boolean => {
-    if (visiting.has(node)) return true;
-    if (visited.has(node)) return false;
-    visiting.add(node);
-    for (const next of graph.get(node) ?? []) {
-      if (visit(next)) return true;
+  const state = new Map<string, "visiting" | "visited">();
+  for (const start of graph.keys()) {
+    if (state.has(start)) continue;
+    const stack: Array<{ node: string; edgeIndex: number }> = [
+      { node: start, edgeIndex: 0 },
+    ];
+    state.set(start, "visiting");
+    while (stack.length > 0) {
+      const frame = stack[stack.length - 1];
+      const edges = graph.get(frame.node) ?? [];
+      if (frame.edgeIndex >= edges.length) {
+        state.set(frame.node, "visited");
+        stack.pop();
+        continue;
+      }
+      const next = edges[frame.edgeIndex];
+      frame.edgeIndex += 1;
+      const nextState = state.get(next);
+      if (nextState === "visiting") return true;
+      if (nextState === "visited") continue;
+      state.set(next, "visiting");
+      stack.push({ node: next, edgeIndex: 0 });
     }
-    visiting.delete(node);
-    visited.add(node);
-    return false;
-  };
-  return [...graph.keys()].some(visit);
+  }
+  return false;
 }
 
 function authorityBearing(effect: TribunalEffect): boolean {
   return ["approve", "publish", "mutate_canon", "promote_verdict"].includes(
     effect,
   );
+}
+
+function sourceLocatorPermitted(
+  declaration: EvaluatorDeclaration,
+  locator: string,
+): boolean {
+  const allowed = declaration.inspection.allowedSourceLocatorPrefixes.some(
+    (prefix) => locator.startsWith(prefix),
+  );
+  const denied = declaration.inspection.deniedSourceLocatorPrefixes.some(
+    (prefix) => locator.startsWith(prefix),
+  );
+  return allowed && !denied;
 }
 
 function containsBrowserExposedSecret(value: string): boolean {
@@ -819,7 +1084,20 @@ export function validateTribunalCase(
   }
   const tribunalCase = parsed.data;
 
-  const serialized = JSON.stringify(tribunalCase);
+  let serialized: string;
+  try {
+    serialized = JSON.stringify(tribunalCase);
+  } catch {
+    add("INPUT_GRAPH_UNSAFE");
+    return emptyResult();
+  }
+  if (
+    new TextEncoder().encode(serialized).byteLength >
+    TRIBUNAL_LIMITS.serializedBytes
+  ) {
+    add("INPUT_GRAPH_UNSAFE");
+    return emptyResult();
+  }
   if (containsBrowserExposedSecret(serialized)) {
     add("BROWSER_EXPOSED_SECRET_FORBIDDEN");
   }
@@ -909,29 +1187,41 @@ export function validateTribunalCase(
         ? tokenStore[grant.grantId]
         : undefined;
     let decision: AuthorityDecision | undefined;
-    try {
-      decision = context.verifyGrant({
-        token,
-        secret: context.authoritySecret,
-        subject: tribunalCaseSubject(tribunalCase.caseId),
-        requiredScope: TRIBUNAL_EVALUATE_SCOPE,
-        now: context.now,
-      });
-    } catch {
+    if (
+      typeof token === "string" &&
+      token.length > TRIBUNAL_LIMITS.authorityTokenChars
+    ) {
       grantEligible = false;
-      add(
-        "AUTHORITY_VERIFIER_UNAVAILABLE",
-        `authorityGrants.${grant.grantId}`,
-        [grant.grantId],
-      );
+      add("AUTHORITY_TOKEN_TOO_LARGE", `authorityGrants.${grant.grantId}`, [
+        grant.grantId,
+      ]);
+    } else {
+      try {
+        decision = context.verifyGrant({
+          token,
+          secret: context.authoritySecret,
+          subject: tribunalCaseSubject(tribunalCase.caseId),
+          requiredScope: TRIBUNAL_EVALUATE_SCOPE,
+          now: context.now,
+        });
+      } catch {
+        grantEligible = false;
+        add(
+          "AUTHORITY_VERIFIER_UNAVAILABLE",
+          `authorityGrants.${grant.grantId}`,
+          [grant.grantId],
+        );
+      }
     }
     if (!decision) {
+      if (grantEligible) {
+        add(
+          "AUTHORITY_VERIFIER_UNAVAILABLE",
+          `authorityGrants.${grant.grantId}`,
+          [grant.grantId],
+        );
+      }
       grantEligible = false;
-      add(
-        "AUTHORITY_VERIFIER_UNAVAILABLE",
-        `authorityGrants.${grant.grantId}`,
-        [grant.grantId],
-      );
     } else if (!decision.authorized) {
       grantEligible = false;
       add(authorityFailureCode(decision), `authorityGrants.${grant.grantId}`, [
@@ -1005,6 +1295,17 @@ export function validateTribunalCase(
     }
 
     const grantOwners = declarationsByGrantId.get(grant.grantId) ?? [];
+    const ownedVerdicts = tribunalCase.verdicts.filter(
+      (verdict) =>
+        verdict.authorityGrantId === grant.grantId &&
+        grantOwners.some(
+          (declaration) => declaration.id === verdict.evaluatorDeclarationId,
+        ),
+    );
+    if (grantOwners.length === 0 || ownedVerdicts.length === 0) {
+      grantEligible = false;
+      add("GRANT_UNOWNED", `authorityGrants.${grant.grantId}`, [grant.grantId]);
+    }
     if (grantOwners.length > 1) {
       grantEligible = false;
       add(
@@ -1131,8 +1432,37 @@ export function validateTribunalCase(
     }
 
     const evaluatedAt = Date.parse(tribunalCase.evaluatedAt);
+    const calibrationEvidence = declaration.fallibility.calibrationEvidence;
+    if (!sourceLocatorPermitted(declaration, calibrationEvidence.locator)) {
+      add(
+        "CALIBRATION_EVIDENCE_OUT_OF_SCOPE",
+        `evaluatorDeclarations.${declaration.id}.fallibility.calibrationEvidence.locator`,
+        [declaration.id],
+      );
+    }
+    let calibrationBytes: string | Uint8Array | undefined;
+    try {
+      calibrationBytes = context.resolveEvidence(calibrationEvidence.locator);
+    } catch {
+      calibrationBytes = undefined;
+    }
+    if (calibrationBytes === undefined) {
+      add(
+        "CALIBRATION_EVIDENCE_UNRESOLVED",
+        `evaluatorDeclarations.${declaration.id}.fallibility.calibrationEvidence.locator`,
+        [declaration.id],
+      );
+    } else if (
+      digestEvidenceBytes(calibrationBytes) !== calibrationEvidence.digest
+    ) {
+      add(
+        "CALIBRATION_EVIDENCE_DIGEST_MISMATCH",
+        `evaluatorDeclarations.${declaration.id}.fallibility.calibrationEvidence.digest`,
+        [declaration.id],
+      );
+    }
     if (
-      Date.parse(declaration.fallibility.calibrationValidUntil) < evaluatedAt
+      Date.parse(declaration.fallibility.calibrationValidUntil) <= evaluatedAt
     ) {
       add(
         "CALIBRATION_STALE",
@@ -1266,7 +1596,7 @@ export function validateTribunalCase(
           `evidenceClaims.${claim.id}.source.locator`,
           [claim.source.locator],
         );
-      } else if (digestCanonical(bytes) !== claim.source.digest) {
+      } else if (digestEvidenceBytes(bytes) !== claim.source.digest) {
         add(
           "EVIDENCE_DIGEST_MISMATCH",
           `evidenceClaims.${claim.id}.source.digest`,
@@ -1287,6 +1617,18 @@ export function validateTribunalCase(
         add("OUT_OF_SCOPE_EVIDENCE", `evidenceClaims.${claim.id}.source.kind`, [
           claim.source.kind,
         ]);
+      }
+      if (
+        !["evidence_claim", "tribunal_verdict", "decision_receipt"].includes(
+          claim.source.kind,
+        ) &&
+        !sourceLocatorPermitted(declaration, claim.source.locator)
+      ) {
+        add(
+          "OUT_OF_SCOPE_EVIDENCE",
+          `evidenceClaims.${claim.id}.source.locator`,
+          [claim.id],
+        );
       }
       if (
         Date.parse(claim.observedAt) >
@@ -1321,7 +1663,7 @@ export function validateTribunalCase(
         claim.id,
       ]);
     }
-    if (Date.parse(claim.validUntil) < Date.parse(tribunalCase.evaluatedAt)) {
+    if (Date.parse(claim.validUntil) <= Date.parse(tribunalCase.evaluatedAt)) {
       add("EVIDENCE_STALE", `evidenceClaims.${claim.id}.validUntil`, [
         claim.id,
       ]);
@@ -1370,6 +1712,11 @@ export function validateTribunalCase(
     if (verdict.subjectDigest !== tribunalCase.subject.digest) {
       add("SUBJECT_REVISION_MISMATCH", `verdicts.${verdict.id}.subjectDigest`, [
         verdict.id,
+      ]);
+    }
+    if (!tribunalCase.criterionRefs.includes(verdict.criterionRef)) {
+      add("UNKNOWN_CRITERION_REF", `verdicts.${verdict.id}.criterionRef`, [
+        verdict.criterionRef,
       ]);
     }
     const requiredScopes: Array<[string, TribunalIssueCode]> = [
@@ -1535,6 +1882,16 @@ export function validateTribunalCase(
           [claim.id, claim.claimId, verdict.claimId],
         );
       }
+      if (
+        !claim.observable &&
+        ["SUPPORTED", "CONTRADICTED"].includes(verdict.disposition)
+      ) {
+        add(
+          "EVIDENCE_UNOBSERVABLE",
+          `verdicts.${verdict.id}.evidenceClaimIds`,
+          [claim.id],
+        );
+      }
     }
     if (missingEvidence.length === 0) {
       const expectedDigests = linkedEvidence.flatMap((claim) =>
@@ -1619,6 +1976,27 @@ export function validateTribunalCase(
   }
 
   if (detectProtocolCycle(tribunalCase)) add("EVIDENCE_CYCLE");
+
+  const orderedReceipts = [...tribunalCase.decisionReceipts].sort(
+    (left, right) => {
+      const time = Date.parse(left.issuedAt) - Date.parse(right.issuedAt);
+      return time === 0 ? compareUtf16(left.id, right.id) : time;
+    },
+  );
+  for (let index = 0; index < orderedReceipts.length; index += 1) {
+    const receipt = orderedReceipts[index];
+    const predecessor = orderedReceipts[index - 1];
+    const expectedPreviousDigest = predecessor?.contentDigest ?? null;
+    if (
+      receipt.previousReceiptDigest !== expectedPreviousDigest ||
+      (predecessor &&
+        Date.parse(predecessor.issuedAt) >= Date.parse(receipt.issuedAt))
+    ) {
+      add("RECEIPT_CHAIN_MISMATCH", `decisionReceipts.${receipt.id}`, [
+        receipt.id,
+      ]);
+    }
+  }
 
   let effectiveReceipt: DecisionReceipt | undefined;
   if (tribunalCase.decisionReceipts.length > 0) {
@@ -1706,6 +2084,7 @@ export function validateTribunalCase(
         tribunalCase.verdicts.map(({ authorityGrantId }) => authorityGrantId),
       ),
     ];
+    const caseBasisDigest = computeTribunalCaseDigest(tribunalCase);
     for (const receipt of tribunalCase.decisionReceipts) {
       if (!hasExactMembers(receipt.consideredVerdictIds, expectedVerdicts)) {
         add(
@@ -1759,7 +2138,7 @@ export function validateTribunalCase(
           [receipt.id],
         );
       }
-      if (receipt.caseDigest !== computeTribunalCaseDigest(tribunalCase)) {
+      if (receipt.caseDigest !== caseBasisDigest) {
         add(
           "RECEIPT_CASE_DIGEST_MISMATCH",
           `decisionReceipts.${receipt.id}.caseDigest`,
@@ -1819,28 +2198,45 @@ export function validateTribunalCase(
           );
         }
       }
+      const isEffectiveReceipt = receipt.id === effectiveReceipt?.id;
       if (!context.consumedReceiptDigests) {
-        add("REPLAY_CHECK_REQUIRED", `decisionReceipts.${receipt.id}`, [
-          receipt.id,
-        ]);
-      } else {
-        const replayKey = computeDecisionReceiptReplayKey(receipt);
-        const consumed = context.consumedReceiptDigests.get(replayKey);
-        if (consumed === receipt.contentDigest) {
-          add("DECISION_RECEIPT_REPLAYED", `decisionReceipts.${receipt.id}`, [
+        if (isEffectiveReceipt) {
+          add("REPLAY_CHECK_REQUIRED", `decisionReceipts.${receipt.id}`, [
             receipt.id,
           ]);
-        } else if (consumed) {
+        }
+      } else {
+        const replayKey = computeDecisionReceiptReplayKey(receipt);
+        let replayStateAvailable = true;
+        let consumed: string | undefined;
+        let hasConsumed = false;
+        try {
+          hasConsumed = context.consumedReceiptDigests.has(replayKey);
+          consumed = context.consumedReceiptDigests.get(replayKey);
+        } catch {
+          replayStateAvailable = false;
+        }
+        if (!replayStateAvailable) {
+          if (isEffectiveReceipt) {
+            add("REPLAY_CHECK_REQUIRED", `decisionReceipts.${receipt.id}`, [
+              receipt.id,
+            ]);
+          }
+        } else if (hasConsumed && consumed !== receipt.contentDigest) {
           add("DECISION_RECEIPT_TAMPERED", `decisionReceipts.${receipt.id}`, [
             receipt.id,
           ]);
-        } else {
+        } else if (isEffectiveReceipt && hasConsumed) {
+          add("DECISION_RECEIPT_REPLAYED", `decisionReceipts.${receipt.id}`, [
+            receipt.id,
+          ]);
+        } else if (isEffectiveReceipt) {
           receiptReplayKeysToConsume.push(replayKey);
         }
       }
       if (
         receipt.reversibility.kind === "reversible" &&
-        !receipt.reversibility.rollbackRef
+        (!receipt.reversibility.rollbackRef || !receipt.reversibility.deadline)
       ) {
         add(
           "RECEIPT_ROLLBACK_REQUIRED",
@@ -1849,16 +2245,31 @@ export function validateTribunalCase(
         );
       }
       const issuedAt = Date.parse(receipt.issuedAt);
+      const rollbackDeadline = receipt.reversibility.deadline
+        ? Date.parse(receipt.reversibility.deadline)
+        : undefined;
       if (
         issuedAt < Date.parse(tribunalCase.evaluatedAt) ||
         issuedAt > context.now.getTime() ||
         receipt.decision.decidedAt !== receipt.issuedAt ||
-        (receipt.reversibility.deadline &&
-          Date.parse(receipt.reversibility.deadline) < issuedAt)
+        (rollbackDeadline !== undefined && rollbackDeadline <= issuedAt)
       ) {
         add(
           "TEMPORAL_ORDER_INVALID",
           `decisionReceipts.${receipt.id}.issuedAt`,
+          [receipt.id],
+        );
+      }
+      if (
+        isEffectiveReceipt &&
+        receipt.decision.decision === "approved" &&
+        receipt.reversibility.kind === "reversible" &&
+        rollbackDeadline !== undefined &&
+        rollbackDeadline <= context.now.getTime()
+      ) {
+        add(
+          "EFFECTIVE_ROLLBACK_WINDOW_EXPIRED",
+          `decisionReceipts.${receipt.id}.reversibility.deadline`,
           [receipt.id],
         );
       }
@@ -1896,7 +2307,6 @@ export function validateTribunalCase(
       matchingVerdictPermitsEffect &&
       humanDecisionPermitsEffect,
     receiptReplayKeysToConsume:
-      issues.length === 0 ? receiptReplayKeysToConsume.sort() : [],
+      issues.length === 0 ? receiptReplayKeysToConsume.sort(compareUtf16) : [],
   };
 }
-

@@ -165,4 +165,3 @@ export function assertRunPromotionAuthority(input: {
   if (!decision.authorized) throw new AuthorityDeniedError(decision.reason);
   return decision.grant;
 }
-

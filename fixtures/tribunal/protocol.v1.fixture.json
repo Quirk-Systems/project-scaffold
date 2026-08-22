@@ -67,13 +67,18 @@
         "inspection": {
           "canInspect": ["repository fixtures"],
           "cannotInspect": ["secrets", "unprovided runtime state"],
+          "allowedSourceLocatorPrefixes": ["fixture://tribunal/"],
+          "deniedSourceLocatorPrefixes": ["restricted://", "env://"],
           "tools": ["vitest"],
           "evidenceKinds": ["test_result"],
           "temporalBoundary": "2026-08-21T13:00:00.000Z"
         },
         "fallibility": {
           "knownFailureModes": ["A fixture can miss a semantic failure."],
-          "calibrationEvidence": "fixtures/tribunal/protocol.v1.fixture.json",
+          "calibrationEvidence": {
+            "locator": "fixture://tribunal/calibration-v1",
+            "digest": "sha256:e93995289ca63a4c4dbc1b871361ada1e2edc3b7ac3c4951f3211ec19c49820d"
+          },
           "calibratedAt": "2026-08-20T12:00:00.000Z",
           "calibrationValidUntil": "2026-09-20T12:00:00.000Z",
           "holdoutDigest": "sha256:9f2046e8efe1b2cd763937861f5c4b686351b1b2377f2e78ada13b74b57b5c3e",
@@ -94,7 +99,7 @@
         },
         "provenance": {
           "canonicalVersion": "design-tribunal@1",
-          "declarationDigest": "sha256:513ef33db1e98567f54f031695391324131bc3a2002117796b1623973b6cdb1c"
+          "declarationDigest": "sha256:4306e3eb1b475412eb67fe812df56e2c48ca0291ca04f3a23f2f152dc43aaad2"
         }
       }
     ],
@@ -110,7 +115,7 @@
           "kind": "test_result",
           "locator": "fixture://tribunal/positive-basic",
           "summary": "The positive fixture validates.",
-          "digest": "sha256:83f10edd51bc888b6d2228b6c7440bf604df60ac547ff915f7f47db1f0a7f813"
+          "digest": "sha256:eebd5f8818aa0f32a85d116ea8fd2f500acd9a4b95702535a4eaae34db0e81b5"
         },
         "observable": true,
         "inspectedBy": "evaluator.contract.v1",
@@ -121,7 +126,7 @@
         "limitations": ["Does not prove subjective design quality."],
         "retentionClass": "project",
         "derivedFromEvidenceClaimIds": [],
-        "contentDigest": "sha256:9450673819aff7d135521c6e5a0207374e47dfb7cfabf93143a226a67280c956"
+        "contentDigest": "sha256:b99978552f67e5f93198f78f6279a213ecf7511aac91561fc09aa89ef96f7253"
       }
     ],
     "verdicts": [
@@ -132,6 +137,7 @@
         "evaluatorDeclarationId": "evaluator.contract.v1",
         "authorityGrantId": "grant.evaluator.v1",
         "subjectDigest": "sha256:8ef08a37f9acc821c6097d42c28c01b59634d90c7981439dc46cc4f35953146b",
+        "criterionRef": "criterion.authority",
         "claimId": "claim.contract-valid",
         "claim": "The compatibility contract is structurally ready for review.",
         "disposition": "SUPPORTED",
@@ -148,12 +154,12 @@
         "provenance": {
           "trajectoryId": "trajectory.release.v1",
           "evaluatorVersion": "1.0.0",
-          "declarationDigest": "sha256:513ef33db1e98567f54f031695391324131bc3a2002117796b1623973b6cdb1c",
+          "declarationDigest": "sha256:4306e3eb1b475412eb67fe812df56e2c48ca0291ca04f3a23f2f152dc43aaad2",
           "evidenceDigests": [
-            "sha256:9450673819aff7d135521c6e5a0207374e47dfb7cfabf93143a226a67280c956"
+            "sha256:b99978552f67e5f93198f78f6279a213ecf7511aac91561fc09aa89ef96f7253"
           ],
           "createdAt": "2026-08-21T13:00:00.000Z",
-          "contentDigest": "sha256:107e30308931c94f21462a9e24b8ac58be22f4a2e653b16068fa98f15d07c1f8"
+          "contentDigest": "sha256:1757625272eb771cde8729425426290fbb822ac1dad0d4d7f041fed251b02893"
         }
       }
     ],
@@ -164,7 +170,7 @@
         "protocolVersion": "1.0.0",
         "id": "receipt.review.v1",
         "caseId": "case.design.review.v1",
-        "caseDigest": "sha256:02a7d7dc953d27d62188ca8c3bbd78d113e5c485fa459e08258421e7615cb59f",
+        "caseDigest": "sha256:ec21c67ff1df6a3c052c47cdf54f41893afe18a15c291ef7966d9b182d390d1d",
         "decision": {
           "decision": "approved",
           "authorityType": "human",
@@ -189,12 +195,13 @@
         },
         "issuedAt": "2026-08-21T13:02:00.000Z",
         "nonce": "receipt-nonce-0001",
-        "contentDigest": "sha256:4e9ea0d2f85d9e560346df656dec912f887b4b2016a14d87fab79f74b66a373a"
+        "previousReceiptDigest": null,
+        "contentDigest": "sha256:2f6a37d44afae386d1349f4894c59109a2b6e10e9eb45d6876fb545c30d5fac5"
       }
     ]
   },
   "evidence": {
-    "fixture://tribunal/positive-basic": "observable fixture bytes"
+    "fixture://tribunal/positive-basic": "observable fixture bytes",
+    "fixture://tribunal/calibration-v1": "calibration fixture bytes"
   }
 }
-

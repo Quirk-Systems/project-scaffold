@@ -247,4 +247,3 @@ describe("Never #0001 — capability does not imply authority", () => {
     }
   });
 });
-

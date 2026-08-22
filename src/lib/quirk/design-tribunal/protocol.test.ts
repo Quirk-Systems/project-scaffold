@@ -224,7 +224,7 @@ function makeHarness(): Harness {
           canInspect: ["repository fixtures"],
           cannotInspect: ["secrets", "unprovided runtime state"],
           allowedSourceLocatorPrefixes: ["fixture://tribunal/"],
-          deniedSourceLocatorPrefixes: ["secret://", "env://"],
+          deniedSourceLocatorPrefixes: ["restricted://", "env://"],
           tools: ["vitest"],
           evidenceKinds: ["test_result"],
           temporalBoundary: EVALUATED_AT,
@@ -589,7 +589,10 @@ describe("Tribunal protocol v1", () => {
     harness.tribunalCase.verdicts[0].evaluatorDeclarationId =
       "evaluator.missing";
     sealCase(harness.tribunalCase);
-    expectCodes(harness, ["UNKNOWN_EVALUATOR_DECLARATION_REF"]);
+    expectCodes(harness, [
+      "GRANT_UNOWNED",
+      "UNKNOWN_EVALUATOR_DECLARATION_REF",
+    ]);
   });
 
   it("binds the signed grant to the exact Tribunal case", () => {
@@ -920,9 +923,9 @@ describe("Tribunal protocol v1", () => {
   it("enforces structured source inspection policy with deny precedence", () => {
     const denied = makeHarness();
     denied.tribunalCase.evidenceClaims[0].source.locator =
-      "secret://tribunal/positive-basic";
+      "restricted://tribunal/positive-basic";
     denied.context.resolveEvidence = (locator) =>
-      locator === "secret://tribunal/positive-basic"
+      locator === "restricted://tribunal/positive-basic"
         ? EVIDENCE_BYTES
         : locator === "fixture://tribunal/calibration-v1"
           ? CALIBRATION_BYTES
@@ -1009,7 +1012,7 @@ describe("Tribunal protocol v1", () => {
     harness.tribunalCase.evaluatorDeclarations.push(declaration);
     resignGrant(harness, grant);
     sealCase(harness.tribunalCase);
-    expectCodes(harness, ["EVALUATOR_INDEPENDENCE_COLLISION"]);
+    expectCodes(harness, ["EVALUATOR_INDEPENDENCE_COLLISION", "GRANT_UNOWNED"]);
   });
 
   it("treats shared operators and model families as correlated", () => {
@@ -1032,7 +1035,7 @@ describe("Tribunal protocol v1", () => {
     resignGrant(harness, grant);
     sealCase(harness.tribunalCase);
 
-    expectCodes(harness, ["EVALUATOR_INDEPENDENCE_COLLISION"]);
+    expectCodes(harness, ["EVALUATOR_INDEPENDENCE_COLLISION", "GRANT_UNOWNED"]);
   });
 
   it("requires exactly one evaluator principal per grant", () => {

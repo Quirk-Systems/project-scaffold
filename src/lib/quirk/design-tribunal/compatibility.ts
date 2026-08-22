@@ -32,7 +32,10 @@ export type TribunalCompatibilityIssueCode =
   | "DESIGN_REQUEST_INVALID"
   | "DESIGN_EVIDENCE_INVALID"
   | "DESIGN_EVIDENCE_DIGEST_REQUIRED"
+  | "DESIGN_FINDING_EVIDENCE_DIGEST_REQUIRED"
+  | "DESIGN_FINDING_EVIDENCE_MISMATCH"
   | "DESIGN_FINDING_INVALID"
+  | "DESIGN_FINDING_RESOLUTION_INACTIVE"
   | "DESIGN_FINDING_TRAJECTORY_MISMATCH"
   | "DESIGN_HUMAN_DECISION_INVALID"
   | "TRIBUNAL_ADAPTER_OUTPUT_INVALID"
@@ -226,8 +229,8 @@ const DISPOSITION_BY_DESIGN_VERDICT = {
 
 export function adaptDesignFinding(input: {
   finding: DesignFinding;
+  evidenceClaims: EvidenceClaim[];
   bindings: {
-    evidenceClaimIds: string[];
     evaluatorDeclarationId: string;
     authorityGrantId: string;
     grantDigest: string;
@@ -235,7 +238,6 @@ export function adaptDesignFinding(input: {
     claimId: string;
     authorityEffectRequested: TribunalEffect;
     declarationDigest: string;
-    evidenceDigests: string[];
     trajectoryId: string;
     evaluatorVersion: string;
   };
@@ -256,6 +258,82 @@ export function adaptDesignFinding(input: {
       "A DesignFinding keeps its canonical runId as the Tribunal trajectory.",
     );
   }
+  if (
+    ["fixed", "waived", "false_alarm"].includes(finding.data.resolutionStatus)
+  ) {
+    return failure(
+      "DESIGN_FINDING_RESOLUTION_INACTIVE",
+      "finding.resolutionStatus",
+      "A resolved or invalidated DesignFinding cannot be reactivated as an executable verdict.",
+    );
+  }
+  if (finding.data.evidence.some(({ digest }) => !digest)) {
+    return failure(
+      "DESIGN_FINDING_EVIDENCE_DIGEST_REQUIRED",
+      "finding.evidence",
+      "Every canonical DesignFinding evidence source must be content-addressed.",
+    );
+  }
+
+  const parsedClaims: EvidenceClaim[] = [];
+  for (const claim of input.evidenceClaims) {
+    const parsed = EvidenceClaimSchema.safeParse(claim);
+    if (
+      !parsed.success ||
+      computeEvidenceClaimContentDigest(parsed.data) !==
+        parsed.data.contentDigest ||
+      parsed.data.claimId !== input.bindings.claimId ||
+      parsed.data.inspectedBy !== input.bindings.evaluatorDeclarationId ||
+      parsed.data.subjectDigest !== input.bindings.subjectDigest
+    ) {
+      return failure(
+        "DESIGN_FINDING_EVIDENCE_MISMATCH",
+        "evidenceClaims",
+        "Bound evidence claims must be valid and match the verdict claim, evaluator, and subject.",
+      );
+    }
+    parsedClaims.push(parsed.data);
+  }
+
+  const sourceKey = (source: {
+    kind: string;
+    locator: string;
+    summary: string;
+    digest?: string;
+  }): string =>
+    JSON.stringify([
+      source.kind,
+      source.locator,
+      source.summary,
+      source.digest,
+    ]);
+  const findingSourceKeys = finding.data.evidence.map(sourceKey);
+  const claimSourceKeys = parsedClaims.map(({ source }) => sourceKey(source));
+  if (
+    findingSourceKeys.length !== claimSourceKeys.length ||
+    new Set(findingSourceKeys).size !== findingSourceKeys.length ||
+    new Set(claimSourceKeys).size !== claimSourceKeys.length
+  ) {
+    return failure(
+      "DESIGN_FINDING_EVIDENCE_MISMATCH",
+      "evidenceClaims",
+      "Canonical finding evidence must map one-to-one to distinct EvidenceClaims.",
+    );
+  }
+  const claimsBySource = new Map(
+    parsedClaims.map((claim) => [sourceKey(claim.source), claim]),
+  );
+  const orderedClaims = findingSourceKeys.flatMap((key) => {
+    const claim = claimsBySource.get(key);
+    return claim ? [claim] : [];
+  });
+  if (orderedClaims.length !== finding.data.evidence.length) {
+    return failure(
+      "DESIGN_FINDING_EVIDENCE_MISMATCH",
+      "evidenceClaims",
+      "Canonical finding evidence cannot be substituted by adapter bindings.",
+    );
+  }
 
   const candidate: TribunalVerdict = {
     kind: "TribunalVerdict",
@@ -264,10 +342,11 @@ export function adaptDesignFinding(input: {
     evaluatorDeclarationId: input.bindings.evaluatorDeclarationId,
     authorityGrantId: input.bindings.authorityGrantId,
     subjectDigest: input.bindings.subjectDigest,
+    criterionRef: finding.data.criterionId,
     claimId: input.bindings.claimId,
     claim: finding.data.claim,
     disposition: DISPOSITION_BY_DESIGN_VERDICT[finding.data.verdict],
-    evidenceClaimIds: input.bindings.evidenceClaimIds,
+    evidenceClaimIds: orderedClaims.map(({ id }) => id),
     confidence: finding.data.confidence,
     uncertainty:
       finding.data.verdict === "unresolved"
@@ -284,7 +363,7 @@ export function adaptDesignFinding(input: {
       trajectoryId: finding.data.runId,
       evaluatorVersion: input.bindings.evaluatorVersion,
       declarationDigest: input.bindings.declarationDigest,
-      evidenceDigests: input.bindings.evidenceDigests,
+      evidenceDigests: orderedClaims.map(({ contentDigest }) => contentDigest),
       createdAt: finding.data.createdAt,
       contentDigest: PLACEHOLDER_DIGEST,
     },
@@ -335,4 +414,3 @@ export function adaptDesignHumanDecision(input: {
   }
   return { ok: true, value: parsed.data, issues: [] };
 }
-
