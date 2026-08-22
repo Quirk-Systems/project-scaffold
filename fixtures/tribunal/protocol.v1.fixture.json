@@ -1,0 +1,5 @@
+{
+  "$comment": "The tests-first commit intentionally leaves this fixture unimplemented; the compatibility implementation must replace it with a fully hash-bound canonical case.",
+  "tribunalCase": {},
+  "evidence": {}
+}

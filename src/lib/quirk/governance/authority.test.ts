@@ -1,9 +1,11 @@
+import { createHmac } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
   NEVER_0001,
   PROMOTE_RUN_SCOPE,
   issueAuthorityGrant,
   requireRunPromotionAuthority,
+  verifyAuthorityGrant,
 } from "./authority";
 
 const secret = "test-secret-that-is-long-enough-for-hmac";
@@ -22,6 +24,14 @@ function validGrant(runId = "run-123") {
     },
     secret,
   );
+}
+
+function signRawGrant(grant: unknown): string {
+  const payload = Buffer.from(JSON.stringify(grant)).toString("base64url");
+  const signature = createHmac("sha256", secret)
+    .update(payload)
+    .digest("base64url");
+  return `${payload}.${signature}`;
 }
 
 describe("Never #0001 — capability does not imply authority", () => {
@@ -76,7 +86,7 @@ describe("Never #0001 — capability does not imply authority", () => {
     });
   });
 
-  it("rejects expired authority", () => {
+  it("rejects expired authority, including the exact expiry boundary", () => {
     const expired = issueAuthorityGrant(
       {
         grantId: "grant-expired",
@@ -84,7 +94,7 @@ describe("Never #0001 — capability does not imply authority", () => {
         subject: "run:run-123",
         scopes: [PROMOTE_RUN_SCOPE],
         issuedAt: "2026-08-11T10:00:00.000Z",
-        expiresAt: "2026-08-11T11:00:00.000Z",
+        expiresAt: "2026-08-11T13:00:00.000Z",
         nonce: "nonce-expired",
       },
       secret,
@@ -96,6 +106,103 @@ describe("Never #0001 — capability does not imply authority", () => {
       authorized: false,
       never: NEVER_0001,
       reason: "expired_grant",
+    });
+  });
+
+  it("rejects a signed grant before its issue time", () => {
+    const future = issueAuthorityGrant(
+      {
+        grantId: "grant-future",
+        issuer: "human:bryan",
+        subject: "run:run-123",
+        scopes: [PROMOTE_RUN_SCOPE],
+        issuedAt: "2026-08-11T13:00:00.001Z",
+        expiresAt: "2026-08-11T14:00:00.000Z",
+        nonce: "nonce-future",
+      },
+      secret,
+    );
+
+    expect(
+      verifyAuthorityGrant({
+        token: future,
+        secret,
+        subject: "run:run-123",
+        requiredScope: PROMOTE_RUN_SCOPE,
+        now,
+      }),
+    ).toEqual({
+      authorized: false,
+      never: NEVER_0001,
+      reason: "not_yet_valid_grant",
+    });
+  });
+
+  it("rejects a signed grant whose time window is empty or inverted", () => {
+    const invalidWindow = issueAuthorityGrant(
+      {
+        grantId: "grant-invalid-window",
+        issuer: "human:bryan",
+        subject: "run:run-123",
+        scopes: [PROMOTE_RUN_SCOPE],
+        issuedAt: "2026-08-11T14:00:00.000Z",
+        expiresAt: "2026-08-11T14:00:00.000Z",
+        nonce: "nonce-window",
+      },
+      secret,
+    );
+
+    expect(
+      verifyAuthorityGrant({
+        token: invalidWindow,
+        secret,
+        subject: "run:run-123",
+        requiredScope: PROMOTE_RUN_SCOPE,
+        now,
+      }),
+    ).toEqual({
+      authorized: false,
+      never: NEVER_0001,
+      reason: "invalid_grant_window",
+    });
+  });
+
+  it("accepts the exact issue-time boundary", () => {
+    const decision = verifyAuthorityGrant({
+      token: validGrant(),
+      secret,
+      subject: "run:run-123",
+      requiredScope: PROMOTE_RUN_SCOPE,
+      now: new Date("2026-08-11T12:00:00.000Z"),
+    });
+
+    expect(decision.authorized).toBe(true);
+  });
+
+  it("rejects undeclared delegation metadata instead of stripping it", () => {
+    const delegated = signRawGrant({
+      grantId: "grant-delegated",
+      issuer: "human:bryan",
+      subject: "run:run-123",
+      scopes: [PROMOTE_RUN_SCOPE],
+      issuedAt: "2026-08-11T12:00:00.000Z",
+      expiresAt: "2026-08-11T14:00:00.000Z",
+      nonce: "nonce-delegated",
+      delegatedBy: "evaluator.proxy",
+    });
+
+    expect(
+      verifyAuthorityGrant({
+        token: delegated,
+        secret,
+        subject: "run:run-123",
+        requiredScope: PROMOTE_RUN_SCOPE,
+        now,
+      }),
+    ).toEqual({
+      authorized: false,
+      never: NEVER_0001,
+      reason: "malformed_grant",
     });
   });
 
