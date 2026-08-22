@@ -268,6 +268,7 @@ export const TribunalCaseSchema = z
     evidenceClaims: z.array(EvidenceClaimSchema),
     verdicts: z.array(TribunalVerdictSchema).min(1),
     decisionReceipts: z.array(DecisionReceiptSchema),
+    effectiveDecisionReceiptId: StableIdSchema.optional(),
   })
   .strict();
 
@@ -303,10 +304,13 @@ export const TRIBUNAL_ISSUE_CODES = [
   "CALIBRATION_STALE",
   "CONFIDENCE_EXCEEDS_CALIBRATION",
   "DECISION_AUTHORITY_UNTRUSTED",
+  "DECISION_AUTHENTICATION_FAILED",
   "DECISION_OWNER_MISMATCH",
+  "DECISION_RECEIPT_CANNOT_BE_PRIMARY_EVIDENCE",
   "DECISION_RECEIPT_REPLAYED",
   "DECISION_RECEIPT_REQUIRED",
   "DECISION_RECEIPT_TAMPERED",
+  "DECISION_VERIFIER_UNAVAILABLE",
   "DECLARATION_EFFECT_CONFLICT",
   "DECLARATION_EFFECT_EXCEEDS_GRANT",
   "DECLARATION_HASH_MISMATCH",
@@ -314,8 +318,13 @@ export const TRIBUNAL_ISSUE_CODES = [
   "DISPOSITION_EFFECT_INVALID",
   "DISPUTED_VERDICTS_UNACKNOWLEDGED",
   "DUPLICATE_OBJECT_ID",
+  "DUPLICATE_RECEIPT_NONCE",
+  "EFFECTIVE_RECEIPT_MISMATCH",
+  "EFFECTIVE_RECEIPT_REQUIRED",
   "EVALUATOR_INDEPENDENCE_COLLISION",
   "EVALUATOR_VERSION_MISMATCH",
+  "EVIDENCE_AFTER_INSPECTION_BOUNDARY",
+  "EVIDENCE_CLAIM_BINDING_MISMATCH",
   "EVIDENCE_CYCLE",
   "EVIDENCE_DIGEST_INVALID",
   "EVIDENCE_DIGEST_MISMATCH",
@@ -327,7 +336,9 @@ export const TRIBUNAL_ISSUE_CODES = [
   "EVIDENCE_STALE",
   "GRANT_CASE_BINDING_MISMATCH",
   "GRANT_EVALUATOR_SCOPE_MISMATCH",
+  "GRANT_SHARED_BETWEEN_EVALUATORS",
   "GRANT_SELF_ISSUED",
+  "INPUT_GRAPH_UNSAFE",
   "LEGACY_DIALECT_UNSUPPORTED",
   "OUT_OF_SCOPE_EVIDENCE",
   "PROTOCOL_SCHEMA_INVALID",
@@ -351,7 +362,9 @@ export const TRIBUNAL_ISSUE_CODES = [
   "SUBJECT_TARGET_CLASS_OUT_OF_SCOPE",
   "TEMPORAL_ORDER_INVALID",
   "TENANT_OUT_OF_SCOPE",
+  "TRAJECTORY_MISMATCH",
   "UNKNOWN_AUTHORITY_GRANT_REF",
+  "UNKNOWN_DECISION_RECEIPT_REF",
   "UNKNOWN_EVALUATOR_DECLARATION_REF",
   "UNKNOWN_EVIDENCE_CLAIM_REF",
   "UNKNOWN_TRIBUNAL_VERDICT_REF",
@@ -359,6 +372,7 @@ export const TRIBUNAL_ISSUE_CODES = [
   "VERDICT_CONTENT_HASH_MISMATCH",
   "VERDICT_GRANT_BINDING_MISMATCH",
   "VERIFIED_GRANT_ID_MISMATCH",
+  "VALIDATION_CLOCK_INVALID",
   "AUDIENCE_OUT_OF_SCOPE",
   "ACTION_DIGEST_MISMATCH",
 ] as const;
@@ -389,6 +403,11 @@ export type TribunalValidationContext = {
   trustedAuthorityIssuers: string[];
   trustedHumanAuthorities: string[];
   consumedReceiptDigests?: Map<string, string>;
+  verifyDecisionReceipt?: (input: {
+    receipt: DecisionReceipt;
+    caseDigest: string;
+    now: Date;
+  }) => boolean;
 };
 
 export type VerifiedTribunalAuthorityGrant = {
@@ -402,6 +421,8 @@ export type TribunalValidationResult = {
   issues: TribunalIssue[];
   verifiedAuthorityGrants: VerifiedTribunalAuthorityGrant[];
   authorityEffectPermittedByVerdict: Record<string, boolean>;
+  caseEffectAuthorized: boolean;
+  receiptReplayKeysToConsume: string[];
 };
 
 function canonicalize(value: unknown): unknown {
@@ -410,52 +431,99 @@ function canonicalize(value: unknown): unknown {
     return Object.fromEntries(
       Object.entries(value as Record<string, unknown>)
         .filter(([, child]) => child !== undefined)
-        .sort(([left], [right]) => left.localeCompare(right))
+        .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
         .map(([key, child]) => [key, canonicalize(child)]),
     );
   }
   return value;
 }
 
-export function digestCanonical(value: unknown): string {
-  const bytes =
-    typeof value === "string" || value instanceof Uint8Array
+export function digestCanonical(
+  value: unknown,
+  domain = "quirk.generic.v1",
+): string {
+  const encoding =
+    value instanceof Uint8Array
+      ? "bytes"
+      : typeof value === "string"
+        ? "utf8"
+        : "json";
+  const encoded =
+    value instanceof Uint8Array || typeof value === "string"
       ? value
       : JSON.stringify(canonicalize(value));
-  return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+  if (encoded === undefined) {
+    throw new TypeError("Canonical hashing requires a JSON-serializable value.");
+  }
+  const hash = createHash("sha256");
+  hash.update(`quirk-canonical-v1\0${domain}\0${encoding}\0`);
+  hash.update(encoded);
+  return `sha256:${hash.digest("hex")}`;
+}
+
+export function computeAuthorityGrantDigest(grant: AuthorityGrant): string {
+  return digestCanonical(grant, "quirk.tribunal.authority-grant.v1");
 }
 
 export function computeDeclarationDigest(
   declaration: EvaluatorDeclaration,
 ): string {
-  return digestCanonical({
-    ...declaration,
-    provenance: {
-      ...declaration.provenance,
-      declarationDigest: undefined,
+  return digestCanonical(
+    {
+      ...declaration,
+      provenance: {
+        ...declaration.provenance,
+        declarationDigest: undefined,
+      },
     },
-  });
+    "quirk.tribunal.evaluator-declaration.v1",
+  );
 }
 
 export function computeEvidenceClaimContentDigest(claim: EvidenceClaim): string {
-  return digestCanonical({ ...claim, contentDigest: undefined });
+  return digestCanonical(
+    { ...claim, contentDigest: undefined },
+    "quirk.tribunal.evidence-claim.v1",
+  );
 }
 
 export function computeVerdictContentDigest(verdict: TribunalVerdict): string {
-  return digestCanonical({
-    ...verdict,
-    provenance: { ...verdict.provenance, contentDigest: undefined },
-  });
+  return digestCanonical(
+    {
+      ...verdict,
+      provenance: { ...verdict.provenance, contentDigest: undefined },
+    },
+    "quirk.tribunal.verdict.v1",
+  );
 }
 
 export function computeTribunalCaseDigest(tribunalCase: TribunalCase): string {
-  return digestCanonical({ ...tribunalCase, decisionReceipts: undefined });
+  return digestCanonical(
+    { ...tribunalCase, decisionReceipts: undefined },
+    "quirk.tribunal.case.v1",
+  );
 }
 
 export function computeDecisionReceiptContentDigest(
   receipt: DecisionReceipt,
 ): string {
-  return digestCanonical({ ...receipt, contentDigest: undefined });
+  return digestCanonical(
+    { ...receipt, contentDigest: undefined },
+    "quirk.tribunal.decision-receipt.v1",
+  );
+}
+
+export function computeDecisionReceiptReplayKey(
+  receipt: DecisionReceipt,
+): string {
+  return digestCanonical(
+    {
+      authorityId: receipt.decision.authorityId,
+      caseId: receipt.caseId,
+      nonce: receipt.nonce,
+    },
+    "quirk.tribunal.receipt-replay-key.v1",
+  );
 }
 
 export const tribunalCaseSubject = (caseId: string): string =>
@@ -494,25 +562,53 @@ const LEGACY_ALIASES = [
   ["evidence_claim_ids", "evidenceClaimIds"],
 ] as const;
 
-function findLegacyDialect(value: unknown): "ambiguous" | "legacy" | null {
+function findLegacyDialect(
+  value: unknown,
+): "ambiguous" | "legacy" | "unsafe" | null {
   let legacy = false;
   let ambiguous = false;
-  const visit = (current: unknown): void => {
-    if (Array.isArray(current)) {
-      current.forEach(visit);
-      return;
+  let visitedNodes = 0;
+  const seen = new WeakSet<object>();
+  const stack: Array<{ current: unknown; depth: number }> = [
+    { current: value, depth: 0 },
+  ];
+  while (stack.length > 0) {
+    const { current, depth } = stack.pop()!;
+    if (!current || typeof current !== "object") continue;
+    if (depth > 100 || visitedNodes >= 10_000 || seen.has(current)) {
+      return "unsafe";
     }
-    if (!current || typeof current !== "object") return;
+    seen.add(current);
+    visitedNodes += 1;
+    if (Array.isArray(current)) {
+      try {
+        for (const child of current) {
+          stack.push({ current: child, depth: depth + 1 });
+        }
+      } catch {
+        return "unsafe";
+      }
+      continue;
+    }
     const object = current as Record<string, unknown>;
     for (const [oldKey, canonicalKey] of LEGACY_ALIASES) {
-      if (oldKey in object) {
+      if (Object.prototype.hasOwnProperty.call(object, oldKey)) {
         legacy = true;
-        if (canonicalKey in object) ambiguous = true;
+        if (Object.prototype.hasOwnProperty.call(object, canonicalKey)) {
+          ambiguous = true;
+        }
       }
     }
-    Object.values(object).forEach(visit);
-  };
-  visit(value);
+    let children: unknown[];
+    try {
+      children = Object.values(object);
+    } catch {
+      return "unsafe";
+    }
+    for (const child of children) {
+      stack.push({ current: child, depth: depth + 1 });
+    }
+  }
   if (ambiguous) return "ambiguous";
   if (legacy) return "legacy";
   return null;
@@ -527,10 +623,25 @@ function hasExactMembers(actual: readonly string[], expected: readonly string[])
 
 function issueCollector() {
   const issues = new Map<string, TribunalIssue>();
+  const safeRef = (ref: string): string => {
+    if (
+      /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(ref) &&
+      !containsBrowserExposedSecret(ref) &&
+      !containsSecretMaterial(ref)
+    ) {
+      return ref;
+    }
+    return digestCanonical(ref, "quirk.tribunal.issue-ref.v1");
+  };
+  const safePath = (path: string): string =>
+    path.length <= 256 && /^[A-Za-z0-9_$.[\]-]+$/.test(path)
+      ? path
+      : "$[redacted]";
   const add = (code: TribunalIssueCode, path = "$", refs: string[] = []): void => {
-    const normalizedRefs = [...refs].sort();
-    const key = `${code}|${path}|${normalizedRefs.join(",")}`;
-    issues.set(key, { code, path, refs: normalizedRefs });
+    const normalizedRefs = refs.map(safeRef).sort();
+    const normalizedPath = safePath(path);
+    const key = `${code}|${normalizedPath}|${normalizedRefs.join(",")}`;
+    issues.set(key, { code, path: normalizedPath, refs: normalizedRefs });
   };
   const values = (): TribunalIssue[] =>
     [...issues.values()].sort((left, right) =>
@@ -559,6 +670,8 @@ function authorityFailureCode(
       return "AUTHORITY_GRANT_NOT_YET_VALID";
     case "invalid_grant_window":
       return "AUTHORITY_GRANT_WINDOW_INVALID";
+    case "invalid_verification_time":
+      return "VALIDATION_CLOCK_INVALID";
     case "subject_mismatch":
       return "GRANT_CASE_BINDING_MISMATCH";
     case "scope_mismatch":
@@ -615,6 +728,16 @@ function authorityBearing(effect: TribunalEffect): boolean {
   return ["approve", "publish", "mutate_canon", "promote_verdict"].includes(effect);
 }
 
+function containsBrowserExposedSecret(value: string): boolean {
+  return /NEXT_PUBLIC_[A-Z0-9_]*(?:KEY|SECRET|TOKEN)/.test(value);
+}
+
+function containsSecretMaterial(value: string): boolean {
+  return /sk-(?:proj-)?[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|(?:api[_ -]?key|secret|password|token)\s*[:=]|(?:eyJ[A-Za-z0-9_-]{16,})\.[A-Za-z0-9_-]{40,}/i.test(
+    value,
+  );
+}
+
 export function validateTribunalCase(
   raw: unknown,
   context: TribunalValidationContext,
@@ -627,12 +750,26 @@ export function validateTribunalCase(
       issues,
       verifiedAuthorityGrants: [],
       authorityEffectPermittedByVerdict: {},
+      caseEffectAuthorized: false,
+      receiptReplayKeysToConsume: [],
     };
   };
 
   const legacy = findLegacyDialect(raw);
+  if (legacy === "unsafe") {
+    add("INPUT_GRAPH_UNSAFE");
+    return emptyResult();
+  }
   if (legacy === "ambiguous") {
     add("AMBIGUOUS_ALIAS");
+    return emptyResult();
+  }
+
+  if (
+    !(context.now instanceof Date) ||
+    !Number.isFinite(context.now.getTime())
+  ) {
+    add("VALIDATION_CLOCK_INVALID");
     return emptyResult();
   }
   if (legacy === "legacy") {
@@ -640,7 +777,13 @@ export function validateTribunalCase(
     return emptyResult();
   }
 
-  const parsed = TribunalCaseSchema.safeParse(raw);
+  let parsed: ReturnType<typeof TribunalCaseSchema.safeParse>;
+  try {
+    parsed = TribunalCaseSchema.safeParse(raw);
+  } catch {
+    add("INPUT_GRAPH_UNSAFE");
+    return emptyResult();
+  }
   if (!parsed.success) {
     for (const issue of parsed.error.issues) {
       add("PROTOCOL_SCHEMA_INVALID", issue.path.join(".") || "$", [issue.message]);
@@ -650,16 +793,13 @@ export function validateTribunalCase(
   const tribunalCase = parsed.data;
 
   const serialized = JSON.stringify(tribunalCase);
-  if (/NEXT_PUBLIC_[A-Z0-9_]*(?:KEY|SECRET|TOKEN)/.test(serialized)) {
+  if (containsBrowserExposedSecret(serialized)) {
     add("BROWSER_EXPOSED_SECRET_FORBIDDEN");
   }
-  if (
-    /sk-(?:proj-)?[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|(?:api[_ -]?key|secret|password|token)\s*[:=]/i.test(
-      serialized,
-    )
-  ) {
+  if (containsSecretMaterial(serialized)) {
     add("SECRET_MATERIAL_FORBIDDEN");
   }
+  if (values().length > 0) return emptyResult();
 
   const objectIds = [
     ...tribunalCase.authorityGrants.map((grant) => ({ id: grant.grantId, path: "authorityGrants" })),
@@ -675,61 +815,162 @@ export function validateTribunalCase(
   }
   if (values().some((issue) => issue.code === "DUPLICATE_OBJECT_ID")) return emptyResult();
 
+  const receiptNonces = new Set<string>();
+  for (const receipt of tribunalCase.decisionReceipts) {
+    if (receiptNonces.has(receipt.nonce)) {
+      add("DUPLICATE_RECEIPT_NONCE", "decisionReceipts", [receipt.nonce]);
+    }
+    receiptNonces.add(receipt.nonce);
+  }
+
   const grants = new Map(tribunalCase.authorityGrants.map((grant) => [grant.grantId, grant]));
   const declarations = new Map(
     tribunalCase.evaluatorDeclarations.map((declaration) => [declaration.id, declaration]),
   );
   const evidence = new Map(tribunalCase.evidenceClaims.map((claim) => [claim.id, claim]));
   const verdicts = new Map(tribunalCase.verdicts.map((verdict) => [verdict.id, verdict]));
-  const evaluatorIds = new Set(tribunalCase.evaluatorDeclarations.map(({ id }) => id));
+  const receipts = new Map(
+    tribunalCase.decisionReceipts.map((receipt) => [receipt.id, receipt]),
+  );
+  const evaluatorPrincipals = new Set(
+    tribunalCase.evaluatorDeclarations.flatMap((declaration) => [
+      declaration.id,
+      declaration.independence.operatorId,
+    ]),
+  );
+  const declarationsByGrantId = new Map<string, EvaluatorDeclaration[]>();
+  for (const declaration of tribunalCase.evaluatorDeclarations) {
+    declarationsByGrantId.set(declaration.authority.grantId, [
+      ...(declarationsByGrantId.get(declaration.authority.grantId) ?? []),
+      declaration,
+    ]);
+  }
+  const eligibleGrantIds = new Set<string>();
   const verifiedAuthorityGrants: VerifiedTribunalAuthorityGrant[] = [];
   const authorityEffectPermittedByVerdict: Record<string, boolean> = {};
 
   for (const grant of tribunalCase.authorityGrants) {
-    const token = context.authorityTokensByGrantId[grant.grantId];
-    const decision = context.verifyGrant({
-      token,
-      secret: context.authoritySecret,
-      subject: tribunalCaseSubject(tribunalCase.caseId),
-      requiredScope: TRIBUNAL_EVALUATE_SCOPE,
-      now: context.now,
-    });
-    if (!decision.authorized) {
+    let grantEligible = true;
+    const tokenStore = context.authorityTokensByGrantId;
+    const token =
+      tokenStore &&
+      typeof tokenStore === "object" &&
+      Object.prototype.hasOwnProperty.call(tokenStore, grant.grantId)
+        ? tokenStore[grant.grantId]
+        : undefined;
+    let decision: AuthorityDecision | undefined;
+    try {
+      decision = context.verifyGrant({
+        token,
+        secret: context.authoritySecret,
+        subject: tribunalCaseSubject(tribunalCase.caseId),
+        requiredScope: TRIBUNAL_EVALUATE_SCOPE,
+        now: context.now,
+      });
+    } catch {
+      grantEligible = false;
+      add("AUTHORITY_VERIFIER_UNAVAILABLE", `authorityGrants.${grant.grantId}`, [
+        grant.grantId,
+      ]);
+    }
+    if (!decision) {
+      grantEligible = false;
+      add("AUTHORITY_VERIFIER_UNAVAILABLE", `authorityGrants.${grant.grantId}`, [
+        grant.grantId,
+      ]);
+    } else if (!decision.authorized) {
+      grantEligible = false;
       add(authorityFailureCode(decision), `authorityGrants.${grant.grantId}`, [grant.grantId]);
-    } else {
+    } else if (decision?.authorized) {
       if (decision.grant.grantId !== grant.grantId) {
+        grantEligible = false;
         add("VERIFIED_GRANT_ID_MISMATCH", `authorityGrants.${grant.grantId}`, [decision.grant.grantId]);
-      } else if (digestCanonical(decision.grant) !== digestCanonical(grant)) {
+      } else if (
+        computeAuthorityGrantDigest(decision.grant) !==
+        computeAuthorityGrantDigest(grant)
+      ) {
+        grantEligible = false;
         add("AUTHORITY_GRANT_PAYLOAD_MISMATCH", `authorityGrants.${grant.grantId}`, [grant.grantId]);
-      } else {
-        verifiedAuthorityGrants.push({
-          grant: decision.grant,
-          grantDigest: digestCanonical(decision.grant),
-          verifiedAt: context.now.toISOString(),
-        });
       }
     }
 
     if (!context.trustedAuthorityIssuers.includes(grant.issuer)) {
+      grantEligible = false;
       add("AUTHORITY_GRANT_ISSUER_UNTRUSTED", `authorityGrants.${grant.grantId}.issuer`, [grant.issuer]);
     }
-    if (evaluatorIds.has(grant.issuer)) {
+    if (evaluatorPrincipals.has(grant.issuer)) {
+      grantEligible = false;
       add("GRANT_SELF_ISSUED", `authorityGrants.${grant.grantId}.issuer`, [grant.issuer]);
     }
     if (!context.resolveGrantState) {
+      grantEligible = false;
       add("AUTHORITY_LIFECYCLE_UNVERIFIED", `authorityGrants.${grant.grantId}`, [grant.grantId]);
-    } else if (context.resolveGrantState(grant.grantId) !== "active") {
-      add("AUTHORITY_GRANT_INACTIVE", `authorityGrants.${grant.grantId}`, [grant.grantId]);
+    } else {
+      try {
+        if (context.resolveGrantState(grant.grantId) !== "active") {
+          grantEligible = false;
+          add("AUTHORITY_GRANT_INACTIVE", `authorityGrants.${grant.grantId}`, [grant.grantId]);
+        }
+      } catch {
+        grantEligible = false;
+        add("AUTHORITY_LIFECYCLE_UNVERIFIED", `authorityGrants.${grant.grantId}`, [grant.grantId]);
+      }
+    }
+
+    if (Date.parse(grant.issuedAt) > Date.parse(tribunalCase.evaluatedAt)) {
+      grantEligible = false;
+      add("AUTHORITY_GRANT_NOT_YET_VALID", `authorityGrants.${grant.grantId}.issuedAt`, [grant.grantId]);
+    }
+
+    const grantOwners = declarationsByGrantId.get(grant.grantId) ?? [];
+    if (grantOwners.length > 1) {
+      grantEligible = false;
+      add("GRANT_SHARED_BETWEEN_EVALUATORS", `authorityGrants.${grant.grantId}`, grantOwners.map(({ id }) => id));
+    }
+    if (grantOwners.length > 0) {
+      const evaluatorScopes = grant.scopes.filter((scope) =>
+        scope.startsWith("quirk.tribunal.evaluator:"),
+      );
+      const expectedEvaluatorScopes = grantOwners.map(({ id }) =>
+        tribunalEvaluatorScope(id),
+      );
+      if (
+        grantOwners.length !== 1 ||
+        !hasExactMembers(evaluatorScopes, expectedEvaluatorScopes)
+      ) {
+        grantEligible = false;
+        add("PROXY_GRANT_FORBIDDEN", `authorityGrants.${grant.grantId}`, [grant.grantId]);
+      }
+    }
+
+    if (grantEligible && decision?.authorized) {
+      eligibleGrantIds.add(grant.grantId);
+      verifiedAuthorityGrants.push({
+        grant: decision.grant,
+        grantDigest: computeAuthorityGrantDigest(decision.grant),
+        verifiedAt: context.now.toISOString(),
+      });
     }
   }
 
-  const independence = new Map<string, string>();
+  const independenceAxes = {
+    key: new Map<string, string>(),
+    operatorId: new Map<string, string>(),
+    modelFamily: new Map<string, string>(),
+  };
   for (const declaration of tribunalCase.evaluatorDeclarations) {
-    const existing = independence.get(declaration.independence.key);
-    if (existing && existing !== declaration.id) {
-      add("EVALUATOR_INDEPENDENCE_COLLISION", `evaluatorDeclarations.${declaration.id}.independence.key`, [existing, declaration.id]);
-    } else {
-      independence.set(declaration.independence.key, declaration.id);
+    for (const axis of ["key", "operatorId", "modelFamily"] as const) {
+      const value = declaration.independence[axis];
+      const existing = independenceAxes[axis].get(value);
+      if (existing && existing !== declaration.id) {
+        add(
+          "EVALUATOR_INDEPENDENCE_COLLISION",
+          `evaluatorDeclarations.${declaration.id}.independence.${axis}`,
+          [existing, declaration.id],
+        );
+      } else {
+        independenceAxes[axis].set(value, declaration.id);
+      }
     }
 
     if (computeDeclarationDigest(declaration) !== declaration.provenance.declarationDigest) {
@@ -740,7 +981,7 @@ export function validateTribunalCase(
       add("UNKNOWN_AUTHORITY_GRANT_REF", `evaluatorDeclarations.${declaration.id}.authority.grantId`, [declaration.authority.grantId]);
       continue;
     }
-    if (declaration.authority.grantDigest !== digestCanonical(grant)) {
+    if (declaration.authority.grantDigest !== computeAuthorityGrantDigest(grant)) {
       add("AUTHORITY_GRANT_PAYLOAD_MISMATCH", `evaluatorDeclarations.${declaration.id}.authority.grantDigest`, [grant.grantId]);
     }
 
@@ -786,37 +1027,73 @@ export function validateTribunalCase(
     if (computeEvidenceClaimContentDigest(claim) !== claim.contentDigest) {
       add("EVIDENCE_DIGEST_MISMATCH", `evidenceClaims.${claim.id}.contentDigest`, [claim.id]);
     }
+    const sourceDigestValid =
+      claim.source.digest !== undefined &&
+      DigestSchema.safeParse(claim.source.digest).success;
     if (!claim.source.digest) {
       add("EVIDENCE_DIGEST_REQUIRED", `evidenceClaims.${claim.id}.source.digest`, [claim.id]);
-    } else if (!DigestSchema.safeParse(claim.source.digest).success) {
+    } else if (!sourceDigestValid) {
       add("EVIDENCE_DIGEST_INVALID", `evidenceClaims.${claim.id}.source.digest`, [claim.id]);
-    } else if (
-      !["evidence_claim", "tribunal_verdict", "decision_receipt"].includes(claim.source.kind)
-    ) {
-      const bytes = context.resolveEvidence(claim.source.locator);
+    }
+
+    if (claim.source.kind === "evidence_claim") {
+      const sourceClaim = evidence.get(claim.source.locator);
+      if (!sourceClaim) {
+        add("UNKNOWN_EVIDENCE_CLAIM_REF", `evidenceClaims.${claim.id}.source.locator`, [claim.source.locator]);
+      } else if (sourceDigestValid && claim.source.digest !== sourceClaim.contentDigest) {
+        add("EVIDENCE_DIGEST_MISMATCH", `evidenceClaims.${claim.id}.source.digest`, [claim.id]);
+      }
+    } else if (claim.source.kind === "tribunal_verdict") {
+      add("VERDICT_CANNOT_BE_PRIMARY_EVIDENCE", `evidenceClaims.${claim.id}.source.kind`, [claim.id]);
+      const sourceVerdict = verdicts.get(claim.source.locator);
+      if (!sourceVerdict) {
+        add("UNKNOWN_TRIBUNAL_VERDICT_REF", `evidenceClaims.${claim.id}.source.locator`, [claim.source.locator]);
+      } else if (
+        sourceDigestValid &&
+        claim.source.digest !== sourceVerdict.provenance.contentDigest
+      ) {
+        add("EVIDENCE_DIGEST_MISMATCH", `evidenceClaims.${claim.id}.source.digest`, [claim.id]);
+      }
+    } else if (claim.source.kind === "decision_receipt") {
+      add("DECISION_RECEIPT_CANNOT_BE_PRIMARY_EVIDENCE", `evidenceClaims.${claim.id}.source.kind`, [claim.id]);
+      const sourceReceipt = receipts.get(claim.source.locator);
+      if (!sourceReceipt) {
+        add("UNKNOWN_DECISION_RECEIPT_REF", `evidenceClaims.${claim.id}.source.locator`, [claim.source.locator]);
+      } else if (sourceDigestValid && claim.source.digest !== sourceReceipt.contentDigest) {
+        add("EVIDENCE_DIGEST_MISMATCH", `evidenceClaims.${claim.id}.source.digest`, [claim.id]);
+      }
+    } else if (sourceDigestValid) {
+      let bytes: string | Uint8Array | undefined;
+      try {
+        bytes = context.resolveEvidence(claim.source.locator);
+      } catch {
+        bytes = undefined;
+      }
       if (bytes === undefined) {
         add("EVIDENCE_SOURCE_UNRESOLVED", `evidenceClaims.${claim.id}.source.locator`, [claim.source.locator]);
       } else if (digestCanonical(bytes) !== claim.source.digest) {
         add("EVIDENCE_DIGEST_MISMATCH", `evidenceClaims.${claim.id}.source.digest`, [claim.id]);
       }
     }
-    if (claim.source.kind === "tribunal_verdict") {
-      add("VERDICT_CANNOT_BE_PRIMARY_EVIDENCE", `evidenceClaims.${claim.id}.source.kind`, [claim.id]);
-    }
+
     const declaration = declarations.get(claim.inspectedBy);
-    if (declaration && !declaration.inspection.evidenceKinds.includes(claim.source.kind)) {
-      add("OUT_OF_SCOPE_EVIDENCE", `evidenceClaims.${claim.id}.source.kind`, [claim.source.kind]);
+    if (!declaration) {
+      add("UNKNOWN_EVALUATOR_DECLARATION_REF", `evidenceClaims.${claim.id}.inspectedBy`, [claim.inspectedBy]);
+    } else {
+      if (!declaration.inspection.evidenceKinds.includes(claim.source.kind)) {
+        add("OUT_OF_SCOPE_EVIDENCE", `evidenceClaims.${claim.id}.source.kind`, [claim.source.kind]);
+      }
+      if (Date.parse(claim.observedAt) > Date.parse(declaration.inspection.temporalBoundary)) {
+        add("EVIDENCE_AFTER_INSPECTION_BOUNDARY", `evidenceClaims.${claim.id}.observedAt`, [claim.id]);
+      }
+      if (claim.confidence > declaration.fallibility.maxConfidence) {
+        add("CONFIDENCE_EXCEEDS_CALIBRATION", `evidenceClaims.${claim.id}.confidence`, [claim.id]);
+      }
     }
     for (const dependency of claim.derivedFromEvidenceClaimIds) {
       if (!evidence.has(dependency)) {
         add("UNKNOWN_EVIDENCE_CLAIM_REF", `evidenceClaims.${claim.id}.derivedFromEvidenceClaimIds`, [dependency]);
       }
-    }
-    if (claim.source.kind === "evidence_claim" && !evidence.has(claim.source.locator)) {
-      add("UNKNOWN_EVIDENCE_CLAIM_REF", `evidenceClaims.${claim.id}.source.locator`, [claim.source.locator]);
-    }
-    if (claim.source.kind === "tribunal_verdict" && !verdicts.has(claim.source.locator)) {
-      add("UNKNOWN_TRIBUNAL_VERDICT_REF", `evidenceClaims.${claim.id}.source.locator`, [claim.source.locator]);
     }
     const observedAt = Date.parse(claim.observedAt);
     if (observedAt > Date.parse(tribunalCase.evaluatedAt)) {
@@ -845,7 +1122,7 @@ export function validateTribunalCase(
     }
     if (
       verdict.authorityBasis.grantId !== verdict.authorityGrantId ||
-      verdict.authorityBasis.grantDigest !== digestCanonical(grant)
+      verdict.authorityBasis.grantDigest !== computeAuthorityGrantDigest(grant)
     ) {
       add("VERDICT_GRANT_BINDING_MISMATCH", `verdicts.${verdict.id}.authorityBasis`, [verdict.authorityGrantId]);
     }
@@ -878,6 +1155,7 @@ export function validateTribunalCase(
         add("AUTHORITY_UNION_FORBIDDEN", `verdicts.${verdict.id}.authorityEffectRequested`, [verdict.authorityEffectRequested]);
       }
     } else if (
+      eligibleGrantIds.has(grant.grantId) &&
       declaration.authority.declaredEffects.includes(verdict.authorityEffectRequested) &&
       verdict.authorityBasis.kind === "grant"
     ) {
@@ -919,6 +1197,9 @@ export function validateTribunalCase(
       if (claim.inspectedBy !== verdict.evaluatorDeclarationId) {
         add("EVIDENCE_INSPECTOR_MISMATCH", `verdicts.${verdict.id}.evidenceClaimIds`, [claim.id, claim.inspectedBy, verdict.evaluatorDeclarationId]);
       }
+      if (claim.claimId !== verdict.claimId) {
+        add("EVIDENCE_CLAIM_BINDING_MISMATCH", `verdicts.${verdict.id}.evidenceClaimIds`, [claim.id, claim.claimId, verdict.claimId]);
+      }
     }
     if (missingEvidence.length === 0) {
       const expectedDigests = linkedEvidence.flatMap((claim) => (claim ? [claim.contentDigest] : []));
@@ -932,6 +1213,9 @@ export function validateTribunalCase(
     if (verdict.provenance.declarationDigest !== declaration.provenance.declarationDigest) {
       add("DECLARATION_HASH_MISMATCH", `verdicts.${verdict.id}.provenance.declarationDigest`, [verdict.id]);
     }
+    if (verdict.provenance.trajectoryId !== tribunalCase.trajectoryId) {
+      add("TRAJECTORY_MISMATCH", `verdicts.${verdict.id}.provenance.trajectoryId`, [verdict.id]);
+    }
     if (verdict.confidence > declaration.fallibility.maxConfidence) {
       add("CONFIDENCE_EXCEEDS_CALIBRATION", `verdicts.${verdict.id}.confidence`, [verdict.id]);
     }
@@ -944,13 +1228,51 @@ export function validateTribunalCase(
     );
     if (
       Date.parse(verdict.provenance.createdAt) < latestEvidence ||
+      Date.parse(verdict.provenance.createdAt) < Date.parse(tribunalCase.openedAt) ||
       Date.parse(verdict.provenance.createdAt) > Date.parse(tribunalCase.evaluatedAt)
     ) {
       add("TEMPORAL_ORDER_INVALID", `verdicts.${verdict.id}.provenance.createdAt`, [verdict.id]);
     }
+    if (Date.parse(grant.issuedAt) > Date.parse(verdict.provenance.createdAt)) {
+      add("AUTHORITY_GRANT_NOT_YET_VALID", `verdicts.${verdict.id}.authorityGrantId`, [grant.grantId]);
+      authorityEffectPermittedByVerdict[verdict.id] = false;
+    }
   }
 
   if (detectProtocolCycle(tribunalCase)) add("EVIDENCE_CYCLE");
+
+  let effectiveReceipt: DecisionReceipt | undefined;
+  if (tribunalCase.decisionReceipts.length > 0) {
+    if (!tribunalCase.effectiveDecisionReceiptId) {
+      add("EFFECTIVE_RECEIPT_REQUIRED", "effectiveDecisionReceiptId");
+    } else {
+      effectiveReceipt = receipts.get(tribunalCase.effectiveDecisionReceiptId);
+      if (!effectiveReceipt) {
+        add("UNKNOWN_DECISION_RECEIPT_REF", "effectiveDecisionReceiptId", [
+          tribunalCase.effectiveDecisionReceiptId,
+        ]);
+      } else {
+        const latestIssuedAt = Math.max(
+          ...tribunalCase.decisionReceipts.map(({ issuedAt }) => Date.parse(issuedAt)),
+        );
+        const latestReceipts = tribunalCase.decisionReceipts.filter(
+          ({ issuedAt }) => Date.parse(issuedAt) === latestIssuedAt,
+        );
+        if (
+          latestReceipts.length !== 1 ||
+          latestReceipts[0].id !== effectiveReceipt.id
+        ) {
+          add("EFFECTIVE_RECEIPT_MISMATCH", "effectiveDecisionReceiptId", [
+            effectiveReceipt.id,
+          ]);
+        }
+      }
+    }
+  } else if (tribunalCase.effectiveDecisionReceiptId) {
+    add("UNKNOWN_DECISION_RECEIPT_REF", "effectiveDecisionReceiptId", [
+      tribunalCase.effectiveDecisionReceiptId,
+    ]);
+  }
 
   const conflictGroups = new Map<string, TribunalVerdict[]>();
   for (const verdict of tribunalCase.verdicts) {
@@ -961,16 +1283,16 @@ export function validateTribunalCase(
     const dispositions = new Set(group.map(({ disposition }) => disposition));
     if (!(dispositions.has("SUPPORTED") && dispositions.has("CONTRADICTED"))) continue;
     const ids = group.map(({ id }) => id);
-    const acknowledged = tribunalCase.decisionReceipts.some(
-      (receipt) =>
-        receipt.decision.authorityId === tribunalCase.humanAuthorityId &&
-        context.trustedHumanAuthorities.includes(receipt.decision.authorityId) &&
-        ids.every((id) => receipt.consideredVerdictIds.includes(id)),
-    );
+    const acknowledged =
+      effectiveReceipt?.decision.authorityId === tribunalCase.humanAuthorityId &&
+      context.trustedHumanAuthorities.includes(
+        effectiveReceipt.decision.authorityId,
+      ) &&
+      ids.every((id) => effectiveReceipt.consideredVerdictIds.includes(id));
     if (!acknowledged) add("DISPUTED_VERDICTS_UNACKNOWLEDGED", "verdicts", ids);
   }
 
-  if (authorityBearing(tribunalCase.proposedEffect) && tribunalCase.decisionReceipts.length === 0) {
+  if (authorityBearing(tribunalCase.proposedEffect) && !effectiveReceipt) {
     add("DECISION_RECEIPT_REQUIRED", "decisionReceipts", [tribunalCase.proposedEffect]);
   }
 
@@ -982,6 +1304,7 @@ export function validateTribunalCase(
     "VERDICT_CONTENT_HASH_MISMATCH",
   ]);
   const skipReceiptBindings = values().some((issue) => integrityFailures.has(issue.code));
+  const receiptReplayKeysToConsume: string[] = [];
   if (!skipReceiptBindings) {
     const expectedVerdicts = tribunalCase.verdicts.map(({ id }) => id);
     const expectedEvidence = [
@@ -1009,7 +1332,7 @@ export function validateTribunalCase(
       const receiptGrantIds = receipt.authorityGrantRefs.map(({ grantId }) => grantId);
       const badGrantDigest = receipt.authorityGrantRefs.some(({ grantId, grantDigest }) => {
         const grant = grants.get(grantId);
-        return !grant || digestCanonical(grant) !== grantDigest;
+        return !grant || computeAuthorityGrantDigest(grant) !== grantDigest;
       });
       if (!hasExactMembers(receiptGrantIds, expectedGrants) || badGrantDigest) {
         add("RECEIPT_GRANT_BINDING_MISMATCH", `decisionReceipts.${receipt.id}.authorityGrantRefs`, [receipt.id]);
@@ -1028,14 +1351,38 @@ export function validateTribunalCase(
       if (receipt.effect !== tribunalCase.proposedEffect) {
         add("RECEIPT_EFFECT_MISMATCH", `decisionReceipts.${receipt.id}.effect`, [receipt.effect, tribunalCase.proposedEffect]);
       }
+      const receiptDigestValid =
+        computeDecisionReceiptContentDigest(receipt) === receipt.contentDigest;
+      if (!receiptDigestValid) {
+        add("RECEIPT_CONTENT_HASH_MISMATCH", `decisionReceipts.${receipt.id}.contentDigest`, [receipt.id]);
+      } else if (!context.verifyDecisionReceipt) {
+        add("DECISION_VERIFIER_UNAVAILABLE", `decisionReceipts.${receipt.id}`, [receipt.id]);
+      } else {
+        let authenticated = false;
+        try {
+          authenticated = context.verifyDecisionReceipt({
+            receipt,
+            caseDigest: receipt.caseDigest,
+            now: context.now,
+          });
+        } catch {
+          authenticated = false;
+        }
+        if (!authenticated) {
+          add("DECISION_AUTHENTICATION_FAILED", `decisionReceipts.${receipt.id}`, [receipt.id]);
+        }
+      }
       if (!context.consumedReceiptDigests) {
         add("REPLAY_CHECK_REQUIRED", `decisionReceipts.${receipt.id}`, [receipt.id]);
       } else {
-        const consumed = context.consumedReceiptDigests.get(receipt.id);
+        const replayKey = computeDecisionReceiptReplayKey(receipt);
+        const consumed = context.consumedReceiptDigests.get(replayKey);
         if (consumed === receipt.contentDigest) {
           add("DECISION_RECEIPT_REPLAYED", `decisionReceipts.${receipt.id}`, [receipt.id]);
         } else if (consumed) {
           add("DECISION_RECEIPT_TAMPERED", `decisionReceipts.${receipt.id}`, [receipt.id]);
+        } else {
+          receiptReplayKeysToConsume.push(replayKey);
         }
       }
       if (receipt.reversibility.kind === "reversible" && !receipt.reversibility.rollbackRef) {
@@ -1050,9 +1397,6 @@ export function validateTribunalCase(
       ) {
         add("TEMPORAL_ORDER_INVALID", `decisionReceipts.${receipt.id}.issuedAt`, [receipt.id]);
       }
-      if (computeDecisionReceiptContentDigest(receipt) !== receipt.contentDigest) {
-        add("RECEIPT_CONTENT_HASH_MISMATCH", `decisionReceipts.${receipt.id}.contentDigest`, [receipt.id]);
-      }
     }
   }
 
@@ -1064,10 +1408,29 @@ export function validateTribunalCase(
   }
 
   const issues = values();
+  if (issues.length > 0) {
+    for (const verdictId of Object.keys(authorityEffectPermittedByVerdict)) {
+      authorityEffectPermittedByVerdict[verdictId] = false;
+    }
+  }
+  const matchingVerdictPermitsEffect = tribunalCase.verdicts.some(
+    (verdict) =>
+      verdict.authorityEffectRequested === tribunalCase.proposedEffect &&
+      authorityEffectPermittedByVerdict[verdict.id] === true,
+  );
+  const humanDecisionPermitsEffect = effectiveReceipt
+    ? effectiveReceipt.decision.decision === "approved"
+    : !authorityBearing(tribunalCase.proposedEffect);
   return {
     ok: issues.length === 0,
     issues,
-    verifiedAuthorityGrants,
+    verifiedAuthorityGrants: issues.length === 0 ? verifiedAuthorityGrants : [],
     authorityEffectPermittedByVerdict,
+    caseEffectAuthorized:
+      issues.length === 0 &&
+      matchingVerdictPermitsEffect &&
+      humanDecisionPermitsEffect,
+    receiptReplayKeysToConsume:
+      issues.length === 0 ? receiptReplayKeysToConsume.sort() : [],
   };
 }

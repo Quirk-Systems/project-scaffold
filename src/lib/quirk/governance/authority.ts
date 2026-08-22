@@ -26,6 +26,7 @@ export type AuthorityDenialReason =
   | "expired_grant"
   | "not_yet_valid_grant"
   | "invalid_grant_window"
+  | "invalid_verification_time"
   | "subject_mismatch"
   | "scope_mismatch";
 
@@ -93,6 +94,13 @@ export function verifyAuthorityGrant(input: {
   const issuedAt = new Date(grant.issuedAt).getTime();
   const expiresAt = new Date(grant.expiresAt).getTime();
   const now = (input.now ?? new Date()).getTime();
+  if (!Number.isFinite(now)) {
+    return {
+      authorized: false,
+      never: NEVER_0001,
+      reason: "invalid_verification_time",
+    };
+  }
   if (issuedAt >= expiresAt) {
     return { authorized: false, never: NEVER_0001, reason: "invalid_grant_window" };
   }

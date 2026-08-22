@@ -33,9 +33,12 @@ export type TribunalCompatibilityIssueCode =
   | "DESIGN_EVIDENCE_INVALID"
   | "DESIGN_EVIDENCE_DIGEST_REQUIRED"
   | "DESIGN_FINDING_INVALID"
+  | "DESIGN_FINDING_TRAJECTORY_MISMATCH"
   | "DESIGN_HUMAN_DECISION_INVALID"
   | "TRIBUNAL_ADAPTER_OUTPUT_INVALID"
-  | "HUMAN_AUTHORITY_REQUIRED";
+  | "HUMAN_AUTHORITY_REQUIRED"
+  | "HUMAN_AUTHORITY_CONFLICT"
+  | "EFFECTIVE_DECISION_REQUIRED";
 
 export type TribunalCompatibilityIssue = {
   code: TribunalCompatibilityIssueCode;
@@ -72,6 +75,7 @@ export function adaptDesignReviewRequest(input: {
     proposedEffect: TribunalEffect;
     operatingScope: TribunalOperatingScope;
     humanAuthorityId?: string;
+    effectiveDecisionReceiptId?: string;
   };
   roles: {
     authorityGrants: AuthorityGrant[];
@@ -92,11 +96,37 @@ export function adaptDesignReviewRequest(input: {
   }
   const humanAuthorityId =
     request.data.humanAuthorityId ?? input.bindings.humanAuthorityId;
+  if (
+    request.data.humanAuthorityId &&
+    input.bindings.humanAuthorityId &&
+    request.data.humanAuthorityId !== input.bindings.humanAuthorityId
+  ) {
+    return failure(
+      "HUMAN_AUTHORITY_CONFLICT",
+      "bindings.humanAuthorityId",
+      "Adapter bindings cannot replace the request's named human authority.",
+    );
+  }
   if (!humanAuthorityId) {
     return failure(
       "HUMAN_AUTHORITY_REQUIRED",
       "bindings.humanAuthorityId",
       "TribunalCase requires an explicit human authority.",
+    );
+  }
+  const effectiveDecisionReceiptId =
+    input.bindings.effectiveDecisionReceiptId ??
+    (input.roles.decisionReceipts.length === 1
+      ? input.roles.decisionReceipts[0].id
+      : undefined);
+  if (
+    input.roles.decisionReceipts.length > 1 &&
+    !effectiveDecisionReceiptId
+  ) {
+    return failure(
+      "EFFECTIVE_DECISION_REQUIRED",
+      "bindings.effectiveDecisionReceiptId",
+      "Select the effective receipt when adapting decision history.",
     );
   }
 
@@ -127,6 +157,7 @@ export function adaptDesignReviewRequest(input: {
     evidenceClaims: input.roles.evidenceClaims,
     verdicts: input.roles.verdicts,
     decisionReceipts: input.roles.decisionReceipts,
+    effectiveDecisionReceiptId,
   };
   const parsed = TribunalCaseSchema.safeParse(candidate);
   if (!parsed.success) {
@@ -218,6 +249,13 @@ export function adaptDesignFinding(input: {
       first?.message ?? "Invalid DesignFinding.",
     );
   }
+  if (input.bindings.trajectoryId !== finding.data.runId) {
+    return failure(
+      "DESIGN_FINDING_TRAJECTORY_MISMATCH",
+      "bindings.trajectoryId",
+      "A DesignFinding keeps its canonical runId as the Tribunal trajectory.",
+    );
+  }
 
   const candidate: TribunalVerdict = {
     kind: "TribunalVerdict",
@@ -243,7 +281,7 @@ export function adaptDesignFinding(input: {
       grantDigest: input.bindings.grantDigest,
     },
     provenance: {
-      trajectoryId: input.bindings.trajectoryId,
+      trajectoryId: finding.data.runId,
       evaluatorVersion: input.bindings.evaluatorVersion,
       declarationDigest: input.bindings.declarationDigest,
       evidenceDigests: input.bindings.evidenceDigests,

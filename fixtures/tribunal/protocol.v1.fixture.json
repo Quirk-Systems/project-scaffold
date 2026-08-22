@@ -16,7 +16,7 @@
       "tenantId": "tenant.quirk",
       "audienceId": "audience.internal",
       "destinationId": "destination.pull-request",
-      "actionDigest": "sha256:b9b393f5276d6ceb780ab7526cf77929332477f013c622df60188d425b7c1d40"
+      "actionDigest": "sha256:d19808278a1c5944eee10bb0967b50b52294d156ccf5e2f5f5f3442f45845b65"
     },
     "subject": {
       "id": "artifact.design.v7",
@@ -24,7 +24,7 @@
       "targetClass": "app",
       "revision": "v7",
       "locator": "src/app/page.tsx",
-      "digest": "sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1"
+      "digest": "sha256:8ef08a37f9acc821c6097d42c28c01b59634d90c7981439dc46cc4f35953146b"
     },
     "criterionRefs": [
       "criterion.authority",
@@ -43,13 +43,13 @@
           "quirk.tribunal.evaluator:evaluator.contract.v1",
           "quirk.tribunal.realm:quirk-os",
           "quirk.tribunal.subject-id:artifact.design.v7",
-          "quirk.tribunal.subject:sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1",
+          "quirk.tribunal.subject:sha256:8ef08a37f9acc821c6097d42c28c01b59634d90c7981439dc46cc4f35953146b",
           "quirk.tribunal.target-class:app",
           "quirk.tribunal.purpose:purpose.design-review",
           "quirk.tribunal.tenant:tenant.quirk",
           "quirk.tribunal.audience:audience.internal",
           "quirk.tribunal.destination:destination.pull-request",
-          "quirk.tribunal.action:sha256:b9b393f5276d6ceb780ab7526cf77929332477f013c622df60188d425b7c1d40",
+          "quirk.tribunal.action:sha256:d19808278a1c5944eee10bb0967b50b52294d156ccf5e2f5f5f3442f45845b65",
           "quirk.tribunal.effect:recommend"
         ],
         "issuedAt": "2026-08-21T12:00:00.000Z",
@@ -92,7 +92,7 @@
           "calibrationEvidence": "fixtures/tribunal/protocol.v1.fixture.json",
           "calibratedAt": "2026-08-20T12:00:00.000Z",
           "calibrationValidUntil": "2026-09-20T12:00:00.000Z",
-          "holdoutDigest": "sha256:b787c7e10cf9066ca03581794bc944ba98a5dd4d506c4cc83fa80eff145d8bde",
+          "holdoutDigest": "sha256:9f2046e8efe1b2cd763937861f5c4b686351b1b2377f2e78ada13b74b57b5c3e",
           "maxConfidence": 0.95,
           "errorTendencies": [
             "false confidence after fixture drift"
@@ -103,7 +103,7 @@
         },
         "authority": {
           "grantId": "grant.evaluator.v1",
-          "grantDigest": "sha256:49d045a78b4ab316842da884b5e39ec997351c9be492dbf22bff70c85e392faf",
+          "grantDigest": "sha256:1b271504ad276386da6e65a923e97334355c3965995c3d652da33b9f05ad7e71",
           "declaredEffects": [
             "recommend"
           ],
@@ -116,7 +116,7 @@
         },
         "provenance": {
           "canonicalVersion": "design-tribunal@1",
-          "declarationDigest": "sha256:d056bdba88a833ad18cf6c7ad48661921ba56203adbcf285c6d994a10c81f999"
+          "declarationDigest": "sha256:513ef33db1e98567f54f031695391324131bc3a2002117796b1623973b6cdb1c"
         }
       }
     ],
@@ -127,12 +127,12 @@
         "id": "evidence.fixture.v1",
         "claimId": "claim.contract-valid",
         "claim": "The canonical fixture passes deterministic validation.",
-        "subjectDigest": "sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1",
+        "subjectDigest": "sha256:8ef08a37f9acc821c6097d42c28c01b59634d90c7981439dc46cc4f35953146b",
         "source": {
           "kind": "test_result",
           "locator": "fixture://tribunal/positive-basic",
           "summary": "The positive fixture validates.",
-          "digest": "sha256:2b70fc37c97b49c10f77336e6fe508d974845dab80b42d126a7151af54ceed9f"
+          "digest": "sha256:83f10edd51bc888b6d2228b6c7440bf604df60ac547ff915f7f47db1f0a7f813"
         },
         "observable": true,
         "inspectedBy": "evaluator.contract.v1",
@@ -145,7 +145,7 @@
         ],
         "retentionClass": "project",
         "derivedFromEvidenceClaimIds": [],
-        "contentDigest": "sha256:6e3ea7111fecbb53ff03635c875e9a59d9b86d9c8c07588bb06740bdbe010304"
+        "contentDigest": "sha256:9450673819aff7d135521c6e5a0207374e47dfb7cfabf93143a226a67280c956"
       }
     ],
     "verdicts": [
@@ -155,7 +155,7 @@
         "id": "verdict.recommend.v1",
         "evaluatorDeclarationId": "evaluator.contract.v1",
         "authorityGrantId": "grant.evaluator.v1",
-        "subjectDigest": "sha256:21064408f3774afc28cdefc73372001159e35d4e1b0a4e461eaa4f10dc9e6eb1",
+        "subjectDigest": "sha256:8ef08a37f9acc821c6097d42c28c01b59634d90c7981439dc46cc4f35953146b",
         "claimId": "claim.contract-valid",
         "claim": "The compatibility contract is structurally ready for review.",
         "disposition": "SUPPORTED",
@@ -169,27 +169,28 @@
         "authorityBasis": {
           "kind": "grant",
           "grantId": "grant.evaluator.v1",
-          "grantDigest": "sha256:49d045a78b4ab316842da884b5e39ec997351c9be492dbf22bff70c85e392faf"
+          "grantDigest": "sha256:1b271504ad276386da6e65a923e97334355c3965995c3d652da33b9f05ad7e71"
         },
         "provenance": {
           "trajectoryId": "trajectory.release.v1",
           "evaluatorVersion": "1.0.0",
-          "declarationDigest": "sha256:d056bdba88a833ad18cf6c7ad48661921ba56203adbcf285c6d994a10c81f999",
+          "declarationDigest": "sha256:513ef33db1e98567f54f031695391324131bc3a2002117796b1623973b6cdb1c",
           "evidenceDigests": [
-            "sha256:6e3ea7111fecbb53ff03635c875e9a59d9b86d9c8c07588bb06740bdbe010304"
+            "sha256:9450673819aff7d135521c6e5a0207374e47dfb7cfabf93143a226a67280c956"
           ],
           "createdAt": "2026-08-21T13:00:00.000Z",
-          "contentDigest": "sha256:afdbe821284de573f51eb28455e4f6f32549876fb3224a7fd3d34c5545e01f59"
+          "contentDigest": "sha256:107e30308931c94f21462a9e24b8ac58be22f4a2e653b16068fa98f15d07c1f8"
         }
       }
     ],
+    "effectiveDecisionReceiptId": "receipt.review.v1",
     "decisionReceipts": [
       {
         "kind": "DecisionReceipt",
         "protocolVersion": "1.0.0",
         "id": "receipt.review.v1",
         "caseId": "case.design.review.v1",
-        "caseDigest": "sha256:86517648612ceb3f256c8e995854d240b21922aa4066df9ef366f6122787215d",
+        "caseDigest": "sha256:02a7d7dc953d27d62188ca8c3bbd78d113e5c485fa459e08258421e7615cb59f",
         "decision": {
           "decision": "approved",
           "authorityType": "human",
@@ -208,7 +209,7 @@
         "authorityGrantRefs": [
           {
             "grantId": "grant.evaluator.v1",
-            "grantDigest": "sha256:49d045a78b4ab316842da884b5e39ec997351c9be492dbf22bff70c85e392faf"
+            "grantDigest": "sha256:1b271504ad276386da6e65a923e97334355c3965995c3d652da33b9f05ad7e71"
           }
         ],
         "reversibility": {
@@ -218,7 +219,7 @@
         },
         "issuedAt": "2026-08-21T13:02:00.000Z",
         "nonce": "receipt-nonce-0001",
-        "contentDigest": "sha256:c794338ae55c172b7616b73180ee207b94691a910f7e2e7bc2e67b49184efeda"
+        "contentDigest": "sha256:4e9ea0d2f85d9e560346df656dec912f887b4b2016a14d87fab79f74b66a373a"
       }
     ]
   },
@@ -226,3 +227,4 @@
     "fixture://tribunal/positive-basic": "observable fixture bytes"
   }
 }
+

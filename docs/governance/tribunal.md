@@ -20,7 +20,7 @@ roles remain, but they do not get five competing wire formats.
 | `EvaluatorDeclaration` | `design-tribunal/protocol.ts` | Declares identity, inspection boundary, fallibility, calibration, provenance, and requested grant subset |
 | `EvidenceClaim` | `DesignEvidence` plus protocol bindings | Preserves the Design evidence object and binds subject, inspector, freshness, retention, derivation, and hashes |
 | `TribunalVerdict` | `DesignFinding` adapter plus protocol bindings | Binds stable claim, evaluator, grant, subject revision, evidence, uncertainty, dissent, and requested evaluator effect |
-| `DecisionReceipt` | canonical `HumanDecision` plus protocol bindings | Binds the exact case, verdicts, evidence, grants, effect, time, replay nonce, reversibility, and content hash |
+| `DecisionReceipt` | canonical `HumanDecision` plus protocol bindings | Binds the exact case, verdicts, evidence, grants, effect, time, replay nonce, reversibility, content hash, and an out-of-band human attestation |
 
 `TribunalCase` is the non-authority-bearing root. It carries the case ID,
 purpose, requester, named human authority, trajectory, deterministic evaluation
@@ -67,6 +67,13 @@ quirk.tribunal.action:<sha256 action>
 Every declaration and verdict resolves one signed grant. Scope cannot be
 unioned across evaluators. Confidence, consensus, history, evaluator type, and
 meta-evaluation never add scopes. Delegation/proxy grants fail closed in v1.
+An owned grant contains exactly one evaluator scope, belongs to one declaration,
+and cannot be issued by that evaluator or its declared operator. Shared
+operator or model-family axes are treated as correlated even when evaluators
+choose different independence keys.
+
+Grant validity is checked both at validation time and at the governed verdict
+time. A later grant cannot retroactively authorize an earlier evaluation.
 
 ## Runtime contract
 
@@ -77,26 +84,49 @@ caller must inject:
 - signed tokens by grant ID and the existing grant verifier;
 - current grant lifecycle state (`active`, `revoked`, or `superseded`);
 - trusted issuer and human-authority identities;
+- an out-of-band receipt verifier that authenticates the full receipt and its
+  content digest;
 - evidence bytes by locator for digest verification;
-- consumed receipt ID/digest state for replay detection.
+- consumed human/case/nonce replay-key to receipt-digest state.
 
-Missing verification, lifecycle, evidence, or replay infrastructure is a typed
-failure. Tokens are runtime-only and must not be persisted in a `TribunalCase`,
-fixture, receipt, log, browser bundle, or evidence payload.
+Missing verification, lifecycle, evidence, human attestation, or replay
+infrastructure is a typed failure. Tokens and attestations are runtime-only and
+must not be persisted in a `TribunalCase`, fixture, receipt, log, browser
+bundle, or evidence payload.
 
 The validator returns stable `{ code, path, refs }` issues; it does not throw on
 untrusted input. It rejects duplicate IDs before building reference maps,
 resolves every edge, verifies content hashes, detects protocol cycles, and
 groups disagreement by stable `claimId` plus subject revision—not prose.
+Internal evidence-claim edges bind the referenced claim's exact content digest.
+Verdicts and decision receipts cannot be laundered into primary evidence.
+Evidence must match the verdict's stable claim, its evaluator's declared
+inspection cutoff, and the case trajectory.
+
+Canonical object hashes use UTF-8, code-point key ordering, a versioned encoding
+prefix, and a role-specific domain separator. Issue references are bounded and
+redacted before return. Unsafe cyclic/deep inputs, invalid clocks,
+prototype-inherited tokens, and throwing runtime ports fail with typed issues
+instead of escaping the validator.
 
 ## Human gate
 
 Evaluator effects and candidate effects are separate. A signed evaluator grant
 may authorize observation, recommendation, or blocking without authorizing the
 evaluated candidate action. Approval, publication, canon mutation, and verdict
-promotion require an exact, replay-checked `DecisionReceipt` owned by the named
-trusted human authority. A receipt that omits one side of a disagreement is
-irrelevant and cannot suppress the dispute.
+promotion require an exact, authenticated, replay-checked `DecisionReceipt`
+owned by the named trusted human authority. When receipt history exists, the
+case names the unique latest receipt as effective. `rejected`, `waived`, and
+`superseded` decisions never authorize execution; only an explicit `approved`
+effective decision can open an authority-bearing effect. A receipt that omits
+one side of a disagreement is irrelevant and cannot suppress the dispute.
+
+`ok` means the complete case is valid; it is not itself execution permission.
+Consumers may act only when `caseEffectAuthorized` is true. On any issue, every
+derived verdict permission is forced false, verified-grant output is withheld,
+and no replay key is emitted. A successful result returns
+`receiptReplayKeysToConsume`; the executor must atomically compare-and-set those
+keys before its idempotent effect and abort if another consumer wins.
 
 ## Agentic and experimental use
 
@@ -110,12 +140,14 @@ action digest as mandatory least-authority inputs. New integrations should:
    keys to expose correlated ensembles;
 4. expire calibration and evidence, preserve holdout separation, and cap
    confidence at the calibrated range;
-5. persist receipt replay state and grant lifecycle outside the pure contract;
+5. authenticate receipts out of band and persist grant lifecycle plus receipt
+   replay state outside the pure contract;
 6. pause on missing infrastructure or human authority;
 7. log only typed issues and redacted references, never authority tokens or raw
    secret-bearing evidence;
-8. make the downstream action idempotent and preserve the receipt's rollback
-   reference before any reversible effect executes.
+8. atomically consume every returned replay key, make the downstream action
+   idempotent, and preserve the receipt's rollback reference before any
+   reversible effect executes.
 
 ## Compatibility adapters
 
@@ -127,10 +159,16 @@ Adapters are explicit and fail closed:
 - `DesignEvidence -> EvidenceClaim`: preserves the source exactly; a missing
   digest is rejected rather than synthesized.
 - `DesignFinding -> TribunalVerdict`: maps pass/fail/unresolved to
-  supported/contradicted/insufficient. `blocksRelease` never becomes authority.
+  supported/contradicted/insufficient, preserves `runId` as the trajectory, and
+  rejects a caller-supplied trajectory mismatch. `blocksRelease` never becomes
+  authority.
 - `DesignHumanDecision -> DecisionReceipt`: embeds the canonical human decision
   and requires explicit case, role, effect, reversibility, time, and nonce
   bindings.
+
+A single adapted receipt is selected as effective automatically. Decision
+history with multiple receipts requires an explicit effective receipt; runtime
+validation still requires that selection to be the unique latest receipt.
 
 `DesignReviewReport.status` remains supporting context. It is not a receipt and
 does not grant permission.
