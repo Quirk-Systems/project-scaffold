@@ -16,13 +16,13 @@ A. STATE_ONLY
 → C. PRODUCTION_GATED
 ```
 
-The sequence is directional but not automatic. A run, agent, capability, evaluator, component, operator, or runtime may never promote itself from one mode to another.
+The sequence is directional but never automatic. A run, agent, capability, evaluator, component, operator, model, or runtime may not promote itself between modes.
 
-- **A is the immediate implementation target.** It proves the complete context, authority, policy, agency-locus, candidate-transition, evidence, and evaluation chain without executing the proposed effect.
-- **B is the first adversarial integration proof.** It executes a narrowly declared effect in a disposable sandbox, attacks the boundary, rolls the effect back, and independently verifies exact restoration.
-- **C is the controlled destination.** It permits a consequential production effect only after fresh authority, fresh policy, fresh state, independent approval, atomic execution, and postcondition proof.
+- **A is the immediate implementation target.** It proves persona/context composition, authority resolution, agency locus, policy evaluation, effect candidacy, receipts, and post-run evaluation without executing the proposed effect.
+- **B is the first adversarial integration proof.** It executes one exact effect in a disposable sandbox, attacks the containment boundary, rolls the effect back, and independently verifies restoration.
+- **C is the controlled destination.** It permits a consequential production effect only after fresh state, fresh authority, fresh policy, an independently authorized decision, atomic execution, and independent postcondition proof.
 
-This protocol composes with the canonical Tribunal roles already defined by PR #98:
+The protocol composes with the five canonical Tribunal roles from PR #98:
 
 ```text
 AuthorityGrant
@@ -32,11 +32,11 @@ TribunalVerdict
 DecisionReceipt
 ```
 
-It does not duplicate or rename those roles.
+It does not copy, rename, or reinterpret those roles.
 
 ## 2. Problem
 
-Agent systems frequently collapse several distinct operations into one opaque action:
+Typical agent systems collapse distinct operations into one opaque chain:
 
 ```text
 context assembly
@@ -47,90 +47,77 @@ context assembly
 → self-reported success
 ```
 
-That shape makes it difficult to answer:
+That shape obscures which persona was active, what information was visible or withheld, who originated the goal, which grants applied, who decided, who executed, what changed, and what evidence supports the result.
 
-1. Which persona and perspective were active?
-2. Which information was visible, withheld, inferred, or prohibited?
-3. Who originated the goal?
-4. Who proposed the action?
-5. Which authority grants and policies applied?
-6. Who decided, executed, accepted, and could reverse the effect?
-7. What exact change was proposed?
-8. What exact change occurred?
-9. Which evidence supports the run's claims?
-10. Which important alternatives, constraints, and failure classes remain untested?
-
-Quirk needs an inspectable run protocol in which no object may impersonate a stronger epistemic, semantic, or authority class than it possesses.
+Quirk requires an inspectable protocol in which no object may impersonate a stronger semantic, epistemic, or authority class than it possesses.
 
 ## 3. Goals
 
 The protocol must:
 
-- separate persona composition from identity and authority;
-- project perspective from neutral event history without transferring ownership, intent, or permissions;
-- require agents to propose actions rather than embed approval claims inside proposals;
+- separate person, identity, persona, character, mask, role, agent, and runtime configuration;
+- project actor-specific context from neutral event history without transferring ownership, intent, or permission;
+- require agents to propose actions rather than embed approval inside proposals;
 - resolve instruction hierarchy and authority outside the language model;
 - record agency locus for every consequential stage;
 - evaluate policy immediately before any effect boundary;
-- represent a proposed state change as an `EffectCandidate`, not an executed effect;
-- produce digest-bound trajectories, evidence, and evaluation records;
-- define a complete A → B → C promotion path;
-- preserve Git as canon and make every runtime/database/document surface a projection;
-- fail closed on missing, stale, malformed, ambiguous, over-budget, or unverified inputs;
-- support the Operator Control Plane without allowing the UI to fabricate authority or receipts.
+- represent a proposed transition as an `EffectCandidate`, not an executed effect;
+- produce digest-bound trajectories, evidence, and evaluations;
+- define explicit A → B and B → C promotion requirements;
+- preserve Git as canon while treating databases, documents, dashboards, and graphs as projections;
+- fail closed on missing, stale, malformed, ambiguous, over-budget, or unverifiable inputs;
+- support the Operator Control Plane without allowing the UI to fabricate authority, evidence, or receipts.
 
 ## 4. Non-goals
 
 This design does not:
 
-- create a new Tribunal vocabulary;
+- create another Tribunal vocabulary;
 - activate production effects;
 - make an LLM the final policy or authority resolver;
-- define one universal persona score;
-- treat roles, credentials, API keys, connected accounts, or OAuth sessions as authority grants;
-- authorize Supabase to write canon;
-- make Google Drive a source of semantic truth;
-- create a general-purpose workflow engine;
-- prove that every future tool or model follows instructions reliably;
-- define a marketplace, plugin ecosystem, or autonomous swarm;
+- define a universal persona score or opaque personal algorithm;
+- treat roles, credentials, API keys, connected accounts, OAuth sessions, installed plugins, or tool availability as authority grants;
+- authorize Supabase or Google Drive to define canon;
+- create a general-purpose workflow engine, marketplace, plugin ecosystem, or autonomous swarm;
+- prove that every future model follows negative instructions reliably;
 - treat successful output as sufficient proof of a valid trajectory.
 
 ## 5. Constitutional invariants and positive contracts
 
-Each negative doctrine must compile into a positive executable contract.
+Every negative doctrine must compile into a positive executable rule.
 
 | Doctrine | Positive contract |
 |---|---|
-| Persona selection never implies authority. | Every requested effect must resolve an active external `AuthorityGrant`; no persona field contributes scopes. |
-| Visible context never implies permitted use. | Every projected fact or inference carries an explicit use class; denied use always wins. |
-| Proposal never implies approval. | `AgentProposal.requestedEffect` is inert until authority and policy resolution produce a separately signed decision. |
-| Authority resolution must occur outside the LLM. | The final resolution is produced by deterministic policy/graph logic over canonical grants and policy state. |
-| Role never implies grant. | Role labels may be policy inputs but cannot satisfy any grant reference. |
-| Credential never implies authority. | Credential presence may enable a connection but contributes zero scopes. |
-| `EffectCandidate` never implies effect. | Candidate construction writes no external state and has no effect receipt. |
-| `STATE_ONLY` never executes an effect. | `effectExecutionAllowed` is structurally fixed to `false` and runtime adapters expose no effect executor. |
-| Sandbox authority never crosses into production. | Sandbox grants bind environment, target class, credentials, network, write set, and expiry; production targets are unresolvable. |
-| Successful sandbox execution never implies production authority. | C requires a fresh production proposal, fresh state, fresh grant, fresh decision, and fresh policy resolution. |
-| Evaluation/confidence/consensus never increase authority. | Requested effects remain a subset of externally granted effects regardless of score or evaluator count. |
-| Successful output never excuses an invalid trajectory. | A run fails if any required identity, authority, evidence, containment, or receipt invariant fails. |
+| Persona selection never implies authority. | Every requested effect resolves an active external `AuthorityGrant`; persona fields contribute zero scopes. |
+| Visible context never implies permitted use. | Every projected fact and inference carries an allowed-use class; denial wins. |
+| Proposal never implies approval. | `AgentProposal.requestedEffect` remains inert until a separate authority and policy decision exists. |
+| Authority resolution must occur outside the LLM. | Deterministic policy/graph logic issues the final resolution over canonical grants and policy state. |
+| Role never implies grant. | Role labels may be policy inputs but cannot satisfy a grant reference. |
+| Credential never implies authority. | Credential presence enables a connection only; it contributes no governance scope. |
+| `EffectCandidate` never implies effect. | Candidate construction cannot access an effect executor and produces no effect receipt. |
+| `STATE_ONLY` never executes an effect. | `effectExecutionAllowed` is structurally fixed to `false`. |
+| Sandbox authority never crosses into production. | Sandbox grants bind environment, target, credentials, network, write set, and expiry; production targets remain unresolvable. |
+| Sandbox success never implies production authority. | C requires a new run, new proposal, fresh state, fresh grant, fresh policy, and fresh decision. |
+| Evaluation, confidence, and consensus never increase authority. | Requested effects remain a subset of externally granted effects regardless of scores or evaluator count. |
+| Successful output never excuses an invalid trajectory. | Any required identity, authority, evidence, containment, or receipt failure makes the run fail. |
 
 ## 6. Protocol decomposition
 
-The protocol has three composable sub-protocols and one envelope.
+The protocol contains three composable sub-protocols and one versioned envelope.
 
 ```text
-A. Context Integrity
+Context Integrity
 PersonaPlan
 → PerspectiveProjection
 
-B. Governed Action
+Governed Action
 AgentProposal
 → ManyTierAuthorityResolution
 → AgencyLocusDeclaration
 → ExecutionPolicyDecision
 → EffectCandidate
 
-C. Proof and Learning
+Proof and Learning
 TrajectoryReceipt
 → EvidenceClaims
 → ExhaustivenessEvaluation
@@ -138,21 +125,22 @@ TrajectoryReceipt
 → RegressionEvaluation
 ```
 
-`GovernedAgentRun` binds exact versions and digests across all three.
+`GovernedAgentRun` binds the exact revisions and digests across all three.
 
 ## 7. Canonical objects
 
 ### 7.1 GovernedAgentRun
 
-Purpose: immutable envelope binding a complete candidate or executed run.
-
-Required fields:
+Purpose: append-only run snapshot binding the current stage of a governed run.
 
 ```yaml
 governedAgentRun:
   runId:
+  runRevision:
+  priorRunDigest:
   protocolVersion:
   mode: STATE_ONLY | REVERSIBLE_SANDBOX | PRODUCTION_GATED
+  phase:
   status:
   subject:
   realm:
@@ -162,17 +150,19 @@ governedAgentRun:
   destinationId:
   policyStateDigest:
   sourceEventDigests: []
-  personaPlanDigest:
-  perspectiveProjectionDigest:
-  proposalDigest:
-  authorityResolutionDigest:
-  agencyLocusDigest:
-  executionPolicyDecisionDigest:
-  effectCandidateDigest:
-  tribunalCaseDigest:
-  decisionReceiptDigest:
-  trajectoryReceiptDigest:
-  evaluationDigests: []
+  stageDigests:
+    personaPlanDigest:
+    perspectiveProjectionDigest:
+    proposalDigest:
+    authorityResolutionDigest:
+    agencyLocusDigest:
+    executionPolicyDecisionDigest:
+    effectCandidateDigest:
+    tribunalCaseDigest:
+    decisionReceiptDigest:
+    trajectoryReceiptDigest:
+    evaluationDigests: []
+  decisionState: NOT_REQUESTED | PENDING | RECORDED
   createdAt:
   expiresAt:
   contentDigest:
@@ -180,10 +170,10 @@ governedAgentRun:
 
 Rules:
 
+- A run is represented by immutable revisions; status changes create a new revision linked through `priorRunDigest`.
+- Only digests required by the current phase are mandatory. Missing required stage digests fail closed; future-stage digests remain absent rather than fabricated.
+- Mode is immutable for the run. A later mode requires a new run ID.
 - The run may reference but may not embed mutable copies of canonical upstream objects.
-- Missing digests fail closed.
-- Mode is immutable for the run.
-- A later mode requires a new run ID and fresh currentness checks.
 - A run cannot serve as its own authority, evidence, evaluator, or decision source.
 
 ### 7.2 PersonaPlan
@@ -202,7 +192,7 @@ personaPlan:
   prohibitedTraits: []
   prohibitedRoleTransfers: []
   contextBoundaryRef:
-  authorityCeilingRef:
+  requestedEffectCeiling: []
   sourceEvidenceClaimIds: []
   effectiveFrom:
   expiresAt:
@@ -212,10 +202,10 @@ personaPlan:
 
 Rules:
 
-- Person, identity, persona, character, mask, role, agent, and runtime configuration remain distinct.
-- `authorityCeilingRef` is descriptive of the maximum authority that may be requested; it grants nothing.
-- Persona plans may alter expression, framing, and proposal strategy, not policy state.
-- A persona plan cannot rewrite identity, memory truth, or authority grants.
+- `requestedEffectCeiling` is a self-imposed proposal limit, not an authority grant.
+- Persona plans may affect expression, framing, and proposal strategy, not policy state.
+- Persona plans cannot rewrite identity, memory truth, preference truth, or authority grants.
+- Persona selection never changes the principal that owns, authorizes, executes, or accepts an action.
 
 ### 7.3 PerspectiveProjection
 
@@ -227,11 +217,11 @@ perspectiveProjection:
   personaPlanId:
   actorPrincipalId:
   sourceEventDigests: []
-  visibleFacts: []
-  permittedInferences: []
-  prohibitedInferences: []
-  withheldFacts: []
-  uncertainty: []
+  visibleFactRefs: []
+  permittedInferenceRefs: []
+  prohibitedInferenceRefs: []
+  withheldSourceRefs: []
+  uncertaintyRefs: []
   privacyClasses: []
   useClasses: []
   projectionCutoff:
@@ -242,9 +232,9 @@ Rules:
 
 - Shared history does not imply shared perspective.
 - Visibility does not imply permission to act on, quote, disclose, retain, or infer from information.
-- The projection records omissions and prohibitions, not only inclusions.
-- Inferences remain labeled as inferences and cannot silently become facts, identity, memory, or policy.
-- Source events remain immutable; the projection is rebuildable.
+- The projection records exclusions and prohibitions, not only inclusions.
+- Inferences remain labeled and cannot silently become facts, identity, memory, preference, policy, or authority.
+- Source events remain immutable and the projection is rebuildable.
 
 ### 7.4 AgentProposal
 
@@ -268,21 +258,21 @@ agentProposal:
   evidenceClaimIds: []
   estimatedCost:
   estimatedDuration:
-  reversibilityClass:
+  effectClass:
   expiration:
   contentDigest:
 ```
 
 Rules:
 
-- `approved`, `authorized`, `safe`, and similar booleans are prohibited as proposal authority claims.
-- Every consequential proposal names at least one alternative or explicitly records why none exists.
-- The requested effect is exact, typed, and bounded.
-- The proposal expires and cannot be replayed against new state.
+- `approved`, `authorized`, `safe`, and similar authority booleans are prohibited inside the proposal.
+- Every consequential proposal names at least one alternative or records why none exists.
+- The requested effect is exact, typed, bounded, and expiring.
+- A proposal cannot be replayed against a different state digest.
 
 ### 7.5 ManyTierAuthorityResolution
 
-Purpose: deterministic resolution of instruction precedence, grants, policies, prohibitions, and unresolved conflicts.
+Purpose: deterministic resolution of instruction precedence, grants, policies, prohibitions, and conflicts.
 
 ```yaml
 manyTierAuthorityResolution:
@@ -309,13 +299,13 @@ Rules:
 
 - The LLM may identify candidate conflicts but cannot issue the final resolution.
 - Denial wins where policy declares a prohibition.
-- Scope cannot be unioned across evaluators, personas, roles, or unrelated grants.
+- Scope cannot be unioned across personas, roles, evaluators, or unrelated grants.
 - A later grant cannot retroactively authorize an earlier proposal or evaluation.
-- Any unresolved principal alias, stale grant, unknown policy version, or ambiguous tier fails closed.
+- Unresolved principal aliases, stale grants, unknown policy versions, or ambiguous tiers fail closed.
 
 ### 7.6 AgencyLocusDeclaration
 
-Purpose: explicit attribution of agency and accountability.
+Purpose: explicit attribution of agency, ownership, and accountability.
 
 ```yaml
 agencyLocusDeclaration:
@@ -338,10 +328,10 @@ agencyLocusDeclaration:
 
 Rules:
 
-- One principal may occupy multiple positions only where policy explicitly permits it.
-- A positive production effect requires evaluator, operator, issuer, executor, and human authority separation where the applicable policy requires independence.
+- One principal may occupy multiple loci only where policy explicitly permits it.
 - Scheduled execution is not agent-originated intent.
-- Execution ownership and decision ownership remain separate.
+- Proposal ownership, decision ownership, execution ownership, acceptance ownership, and accountability remain distinct.
+- Production policy may require evaluator, operator, issuer, executor, and human-authority separation.
 
 ### 7.7 ExecutionPolicyDecision
 
@@ -370,10 +360,10 @@ executionPolicyDecision:
 Rules:
 
 - Mode A fixes `effectExecutionAllowed` to `false`.
-- Mode B permits only the exact sandbox effect and exact sandbox target.
+- Mode B permits only the exact sandbox effect against the exact sandbox target.
 - Mode C requires a valid `DecisionReceipt` and execution-time currentness recheck.
-- A stale policy decision cannot authorize execution.
-- Preparatory operations are separately classified and cannot hide side effects.
+- Preparatory operations are classified separately and cannot conceal side effects.
+- Stale policy decisions cannot authorize execution.
 
 ### 7.8 EffectCandidate
 
@@ -383,7 +373,8 @@ Purpose: content-addressed proposed transition.
 effectCandidate:
   effectCandidateId:
   runId:
-  effectClass: STATE_ONLY | REVERSIBLE | COMPENSATABLE | IRREVERSIBLE | EXTERNAL_CONSEQUENTIAL
+  intendedRunMode: STATE_ONLY | REVERSIBLE_SANDBOX | PRODUCTION_GATED
+  effectClass: REVERSIBLE | COMPENSATABLE | IRREVERSIBLE | EXTERNAL_CONSEQUENTIAL
   targetClass:
   targetLocator:
   expectedPriorStateDigest:
@@ -403,11 +394,11 @@ effectCandidate:
 
 Rules:
 
-- Candidate construction has no effect executor attached in Mode A.
+- Mode A may describe a future effect class but cannot execute it.
 - Any write, call, tool, target, or output not declared in the signed candidate fails closed.
-- The prior-state digest must match at execution time.
+- The prior-state digest must match immediately before execution.
 - Candidate bytes are resolved and hashed independently.
-- Reversibility labels must be proven by mode-specific tests.
+- Reversibility labels must be proved by mode-specific tests; compensation is never mislabeled rollback.
 
 ### 7.9 TrajectoryReceipt
 
@@ -435,63 +426,57 @@ trajectoryReceipt:
   contentDigest:
 ```
 
-Every consequential receipt must answer:
+Every consequential receipt answers:
 
 1. What happened?
 2. Why was it allowed or blocked?
 3. What changed?
 
-A green status without those answers is not a receipt.
+A success badge without those answers is not a receipt.
 
-### 7.10 Evaluation objects
+### 7.10 Evaluation subjects
 
-`ExhaustivenessEvaluation`, `DriftEvaluation`, and `RegressionEvaluation` are evaluation subjects bound to canonical `EvaluatorDeclaration`, `EvidenceClaim`, and `TribunalVerdict` objects.
-
-They do not create a second evidence vocabulary.
+`ExhaustivenessEvaluation`, `DriftEvaluation`, and `RegressionEvaluation` are evaluation subjects bound to canonical `EvaluatorDeclaration`, `EvidenceClaim`, and `TribunalVerdict` objects. They do not create a second evidence vocabulary.
 
 Minimum concerns:
 
-- exhaustive constraint inventory;
+- constraint inventory and all-constraints success;
 - hypothesis and branch coverage;
-- omitted surfaces;
+- omitted surfaces and residual uncertainty;
 - authority-transition coverage;
 - tool and state-mutation coverage;
-- persona identity/role/authority drift;
+- persona identity, role, preference, memory, and authority drift;
 - protected-property preservation;
-- baseline/holdout separation;
-- residual uncertainty;
+- baseline and holdout separation;
 - explicit stopping rule.
 
 ## 8. Mode A — STATE_ONLY
 
-### 8.1 Allowed operations
+### Allowed
 
 - read explicitly permitted sources;
-- build a `PersonaPlan`;
-- derive a `PerspectiveProjection`;
-- produce an `AgentProposal`;
+- build persona and perspective objects;
+- propose a bounded action;
 - resolve authority and policy;
 - declare agency locus;
-- build an `EffectCandidate`;
+- construct an exact `EffectCandidate`;
 - run deterministic validators and offline evaluators;
-- construct a Tribunal case and state-only human decision;
-- store candidate/evidence/receipt projections;
+- construct a Tribunal case and, when needed, a state-only human decision;
+- store candidate, evidence, evaluation, and receipt projections;
 - request review.
 
-### 8.2 Prohibited operations
+### Prohibited
 
 - external writes;
 - production database mutation;
 - Git canon mutation;
-- publication or social posting;
-- customer or partner communication;
-- payments, purchases, or commerce actions;
+- publication, social posting, customer communication, payments, purchases, or other third-party effects;
 - destructive file operations;
 - secret-bearing calls whose side effects cannot be excluded;
 - autonomous grant creation or modification;
-- effect execution disguised as preview, validation, preparation, sync, or dry run.
+- effect execution disguised as preview, validation, preparation, sync, test, or dry run.
 
-### 8.3 Required final state
+### Required final state
 
 ```text
 Candidate state may change.
@@ -500,22 +485,20 @@ Receipt state may change.
 No external target state may change.
 ```
 
-### 8.4 Failure behavior
+### Fail closed when
 
-Mode A fails closed when:
-
-- any required canonical object cannot be resolved;
+- a required canonical object cannot be resolved;
 - principal identity is ambiguous;
-- policy/grant state is stale or malformed;
-- source or evidence budgets are exceeded;
+- policy or grant state is stale or malformed;
+- source, context, evidence, time, or cost budgets are exceeded;
 - a preparatory tool has undeclared side effects;
-- the proposal requests an effect not represented by an exact candidate;
-- the trajectory attempts any effect-capable tool call;
-- evaluation evidence is circular, stale, contaminated, or out of scope.
+- the proposal lacks an exact candidate;
+- the trajectory attempts an effect-capable call;
+- evidence is circular, stale, contaminated, out of scope, or unavailable.
 
 ## 9. Mode B — REVERSIBLE_SANDBOX
 
-### 9.1 Sandbox contract
+### Sandbox contract
 
 ```yaml
 sandboxContract:
@@ -538,42 +521,42 @@ sandboxContract:
   contentDigest:
 ```
 
-### 9.2 Execution flow
+### Execution flow
 
 ```text
 Validated Mode A run
 → fresh sandbox provision
-→ fresh authority/policy recheck
+→ fresh authority and policy recheck
 → exact candidate execution
-→ boundary violation capture
+→ boundary-violation capture
 → postcondition inspection
 → rollback
 → independent restoration verification
 → effect and rollback receipts
 ```
 
-### 9.3 First adversarial integration proof
+### First adversarial proof
 
-The first B proof intentionally includes a hostile tool or component response attempting to:
+A hostile tool or component response attempts to:
 
 - expand the write set;
-- call an unlisted network endpoint;
+- call an unlisted endpoint;
 - access production credentials;
-- change the target realm or destination;
+- change realm, tenant, audience, destination, or target;
 - suppress rollback;
 - declare its own success;
 - promote sandbox output to canon;
-- convert evaluation confidence into approval.
+- convert evaluator confidence into approval.
 
 Expected behavior:
 
-- only the original exact sandbox candidate may execute;
+- only the original exact sandbox candidate executes;
 - every expansion is blocked and receipted;
 - rollback executes;
-- independent verification reproduces the initial state digest;
+- independent verification matches the initial state digest;
 - no production, canonical, customer, or external consequential state changes.
 
-### 9.4 Required receipts
+### Required receipts
 
 - `SandboxProvisionReceipt`
 - `AuthorityRecheckReceipt`
@@ -582,22 +565,20 @@ Expected behavior:
 - `RollbackReceipt`
 - `RestorationVerificationReceipt`
 
-These are domain-specific receipt types that bind into the canonical receipt/evidence graph; they do not replace `DecisionReceipt`.
+These bind into the canonical receipt/evidence graph and do not replace `DecisionReceipt`.
 
 ## 10. Mode C — PRODUCTION_GATED
 
-### 10.1 Entrance requirements
-
-C remains unavailable until all of the following exist and are independently reviewed:
+C remains unavailable until all of the following exist and receive independent review:
 
 - canonical principal resolver;
-- issuer-bound signing-key registry with rotation/revocation;
+- issuer-bound signing-key registry with rotation and revocation;
 - active grant lifecycle/currentness store;
-- content-addressed evidence and candidate byte resolvers;
+- content-addressed evidence and candidate-byte resolvers;
 - complete evidence derivation closure;
 - current policy snapshot resolver;
-- receipt-chain head compare-and-swap;
-- replay/nonce protection;
+- receipt-chain-head compare-and-swap;
+- replay and nonce protection;
 - trusted transition-digest store;
 - atomic state compare-and-swap plus transactional outbox;
 - idempotency and partial-failure recovery;
@@ -606,7 +587,7 @@ C remains unavailable until all of the following exist and are independently rev
 - incident, pause, kill-switch, rollback, and compensation procedures;
 - independent postcondition verifier.
 
-### 10.2 Production flow
+### Production flow
 
 ```text
 A evidence
@@ -614,28 +595,28 @@ A evidence
 → new production run
 → fresh production state snapshot
 → fresh authority and policy resolution
-→ independent authorized decision
+→ independently authorized decision
 → DecisionReceipt
 → trusted transition construction
 → atomic precondition check
 → effect execution
-→ receipt + outbox
+→ receipt and outbox
 → independent postcondition verification
 → projection refresh
 ```
 
-A or B result cannot be replayed as C authorization.
+A or B evidence cannot be replayed as C authorization.
 
-### 10.3 Effect classes
+### Effect classes
 
 - `REVERSIBLE`: exact rollback restores prior state.
 - `COMPENSATABLE`: prior state cannot be restored, but a declared compensating action exists.
-- `IRREVERSIBLE`: no rollback or compensation; requires explicit heightened approval.
+- `IRREVERSIBLE`: no rollback or compensation; heightened approval required.
 - `EXTERNAL_CONSEQUENTIAL`: affects a third party, public surface, financial state, legal/compliance state, or external account.
 
-Each class has separate policy, evidence, and approval requirements.
-
 ## 11. State machine
+
+Core phases:
 
 ```text
 DRAFT
@@ -646,7 +627,7 @@ DRAFT
 → POLICY_DECIDED
 → CANDIDATE_BUILT
 → EVALUATED
-→ DECISION_RECORDED
+→ DECISION_RECORDED or DECISION_NOT_REQUESTED
 → MODE_COMPLETE
 ```
 
@@ -672,7 +653,7 @@ PRODUCTION_CURRENTNESS_VERIFIED
 → PROJECTION_REFRESHED
 ```
 
-Terminal failure states include:
+Terminal failures:
 
 ```text
 DENIED
@@ -687,58 +668,53 @@ POSTCONDITION_FAILED
 INCIDENT_ESCALATED
 ```
 
-No terminal failure state may be rewritten as success.
+No terminal failure may be rewritten as success.
 
 ## 12. Retry, idempotency, cancellation, and partial failure
 
-- Reads and pure validation may retry within declared budgets.
-- Proposals and candidates are content-addressed and may be reconstructed, not mutated in place.
-- Effect execution requires a stable idempotency key bound to run, candidate, target, and current state.
-- Retries never bypass fresh authority/currentness checks.
-- Cancellation produces a receipt and prevents later replay.
-- Mode B rollback failure escalates immediately and blocks promotion.
-- Mode C partial failure uses transactional outbox and declared compensation/incident paths.
-- Timeouts are explicit failure outcomes, not permission to continue asynchronously without authority.
+- Reads and pure validation may retry only within declared budgets.
+- Proposals and candidates are content-addressed and reconstructed rather than mutated in place.
+- Effect execution requires an idempotency key bound to run, candidate, target, and prior state.
+- Retries never bypass fresh authority and currentness checks.
+- Cancellation produces a receipt and prevents replay.
+- Mode B rollback failure blocks promotion and escalates immediately.
+- Mode C partial failure uses the transactional outbox plus declared compensation or incident paths.
+- Timeouts are explicit failures, not permission to continue asynchronously without authority.
 
 ## 13. Security, privacy, and secrets
 
-- Secrets are runtime credentials, not canon, evidence payload, prompt text, projection content, screenshots, or logs.
-- Persona and perspective objects must classify personal, private, confidential, regulated, and prohibited information.
-- Projection records may contain secret references or presence metadata, never plaintext or recoverable derivatives.
-- Tool outputs are untrusted inputs and cannot issue state transitions.
+- Secrets are runtime credentials, not canon, evidence payloads, prompt text, projection content, screenshots, or logs.
+- Persona and perspective objects classify personal, confidential, regulated, and prohibited information.
+- Projections may contain secret references or presence metadata, never plaintext or recoverable derivatives.
+- Tool outputs are untrusted and cannot issue state transitions.
 - Unicode normalization, strict parsing, raw-payload budgets, and credential-pattern scanning occur before model context ingestion.
 - State transitions are authenticated outside the model.
 - A malicious or compromised model may propose; it cannot grant, decide, or execute by assertion.
-- Retention and deletion classes are explicit for source events, projections, trajectories, evidence, and receipts.
-- Deletion may remove accessible content while preserving required non-secret provenance/digest tombstones where policy requires lineage.
+- Retention and deletion classes are explicit for events, projections, trajectories, evidence, and receipts.
+- Deletion may preserve non-secret provenance tombstones where lineage or legal hold requires them.
 
 ## 14. Cross-system responsibilities
 
 ### GitHub — canonical
 
-Owns:
+Owns contracts, Zod schemas, fixtures, policies, invariant definitions, implementation source, reviewed decisions, canonical history, CI evidence, and exact-head provenance.
 
-- contracts and Zod schemas;
-- fixtures and adversarial tests;
-- policies and invariant definitions;
-- design and implementation source;
-- reviewed decisions and canonical history;
-- CI evidence and exact-head provenance.
-
-GitHub does not own live execution merely because a PR or workflow exists.
+A GitHub workflow or green PR does not itself create runtime authority.
 
 ### Supabase — runtime projection and operational state
 
-Existing useful projections include:
+Existing adjacent projections:
 
-- `quirk_sync.object_registry`
-- `quirk_sync.manifest_registry`
-- `quirk_sync.proposed_moves`
-- `quirk_sync.run_receipts`
-- `quirk_sync.manifest_transition_ledger`
-- `quirk_sync.projection_outbox`
+```text
+quirk_sync.object_registry
+quirk_sync.manifest_registry
+quirk_sync.proposed_moves
+quirk_sync.run_receipts
+quirk_sync.manifest_transition_ledger
+quirk_sync.projection_outbox
+```
 
-Future projection tables may include:
+Candidate future projection tables:
 
 ```text
 quirk_runtime.governed_runs
@@ -755,32 +731,32 @@ quirk_runtime.evaluation_refs
 
 Rules:
 
-- projections preserve canonical path, schema version, commit SHA, content digest, and projection run ID;
-- no projection row can mutate Git canon;
+- projections preserve canonical path, schema version, commit SHA, content digest, and projection-run ID;
+- no projection row mutates Git canon;
 - RLS/access posture is designed before exposure;
-- state-only writes are restricted to candidate/evidence/receipt projections;
+- state-only writes are limited to candidate, evidence, evaluation, and receipt projections;
 - effect/outbox paths remain disabled until the relevant mode is admitted.
 
 ### Google Drive — review projection
 
-Google Drive may contain readable review copies, diagrams, tables, and stakeholder comments.
+Drive may contain readable review copies, diagrams, tables, and comments.
 
 Rules:
 
 - every Drive copy is labeled non-canonical;
 - Drive edits do not change Git canon;
-- review comments become evidence or proposed changes only after explicit capture;
+- comments become proposed changes or evidence only after explicit capture;
 - duplicated documents do not create duplicate architecture authority;
-- sensitive source content follows its own Drive sharing and retention policy.
+- sensitive content follows explicit sharing and retention policy.
 
 ## 15. Operator Control Plane contract
 
-The UI must always expose a truth bar:
+The UI always exposes a truth bar:
 
 ```text
-CANON       <commit/digest>
-PROJECTION  <snapshot/projection run>
-POLICY      <policy state digest>
+CANON       <commit or digest>
+PROJECTION  <snapshot or projection run>
+POLICY      <policy-state digest>
 OPERATOR    <canonical principal>
 RUN MODE    STATE_ONLY | REVERSIBLE_SANDBOX | PRODUCTION_GATED
 EFFECTS     DISABLED | SANDBOX_ONLY | PRODUCTION_GATED
@@ -789,16 +765,16 @@ EFFECTS     DISABLED | SANDBOX_ONLY | PRODUCTION_GATED
 UI commands never directly mutate authoritative state.
 
 - `Accept Interpretation` creates a candidate, not canon.
-- `Approve Proposed Transition` creates a decision/candidate transition, not an effect.
+- `Approve Proposed Transition` records a decision or candidate transition, not an effect.
 - `Admitted` does not mean canonical.
 - Roles do not display as grants.
-- Confidence is shown on a specific verdict, not on the object.
-- Fixture/demo data is visibly labeled.
-- Every blocked effect explains the authority, policy, currentness, or evidence reason.
+- Confidence appears on a specific verdict, not on an object.
+- Fixture and demo data is visibly labeled.
+- Every blocked effect exposes the authority, policy, currentness, containment, or evidence reason.
 
 ## 16. Observability and evidence
 
-Every run emits semantic telemetry with stable identifiers:
+Every run emits stable correlation identifiers:
 
 ```text
 run_id
@@ -806,7 +782,7 @@ trace_id
 span_id
 principal_id
 persona_plan_digest
-projection_digest
+perspective_projection_digest
 proposal_digest
 authority_resolution_digest
 agency_locus_digest
@@ -816,15 +792,11 @@ decision_receipt_digest
 trajectory_receipt_digest
 ```
 
-Operational telemetry answers whether the system ran, retried, failed, cost money, or exceeded limits.
-
-Quirk evidence answers whether a claim is supported, whether the trajectory was permitted, and what changed.
+Operational telemetry answers whether the system ran, retried, failed, cost money, or exceeded limits. Quirk evidence answers whether claims are supported, the trajectory was legitimate, and state actually changed.
 
 Telemetry is not automatically evidence. Evidence is not automatically a decision.
 
 ## 17. Adversarial fixture matrix
-
-Minimum fixtures:
 
 ### Persona and perspective
 
@@ -896,132 +868,104 @@ Minimum fixtures:
 
 ### A → B
 
-Requires:
+Requires a complete Mode A trajectory, resolved authority conflicts, exact candidate, approved sandbox contract, isolated credentials, deny-by-default network, reversibility classification, adversarial fixture plan, and no unresolved identity, secret, scope, or currentness ambiguity.
 
-- complete Mode A run and trajectory receipt;
-- all required authority conflicts resolved;
-- exact `EffectCandidate`;
-- approved sandbox containment contract;
-- isolated credentials and deny-by-default network;
-- reversibility classification;
-- adversarial fixture plan;
-- no unresolved identity, secret, scope, or currentness ambiguity.
-
-Produces an `AtoBPromotionReceipt` referencing the exact qualifying evidence. It grants no B authority by itself; an external authority grant enables the sandbox run.
+An `AtoBPromotionReceipt` records eligibility evidence. It grants no B authority by itself.
 
 ### B → C
 
-Requires:
+Requires hostile sandbox success, rollback and independent restoration proof, post-fix replay, durable runtime ports, current production policy and grant state, independent human/codeowner approval where applicable, atomic effect/receipt path, incident and kill-switch procedure, and a production-specific candidate built from fresh state.
 
-- successful hostile sandbox effect;
-- successful rollback and independent restoration proof;
-- post-fix replay of the adversarial suite;
-- durable runtime ports;
-- current production policy and grant state;
-- independent human/codeowner approval where applicable;
-- atomic execution and receipt path;
-- incident and kill-switch procedure;
-- production-specific candidate built from fresh state.
-
-Produces a `BtoCEligibilityReceipt`. Eligibility is not production authorization.
+A `BtoCEligibilityReceipt` records eligibility. Eligibility is not production authorization.
 
 ## 19. Versioning and compatibility
 
 - Zod remains the editable schema source where PR #98 established it.
-- JSON Schema, docs, database types, and UI types are generated or drift-checked projections.
+- JSON Schema, database types, docs, and UI types are generated or drift-checked projections.
 - New contracts use strict camelCase canon.
-- Snake_case aliases and unknown fields fail closed unless a separately reviewed migration adapter exists.
+- Unknown fields and unsupported aliases fail closed.
 - Protocol versions are explicit and immutable per run.
 - Compatibility adapters bind canonical objects; they may not reinterpret authority or evidence.
 - Superseded runs and schemas remain recoverable through lineage without remaining active.
 
-## 20. Implementation sequence after spec approval
+## 20. Implementation sequence after written-spec approval
 
-This section is sequencing, not the executable implementation plan.
+This is sequencing, not the executable implementation plan.
 
-1. Implement strict contracts and fixture generator for Mode A.
-2. Add deterministic authority-resolution and policy-decision ports with in-memory test implementations.
-3. Add state-only run assembler and trajectory receipt.
-4. Add persona/perspective drift and exhaustiveness evaluators as Tribunal-compatible evaluation subjects.
-5. Project Mode A objects into private Supabase runtime schemas.
-6. Integrate the Operator Control Plane in read/candidate mode with effects disabled.
-7. Implement sandbox contract and first hostile Mode B adapter.
-8. Prove rollback and restoration independently.
-9. Design and independently review durable C runtime ports.
-10. Activate no production effects until C admission receives its own decision and receipts.
+1. Strict Mode A contracts and fixture generator.
+2. Deterministic authority-resolution and policy-decision ports with in-memory test implementations.
+3. State-only run assembler and trajectory receipt.
+4. Persona/perspective drift and exhaustiveness evaluation subjects.
+5. Private Supabase projections for Mode A.
+6. Operator Control Plane in read/candidate mode with effects disabled.
+7. Sandbox contract and first hostile Mode B adapter.
+8. Independent rollback and restoration proof.
+9. Durable C runtime-port design and independent review.
+10. No production activation until C receives its own decision and receipts.
 
 ## 21. Forgotten-edge checklist
 
-The implementation plan must explicitly cover:
+The implementation plan must cover:
 
-- clock skew and expiration boundaries;
-- canonical time source;
+- clock skew and canonical time;
 - principal alias changes;
-- key rotation during long runs;
+- key rotation during a long run;
 - policy changes between proposal and execution;
-- source/evidence revocation during a run;
+- evidence/source revocation during a run;
 - model/provider substitution;
 - tool schema drift;
-- sandbox provider outage;
-- sandbox image tampering;
+- sandbox provider outage and image tampering;
 - logs containing sensitive context;
 - partial evidence availability;
-- human approval timeout;
-- human approval revocation;
-- duplicate decision submissions;
-- simultaneous operators;
-- back-button/UI replay;
-- stale browser projection;
-- offline/stale-but-visible UI state;
-- cost and resource exhaustion;
-- cancellation during rollback;
-- retention expiration before audit completion;
-- evidence/legal hold;
-- portability and provider exit;
-- accessibility of authority and error states;
-- fixture/demo data being mistaken for live evidence;
-- evaluation score changes after model updates;
-- independent verifier sharing the same model/operator lineage;
-- reversible action whose external consequences are not reversible;
-- compensating action being mislabeled rollback;
-- agent-generated goals surviving after the originating delegation expires.
+- human approval timeout and revocation;
+- duplicate decisions and simultaneous operators;
+- browser replay, stale projections, and offline/stale-but-visible UI;
+- resource exhaustion and cancellation during rollback;
+- retention expiry before audit completion and legal hold;
+- provider portability and exit;
+- accessibility of authority, uncertainty, and failure states;
+- fixture data mistaken for live evidence;
+- evaluation changes after model updates;
+- verifier correlation through shared model/operator lineage;
+- reversible internal state with irreversible external consequences;
+- compensation mislabeled as rollback;
+- agent-derived goals surviving after delegation expiry.
 
 ## 22. Risks
 
 ### Overbuilding
 
-The protocol can become a universal workflow ontology. Avoid this by implementing only the objects needed for the A proof, then B.
+The protocol could become a universal workflow ontology. Implement only what Mode A requires, then B.
 
 ### False formality
 
-Digests and receipts can create the appearance of rigor without independent currentness, identity, evidence, or postcondition verification. Every digest must bind a resolvable object or exact bytes.
+Digests and receipts can imitate rigor without independent currentness, identity, evidence, or postcondition verification. Every digest must resolve to a canonical object or exact bytes.
 
 ### Policy complexity
 
-Many-tier authority can become impossible to reason about. Keep tier vocabulary small, make resolution inspectable, and require adversarial depth tests.
+Many-tier authority can become unreadable. Keep tier vocabulary small, expose the resolution path, and test deep conflicts adversarially.
 
 ### Projection drift
 
-Supabase, Drive, UI, and generated schemas can diverge from Git. Require projection run IDs, content digests, and drift checks.
+Supabase, Drive, UI, and generated schemas can diverge from Git. Preserve projection-run IDs and run drift checks.
 
 ### Human-gate theater
 
-A button click is not sufficient human authority. The decision must bind the exact case, state, effect, evidence, and current grant.
+A button click is not sufficient authority. The decision binds the exact case, effect, evidence, state, and active grant.
 
 ## 23. Definition of done for this design
 
-This design is ready for implementation planning when:
+The design is ready for implementation planning when:
 
-- the design is committed in Git;
-- a non-canonical Drive review projection exists;
+- it is committed in Git;
+- a non-canonical Google Drive review projection exists;
 - PR #98 remains the only authority/evidence contract source;
-- all A, B, and C mode boundaries are explicit;
-- no silent mode escalation path exists;
-- all candidate protocol objects have one responsibility;
-- failure, retry, cancellation, replay, rollback, and incident paths are specified;
-- Git/Supabase/Drive boundaries are unambiguous;
-- the adversarial matrix is complete enough to write failing tests first;
-- Bryan approves the written spec for implementation planning.
+- A, B, and C boundaries are explicit with no silent escalation;
+- every object has one responsibility and clear digest/provenance semantics;
+- failure, retry, cancellation, replay, rollback, compensation, and incident paths are specified;
+- Git, Supabase, Drive, and UI responsibilities are unambiguous;
+- the fixture matrix is concrete enough to write failing tests first;
+- Bryan reviews and approves the written spec for implementation planning.
 
 ## 24. Closing rule
 
