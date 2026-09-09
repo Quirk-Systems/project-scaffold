@@ -1,0 +1,124 @@
+{
+  "kind": "ResearchReceipt",
+  "version": 1,
+  "status": "CANDIDATE",
+  "recordedAt": "2026-09-09T20:14:08.897772+00:00",
+  "dedupeKey": "session-composition-closure/quirk-offline-probe-v1",
+  "priorLoopResult": "ACTED",
+  "outcomeScope": "LOCAL_SYNTHETIC_ONLY",
+  "productionOutcome": "UNKNOWN",
+  "independentReview": "NOT_PERFORMED",
+  "owner": "bryansayler",
+  "testOperator": "ChatGPT",
+  "runMode": "STATE_ONLY",
+  "authorityEffect": "NONE",
+  "researchSource": {
+    "id": "arXiv:2608.15888v1",
+    "submittedAt": "2026-08-16",
+    "sections": [
+      "4.6",
+      "4.7",
+      "4.8"
+    ],
+    "usage": "mechanism motivation; not an APC replication"
+  },
+  "baseline": {
+    "repository": "Quirk-Systems/project-scaffold",
+    "pr98": "58d73b083293b745c126b2031b4295e74417e1d5",
+    "pr101": "a1fa33d23af95fc7fdc29cf41cfd03fd30d2f610",
+    "pr102": "47279f5f9cbee8dfcb97b21ca3da024294f1bad9",
+    "planBlob": "82a5105dbde190d3145cf8cdf0c4d0c2570b0dbe",
+    "comparator": "action-local reference; not executed PR102 code"
+  },
+  "fixtureSha256": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
+  "metrics": {
+    "prohibitedTraces": 12,
+    "matchedControls": 12,
+    "referenceProhibitedCandidatesPermitted": 12,
+    "targetProhibitedCandidatesPermitted": 0,
+    "referenceControlsDenied": 0,
+    "targetControlsDenied": 0,
+    "externalEffectsExecuted": 0
+  },
+  "localVerification": {
+    "runtime": "Node v22.16.0",
+    "testsPassed": 48,
+    "testsFailed": 0,
+    "boundedOracleSequences": 1554,
+    "repeatedReportByteIdentical": true,
+    "syntaxCheck": "PASS",
+    "credentialPatternCheck": "PASS_LIMITED",
+    "gateHasNoImportsOrEffectPort": true,
+    "ablations": [
+      {
+        "name": "pair-check-removed",
+        "exitCode": 1,
+        "failedTests": 9,
+        "detected": true
+      },
+      {
+        "name": "triple-check-removed",
+        "exitCode": 1,
+        "failedTests": 6,
+        "detected": true
+      },
+      {
+        "name": "history-erased",
+        "exitCode": 1,
+        "failedTests": 14,
+        "detected": true
+      }
+    ]
+  },
+  "unverified": [
+    "repository Bun/Vitest suite",
+    "TypeScript integration",
+    "CI",
+    "durable history authentication",
+    "concurrency",
+    "real effect boundaries",
+    "independent review"
+  ],
+  "supabase": {
+    "project": "quirk-os-alpha",
+    "metadataStatus": "INACTIVE",
+    "schemaInspection": "CONNECTION_TIMEOUT",
+    "mutations": 0
+  },
+  "allowedWrites": [
+    "local experiment files",
+    "draft GitHub candidate branch and review metadata"
+  ],
+  "nextRunBaseline": {
+    "pr102": "47279f5f9cbee8dfcb97b21ca3da024294f1bad9",
+    "fixtureSha256": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
+    "policyVersion": "qk-composition-probe-v1",
+    "expectedOutcomeMetric": "prohibited candidate-eligibility rate; control false-denial rate; zero application effects",
+    "promotion": "NONE"
+  },
+  "files": {
+    "README.md": "1f5421dbefcbd79dadb68642832676f7ef3012a35b243555224d20dbbe152aa9",
+    "fixtures.json": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
+    "gate.mjs": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703",
+    "probe.test.mjs": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0",
+    "run.mjs": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5"
+  },
+  "verificationLogs": {
+    "ablation-history-erased.txt": "1f1c52a0d4daae5b055a616d8260eaea4a8920bffa4209b064fd3a0a66365db7",
+    "ablation-pair-check-removed.txt": "ce694cc74d18ec665f31df5c6d484e8d5eae81c97e63df55e1c3049dd4cb4b57",
+    "ablation-triple-check-removed.txt": "f1d9333d4e01c75c02a33f88abc83e716e2d0b80a8edba2810734068caf22701",
+    "ablations.json": "7a3adc557fa054dd8f7d10e356d07692021786b31b640cbdcb4534f560160b2f",
+    "final-tests.txt": "e7012d6c43c3848a4937ae7a0fa185740855cac1e60d263fff8c56ddc46df991",
+    "green-01.txt": "64fa2b5913841d7c669e99add9775ad7affbaf1c5cd92572d833aeddd02116a0",
+    "green-02.txt": "d631e14a287d79449f77c64f05e4148bfdfbe71e80c8a86c45fb8bdf594fb634",
+    "green-03.txt": "2cef10ceab809503768efeade2f0d0b2945d8c05fcfd122a66dc07cbdcb09cd0",
+    "green-04.txt": "ddcfc622c62c56a59ad268711d8283b0658549b0e4a30bc8e3a511da19ab038a",
+    "red-01.txt": "b2385786bbca4daa0c64cdea1543c3acc707d0550c8dbb228bd5754ce72baa7d",
+    "red-02-memoryless.txt": "8f7c05c6ecec325094fa88ab844f441c5158abcb4ec2b1578f7fde43cc24e4db",
+    "red-02-missing.txt": "06a20ffce4c0de0e5c6af5b5e317fdeb81a658e1a0043c84b96b40c6167f6705",
+    "red-03.txt": "d49f1a3073cd6e4757210e8ed1696e096335cc5e3abfeec4b4cc4c2227e62754",
+    "red-04.txt": "89be4946d37d0a387a15ab6811a3f04ae3ad9218878210878b701bbe0df94dab",
+    "results-repeat.json": "47d38ed8403278ec445cc3501b2b9f70ced16ab24308074600194da6d7a81e19",
+    "results.json": "47d38ed8403278ec445cc3501b2b9f70ced16ab24308074600194da6d7a81e19"
+  }
+}
