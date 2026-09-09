@@ -1,0 +1,35 @@
+name: Session Composition Candidate
+
+on:
+  pull_request:
+    paths:
+      - "evals/session-composition/**"
+      - "docs/governance/session-composition-candidate.md"
+      - "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md"
+      - "src/lib/quirk/design-tribunal/contracts.ts"
+      - "src/lib/quirk/design-tribunal/protocol.ts"
+      - "src/lib/quirk/governance/authority.ts"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/session-composition-candidate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - name: Replay candidate proof at the PR head
+        run: node evals/session-composition/adapter/verify.mjs --check

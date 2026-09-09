@@ -1,0 +1,285 @@
+{
+  "kind": "CompositionAdapterVerification",
+  "version": 1,
+  "status": "CANDIDATE",
+  "disposition": "Constrain",
+  "scope": "PLAN_CONTRACT_ADAPTER_ONLY",
+  "authorityEffect": "NONE",
+  "effectExecutionAllowed": false,
+  "provenance": {
+    "status": "CANDIDATE_TEST_ONLY",
+    "planPath": "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md",
+    "planHead": "47279f5f9cbee8dfcb97b21ca3da024294f1bad9",
+    "probeHead": "58cefdb21164f1e7968d03051dfb52a93a24f4e8",
+    "protectedPlanCodeBlocks": 60,
+    "protectedPlanCodeSha256": "2ae7c9a0e4089f68810ac8d7aefeba2733903ce6f4790637869089286ab7832b",
+    "sources": [
+      {
+        "path": "src/lib/quirk/governed-runs/contracts/primitives.ts",
+        "origin": "plan-code-block",
+        "sha256": "8ab49fb5188518018147836e78aecd6d4764f3531612af64527beb831b42a20d"
+      },
+      {
+        "path": "src/lib/quirk/governed-runs/contracts/action.ts",
+        "origin": "plan-code-block",
+        "sha256": "c0cfaf7b141b6397ac32962f94617a7996d37195fb5d090c9e5899809143e84c"
+      },
+      {
+        "path": "src/lib/quirk/governed-runs/state-only-policy.ts",
+        "origin": "plan-code-block",
+        "sha256": "16a4660bfa8a57af4098cdd650c4c58776a0804e45fa62abfff4b694cbe1143c"
+      },
+      {
+        "path": "src/lib/quirk/design-tribunal/protocol.ts",
+        "origin": "canonical-repository-file",
+        "sha256": "a4778b6d16d6555a495b4fc5f4e89574dc211f094b82ecfa10e778fde447c5f1"
+      },
+      {
+        "path": "src/lib/quirk/design-tribunal/contracts.ts",
+        "origin": "canonical-repository-file",
+        "sha256": "c49b92c2c14adb1f165cd2d8004bcbe9d0fe7446223d5cb73697d2f59a438bb2"
+      },
+      {
+        "path": "src/lib/quirk/governance/authority.ts",
+        "origin": "canonical-repository-file",
+        "sha256": "751cd9c1fe864e7867172a0aabd1952e3471553164462c731ceab00e63b665eb"
+      }
+    ],
+    "generatedModules": [
+      {
+        "source": "src/lib/quirk/governed-runs/contracts/primitives.ts",
+        "module": "contracts-primitives.mjs"
+      },
+      {
+        "source": "src/lib/quirk/governed-runs/contracts/action.ts",
+        "module": "contracts-action.mjs"
+      },
+      {
+        "source": "src/lib/quirk/governed-runs/state-only-policy.ts",
+        "module": "state-only-policy.mjs"
+      },
+      {
+        "source": "src/lib/quirk/design-tribunal/protocol.ts",
+        "module": "tribunal-protocol.mjs"
+      },
+      {
+        "source": "src/lib/quirk/design-tribunal/contracts.ts",
+        "module": "tribunal-contracts.mjs"
+      },
+      {
+        "source": "src/lib/quirk/governance/authority.ts",
+        "module": "governance-authority.mjs"
+      }
+    ],
+    "dependencyVersions": {
+      "node": "24.19.0",
+      "typescript": "6.0.3",
+      "zod": "3.25.76"
+    },
+    "plannedTask5Loaded": true,
+    "productionTask4Executed": false,
+    "productionIntegrationProved": false,
+    "semanticTypecheckPerformed": false,
+    "runtimeSafetyProved": false,
+    "independentHumanReviewSatisfied": false,
+    "executedPlannedTask5": true
+  },
+  "checks": {
+    "originalProbe": {
+      "exitCode": 0,
+      "tests": 48,
+      "passed": 48,
+      "failed": 0
+    },
+    "adapter": {
+      "exitCode": 0,
+      "tests": 85,
+      "passed": 85,
+      "failed": 0
+    },
+    "historyErasureAblation": {
+      "exitCode": 1,
+      "tests": 85,
+      "passed": 81,
+      "failed": 4,
+      "detected": true
+    },
+    "matrixCells": 12,
+    "deterministicExampleReceipts": true
+  },
+  "matrix": [
+    {
+      "authority": "PERMITTED_CANDIDATE_ONLY",
+      "history": "clean",
+      "candidateEligible": true,
+      "effectiveDecision": "ALLOW_CANDIDATE_ONLY",
+      "reasonCodes": [
+        "CANDIDATE_ONLY"
+      ],
+      "receiptDigest": "sha256:9f615a3af8549a53642279293c371a36ca0ea857227e838451df0fd6befb71b5"
+    },
+    {
+      "authority": "PERMITTED_CANDIDATE_ONLY",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:81025640e550be4a2306580a060a8f21668248058ff3bd8895e71ece1f8e1464"
+    },
+    {
+      "authority": "PERMITTED_CANDIDATE_ONLY",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:71911d6e6a19d8b761c6679891b4114314161260473604ad93c7d40f1b87e9e6"
+    },
+    {
+      "authority": "HUMAN_REVIEW",
+      "history": "clean",
+      "candidateEligible": false,
+      "effectiveDecision": "REQUIRE_HUMAN_REVIEW",
+      "reasonCodes": [
+        "BASE_OBLIGATIONS_PRESERVED"
+      ],
+      "receiptDigest": "sha256:87c6f452c80b91ae4b3742cc2dfb930cc9ea5827e95f13c84681ee321f8f019b"
+    },
+    {
+      "authority": "HUMAN_REVIEW",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:e7a78f7274b258e63a902d8cb07ea317b9357c45152b70c246593f4cada9ab8e"
+    },
+    {
+      "authority": "HUMAN_REVIEW",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:05649a917e47edd94297dc8c2957c4eaf6b6a95cf0de7d34c998464eddd3b994"
+    },
+    {
+      "authority": "PROHIBITED",
+      "history": "clean",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "BASE_OBLIGATIONS_PRESERVED"
+      ],
+      "receiptDigest": "sha256:f7778efc22e6d61228af1a5ce5a5ef51f5a325e7cfd635dc280a4866c25d9b48"
+    },
+    {
+      "authority": "PROHIBITED",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:b376e4407eaa452339a249a456e908becc4deccabb7be38fc90ffa610eb26ef4"
+    },
+    {
+      "authority": "PROHIBITED",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:f2b57a78b49da6a802d7ab91b9bf1fb53ef6ed54c14187a8eb162ae6b2250df1"
+    },
+    {
+      "authority": "UNRESOLVED",
+      "history": "clean",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "BASE_OBLIGATIONS_PRESERVED"
+      ],
+      "receiptDigest": "sha256:8f7af601f83ac30ac965efa2b66e105c2e1158a6dccca952b1acbf5e98555939"
+    },
+    {
+      "authority": "UNRESOLVED",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:f1c2718dcae49f1ad2b97eb3e7030bff1431bc5c37b7ac43bc6588a6c7270ab5"
+    },
+    {
+      "authority": "UNRESOLVED",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:1970a50f1d2a82d4fbf4c5032d069e4fb125f8c060682ceec8bb94f4b6bc692b"
+    }
+  ],
+  "examples": [
+    {
+      "name": "conflicting-simulated-candidate",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:81025640e550be4a2306580a060a8f21668248058ff3bd8895e71ece1f8e1464"
+    },
+    {
+      "name": "rationale-update-control",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:ff65a14e64bc189654e9e5e8a7af099d48ce3dc81a19bf3005c87314ca39d9a1"
+    },
+    {
+      "name": "honestly-classified-external-operation",
+      "baseDecision": "BLOCKED",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:9cf9593509b35bf7830b24d9501fa8964f79af531f11b285b5bf73c537679e91"
+    }
+  ],
+  "files": {
+    "evals/session-composition/adapter/adapter.mjs": "6756a012523f37acb76390d38d704eaefa356e1ee1d37a58ce20d068f2b7673f",
+    "evals/session-composition/adapter/adapter.test.mjs": "dacb7883ace02ecf8abd2c663e4c31fe859410add424632623ee2048c93c52ab",
+    "evals/session-composition/adapter/fixtures.mjs": "912a652198af7e006c29adc6621b2b6d2c1e56de3ce8dc2af5cedbd66ccd1853",
+    "evals/session-composition/adapter/plan-contracts.mjs": "6fae08267831dcabc9a5314bcb600c4da8e71a5b3752df01f2295d0d7a7de12a",
+    "evals/session-composition/adapter/verify.mjs": "d281bfeb7d41436c4e7627dcb1ce4b03ea47275d9d793d2121c4fc644b64c0be",
+    "evals/session-composition/adapter/README.md": "967ea953acd6ca9974f72ad2240b2e24fd680ec76fcae64465972802163e1b35",
+    "evals/session-composition/adapter/agent-review.md": "dbcb10c45755477a5e3399e1f61ff2dc918b8b7f80cdb60d7b7b6b695d889417",
+    "evals/session-composition/gate.mjs": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703",
+    "evals/session-composition/probe.test.mjs": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0",
+    "evals/session-composition/fixtures.json": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
+    "evals/session-composition/run.mjs": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5",
+    "docs/governance/session-composition-candidate.md": "1fb7ef20ed9afffe673dbb6bfdd3205128bcebeb8a9b735946dddb840ed7c411",
+    "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md": "3b1cceb654b155449aecb5da498cdd8cba32a99daf05cae9f6b958b69bbe56c5",
+    "package.json": "89787ce359776c488338f503e8e292bd4c19571d0af39e68ce26f0542f21cdce",
+    ".github/workflows/session-composition-candidate.yml": "cfd8c1b29e189e6c7e9c0cf5e6cb2d3a6df93a6f3474a0743377ad283cf80964"
+  },
+  "rawLogs": {
+    "verification-tests.tap": "45b2908d432103820aaca9f5e947ac9af9022a52b1e5757659826e07acfac11a",
+    "history-ablation.tap": "609320005f8321bb57c019c34bd9f614af488682a8a598bde76b14d52a0a6499"
+  },
+  "unproved": [
+    "production Task 4/5 module integration",
+    "Task 4 resolver execution with verified grants",
+    "durable history and principal authentication",
+    "live-clock freshness and revocation",
+    "Task 6 consumer enforcement",
+    "full repository Bun/Vitest/typecheck/lint/build",
+    "concurrency and delegated session inheritance",
+    "Mode B/C behavior",
+    "independent human review"
+  ],
+  "testOrder": "First complete adapter-suite run was green; history erasure is subsequent mutation evidence, not preimplementation TDD evidence."
+}

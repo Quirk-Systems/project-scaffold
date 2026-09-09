@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-28-governed-agent-run-maturity-design.md`
 
+**Candidate amendment — 2026-09-09:** The history-aware Task 4/5 test obligation below is `CANDIDATE / STATE_ONLY / TEST-ONLY`, disposition `Constrain`, pending independent human review. It does not mark any implementation task complete. [Decision, boundaries, and next gates](../../governance/session-composition-candidate.md) distinguish the bounded adapter proof from operative integration. Existing code examples remain unchanged; the contract and consumer work identified below must precede any enforced history constraint.
+
 ## Global Constraints
 
 - Implement **Mode A only**: `STATE_ONLY` must structurally set `effectExecutionAllowed: false`.
@@ -461,6 +463,8 @@ git commit -m "feat(governance): add governed run context contracts"
 **Interfaces:**
 - Consumes: Task 1 primitives and context contracts.
 - Produces: strict canonical objects for proposals, instruction graphs, deterministic resolution output, agency locus, Mode A policy, effect candidates, run revisions, and trajectory receipts.
+
+**Candidate integration prerequisite:** The strict `ExecutionPolicyDecisionSchema` below has proposal, authority, and policy-state digests but lacks explicit validated-session, history-head, and taxonomy bindings. Before operative composition checking, review a versioned canonical contract amendment with Task 3 digest coverage and migration/rejection rules. Do not attach unchecked fields, accept legacy decisions as history-validated, or introduce a second authority/evidence dialect. The test-only adapter result is a diagnostic envelope, not a replacement canonical decision.
 
 - [ ] **Step 1: Write the failing authority-claim and Mode A contract tests**
 
@@ -917,6 +921,8 @@ git commit -m "feat(governance): add state-only run contracts"
 - Consumes: `digestCanonical` from PR #98 and Task 2 run contracts.
 - Produces: domain-specific digest functions and `appendRunRevision(previous, input)`.
 
+**Candidate integration prerequisite:** Any future composition decision must bind the exact proposal, authority-resolution digest, policy revision, validated session scope, history head, and action-taxonomy version. Canonical digest tests must detect a change to each binding, including stale or substituted inputs. Coordinate the schema/version change with Task 2; copying a supplied digest or a `historyComplete: true` assertion is not authentication.
+
 - [ ] **Step 1: Write failing digest and revision-chain tests**
 
 ```ts
@@ -1086,6 +1092,8 @@ git commit -m "feat(governance): add governed run digest chain"
 - Consumes: `AgentProposal`, instruction schemas, PR #98 `VerifiedTribunalAuthorityGrant`, and exact Tribunal scope helpers.
 - Produces: `resolveManyTierAuthority(input): GovernedRunResult<ManyTierAuthorityResolution>`.
 - The function accepts only already verified grants. It never parses raw authority tokens and never accepts role strings as grant substitutes.
+
+**Candidate preservation obligation:** Keep this resolver and its authority semantics unchanged. History cannot create permission, resolve conflicts, combine grants, satisfy human review, or convert successful validation (`ok: true`) into candidate permission. The adapter must preserve the complete original resolution, including review requirements, conflicts, and grant boundaries; Task 5 alone may add a narrowing composition constraint.
 
 - [ ] **Step 1: Write failing deep-conflict, no-union, and retroactive-grant tests**
 
@@ -1350,6 +1358,16 @@ git commit -m "feat(governance): resolve many-tier run authority"
 - Consumes: authority resolution from Task 4, agency and policy contracts from Task 2.
 - Produces: `validateAgencyLocus` and `decideStateOnlyExecution`.
 
+**Candidate test obligation, pending independent human review:** Add a pure post-policy adapter proof under `evals/session-composition/adapter/`. Use the exact plan-extracted Task 4/5 Zod result schemas and execute the planned Task 5 function against them; the production Task 4/5 modules do not yet exist. This tests the plan boundary without claiming repository integration or verified grants.
+
+- Only narrow otherwise-valid candidate eligibility; preserve Task 4 and Task 5 outputs, human-review obligations, unresolved conflicts, grants, and `effectExecutionAllowed: false`.
+- Bind the proposal, original authority and policy digests, effective policy result, policy revision, validated session scope (including run and decision slot), history head, taxonomy version/digest, composition policy digest, and normalized operations digest. Missing, incomplete, untrusted, or mismatched required history blocks candidate eligibility. The fixture-owned resolver supplies scoped snapshots through opaque handles; caller history payloads or trust flags cannot establish trust. Real history authentication remains unproved.
+- Cross all four authority outcomes with clean, prohibited, and untrusted history; also test missing history and changed bindings. Include an explicit Mode A fixture policy: a simulated accepted allocation forbids a conflicting second allocation in one decision slot, while a rationale-only update remains eligible. This is a declared fixture restriction, not a universal policy.
+- Keep an honestly classified `EXTERNAL_EFFECT` denied. Removing history checking must cause the prohibited Mode A case to fail while its matched control remains meaningful.
+- Require `SIMULATION` provenance. Retain `PROPOSED` and `DENIED` events in the complete bound ledger but exclude them from accepted-composition matching; count `SIMULATED_ACCEPTED`. Block `RESERVED`, `COMMITTED`, `FAILED`, and `UNKNOWN_OUTCOME` as unsupported by this simulation-only adapter. Simulation acceptance is never executed-effect evidence.
+
+Record the actual command, tested source versions, fixture/code digests, failures, and limitations in `evals/session-composition/adapter/verification.json`; reproduction belongs in its `README.md`. A passing adapter earns review of canonical integration; it neither completes this task nor closes independent human review.
+
 - [ ] **Step 1: Write failing hidden-side-effect and human-review tests**
 
 ```ts
@@ -1574,6 +1592,8 @@ git commit -m "feat(governance): gate state-only run effects"
 **Interfaces:**
 - Consumes: all prior contracts, digest functions, authority resolver output, agency validation, and Mode A policy decision.
 - Produces: `assembleStateOnlyRun(input)` returning a final append-only run revision and a `TrajectoryReceipt`. No executor callback exists in the function signature.
+
+**Deferred composition integration gate:** After the Task 2/3 contract change and Task 5 proof are reviewed, show that this actual consumer enforces the bound narrowing decision and rejects missing, stale, substituted, or detached composition results. Preserve review/conflict obligations through assembly and keep simulation history separate from executed-effect evidence. The unchanged example below does not enforce the candidate adapter; no consumer integration is claimed by the test-only proof.
 
 - [ ] **Step 1: Write failing no-executor and state-delta tests**
 
@@ -2116,6 +2136,8 @@ git commit -m "feat(governance): evaluate state-only run integrity"
 - Consumes: all Mode A validators and builders.
 - Produces: deterministic positive/negative fixture corpus and a `--check` generator mode that fails when committed fixture output drifts.
 
+**Deferred composition integration gate:** Carry the reviewed adapter matrix, matched control, history-removal ablation, binding-tamper cases, and event-state rules into repository-native fixtures against the implemented Task 4/5/6 modules. Keep original labels frozen; a legitimate control failure requires investigation, not relabeling. Real grant/history authentication and any concurrency guarantees require their own evidence.
+
 - [ ] **Step 1: Write the failing fixture-corpus test**
 
 ```ts
@@ -2226,6 +2248,8 @@ git commit -m "test(governance): add state-only adversarial fixtures"
 **Interfaces:**
 - Consumes: all prior tasks.
 - Produces: one supported Mode A module entrypoint, focused scripts, operator documentation, and merge-gating CI checks.
+
+**Deferred composition integration gate:** Wire reviewed composition tests only after Task 6 consumption and Task 8 fixture coverage exist. Run the repository validation gate and record exact-head evidence; an evaluation file present in Git is not CI enforcement. Retain draft/candidate status and the independent human-review gate. Do not export the test adapter as a production policy or effect capability.
 
 - [ ] **Step 1: Write the failing public-export smoke test**
 
@@ -2411,3 +2435,4 @@ These are deliberately excluded and require their own approved specs/plans:
 2. **Operator Control Plane plan** — read/candidate UI, truth bar, stale/offline states, and no direct effects.
 3. **Mode B reversible-sandbox plan** — sandbox provider, hostile boundary fixture, rollback, and restoration verifier.
 4. **Mode C production-runtime plan** — durable principal/key/currentness stores, atomic CAS/outbox, incident/kill controls, and independent production admission.
+
