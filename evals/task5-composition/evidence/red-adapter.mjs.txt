@@ -1,0 +1,27 @@
+/** RED placeholder: wraps the base decision but omits composition and binding checks. */
+export function evaluateTask5Composition(input) {
+  const authority = input.authorityResult.value;
+  const policy = input.policyResult.value;
+  const effectiveDecision = policy.decision;
+  return {
+    kind: "Task5CompositionEvaluation",
+    testOnly: true,
+    authorityResult: input.authorityResult,
+    policyResult: input.policyResult,
+    authorityResolutionDigest: authority.contentDigest,
+    policyDecisionDigest: policy.contentDigest,
+    effectiveDecision,
+    candidateEligible: effectiveDecision === "ALLOW_CANDIDATE_ONLY",
+    blockReasons: [],
+    preservedObligations: {
+      requiredHumanReview: [...authority.requiredHumanReview],
+      unresolvedConflictIds: [...authority.unresolvedConflictIds],
+      authorityGrantIds: [...authority.activeAuthorityGrantIds],
+      policyGrantIds: [...policy.grantIds],
+      permittedEffects: [...authority.permittedEffects],
+      prohibitedEffects: [...authority.prohibitedEffects],
+    },
+    binding: { allMatched: true },
+    effectExecutionAllowed: false,
+  };
+}

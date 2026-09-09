@@ -1350,6 +1350,69 @@ git commit -m "feat(governance): resolve many-tier run authority"
 - Consumes: authority resolution from Task 4, agency and policy contracts from Task 2.
 - Produces: `validateAgencyLocus` and `decideStateOnlyExecution`.
 
+
+#### Candidate composition proof obligation — 2026-09-09
+
+Status: **CANDIDATE / STATE_ONLY / TEST-ONLY**. This amendment records an
+acceptance requirement and a pure contract-shape proof. It does not declare
+Task 5 implemented, admit a policy, change Task 4, or activate an effect path.
+The original implementation steps below still require integration and review.
+
+Keep Task 4 authority resolution unchanged. After existing Task 5 operation
+validation, a composition constraint may only narrow an otherwise
+`ALLOW_CANDIDATE_ONLY` result. It must preserve the original authority resolution,
+verified-grant boundaries, grant IDs, human-review requirements, unresolved
+conflicts, and `effectExecutionAllowed: false`.
+
+Bind the test-only composition evaluation to the exact proposal digest, existing
+policy revision/digest, validated session scope, history head, and action-taxonomy
+version. Validate these against the trusted harness context; evidence must not
+choose its own expected bindings. Bind policy and taxonomy contents as well as
+version labels. Missing, incomplete, mismatched, or untrusted required history
+must block candidate eligibility. An empty history is valid only when it matches
+the trusted history head for that same scope; it is not reset authorization.
+
+The proof consumes complete planned `ManyTierAuthorityResolution` and
+`ExecutionPolicyDecision` / `GovernedRunResult` shapes, rather than collapsing
+authority to a Boolean. Preserve the canonical input objects and their digests.
+Use a separate test-only evaluation for the effective decision and its binding;
+do not present that wrapper as a newly issued canonical policy decision or grant.
+A production schema/binding change remains separate, independently reviewed work.
+
+| Existing authority outcome | Clean history | Prohibited composition | Untrusted required history |
+| --- | --- | --- | --- |
+| `PERMITTED_CANDIDATE_ONLY` | Candidate eligibility remains | Deny | Deny |
+| `HUMAN_REVIEW` | Review remains | Review remains; composition block recorded | Review remains; history block recorded |
+| `PROHIBITED` | Deny | Deny | Deny |
+| `UNRESOLVED` | Deny; conflict retained | Deny; conflict retained | Deny; conflict retained |
+
+Human-review rows never become candidate eligible. A failed existing Task 5
+result remains blocked, including an honestly classified external operation,
+regardless of a synthetic composition control result.
+
+The bounded example is a blind-review candidate rationale: a policy prohibits
+composing it from the reference answer key. Reading that non-secret synthetic
+key is `PURE`; preparing the rationale is `CANDIDATE_STATE`. The matched control
+uses a public rubric. Both cases remain inert. These fixtures establish a
+candidate policy example, not real data-flow classification or policy admission.
+
+History in this proof records only explicitly `SIMULATED` events. It must never
+be promoted, relabeled, or emitted as executed-effect evidence or an
+`EffectReceipt`. Authentic history production, delegated/reset scope inheritance,
+concurrent admission, and runtime event lifecycle semantics remain unproved.
+
+Reproduce the bounded proof with:
+
+```bash
+node --test evals/task5-composition/adapter.test.mjs
+```
+
+The proof and its source/evidence receipt live in `evals/task5-composition/`.
+They must retain their exact source baselines, full red/green evidence, and a
+statement that the real Task 4/5 runtime and full repository CI were not executed.
+The pre-existing probe in PR #104 is evidence for the matcher only.
+Independent human review remains open; an agent assessment does not satisfy it.
+
 - [ ] **Step 1: Write failing hidden-side-effect and human-review tests**
 
 ```ts
