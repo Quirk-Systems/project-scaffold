@@ -1,0 +1,59 @@
+{
+  "sourceCommit": "47279f5f9cbee8dfcb97b21ca3da024294f1bad9",
+  "planBlob": "82a5105dbde190d3145cf8cdf0c4d0c2570b0dbe",
+  "contracts": [
+    {
+      "name": "ManyTierAuthorityResolutionSchema",
+      "sourceLine": 603,
+      "sourceExcerpt": "export const ManyTierAuthorityResolutionSchema = z\n  .object({\n    kind: z.literal(\"ManyTierAuthorityResolution\"),\n    protocolVersion: z.literal(\"0.1.0\"),\n    resolutionId: GovernedStableIdSchema,\n    proposalId: GovernedStableIdSchema,\n    instructionNodes: z.array(InstructionNodeSchema).max(256),\n    instructionEdges: z.array(InstructionEdgeSchema).max(512),\n    canonicalPrincipalIds: z.array(GovernedStableIdSchema).max(128),\n    activeAuthorityGrantIds: z.array(GovernedStableIdSchema).max(64),\n    applicablePolicyIds: z.array(GovernedStableIdSchema).max(128),\n    winningInstructionIds: z.array(GovernedStableIdSchema).max(128),\n    suppressedInstructionIds: z.array(GovernedStableIdSchema).max(128),\n    unresolvedConflictIds: z.array(GovernedStableIdSchema).max(128),\n    permittedEffects: z.array(RequestedEffectSchema).max(16),\n    prohibitedEffects: z.array(RequestedEffectSchema).max(16),\n    requiredHumanReview: z.array(GovernedStableIdSchema).max(32),\n    result: z.enum([\n      \"PERMITTED_CANDIDATE_ONLY\",\n      \"PROHIBITED\",\n      \"HUMAN_REVIEW\",\n      \"UNRESOLVED\",\n    ]),\n    policyStateDigest: GovernedDigestSchema,\n    evaluatedAt: GovernedTimestampSchema,\n    contentDigest: GovernedDigestSchema,\n  })\n  .strict();",
+      "topLevelKeys": [
+        "kind",
+        "protocolVersion",
+        "resolutionId",
+        "proposalId",
+        "instructionNodes",
+        "instructionEdges",
+        "canonicalPrincipalIds",
+        "activeAuthorityGrantIds",
+        "applicablePolicyIds",
+        "winningInstructionIds",
+        "suppressedInstructionIds",
+        "unresolvedConflictIds",
+        "permittedEffects",
+        "prohibitedEffects",
+        "requiredHumanReview",
+        "result",
+        "policyStateDigest",
+        "evaluatedAt",
+        "contentDigest"
+      ],
+      "excerptSha256": "829aa946dbff58fc1cc02338bdae73df352b133b805f498f9fca5bd7ca64f760"
+    },
+    {
+      "name": "ExecutionPolicyDecisionSchema",
+      "sourceLine": 661,
+      "sourceExcerpt": "export const ExecutionPolicyDecisionSchema = z\n  .object({\n    kind: z.literal(\"ExecutionPolicyDecision\"),\n    protocolVersion: z.literal(\"0.1.0\"),\n    policyDecisionId: GovernedStableIdSchema,\n    runId: GovernedStableIdSchema,\n    proposalDigest: GovernedDigestSchema,\n    authorityResolutionDigest: GovernedDigestSchema,\n    agencyLocusDigest: GovernedDigestSchema,\n    mode: StateOnlyModeSchema,\n    decision: z.enum([\n      \"ALLOW_CANDIDATE_ONLY\",\n      \"DENY\",\n      \"REQUIRE_HUMAN_REVIEW\",\n    ]),\n    effectExecutionAllowed: z.literal(false),\n    permittedPreparatoryOperationIds: z.array(GovernedStableIdSchema).max(64),\n    deniedOperationIds: z.array(GovernedStableIdSchema).max(64),\n    grantIds: z.array(GovernedStableIdSchema).max(64),\n    policyReasonCodes: z.array(GovernedStableIdSchema).min(1).max(64),\n    policyStateDigest: GovernedDigestSchema,\n    evaluatedAt: GovernedTimestampSchema,\n    expiresAt: GovernedTimestampSchema,\n    contentDigest: GovernedDigestSchema,\n  })\n  .strict();",
+      "topLevelKeys": [
+        "kind",
+        "protocolVersion",
+        "policyDecisionId",
+        "runId",
+        "proposalDigest",
+        "authorityResolutionDigest",
+        "agencyLocusDigest",
+        "mode",
+        "decision",
+        "effectExecutionAllowed",
+        "permittedPreparatoryOperationIds",
+        "deniedOperationIds",
+        "grantIds",
+        "policyReasonCodes",
+        "policyStateDigest",
+        "evaluatedAt",
+        "expiresAt",
+        "contentDigest"
+      ],
+      "excerptSha256": "5af2efd26a64ea637ff5d06beb993b781f5a5382446c340b00b5f47fa1c0b06b"
+    }
+  ]
+}

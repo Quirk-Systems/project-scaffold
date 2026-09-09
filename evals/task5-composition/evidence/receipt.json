@@ -1,0 +1,243 @@
+{
+  "kind": "CandidateProofReceipt",
+  "version": 1,
+  "recordedAt": "2026-09-09T22:49:22.562419+00:00",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "CANDIDATE",
+  "scope": "STATE_ONLY_TEST_ONLY",
+  "authorityEffect": "NONE",
+  "sourceBaseline": {
+    "pr104": "58cefdb21164f1e7968d03051dfb52a93a24f4e8",
+    "pr102": "47279f5f9cbee8dfcb97b21ca3da024294f1bad9",
+    "planBlob": "82a5105dbde190d3145cf8cdf0c4d0c2570b0dbe",
+    "tribunalProtocolBlob": "aa9a8fc9db3d4969eb886fb5c17dce8471866695"
+  },
+  "subjectIdentity": {
+    "kind": "FILE_DIGEST_SET",
+    "note": "The containing Git commit and draft PR anchor this receipt. File digests identify the exact tested source; receipt excludes itself to avoid recursive hashing.",
+    "files": [
+      {
+        "path": "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md",
+        "bytes": 89895,
+        "gitBlobSha": "8fa6827c372bed1409a10d1c8bfa77f536e4b04d",
+        "sha256": "99b5ffdccf02bee716ca066e889259a69c1fcf662f10dcc6698487ca649b5103"
+      },
+      {
+        "path": "evals/task5-composition/README.md",
+        "bytes": 5181,
+        "gitBlobSha": "9313e2a58db964fc1a53677b92ce3383ccd9c76e",
+        "sha256": "cf7460ce1cb4712d370ee8e5dc3028d6f8c796af52ea416df035fa987e1917d6"
+      },
+      {
+        "path": "evals/task5-composition/adapter.mjs",
+        "bytes": 12620,
+        "gitBlobSha": "e6f87c08d6abf9fadafb6e7158df381b88625c72",
+        "sha256": "a0dc99d3ac910ab59312ebaf325c7587a2f0c32bcc4510ca52bf519ec0e191e8"
+      },
+      {
+        "path": "evals/task5-composition/adapter.test.mjs",
+        "bytes": 20288,
+        "gitBlobSha": "24335471057c2a18cab34d67c61c466dac49a69d",
+        "sha256": "072434866acb98359fc91092fb631c3dc71974f12c1c6c003f3767d5890471fe"
+      },
+      {
+        "path": "evals/task5-composition/evidence/combined.txt",
+        "bytes": 3973,
+        "gitBlobSha": "2addff075d64fcb0f1836a4c992327ec593d41da",
+        "sha256": "989c00f19ca0f5f50e9b6a505dc00c56debfe50ed6a358436291b92bd48ac70c"
+      },
+      {
+        "path": "evals/task5-composition/evidence/final-agent-review.md",
+        "bytes": 5816,
+        "gitBlobSha": "6746bc8402c5c551b23449c92fa778865717bd78",
+        "sha256": "8b0272c5dda7dd605b6352ba370a0e21034eed825b7a1e82847445f33f998a2e"
+      },
+      {
+        "path": "evals/task5-composition/evidence/initial-combined.txt",
+        "bytes": 3781,
+        "gitBlobSha": "b512656d7f3667fac8de4606b1a233b05a9b3fee",
+        "sha256": "cf75fdf8caa759659fba90bbbd5ef122d17f7b56b94e4de6abb047229ddd7341"
+      },
+      {
+        "path": "evals/task5-composition/evidence/initial-diagnostic-adapter.mjs.txt",
+        "bytes": 186,
+        "gitBlobSha": "f8eb16b2905bbf0f8912e530f8cdc2c918574de2",
+        "sha256": "23ffe85b6a18b87edb7c1f553f3d61de45a89f6531b14d4cb778035c41d5d4b3"
+      },
+      {
+        "path": "evals/task5-composition/evidence/initial-diagnostic-tests.mjs.txt",
+        "bytes": 12906,
+        "gitBlobSha": "176630e27185ef4ac18110a576a4bf340072822c",
+        "sha256": "20467f621cf1ed24f4b3ad1333ebfda9b108c5da9bab8f032869bd3ecbbbce29"
+      },
+      {
+        "path": "evals/task5-composition/evidence/initial-diagnostic.txt",
+        "bytes": 6800,
+        "gitBlobSha": "ef9b155513971d7d65152b658093693afae7b13c",
+        "sha256": "2d8587998d5d26c501c23e49ce2a29055278504284ef24f38d76c00912c14643"
+      },
+      {
+        "path": "evals/task5-composition/evidence/initial-green.txt",
+        "bytes": 909,
+        "gitBlobSha": "f895fb3ea455e9492b5c4a3a5c345ec9188bbbbf",
+        "sha256": "f2ee77e52677664bb9e636c7cbc5dc19f474bda65e17110674d6714fa8457491"
+      },
+      {
+        "path": "evals/task5-composition/evidence/red-adapter.mjs.txt",
+        "bytes": 1115,
+        "gitBlobSha": "9eee62afc4b14d392559f89233eeee9d7d2b5784",
+        "sha256": "41ac933cf26a3c9662e4ca17a6693ad4352f321bdc3c73c6c0f0fd92bf8ed987"
+      },
+      {
+        "path": "evals/task5-composition/evidence/red-tests.mjs.txt",
+        "bytes": 12906,
+        "gitBlobSha": "176630e27185ef4ac18110a576a4bf340072822c",
+        "sha256": "20467f621cf1ed24f4b3ad1333ebfda9b108c5da9bab8f032869bd3ecbbbce29"
+      },
+      {
+        "path": "evals/task5-composition/evidence/red.txt",
+        "bytes": 6562,
+        "gitBlobSha": "a526f930c4bab1e7dec7517b07d31f8937f76c6d",
+        "sha256": "ff6ef1f076f186a5ac24697b2e9afd062a19567ae2dcdac8b1b9e7d3b1423793"
+      },
+      {
+        "path": "evals/task5-composition/evidence/repair-before-adapter.mjs.txt",
+        "bytes": 8759,
+        "gitBlobSha": "fa38ba2454fd8eed0f53c3e5df821109f834dbe5",
+        "sha256": "e93d7dc5d2c87bee61c8abfaad7ab302d1ee7a1071f99ed68d5c42d6c2d9b4c6"
+      },
+      {
+        "path": "evals/task5-composition/evidence/repair-green.txt",
+        "bytes": 1095,
+        "gitBlobSha": "108f9cda03569ca61fd0836308be9fa6fb29da91",
+        "sha256": "ae37f962bc84cbeaa7b30359522bbee20e950c63ca42a0628f95e7838574a56b"
+      },
+      {
+        "path": "evals/task5-composition/evidence/repair-red-tests.mjs.txt",
+        "bytes": 20288,
+        "gitBlobSha": "24335471057c2a18cab34d67c61c466dac49a69d",
+        "sha256": "072434866acb98359fc91092fb631c3dc71974f12c1c6c003f3767d5890471fe"
+      },
+      {
+        "path": "evals/task5-composition/evidence/repair-red.txt",
+        "bytes": 7408,
+        "gitBlobSha": "e36c1340adbb31e14ba8100bd454e55a96b0d52f",
+        "sha256": "5cbb314323495e9f357e26926d1861e96550461ebf89175f5b75f2bba3291504"
+      },
+      {
+        "path": "evals/task5-composition/evidence/repo-validation.txt",
+        "bytes": 236,
+        "gitBlobSha": "5f8db696e14a11b6eb06f35728490feb4bb5c5a6",
+        "sha256": "d4cf10d3d05bc5e685fea4c2c45a5924be6f197ee4dc4eb5f4cdce3bae75d70c"
+      },
+      {
+        "path": "evals/task5-composition/evidence/review-round1-fix.md",
+        "bytes": 3522,
+        "gitBlobSha": "659f6cd9191070205f1682b91272c61584082a9f",
+        "sha256": "33aeb897d5b99f0f1aabcd2796072ab80670b5e2750df913869dd54a5226dca2"
+      },
+      {
+        "path": "evals/task5-composition/evidence/review-round1.md",
+        "bytes": 5963,
+        "gitBlobSha": "533017694824d2e5714a67d992969447af96d89a",
+        "sha256": "55ecd487edd5c5b9b86a4c93caff61b8c89dcd3017a09ac13d4d15ebbe94cee3"
+      },
+      {
+        "path": "evals/task5-composition/evidence/scope-check.json",
+        "bytes": 525,
+        "gitBlobSha": "b1f50557b359dcfc351e280bfcfa020247bc1517",
+        "sha256": "4e3f5d1c463b41cbd19f3b9741663479cd066da25ad35a0df48caee5016fa5c4"
+      },
+      {
+        "path": "evals/task5-composition/evidence/source-contracts.json",
+        "bytes": 3937,
+        "gitBlobSha": "9d2af5d8077e25485a39ce36f73d18dbf1cc2ce4",
+        "sha256": "3d549b0c328be1d3bf23a1ed8dfa4c75c3fae021375537179906b47dcbfb1900"
+      }
+    ]
+  },
+  "validation": {
+    "runtime": "Node v24.19.0",
+    "command": "node --test evals/session-composition/probe.test.mjs evals/task5-composition/adapter.test.mjs",
+    "finalCombined": {
+      "tests": 59,
+      "pass": 59,
+      "fail": 0
+    },
+    "finalAdapter": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0
+    },
+    "priorProbe": {
+      "tests": 48,
+      "pass": 48,
+      "fail": 0,
+      "filesUnchanged": true
+    },
+    "authorityHistoryMatrix": {
+      "cells": 12,
+      "result": "ALL_LITERAL_EXPECTATIONS_PASSED"
+    },
+    "historyBindingAndSimulationRepair": "PASS",
+    "effectExecutionAllowedAlwaysFalse": true,
+    "effectBoundaryBasis": "Pure adapter with no executor; not measured runtime effect containment.",
+    "canonicalResultShapeBasis": "Complete planned top-level field sets; synthetic canonical digest values. Full Zod validation and real Task 4/5 producers were not run.",
+    "fullRepositoryValidation": {
+      "command": "bun run validate",
+      "exitCode": 127,
+      "status": "UNAVAILABLE_BUN_NOT_INSTALLED"
+    },
+    "repoWideCi": "UNVERIFIED",
+    "probeCiExecution": "NOT_CONFIGURED_BY_THIS_CHANGE"
+  },
+  "developmentEvidence": {
+    "initialThrowingPlaceholder": "DIAGNOSTIC_ONLY_NOT_BEHAVIORAL_RED",
+    "behavioralRed": {
+      "tests": 7,
+      "pass": 1,
+      "fail": 6
+    },
+    "initialGreen": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0
+    },
+    "reviewRound1": {
+      "importantFindings": 3,
+      "report": "review-round1.md"
+    },
+    "repairRed": {
+      "tests": 11,
+      "pass": 8,
+      "fail": 3
+    },
+    "repairGreen": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0
+    },
+    "chronologyLimit": "Initial behavioral RED had seven groups. Two supplemental checks were added afterward. The three repair assertions were observed failing before the repair. Exact snapshots and logs are retained; no claim of an unchanged preregistered test corpus."
+  },
+  "boundaries": {
+    "task4Changed": false,
+    "priorProbeChanged": false,
+    "canonicalRuntimeSchemasChanged": false,
+    "productionImportsOrExportsAdded": false,
+    "grantAuthorityExpanded": false,
+    "effectExecutorAdded": false,
+    "simulationIsExecutedEffectEvidence": false,
+    "humanReview": "OPEN_NOT_PERFORMED",
+    "mergeApproval": "NOT_GRANTED",
+    "runtimePolicyAdmission": "NOT_GRANTED"
+  },
+  "unverified": [
+    "Actual Task 4/5 runtime integration and canonical Zod validation",
+    "Canonical digest recomputation and authority-grant verification",
+    "Real operation classification and semantic data-flow restrictions",
+    "External authentication of expected context, scope and history",
+    "Initial state, reset, delegation, persistence, concurrency and revocation",
+    "Full repository lint, TypeScript, Bun/Vitest, build and runtime CI",
+    "Independent human approval, production policy admission, B/C activation"
+  ]
+}
