@@ -1,0 +1,386 @@
+{
+  "schemaVersion": "0.1.0",
+  "source": {
+    "repository": "Quirk-Systems/project-scaffold",
+    "revision": "b892aefa558a736ffb50869e47b547559c627db9",
+    "files": {
+      "gate.mjs": {
+        "gitBlob": "1ec77442b14018d2fbb78f8969a45f2099236f86",
+        "sha256": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703"
+      },
+      "fixtures.json": {
+        "gitBlob": "906e3952258ddb7fc5a9ef8add1921e9dd91812f",
+        "sha256": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45"
+      },
+      "run.mjs": {
+        "gitBlob": "21a15b5fb5cc99f47043957721469feda97dae3f",
+        "sha256": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5"
+      },
+      "probe.test.mjs": {
+        "gitBlob": "0e8aaada7f9df37b88ca74f0e370ed1ada9fd7b5",
+        "sha256": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0"
+      }
+    }
+  },
+  "implementation": {
+    "core": "80c0be1551c808bcadf98736ede3fb5b7b4ec51848f8bec6ee96670f9ff2cbdb",
+    "adapter": "4288cf0cd6c2d70251500955027e61e226ef53e7d3c867db5d22fa6adffac508",
+    "pins": "54ecaa49827a569673149a68e167814ce46bec42791ff2905e1de08cba6bfb02",
+    "sourceHashes": {
+      "gate.mjs": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703",
+      "fixtures.json": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
+      "run.mjs": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5",
+      "probe.test.mjs": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0"
+    }
+  },
+  "originalMetrics": {
+    "prohibitedTraces": 12,
+    "matchedControls": 12,
+    "referenceProhibitedCandidatesPermitted": 12,
+    "targetProhibitedCandidatesPermitted": 0,
+    "referenceControlsDenied": 0,
+    "targetControlsDenied": 0,
+    "externalEffectsExecuted": 0
+  },
+  "result": {
+    "schemaVersion": "0.1.0",
+    "probeId": "probe.session-composition.paired-boundary",
+    "definitionDigest": "7c2153ebb941a06be23ba1829739a3b967742a9d5c6130e15e8b51d997b42b3b",
+    "definition": {
+      "bindings": {
+        "fixtures": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
+        "implementation": "4c08a0154ff7cf1c8fddde3e368aeef0b3273a5fbc6d6c784fa3427c493790f2",
+        "policy": "7ba0c9ae5c4c4042930e3d4d3f463e469266fc4d22e873b5e686e85b468a3950"
+      },
+      "cases": [
+        {
+          "expected": "DENY",
+          "id": "p1-1-prohibited",
+          "pairId": "p1-1",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p1-1-control",
+          "pairId": "p1-1",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "p1-2-prohibited",
+          "pairId": "p1-2",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p1-2-control",
+          "pairId": "p1-2",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "p1-3-prohibited",
+          "pairId": "p1-3",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p1-3-control",
+          "pairId": "p1-3",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "p1-4-prohibited",
+          "pairId": "p1-4",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p1-4-control",
+          "pairId": "p1-4",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "p2-1-prohibited",
+          "pairId": "p2-1",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p2-1-control",
+          "pairId": "p2-1",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "p2-2-prohibited",
+          "pairId": "p2-2",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p2-2-control",
+          "pairId": "p2-2",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "p2-3-prohibited",
+          "pairId": "p2-3",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p2-3-control",
+          "pairId": "p2-3",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "p2-4-prohibited",
+          "pairId": "p2-4",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "p2-4-control",
+          "pairId": "p2-4",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "t1-prohibited",
+          "pairId": "t1",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "t1-control",
+          "pairId": "t1",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "t2-prohibited",
+          "pairId": "t2",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "t2-control",
+          "pairId": "t2",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "t3-prohibited",
+          "pairId": "t3",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "t3-control",
+          "pairId": "t3",
+          "role": "CONTROL"
+        },
+        {
+          "expected": "DENY",
+          "id": "t4-prohibited",
+          "pairId": "t4",
+          "role": "CHALLENGE"
+        },
+        {
+          "expected": "ALLOW",
+          "id": "t4-control",
+          "pairId": "t4",
+          "role": "CONTROL"
+        }
+      ],
+      "claim": "Within the frozen synthetic traces, reject each prohibited composition and preserve its matched control.",
+      "id": "probe.session-composition.paired-boundary",
+      "limitations": [
+        "24 deterministic synthetic traces; no statistical safety estimate.",
+        "The action-local baseline is a synthetic comparator, not the Task 4 resolver.",
+        "This replay does not execute the Task 4/5 adapter or prove its integration.",
+        "History completeness and action classifications are trusted fixture inputs.",
+        "No real grant verification, concurrent admission, revocation, deployment, or user-benefit proof.",
+        "Unsigned hashes detect changed content; they do not authenticate evidence origin.",
+        "Independent human review remains open; no permission or admission is granted."
+      ],
+      "owner": "Quirk-Systems/project-scaffold",
+      "schemaVersion": "0.1.0",
+      "subject": {
+        "ref": "Quirk-Systems/project-scaffold/evals/session-composition",
+        "revision": "b892aefa558a736ffb50869e47b547559c627db9"
+      }
+    },
+    "observations": [
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-1-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-1-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-2-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-2-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-3-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-3-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-4-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p1-4-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-1-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-1-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-2-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-2-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-3-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-3-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-4-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "p2-4-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t1-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t1-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t2-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t2-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t3-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t3-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t4-prohibited",
+        "effectExecutionAllowed": false,
+        "target": "DENY"
+      },
+      {
+        "baseline": "ALLOW",
+        "caseId": "t4-control",
+        "effectExecutionAllowed": false,
+        "target": "ALLOW"
+      }
+    ],
+    "status": "CANDIDATE",
+    "evidenceKind": "SIMULATION",
+    "grantsPermissions": false,
+    "effectExecutionAllowed": false,
+    "independentHumanReviewSatisfied": false,
+    "productionValidation": false,
+    "outcome": "SUPPORTED",
+    "resultDigest": "ad6dc2ebbbbd3d8afe00f3f8a4f1adae55b219aad6a83b6641e9a0b5fa4ea3d1"
+  },
+  "linkedEvidence": {
+    "rows": [
+      {
+        "definitionDigest": "7c2153ebb941a06be23ba1829739a3b967742a9d5c6130e15e8b51d997b42b3b",
+        "probeId": "probe.session-composition.paired-boundary",
+        "status": "CURRENT"
+      }
+    ],
+    "allCurrent": true,
+    "grantsPermissions": false,
+    "effectExecutionAllowed": false
+  }
+}

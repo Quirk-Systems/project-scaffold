@@ -1,0 +1,472 @@
+TAP version 13
+# Subtest: hashes use canonical lowercase wire form
+ok 1 - hashes use canonical lowercase wire form
+  ---
+  duration_ms: 6.401144
+  type: 'test'
+  ...
+# Subtest: canonical digests sort object keys recursively and preserve array order
+ok 2 - canonical digests sort object keys recursively and preserve array order
+  ---
+  duration_ms: 0.353462
+  type: 'test'
+  ...
+# Subtest: strict JSON rejects non-JSON values, prototypes, sparse arrays, and hidden fields
+ok 3 - strict JSON rejects non-JSON values, prototypes, sparse arrays, and hidden fields
+  ---
+  duration_ms: 0.640865
+  type: 'test'
+  ...
+# Subtest: JSON validation does not invoke getters, proxy traps, or toJSON
+ok 4 - JSON validation does not invoke getters, proxy traps, or toJSON
+  ---
+  duration_ms: 0.341965
+  type: 'test'
+  ...
+# Subtest: canonical JSON enforces depth, node, and byte budgets
+ok 5 - canonical JSON enforces depth, node, and byte budgets
+  ---
+  duration_ms: 4.36487
+  type: 'test'
+  ...
+# Subtest: matched challenge/control support produces deterministic unsigned simulation evidence
+ok 6 - matched challenge/control support produces deterministic unsigned simulation evidence
+  ---
+  duration_ms: 2.084265
+  type: 'test'
+  ...
+# Subtest: all-deny target fails the control and all-allow target fails the challenge
+ok 7 - all-deny target fails the control and all-allow target fails the challenge
+  ---
+  duration_ms: 0.865878
+  type: 'test'
+  ...
+# Subtest: any baseline denial is inconclusive unless a target mismatches
+ok 8 - any baseline denial is inconclusive unless a target mismatches
+  ---
+  duration_ms: 1.296714
+  type: 'test'
+  ...
+# Subtest: observations must exactly cover unique known cases with effects disabled
+ok 9 - observations must exactly cover unique known cases with effects disabled
+  ---
+  duration_ms: 5.078593
+  type: 'test'
+  ...
+# Subtest: definition requires complete uniquely identified matched pairs
+ok 10 - definition requires complete uniquely identified matched pairs
+  ---
+  duration_ms: 1.367428
+  type: 'test'
+  ...
+# Subtest: definition binds metadata and refuses missing, blank, promoted, or malformed fields
+ok 11 - definition binds metadata and refuses missing, blank, promoted, or malformed fields
+  ---
+  duration_ms: 1.645087
+  type: 'test'
+  ...
+# Subtest: accepts 64 matched pairs and rejects 65
+ok 12 - accepts 64 matched pairs and rejects 65
+  ---
+  duration_ms: 5.678839
+  type: 'test'
+  ...
+# Subtest: result snapshots remain independent of input and other assessments
+ok 13 - result snapshots remain independent of input and other assessments
+  ---
+  duration_ms: 0.69102
+  type: 'test'
+  ...
+# Subtest: valid exact current evidence never grants permission or effects
+ok 14 - valid exact current evidence never grants permission or effects
+  ---
+  duration_ms: 0.84057
+  type: 'test'
+  ...
+# Subtest: missing and duplicate receipts cannot satisfy a requirement
+ok 15 - missing and duplicate receipts cannot satisfy a requirement
+  ---
+  duration_ms: 0.570332
+  type: 'test'
+  ...
+# Subtest: each relevant binding and subject revision makes old valid evidence stale
+ok 16 - each relevant binding and subject revision makes old valid evidence stale
+  ---
+  duration_ms: 2.486379
+  type: 'test'
+  ...
+# Subtest: linked evidence propagates supported, unsupported, and inconclusive outcomes
+ok 17 - linked evidence propagates supported, unsupported, and inconclusive outcomes
+  ---
+  duration_ms: 1.373977
+  type: 'test'
+  ...
+# Subtest: tampering and self-promotion are invalid even with a recomputed outer digest
+ok 18 - tampering and self-promotion are invalid even with a recomputed outer digest
+  ---
+  duration_ms: 11.532535
+  type: 'test'
+  ...
+# Subtest: digest and malformed receipt failures are INVALID before any stale classification
+ok 19 - digest and malformed receipt failures are INVALID before any stale classification
+  ---
+  duration_ms: 0.513698
+  type: 'test'
+  ...
+# Subtest: requirements must be explicit, nonempty, bound, and unambiguous
+ok 20 - requirements must be explicit, nonempty, bound, and unambiguous
+  ---
+  duration_ms: 0.402223
+  type: 'test'
+  ...
+# Subtest: distinct requirements resolve independently and unrelated valid results do not substitute
+ok 21 - distinct requirements resolve independently and unrelated valid results do not substitute
+  ---
+  duration_ms: 0.510152
+  type: 'test'
+  ...
+# Subtest: integrity cannot authenticate a fully fabricated but self-consistent simulation
+ok 22 - integrity cannot authenticate a fully fabricated but self-consistent simulation
+  ---
+  duration_ms: 0.374022
+  type: 'test'
+  ...
+# Subtest: fixed adapter reuses all 12 original pairs and produces a reproducible result
+ok 23 - fixed adapter reuses all 12 original pairs and produces a reproducible result
+  ---
+  duration_ms: 27.692577
+  type: 'test'
+  ...
+# Subtest: memoryless and always-deny mutations both lose support for the real fixture
+ok 24 - memoryless and always-deny mutations both lose support for the real fixture
+  ---
+  duration_ms: 9.303846
+  type: 'test'
+  ...
+# Subtest: linked consumer invalidates each changed binding without rewriting old evidence
+ok 25 - linked consumer invalidates each changed binding without rewriting old evidence
+  ---
+  duration_ms: 14.424312
+  type: 'test'
+  ...
+# Subtest: a linked passing result cannot self-promote, even with its hash recomputed
+ok 26 - a linked passing result cannot self-promote, even with its hash recomputed
+  ---
+  duration_ms: 6.834393
+  type: 'test'
+  ...
+# Subtest: fresh isolated checkout can record, check, and reject an edited evidence claim
+ok 27 - fresh isolated checkout can record, check, and reject an edited evidence claim
+  ---
+  duration_ms: 208.827076
+  type: 'test'
+  ...
+# Subtest: source drift is refused before the fixed probe adapter imports the changed source
+ok 28 - source drift is refused before the fixed probe adapter imports the changed source
+  ---
+  duration_ms: 169.664292
+  type: 'test'
+  ...
+# Subtest: unknown CLI mode fails without replacing the evidence file
+ok 29 - unknown CLI mode fails without replacing the evidence file
+  ---
+  duration_ms: 100.203046
+  type: 'test'
+  ...
+# Subtest: action-local reference admits each stipulated permitted action without executing
+ok 30 - action-local reference admits each stipulated permitted action without executing
+  ---
+  duration_ms: 2.921931
+  type: 'test'
+  ...
+# Subtest: action-local reference does not turn a denied base decision into permission
+ok 31 - action-local reference does not turn a denied base decision into permission
+  ---
+  duration_ms: 0.231391
+  type: 'test'
+  ...
+# Subtest: action-local reference exposes the selected composition blind spot, not a production vulnerability
+ok 32 - action-local reference exposes the selected composition blind spot, not a production vulnerability
+  ---
+  duration_ms: 2.479028
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-1-prohibited
+ok 33 - composition fixture p1-1-prohibited
+  ---
+  duration_ms: 0.335435
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-1-control
+ok 34 - composition fixture p1-1-control
+  ---
+  duration_ms: 0.192103
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-2-prohibited
+ok 35 - composition fixture p1-2-prohibited
+  ---
+  duration_ms: 0.115841
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-2-control
+ok 36 - composition fixture p1-2-control
+  ---
+  duration_ms: 0.144323
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-3-prohibited
+ok 37 - composition fixture p1-3-prohibited
+  ---
+  duration_ms: 0.141408
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-3-control
+ok 38 - composition fixture p1-3-control
+  ---
+  duration_ms: 0.232904
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-4-prohibited
+ok 39 - composition fixture p1-4-prohibited
+  ---
+  duration_ms: 0.233405
+  type: 'test'
+  ...
+# Subtest: composition fixture p1-4-control
+ok 40 - composition fixture p1-4-control
+  ---
+  duration_ms: 0.116501
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-1-prohibited
+ok 41 - composition fixture p2-1-prohibited
+  ---
+  duration_ms: 0.084344
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-1-control
+ok 42 - composition fixture p2-1-control
+  ---
+  duration_ms: 0.068871
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-2-prohibited
+ok 43 - composition fixture p2-2-prohibited
+  ---
+  duration_ms: 0.06103
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-2-control
+ok 44 - composition fixture p2-2-control
+  ---
+  duration_ms: 0.059818
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-3-prohibited
+ok 45 - composition fixture p2-3-prohibited
+  ---
+  duration_ms: 0.083633
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-3-control
+ok 46 - composition fixture p2-3-control
+  ---
+  duration_ms: 0.071906
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-4-prohibited
+ok 47 - composition fixture p2-4-prohibited
+  ---
+  duration_ms: 0.072187
+  type: 'test'
+  ...
+# Subtest: composition fixture p2-4-control
+ok 48 - composition fixture p2-4-control
+  ---
+  duration_ms: 0.110583
+  type: 'test'
+  ...
+# Subtest: composition fixture t1-prohibited
+ok 49 - composition fixture t1-prohibited
+  ---
+  duration_ms: 0.091995
+  type: 'test'
+  ...
+# Subtest: composition fixture t1-control
+ok 50 - composition fixture t1-control
+  ---
+  duration_ms: 0.10811
+  type: 'test'
+  ...
+# Subtest: composition fixture t2-prohibited
+ok 51 - composition fixture t2-prohibited
+  ---
+  duration_ms: 0.079998
+  type: 'test'
+  ...
+# Subtest: composition fixture t2-control
+ok 52 - composition fixture t2-control
+  ---
+  duration_ms: 0.102631
+  type: 'test'
+  ...
+# Subtest: composition fixture t3-prohibited
+ok 53 - composition fixture t3-prohibited
+  ---
+  duration_ms: 0.077014
+  type: 'test'
+  ...
+# Subtest: composition fixture t3-control
+ok 54 - composition fixture t3-control
+  ---
+  duration_ms: 0.070915
+  type: 'test'
+  ...
+# Subtest: composition fixture t4-prohibited
+ok 55 - composition fixture t4-prohibited
+  ---
+  duration_ms: 0.069343
+  type: 'test'
+  ...
+# Subtest: composition fixture t4-control
+ok 56 - composition fixture t4-control
+  ---
+  duration_ms: 0.069743
+  type: 'test'
+  ...
+# Subtest: composition guard cannot elevate a denied action even with a permissive history
+ok 57 - composition guard cannot elevate a denied action even with a permissive history
+  ---
+  duration_ms: 0.091455
+  type: 'test'
+  ...
+# Subtest: fails closed: incomplete-history
+ok 58 - fails closed: incomplete-history
+  ---
+  duration_ms: 0.225913
+  type: 'test'
+  ...
+# Subtest: fails closed: missing-history
+ok 59 - fails closed: missing-history
+  ---
+  duration_ms: 0.477525
+  type: 'test'
+  ...
+# Subtest: fails closed: unknown-history-action
+ok 60 - fails closed: unknown-history-action
+  ---
+  duration_ms: 0.062923
+  type: 'test'
+  ...
+# Subtest: fails closed: unknown-current-action
+ok 61 - fails closed: unknown-current-action
+  ---
+  duration_ms: 0.077844
+  type: 'test'
+  ...
+# Subtest: fails closed: sandbox-mode
+ok 62 - fails closed: sandbox-mode
+  ---
+  duration_ms: 0.053309
+  type: 'test'
+  ...
+# Subtest: fails closed: production-mode
+ok 63 - fails closed: production-mode
+  ---
+  duration_ms: 0.093287
+  type: 'test'
+  ...
+# Subtest: fails closed: session-mismatch
+ok 64 - fails closed: session-mismatch
+  ---
+  duration_ms: 0.069522
+  type: 'test'
+  ...
+# Subtest: fails closed: tenant-mismatch
+ok 65 - fails closed: tenant-mismatch
+  ---
+  duration_ms: 0.059748
+  type: 'test'
+  ...
+# Subtest: fails closed: environment-mismatch
+ok 66 - fails closed: environment-mismatch
+  ---
+  duration_ms: 0.049513
+  type: 'test'
+  ...
+# Subtest: fails closed: policy-version-mismatch
+ok 67 - fails closed: policy-version-mismatch
+  ---
+  duration_ms: 0.046188
+  type: 'test'
+  ...
+# Subtest: fails closed: history-overflow
+ok 68 - fails closed: history-overflow
+  ---
+  duration_ms: 0.041792
+  type: 'test'
+  ...
+# Subtest: fails closed: sparse-history
+ok 69 - fails closed: sparse-history
+  ---
+  duration_ms: 0.097764
+  type: 'test'
+  ...
+# Subtest: fails closed: truthy-not-true-base
+ok 70 - fails closed: truthy-not-true-base
+  ---
+  duration_ms: 0.052737
+  type: 'test'
+  ...
+# Subtest: fails closed: self-asserted-authority-field
+ok 71 - fails closed: self-asserted-authority-field
+  ---
+  duration_ms: 0.076402
+  type: 'test'
+  ...
+# Subtest: malformed policy fails closed rather than creating a new permission vocabulary
+ok 72 - malformed policy fails closed rather than creating a new permission vocabulary
+  ---
+  duration_ms: 0.19664
+  type: 'test'
+  ...
+# Subtest: null candidate and malformed scope fail closed
+ok 73 - null candidate and malformed scope fail closed
+  ---
+  duration_ms: 0.199705
+  type: 'test'
+  ...
+# Subtest: ordered triple catches non-adjacent members, but reversed order is not an ordered match
+ok 74 - ordered triple catches non-adjacent members, but reversed order is not an ordered match
+  ---
+  duration_ms: 0.172324
+  type: 'test'
+  ...
+# Subtest: the filter does not mutate policy, base decision, or history
+ok 75 - the filter does not mutate policy, base decision, or history
+  ---
+  duration_ms: 0.118144
+  type: 'test'
+  ...
+# Subtest: matches an enumerative oracle on 1554 nonempty sequences in a declared six-symbol domain
+ok 76 - matches an enumerative oracle on 1554 nonempty sequences in a declared six-symbol domain
+  ---
+  duration_ms: 33.591509
+  type: 'test'
+  ...
+# Subtest: report keeps candidate decisions separate from actual effects and fixes denominators
+ok 77 - report keeps candidate decisions separate from actual effects and fixes denominators
+  ---
+  duration_ms: 3.168335
+  type: 'test'
+  ...
+1..77
+# tests 77
+# suites 0
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 643.724138

@@ -1,0 +1,22 @@
+{
+  "repository": "Quirk-Systems/project-scaffold",
+  "revision": "b892aefa558a736ffb50869e47b547559c627db9",
+  "files": {
+    "gate.mjs": {
+      "gitBlob": "1ec77442b14018d2fbb78f8969a45f2099236f86",
+      "sha256": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703"
+    },
+    "fixtures.json": {
+      "gitBlob": "906e3952258ddb7fc5a9ef8add1921e9dd91812f",
+      "sha256": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45"
+    },
+    "run.mjs": {
+      "gitBlob": "21a15b5fb5cc99f47043957721469feda97dae3f",
+      "sha256": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5"
+    },
+    "probe.test.mjs": {
+      "gitBlob": "0e8aaada7f9df37b88ca74f0e370ed1ada9fd7b5",
+      "sha256": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0"
+    }
+  }
+}
