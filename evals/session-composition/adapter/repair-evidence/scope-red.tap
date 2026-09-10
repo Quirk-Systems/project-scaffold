@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: trusted clean other-candidate context cannot replace contaminated proposal history
+not ok 1 - trusted clean other-candidate context cannot replace contaminated proposal history
+  ---
+  duration_ms: 491.969412
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/scope-repair-work/scope-substitution.red.test.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    other-candidate history must not authorize the unchanged contaminated proposal
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/scope-repair-work/scope-substitution.red.test.mjs:28:12)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 598.726322

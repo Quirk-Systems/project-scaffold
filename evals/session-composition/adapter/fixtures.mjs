@@ -2,6 +2,23 @@
 const NOW = "2026-09-09T12:00:00.000Z";
 const EXPIRES = "2026-09-10T12:00:00.000Z";
 const PLACEHOLDER_DIGEST = `sha256:${"0".repeat(64)}`;
+const trustedContexts = new WeakMap();
+
+// Only fixture construction establishes the verifier-owned association.
+// refreshBindings recomputes caller hashes; it cannot retarget this context.
+function bindFixtureContext(contracts, fixture) {
+  trustedContexts.set(
+    fixture,
+    Object.freeze({
+      proposalDigest: fixture.request.proposal.contentDigest,
+      scopeDigest: contracts.digestCanonical(
+        fixture.request.scope,
+        "quirk.composition.scope.v1",
+      ),
+    }),
+  );
+  return fixture;
+}
 
 export function rehash(contracts, value, domain) {
   const { contentDigest: _ignored, ...basis } = value;
@@ -248,7 +265,7 @@ export function makeFixture(
     resolveHistory(handle) {
       return handle === trustedHistoryHandle &&
         !["untrusted", "missing"].includes(history)
-        ? snapshot
+        ? { ...trustedContexts.get(fixture), history: snapshot }
         : null;
     },
     refreshBindings({
@@ -318,7 +335,7 @@ export function makeFixture(
     },
   };
   fixture.refreshBindings();
-  return fixture;
+  return bindFixtureContext(contracts, fixture);
 }
 
 /**
@@ -332,6 +349,7 @@ export function makeBlindFixture(
     authority = "PERMITTED_CANDIDATE_ONLY",
     history = "rubric",
     action = "probe.build_blind_rationale",
+    candidateId = "candidate-3",
   } = {},
 ) {
   const fixture = makeFixture(contracts, {
@@ -369,12 +387,12 @@ export function makeBlindFixture(
   ];
   const chosen = policy.actions.find((entry) => entry.actionId === action);
   if (!chosen) throw new Error(`Unknown blind fixture action: ${action}`);
-  request.scope.decisionSlotId = "blind.case_7.candidate_3";
+  request.scope.decisionSlotId = `blind.case_7.${candidateId.replaceAll("-", "_")}`;
   request.proposal.objective =
     "Prepare an unsigned blind rationale for one synthetic candidate.";
   request.proposal.requestedEffect.operationId = chosen.operationId;
   request.proposal.requestedEffect.targetLocator =
-    "fixture://blind/case-7/candidate-3";
+    `fixture://blind/case-7/${candidateId}`;
   const authorityValue = request.authorityResult.value;
   authorityValue.policyStateDigest = policy.policyRevision;
   for (const node of authorityValue.instructionNodes)
@@ -417,5 +435,6 @@ export function makeBlindFixture(
         },
       ]
     : [];
-  return fixture.refreshBindings();
+  fixture.refreshBindings();
+  return bindFixtureContext(contracts, fixture);
 }

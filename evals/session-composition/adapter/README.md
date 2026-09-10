@@ -33,11 +33,23 @@ node evals/session-composition/adapter/verify.mjs --write
 
 Review the changed sources and expectations before committing the new receipt.
 Never update source pins automatically to suppress a drift failure. `--write`
-records `verification.json`, `verification-tests.tap`, and `history-ablation.tap`.
+records `verification.json`, `verification-tests.tap`,
+`verification-receipt-tests.tap`, and `history-ablation.tap`.
+It also verifies the retained `consolidation-first-run.tap` without rewriting it.
 The JSON identifies the precise source hashes, runtime versions, measured outcomes,
 and unproved surfaces. The receipt excludes its own bytes to avoid a self-reference;
 the containing Git commit identifies the complete published pack. CI replay checks
 out the PR head, checks those source hashes, and reports its own runtime separately.
+
+Replay compares the entire receipt contract, including candidate status, authority
+and human-review claims, provenance, and unproved surfaces. It requires exactly
+the recorded log set and checks those logs against their recorded hashes. The set
+includes three generated logs and the retained consolidation log. Historical
+Node/TypeScript/Zod versions and raw-log timings may differ from a replay; their
+validated observation fields are kept separate from the invariant claims. Replay
+does not authenticate the historical environment; it reports the recording and
+replay versions separately. A green replay cannot turn an edited
+`independentHumanReviewSatisfied: true` into approval.
 
 ## What is actually executed
 
@@ -97,7 +109,11 @@ are adapted from #105 into this same harness. See the
 [source comparison and proposed disposition](evidence-lineage.md) for exact source
 identities, retained history semantics, and development-evidence limits.
 
-The history resolver owns the initial opaque handles. Caller JSON or a replacement
+The history resolver owns the initial opaque handles and returns a test-only
+attestation `{ proposalDigest, scopeDigest, history }`. The proposal/scope
+association is fixed when the fixture is built. Recomputing request or history
+digests does not reissue that association. A valid clean history for another
+proposal or scope cannot clear the current proposal. Caller JSON or a replacement
 handle cannot manufacture a trusted snapshot. This models an upstream verifier;
 it does not implement real history authentication. `PROPOSED` and `DENIED` events
 remain digest-bound but do not count as accepted actions. `SIMULATED_ACCEPTED`

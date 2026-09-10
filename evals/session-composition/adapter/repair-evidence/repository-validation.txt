@@ -1,0 +1,5 @@
+Command: bun run validate
+Exit code: 127
+/bin/bash: bun: command not found
+
+Full repository validation was not run. This local checkout is a selected-file projection; focused dependencies are TypeScript 6.0.3 and Zod 3.25.76 from an existing local dependency installation. Candidate CI uses the repository frozen lockfile separately.

@@ -1367,7 +1367,9 @@ git commit -m "feat(governance): resolve many-tier run authority"
 - Keep an honestly classified `EXTERNAL_EFFECT` denied. Removing history checking must cause the prohibited Mode A case to fail while its matched control remains meaningful.
 - Require `SIMULATION` provenance. Retain `PROPOSED` and `DENIED` events in the complete bound ledger but exclude them from accepted-composition matching; count `SIMULATED_ACCEPTED`. Block `RESERVED`, `COMMITTED`, `FAILED`, and `UNKNOWN_OUTCOME` as unsupported by this simulation-only adapter. Simulation acceptance is never executed-effect evidence.
 
-Record the actual command, tested source versions, fixture/code digests, failures, and limitations in `evals/session-composition/adapter/verification.json`; reproduction belongs in its `README.md`. A passing adapter earns review of canonical integration; it neither completes this task nor closes independent human review.
+The trusted resolver must bind the proposal digest to its full validated scope before returning history. Test coherent substitution of another proposal's valid clean history and scope under the same run, with a matched control for that other proposal's legitimate use. Caller recomputation of bindings must not reissue the trusted association.
+
+Record the actual command, tested source versions, fixture/code digests, failures, and limitations in `evals/session-composition/adapter/verification.json`; reproduction belongs in its `README.md`. Replay must reject changed or omitted authority, human-review, provenance, scope, and unproved claims as well as source/outcome drift. A passing adapter earns review of canonical integration; it neither completes this task nor closes independent human review.
 
 - [ ] **Step 1: Write failing hidden-side-effect and human-review tests**
 

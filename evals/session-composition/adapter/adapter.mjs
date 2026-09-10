@@ -69,6 +69,15 @@ const History = z
     headDigest: digest,
   })
   .strict();
+// The trusted resolver attests the proposal-to-scope association separately
+// from the ledger. Caller request bindings cannot establish this association.
+const ResolvedHistory = z
+  .object({
+    proposalDigest: digest,
+    scopeDigest: digest,
+    history: History,
+  })
+  .strict();
 const Bindings = z
   .object({
     proposalDigest: digest,
@@ -102,8 +111,9 @@ const withoutHead = ({ headDigest: _, ...value }) => value;
 
 /**
  * resolveHistory is a trusted, synchronous fixture-owned resolver. Its opaque
- * handles model an upstream verifier; this experiment does not authenticate
- * durable history or grants. A JSON field asserting trust is never consulted.
+ * handles model an upstream verifier that binds a proposal to its validated
+ * scope and history; this experiment does not authenticate durable history or
+ * grants. A caller JSON field asserting trust is never consulted.
  */
 export function createCompositionAdapter({
   contracts,
@@ -340,7 +350,14 @@ export function createCompositionAdapter({
       try {
         const resolved = resolveHistory(raw.historyHandle);
         hash(resolved, "history-input");
-        history = History.parse(resolved);
+        const context = ResolvedHistory.parse(resolved);
+        history = context.history;
+        if (
+          context.proposalDigest !== request.proposal.contentDigest ||
+          context.scopeDigest !== bindings.scopeDigest ||
+          context.scopeDigest !== hash(history.scope, "scope")
+        )
+          reasons.push("VALIDATED_CONTEXT_BINDING_MISMATCH");
         if (
           history.headDigest !== hash(withoutHead(history), "history") ||
           history.headDigest !== bindings.historyHeadDigest ||

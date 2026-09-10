@@ -1,0 +1,1438 @@
+TAP version 13
+# Subtest: receipt integrity: unchanged receipt and committed logs pass
+ok 1 - receipt integrity: unchanged receipt and committed logs pass
+  ---
+  duration_ms: 12.290765
+  type: 'test'
+  ...
+# Subtest: receipt integrity: historical dependency versions remain distinct from replay
+ok 2 - receipt integrity: historical dependency versions remain distinct from replay
+  ---
+  duration_ms: 2.588248
+  type: 'test'
+  ...
+# Subtest: receipt integrity: well-shaped prerelease/build versions remain observations
+ok 3 - receipt integrity: well-shaped prerelease/build versions remain observations
+  ---
+  duration_ms: 0.309096
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed kind
+not ok 4 - receipt integrity: rejects changed kind
+  ---
+  duration_ms: 0.715876
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed version
+not ok 5 - receipt integrity: rejects changed version
+  ---
+  duration_ms: 0.178453
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed status
+not ok 6 - receipt integrity: rejects changed status
+  ---
+  duration_ms: 0.150091
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed disposition
+not ok 7 - receipt integrity: rejects changed disposition
+  ---
+  duration_ms: 0.183801
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed scope
+not ok 8 - receipt integrity: rejects changed scope
+  ---
+  duration_ms: 0.210771
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed authorityEffect
+not ok 9 - receipt integrity: rejects changed authorityEffect
+  ---
+  duration_ms: 0.197301
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed effectExecutionAllowed
+not ok 10 - receipt integrity: rejects changed effectExecutionAllowed
+  ---
+  duration_ms: 0.210231
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed unproved
+not ok 11 - receipt integrity: rejects changed unproved
+  ---
+  duration_ms: 0.138094
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed testOrder
+not ok 12 - receipt integrity: rejects changed testOrder
+  ---
+  duration_ms: 0.200476
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:109:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted kind
+not ok 13 - receipt integrity: rejects omitted kind
+  ---
+  duration_ms: 0.233385
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted version
+not ok 14 - receipt integrity: rejects omitted version
+  ---
+  duration_ms: 0.131574
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted status
+not ok 15 - receipt integrity: rejects omitted status
+  ---
+  duration_ms: 0.145826
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted disposition
+not ok 16 - receipt integrity: rejects omitted disposition
+  ---
+  duration_ms: 0.125595
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted scope
+not ok 17 - receipt integrity: rejects omitted scope
+  ---
+  duration_ms: 0.139245
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted authorityEffect
+not ok 18 - receipt integrity: rejects omitted authorityEffect
+  ---
+  duration_ms: 0.163071
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted effectExecutionAllowed
+not ok 19 - receipt integrity: rejects omitted effectExecutionAllowed
+  ---
+  duration_ms: 0.124704
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted provenance
+not ok 20 - receipt integrity: rejects omitted provenance
+  ---
+  duration_ms: 0.140698
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted expectationLineage
+ok 21 - receipt integrity: rejects omitted expectationLineage
+  ---
+  duration_ms: 0.933547
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted checks
+ok 22 - receipt integrity: rejects omitted checks
+  ---
+  duration_ms: 0.273624
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted matrix
+ok 23 - receipt integrity: rejects omitted matrix
+  ---
+  duration_ms: 0.265772
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted examples
+ok 24 - receipt integrity: rejects omitted examples
+  ---
+  duration_ms: 0.237971
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted blindReviewExamples
+ok 25 - receipt integrity: rejects omitted blindReviewExamples
+  ---
+  duration_ms: 0.2099
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted files
+ok 26 - receipt integrity: rejects omitted files
+  ---
+  duration_ms: 0.158965
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted rawLogs
+not ok 27 - receipt integrity: rejects omitted rawLogs
+  ---
+  duration_ms: 0.134228
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted unproved
+not ok 28 - receipt integrity: rejects omitted unproved
+  ---
+  duration_ms: 0.116171
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted testOrder
+not ok 29 - receipt integrity: rejects omitted testOrder
+  ---
+  duration_ms: 0.307134
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:114:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:118:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.status
+not ok 30 - receipt integrity: rejects changed or omitted provenance.status
+  ---
+  duration_ms: 0.194777
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.planPath
+not ok 31 - receipt integrity: rejects changed or omitted provenance.planPath
+  ---
+  duration_ms: 0.160206
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.planHead
+not ok 32 - receipt integrity: rejects changed or omitted provenance.planHead
+  ---
+  duration_ms: 0.150372
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.probeHead
+not ok 33 - receipt integrity: rejects changed or omitted provenance.probeHead
+  ---
+  duration_ms: 0.185523
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.protectedPlanCodeBlocks
+not ok 34 - receipt integrity: rejects changed or omitted provenance.protectedPlanCodeBlocks
+  ---
+  duration_ms: 0.20991
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.protectedPlanCodeSha256
+not ok 35 - receipt integrity: rejects changed or omitted provenance.protectedPlanCodeSha256
+  ---
+  duration_ms: 0.184803
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.sources
+not ok 36 - receipt integrity: rejects changed or omitted provenance.sources
+  ---
+  duration_ms: 0.129031
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.generatedModules
+not ok 37 - receipt integrity: rejects changed or omitted provenance.generatedModules
+  ---
+  duration_ms: 0.112406
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.plannedTask5Loaded
+not ok 38 - receipt integrity: rejects changed or omitted provenance.plannedTask5Loaded
+  ---
+  duration_ms: 0.108911
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.productionTask4Executed
+not ok 39 - receipt integrity: rejects changed or omitted provenance.productionTask4Executed
+  ---
+  duration_ms: 0.134649
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.productionIntegrationProved
+not ok 40 - receipt integrity: rejects changed or omitted provenance.productionIntegrationProved
+  ---
+  duration_ms: 0.153917
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.semanticTypecheckPerformed
+not ok 41 - receipt integrity: rejects changed or omitted provenance.semanticTypecheckPerformed
+  ---
+  duration_ms: 0.112456
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.runtimeSafetyProved
+not ok 42 - receipt integrity: rejects changed or omitted provenance.runtimeSafetyProved
+  ---
+  duration_ms: 0.186835
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.independentHumanReviewSatisfied
+not ok 43 - receipt integrity: rejects changed or omitted provenance.independentHumanReviewSatisfied
+  ---
+  duration_ms: 0.129521
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.executedPlannedTask5
+not ok 44 - receipt integrity: rejects changed or omitted provenance.executedPlannedTask5
+  ---
+  duration_ms: 0.123443
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:124:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: Changed provenance accepted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:128:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects unapproved top-level claim
+not ok 45 - receipt integrity: rejects unapproved top-level claim
+  ---
+  duration_ms: 0.211693
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:149:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:153:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects unapproved provenance claim
+not ok 46 - receipt integrity: rejects unapproved provenance claim
+  ---
+  duration_ms: 0.151143
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:149:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:153:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects unapproved source metadata
+not ok 47 - receipt integrity: rejects unapproved source metadata
+  ---
+  duration_ms: 0.146326
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:149:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:153:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects unapproved generated module metadata
+not ok 48 - receipt integrity: rejects unapproved generated module metadata
+  ---
+  duration_ms: 0.143462
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:149:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:153:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects unapproved expectation lineage
+ok 49 - receipt integrity: rejects unapproved expectation lineage
+  ---
+  duration_ms: 0.218122
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved check count
+ok 50 - receipt integrity: rejects unapproved check count
+  ---
+  duration_ms: 0.363066
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved matrix outcome
+ok 51 - receipt integrity: rejects unapproved matrix outcome
+  ---
+  duration_ms: 0.267124
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved example outcome
+ok 52 - receipt integrity: rejects unapproved example outcome
+  ---
+  duration_ms: 0.238282
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved blind-review outcome
+ok 53 - receipt integrity: rejects unapproved blind-review outcome
+  ---
+  duration_ms: 0.199904
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved source file hash
+ok 54 - receipt integrity: rejects unapproved source file hash
+  ---
+  duration_ms: 0.207246
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved source file omission
+ok 55 - receipt integrity: rejects unapproved source file omission
+  ---
+  duration_ms: 0.21719
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved source file addition
+ok 56 - receipt integrity: rejects unapproved source file addition
+  ---
+  duration_ms: 0.208888
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects null map
+not ok 57 - receipt integrity: rejects null map
+  ---
+  duration_ms: 0.183741
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects array map
+not ok 58 - receipt integrity: rejects array map
+  ---
+  duration_ms: 0.15546
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects missing map keys
+not ok 59 - receipt integrity: rejects missing map keys
+  ---
+  duration_ms: 0.123772
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted node
+not ok 60 - receipt integrity: rejects omitted node
+  ---
+  duration_ms: 0.117163
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects extra claim
+not ok 61 - receipt integrity: rejects extra claim
+  ---
+  duration_ms: 0.163361
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node null
+not ok 62 - receipt integrity: rejects invalid node null
+  ---
+  duration_ms: 0.208638
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node 24
+not ok 63 - receipt integrity: rejects invalid node 24
+  ---
+  duration_ms: 0.137413
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node {}
+not ok 64 - receipt integrity: rejects invalid node {}
+  ---
+  duration_ms: 0.150832
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node ""
+not ok 65 - receipt integrity: rejects invalid node ""
+  ---
+  duration_ms: 0.114799
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node "24"
+not ok 66 - receipt integrity: rejects invalid node "24"
+  ---
+  duration_ms: 0.10862
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node "v24.19.0"
+not ok 67 - receipt integrity: rejects invalid node "v24.19.0"
+  ---
+  duration_ms: 0.106507
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node "01.2.3"
+not ok 68 - receipt integrity: rejects invalid node "01.2.3"
+  ---
+  duration_ms: 0.110433
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node "1.2.3-01"
+not ok 69 - receipt integrity: rejects invalid node "1.2.3-01"
+  ---
+  duration_ms: 0.104544
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node "1.2.3-x..y"
+not ok 70 - receipt integrity: rejects invalid node "1.2.3-x..y"
+  ---
+  duration_ms: 0.110843
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects invalid node "24.19.0\\n"
+not ok 71 - receipt integrity: rejects invalid node "24.19.0\\n"
+  ---
+  duration_ms: 0.139455
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:166:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:170:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects malformed versions for every dependency and missing observation
+not ok 72 - receipt integrity: rejects malformed versions for every dependency and missing observation
+  ---
+  duration_ms: 0.21034
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:174:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:179:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects null log map
+not ok 73 - receipt integrity: rejects null log map
+  ---
+  duration_ms: 0.164082
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects array log map
+not ok 74 - receipt integrity: rejects array log map
+  ---
+  duration_ms: 0.118145
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects empty log map
+not ok 75 - receipt integrity: rejects empty log map
+  ---
+  duration_ms: 0.148399
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects omitted ablation log
+not ok 76 - receipt integrity: rejects omitted ablation log
+  ---
+  duration_ms: 0.142661
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects extra log
+not ok 77 - receipt integrity: rejects extra log
+  ---
+  duration_ms: 0.150101
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects traversal log
+not ok 78 - receipt integrity: rejects traversal log
+  ---
+  duration_ms: 0.15568
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects malformed digest
+not ok 79 - receipt integrity: rejects malformed digest
+  ---
+  duration_ms: 0.12869
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects uppercase digest
+not ok 80 - receipt integrity: rejects uppercase digest
+  ---
+  duration_ms: 0.160427
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: rejects nonstring digest
+not ok 81 - receipt integrity: rejects nonstring digest
+  ---
+  duration_ms: 0.121779
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:199:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:203:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: omitting the log map cannot skip committed log checks
+not ok 82 - receipt integrity: omitting the log map cannot skip committed log checks
+  ---
+  duration_ms: 23.686248
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:207:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/adapter/verification-receipt.test.mjs:211:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: receipt integrity: historical log bytes may differ from replay if committed digests match
+ok 83 - receipt integrity: historical log bytes may differ from replay if committed digests match
+  ---
+  duration_ms: 1.841927
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects missing committed verification-tests.tap
+ok 84 - receipt integrity: rejects missing committed verification-tests.tap
+  ---
+  duration_ms: 1.414346
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed committed verification-tests.tap
+ok 85 - receipt integrity: rejects changed committed verification-tests.tap
+  ---
+  duration_ms: 2.470756
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects missing committed history-ablation.tap
+ok 86 - receipt integrity: rejects missing committed history-ablation.tap
+  ---
+  duration_ms: 1.57258
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed committed history-ablation.tap
+ok 87 - receipt integrity: rejects changed committed history-ablation.tap
+  ---
+  duration_ms: 2.180147
+  type: 'test'
+  ...
+1..87
+# tests 87
+# suites 0
+# pass 22
+# fail 65
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 145.14676

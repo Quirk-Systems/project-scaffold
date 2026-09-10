@@ -1,6 +1,6 @@
 {
   "kind": "CompositionAdapterVerification",
-  "version": 1,
+  "version": 2,
   "status": "CANDIDATE",
   "disposition": "Constrain",
   "scope": "PLAN_CONTRACT_ADAPTER_ONLY",
@@ -103,15 +103,21 @@
     },
     "adapter": {
       "exitCode": 0,
-      "tests": 116,
-      "passed": 116,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0
+    },
+    "receiptIntegrity": {
+      "exitCode": 0,
+      "tests": 93,
+      "passed": 93,
       "failed": 0
     },
     "historyErasureAblation": {
       "exitCode": 1,
-      "tests": 116,
-      "passed": 108,
-      "failed": 8,
+      "tests": 126,
+      "passed": 117,
+      "failed": 9,
       "detected": true
     },
     "matrixCells": 12,
@@ -294,26 +300,43 @@
     }
   ],
   "files": {
-    "evals/session-composition/adapter/adapter.mjs": "6756a012523f37acb76390d38d704eaefa356e1ee1d37a58ce20d068f2b7673f",
-    "evals/session-composition/adapter/adapter.test.mjs": "0399c025cefcd634d9a916db84cc22ee56641be694a31a1f508667447fc851aa",
-    "evals/session-composition/adapter/fixtures.mjs": "1cbbc84e725d2830a0e52f5205eac9cdac3a14a7160289b4e7e9cbb6d9a900eb",
+    "evals/session-composition/adapter/adapter.mjs": "4cd52b6582cc8b48e5990c9f5d5750f4fab2344cd1df3a26203348d8969889b4",
+    "evals/session-composition/adapter/adapter.test.mjs": "d0240ce528a2b20e355b80c6f870f58f0c803f9cca805d0f5f050917580b209c",
+    "evals/session-composition/adapter/fixtures.mjs": "3d34a6301f1a0b9b2fd8c7d6ab33a0d81e14ad726b5b7c0d015ffc206d589cb6",
     "evals/session-composition/adapter/plan-contracts.mjs": "6fae08267831dcabc9a5314bcb600c4da8e71a5b3752df01f2295d0d7a7de12a",
-    "evals/session-composition/adapter/verify.mjs": "5fe2e5aecb8594b58d88976f9b5ed1bbaf22c3f7b25e4f4b4dcbdd496c413fca",
-    "evals/session-composition/adapter/README.md": "ff08261b591a38d3d56367caf24c97dec6ed87816011035870a395240cbce33f",
-    "evals/session-composition/adapter/agent-review.md": "dbcb10c45755477a5e3399e1f61ff2dc918b8b7f80cdb60d7b7b6b695d889417",
-    "evals/session-composition/adapter/evidence-lineage.md": "2d013588ae7143949e943e36dc62581db7357ec75b0e4aa47a2f08423bbd3ae6",
+    "evals/session-composition/adapter/verify.mjs": "c507ba16f166116a7e3a1d8cc5b61e847d34edbead965d065c5cd2d976e38581",
+    "evals/session-composition/adapter/verification-receipt.mjs": "c9f683bd2510138a2c561a1df61548de305ea42a56e4ba08f731001055a147f1",
+    "evals/session-composition/adapter/verification-receipt.test.mjs": "1d695764130c74587e3fe39acc38c3c1d5c4dc53fd231ab7750a1879f513dbd9",
+    "evals/session-composition/adapter/README.md": "778747ce031e907d0cd946eba6e67bcbb4c188e196aa6c0879a7cb92241e32a8",
+    "evals/session-composition/adapter/agent-review.md": "96032cd712c6daa0fcf561f6c43b963939cf116d344222bd00785cf34e298abe",
+    "evals/session-composition/adapter/evidence-lineage.md": "18987322f4831a7df3a1fd395fefd91f8446ba0c2000311fb2e8f5df716f91ff",
+    "evals/session-composition/adapter/repair-evidence/README.md": "d351c47688b134d51718cbb53625756878030f93d68fad252d5935881a5f15f0",
+    "evals/session-composition/adapter/repair-evidence/scope-red.tap": "44a7e7080e0edf0f2f4e576deaaa59ee7512d269b46a6480bfd925242b5c7c48",
+    "evals/session-composition/adapter/repair-evidence/scope-red-test.mjs.txt": "75a5eecc251a6e8184ee5b27c7c671bbca8095eebacbf5321a3b25d54f6b2091",
+    "evals/session-composition/adapter/repair-evidence/scope-baseline-identities.json": "422e01e819787257881e070343984ec4ac9630c6c99ba7c10aac895817dd5468",
+    "evals/session-composition/adapter/repair-evidence/receipt-initial-red.tap": "c71c261a61e160a9c232d8adea1908a5fa2e5389a36605f2f7f04cf38ffce0d0",
+    "evals/session-composition/adapter/repair-evidence/receipt-initial-green.tap": "1947c73f48ec87eb86287f5e544307923d8fdd6e1d44786ae6fecd04683a57b1",
+    "evals/session-composition/adapter/repair-evidence/receipt-legacy-helper.mjs.txt": "aea4fd05cdf589e11aef38c04735e1b58c5a92565c8737e27b9dc7b80819fe27",
+    "evals/session-composition/adapter/repair-evidence/receipt-initial-tests.mjs.txt": "44d4238ae2551906c7ecfebf11c424df870fefb23f4341965af25c82494cd6ca",
+    "evals/session-composition/adapter/repair-evidence/original-verifier-tampered-receipt.json": "3cd136705e28f3a26a6171b29c0a40eae8804b6f5ab57c17a7590a055a34dde4",
+    "evals/session-composition/adapter/repair-evidence/original-verifier-tampered-receipt.txt": "640fe3a11e9a4020f407d2c86ccc42ca5a3aed66956e049bcb55cf4ed1b3e541",
+    "evals/session-composition/adapter/repair-evidence/repository-validation.txt": "1e405e3fc3e0884346280dd77501558634eb64a245110148dadf52a2634f61b9",
+    "evals/session-composition/adapter/repair-evidence/scope-review.md": "824ad668463d61433e1477b4f31ac4e24c3c4eeb11985b4ffec9e48da31fdbde",
+    "evals/session-composition/adapter/repair-evidence/receipt-review.md": "11082dc9d40b0d3c10b53bfdf4446d9e26d81bf4202130cb3be83fe793e76cb1",
+    "evals/session-composition/adapter/repair-evidence/integration-review.md": "11c3aaa2e49678aadbc39570437932269049c09175ff639d0190c91ba4aeebc8",
     "evals/session-composition/gate.mjs": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703",
     "evals/session-composition/probe.test.mjs": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0",
     "evals/session-composition/fixtures.json": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
     "evals/session-composition/run.mjs": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5",
-    "docs/governance/session-composition-candidate.md": "1fb7ef20ed9afffe673dbb6bfdd3205128bcebeb8a9b735946dddb840ed7c411",
-    "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md": "8dfdf1e10668743b5d10e75eb9c7ecad39027f4b7c4648a7135b041bf82701db",
+    "docs/governance/session-composition-candidate.md": "408ca2dda9b0ed8897ec6334dd3eaee188668b8ec924f4374b8c9d0c670c9934",
+    "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md": "5f41155083877977b565790fba2daab33cec2a4b5a8fa8157bc41f14d2f83fd1",
     "package.json": "89787ce359776c488338f503e8e292bd4c19571d0af39e68ce26f0542f21cdce",
     ".github/workflows/session-composition-candidate.yml": "cfd8c1b29e189e6c7e9c0cf5e6cb2d3a6df93a6f3474a0743377ad283cf80964"
   },
   "rawLogs": {
-    "verification-tests.tap": "9b1bc255b41ef89d84e5b726f402d4dc8230fe966c554a40bdcbcbe9f826d0af",
-    "history-ablation.tap": "5653b85f6cf022559d2e2956ab7a42d2826757a7bd80a7ce1a01e76eb38e2bfc",
+    "verification-tests.tap": "a2e85cdf0635a892979e6c760a0270a86b79e75e1272d6104ac052de9bfd2c60",
+    "history-ablation.tap": "4cab1d207875019eccd8a9c219cad9ba13354003ece0969d4d613f5310c3ee1a",
+    "verification-receipt-tests.tap": "f73ff901a9046d95dbc4fbc54d05a3dbdbf3f218e2b9eef17811bae740523d32",
     "consolidation-first-run.tap": "68f7dbe811cacc3eb954895e2bbf2d61ffe11ea80604159c09dadb58f0775992"
   },
   "developmentEvidence": {
@@ -336,5 +359,5 @@
     "Mode B/C behavior",
     "independent human review"
   ],
-  "testOrder": "The original adapter suite first ran green. The later consolidation audit first had two invalid-fixture assertion failures, recorded separately. History erasure is subsequent mutation evidence, not preimplementation TDD evidence."
+  "testOrder": "The original adapter suite first ran green. The consolidation audit had two invalid-fixture assertion failures, recorded separately. September 10 repairs preserved one failing scope-substitution regression and 87 initial receipt regressions (22 pass, 65 fail) before repair; later receipt cases are supplemental. History erasure and expanded legacy-helper replay are subsequent mutation evidence. See repair-evidence/README.md for chronology."
 }

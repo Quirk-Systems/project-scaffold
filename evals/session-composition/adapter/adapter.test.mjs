@@ -172,6 +172,112 @@ test("blind-review history from another candidate cannot replace the scoped ledg
 });
 
 for (const authority of authorities) {
+  test(`validated context rejects coherent same-run clean other-candidate substitution for ${authority}`, () => {
+    const contaminated = makeBlindFixture(contracts, {
+      authority,
+      history: "answer-key",
+    });
+    const cleanOther = makeBlindFixture(contracts, {
+      history: "empty",
+      candidateId: "candidate-other",
+    });
+    const resolveHistory = (handle) =>
+      contaminated.resolveHistory(handle) ?? cleanOther.resolveHistory(handle);
+    const check = createCompositionAdapter({
+      contracts,
+      policy: contaminated.policy,
+      resolveHistory,
+    });
+    assertBlocked(check(contaminated.request));
+    assert.equal(cleanOther.snapshot.events.length, 0);
+    assert.equal(check(cleanOther.request).candidateEligible, true);
+    assert.equal(
+      contaminated.request.proposal.runId,
+      cleanOther.request.proposal.runId,
+    );
+    assert.notEqual(
+      contaminated.request.proposal.requestedEffect.targetLocator,
+      cleanOther.request.proposal.requestedEffect.targetLocator,
+    );
+    const before = {
+      proposal: structuredClone(contaminated.request.proposal),
+      authority: structuredClone(contaminated.request.authorityResult),
+      policy: structuredClone(contaminated.request.policyResult),
+      history: structuredClone(contaminated.snapshot),
+    };
+    // Both handles resolve to legitimate histories. Substitute a coherently
+    // rebound scope and clean history while keeping all source decisions exact.
+    contaminated.request.scope = structuredClone(cleanOther.request.scope);
+    contaminated.request.historyHandle = cleanOther.request.historyHandle;
+    contaminated.request.bindings.scopeDigest =
+      cleanOther.request.bindings.scopeDigest;
+    contaminated.request.bindings.historyHeadDigest =
+      cleanOther.request.bindings.historyHeadDigest;
+    const result = check(contaminated.request);
+    assertBlocked(result);
+    assert.ok(result.reasonCodes.includes("VALIDATED_CONTEXT_BINDING_MISMATCH"));
+    assert.deepEqual(result.authorityResult, before.authority);
+    assert.deepEqual(result.basePolicyResult, before.policy);
+    assert.deepEqual(contaminated.request.proposal, before.proposal);
+    assert.deepEqual(contaminated.request.authorityResult, before.authority);
+    assert.deepEqual(contaminated.request.policyResult, before.policy);
+    assert.deepEqual(contaminated.snapshot, before.history);
+    assert.deepEqual(
+      result.effectivePolicyResult.value.grantIds,
+      before.policy.value.grantIds,
+    );
+  });
+}
+
+for (const field of ["proposalDigest", "scopeDigest"]) {
+  for (const change of ["missing", "changed"]) {
+    test(`${change} resolver-attested ${field} blocks clean candidate eligibility`, () => {
+      const fixture = makeBlindFixture(contracts, { history: "empty" });
+      assert.equal(evaluate(fixture).candidateEligible, true);
+      const result = createCompositionAdapter({
+        contracts,
+        policy: fixture.policy,
+        resolveHistory(handle) {
+          const resolved = fixture.resolveHistory(handle);
+          if (change === "missing") delete resolved[field];
+          else resolved[field] = `sha256:${"f".repeat(64)}`;
+          return resolved;
+        },
+      })(fixture.request);
+      assertBlocked(result);
+      assert.deepEqual(result.authorityResult, fixture.request.authorityResult);
+      assert.deepEqual(result.basePolicyResult, fixture.request.policyResult);
+    });
+  }
+}
+
+for (const change of ["proposal", "scope"]) {
+  test(`caller hash refresh cannot retarget the resolver-attested ${change}`, () => {
+    const fixture = makeBlindFixture(contracts, { history: "empty" });
+    const initialContext = fixture.resolveHistory(fixture.request.historyHandle);
+    if (change === "proposal") {
+      fixture.request.proposal.requestedEffect.targetLocator =
+        "fixture://blind/case-7/candidate-other";
+      fixture.request.authorityResult.value.permittedEffects = [
+        structuredClone(fixture.request.proposal.requestedEffect),
+      ];
+    } else {
+      fixture.request.scope.decisionSlotId = "blind.case_7.candidate_other";
+      fixture.snapshot.scope = structuredClone(fixture.request.scope);
+    }
+    fixture.refreshBindings();
+    const refreshedContext = fixture.resolveHistory(fixture.request.historyHandle);
+    assert.equal(refreshedContext.proposalDigest, initialContext.proposalDigest);
+    assert.equal(refreshedContext.scopeDigest, initialContext.scopeDigest);
+    const result = evaluate(fixture);
+    assertBlocked(result);
+    assert.ok(result.reasonCodes.includes("VALIDATED_CONTEXT_BINDING_MISMATCH"));
+    assert.deepEqual(result.authorityResult, fixture.request.authorityResult);
+    assert.deepEqual(result.basePolicyResult, fixture.request.policyResult);
+  });
+}
+
+for (const authority of authorities) {
   test(`blind-review contamination preserves ${authority} source obligations`, () => {
     const fixture = makeBlindFixture(contracts, {
       authority,

@@ -1,0 +1,30 @@
+/** Compare a committed candidate receipt with replayed proof evidence. */
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+
+export function assertEvidenceMatches(recorded, evidence) {
+  for (const key of [
+    "files",
+    "checks",
+    "matrix",
+    "examples",
+    "blindReviewExamples",
+    "expectationLineage",
+  ]) {
+    assert.deepEqual(evidence[key], recorded[key], `Recorded ${key} drifted`);
+  }
+}
+
+export async function verifyRecordedEvidence(directory, recorded, evidence) {
+  for (const [name, hash] of Object.entries(recorded.rawLogs)) {
+    const bytes = await readFile(join(directory, name));
+    assert.equal(
+      createHash("sha256").update(bytes).digest("hex"),
+      hash,
+      "Recorded raw log drifted",
+    );
+  }
+  assertEvidenceMatches(recorded, evidence);
+}

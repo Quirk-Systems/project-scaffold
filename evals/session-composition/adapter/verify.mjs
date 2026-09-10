@@ -8,6 +8,10 @@ import { fileURLToPath } from "node:url";
 import { createCompositionAdapter } from "./adapter.mjs";
 import { makeFixture, makeBlindFixture } from "./fixtures.mjs";
 import { loadPlanContracts } from "./plan-contracts.mjs";
+import {
+  assertEvidenceMatches,
+  verifyRecordedEvidence,
+} from "./verification-receipt.mjs";
 
 const directory = dirname(fileURLToPath(import.meta.url));
 const root = resolve(directory, "../../..");
@@ -19,9 +23,27 @@ const sourcePaths = [
   `${relative}/fixtures.mjs`,
   `${relative}/plan-contracts.mjs`,
   `${relative}/verify.mjs`,
+  `${relative}/verification-receipt.mjs`,
+  `${relative}/verification-receipt.test.mjs`,
   `${relative}/README.md`,
   `${relative}/agent-review.md`,
   `${relative}/evidence-lineage.md`,
+  ...[
+    "README.md",
+    "scope-red.tap",
+    "scope-red-test.mjs.txt",
+    "scope-baseline-identities.json",
+    "receipt-initial-red.tap",
+    "receipt-initial-green.tap",
+    "receipt-legacy-helper.mjs.txt",
+    "receipt-initial-tests.mjs.txt",
+    "original-verifier-tampered-receipt.json",
+    "original-verifier-tampered-receipt.txt",
+    "repository-validation.txt",
+    "scope-review.md",
+    "receipt-review.md",
+    "integration-review.md",
+  ].map((name) => `${relative}/repair-evidence/${name}`),
   "evals/session-composition/gate.mjs",
   "evals/session-composition/probe.test.mjs",
   "evals/session-composition/fixtures.json",
@@ -66,8 +88,12 @@ async function main() {
   try {
     const original = runTests(["evals/session-composition/probe.test.mjs"]);
     const adapter = runTests([`${relative}/adapter.test.mjs`]);
+    const receiptIntegrity = runTests([
+      `${relative}/verification-receipt.test.mjs`,
+    ]);
     assert.equal(original.summary.exitCode, 0, original.output);
     assert.equal(adapter.summary.exitCode, 0, adapter.output);
+    assert.equal(receiptIntegrity.summary.exitCode, 0, receiptIntegrity.output);
     const matrix = [];
     for (const authority of [
       "PERMITTED_CANDIDATE_ONLY",
@@ -258,7 +284,7 @@ async function main() {
     });
     const evidence = {
       kind: "CompositionAdapterVerification",
-      version: 1,
+      version: 2,
       status: "CANDIDATE",
       disposition: "Constrain",
       scope: "PLAN_CONTRACT_ADAPTER_ONLY",
@@ -278,6 +304,7 @@ async function main() {
       checks: {
         originalProbe: original.summary,
         adapter: adapter.summary,
+        receiptIntegrity: receiptIntegrity.summary,
         historyErasureAblation: { ...ablation.summary, detected: true },
         matrixCells: matrix.length,
         blindReviewExamples: blindReviewExamples.length,
@@ -295,6 +322,7 @@ async function main() {
       rawLogs: {
         "verification-tests.tap": sha256(adapter.output),
         "history-ablation.tap": sha256(ablation.output),
+        "verification-receipt-tests.tap": sha256(receiptIntegrity.output),
         "consolidation-first-run.tap": sha256(initialConsolidationLog),
       },
       developmentEvidence: {
@@ -315,10 +343,12 @@ async function main() {
         "independent human review",
       ],
       testOrder:
-        "The original adapter suite first ran green. The later consolidation audit first had two invalid-fixture assertion failures, recorded separately. History erasure is subsequent mutation evidence, not preimplementation TDD evidence.",
+        "The original adapter suite first ran green. The consolidation audit had two invalid-fixture assertion failures, recorded separately. September 10 repairs preserved one failing scope-substitution regression and 87 initial receipt regressions (22 pass, 65 fail) before repair; later receipt cases are supplemental. History erasure and expanded legacy-helper replay are subsequent mutation evidence. See repair-evidence/README.md for chronology.",
     };
     const file = join(directory, "verification.json");
+    let recordedRuntime = evidence.provenance.dependencyVersions;
     if (mode === "--write") {
+      assertEvidenceMatches(evidence, evidence);
       await writeFile(file, JSON.stringify(evidence, null, 2) + "\n");
       await writeFile(
         join(directory, "verification-tests.tap"),
@@ -326,50 +356,14 @@ async function main() {
       );
       // Paths and timings in this raw log are observations, not stable fixture IDs.
       await writeFile(join(directory, "history-ablation.tap"), ablation.output);
+      await writeFile(
+        join(directory, "verification-receipt-tests.tap"),
+        receiptIntegrity.output,
+      );
     } else {
       const recorded = JSON.parse(await readFile(file, "utf8"));
-      for (const [name, hash] of Object.entries(recorded.rawLogs)) {
-        assert.equal(
-          sha256(await readFile(join(directory, name))),
-          hash,
-          "Recorded raw log drifted",
-        );
-      }
-      assert.deepEqual(
-        evidence.files,
-        recorded.files,
-        "Recorded proof source drifted; review and rerun --write",
-      );
-      assert.deepEqual(
-        evidence.checks,
-        recorded.checks,
-        "Recorded proof checks drifted",
-      );
-      assert.deepEqual(
-        evidence.matrix,
-        recorded.matrix,
-        "Recorded authority/history outcomes drifted",
-      );
-      assert.deepEqual(
-        evidence.examples,
-        recorded.examples,
-        "Recorded example outcomes drifted",
-      );
-      assert.deepEqual(
-        evidence.blindReviewExamples,
-        recorded.blindReviewExamples,
-        "Recorded blind-review outcomes drifted",
-      );
-      assert.deepEqual(
-        evidence.expectationLineage,
-        recorded.expectationLineage,
-        "Recorded expectation lineage drifted",
-      );
-      assert.deepEqual(
-        evidence.developmentEvidence,
-        recorded.developmentEvidence,
-        "Recorded development evidence drifted",
-      );
+      await verifyRecordedEvidence(directory, recorded, evidence);
+      recordedRuntime = recorded.provenance.dependencyVersions;
     }
     process.stdout.write(
       JSON.stringify(
@@ -377,6 +371,7 @@ async function main() {
           mode,
           checks: evidence.checks,
           sourceFiles: sourcePaths.length,
+          recordedRuntime,
           replayRuntime: contracts.provenance.dependencyVersions,
           scope: evidence.scope,
           independentHumanReview: "OPEN",

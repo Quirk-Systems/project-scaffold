@@ -115,3 +115,30 @@ neither merge approval nor runtime authority. Task 4 remains unchanged;
 `effectExecutionAllowed` remains false. Simulation remains simulation evidence.
 Production integration, actual grant/history authentication, repository validation,
 and independent human review retain their separately stated gates.
+
+## September 10 continuation
+
+The next repair baseline is #106 at
+`5f27d1c3ec5aa15e991c63582b5d8d25f55ca58e`. Its 103 adapter tests, 48 original
+tests and seven expected history-erasure failures replayed locally before these
+changes; candidate-proof CI also passed at that head. Those passing checks did
+not cover coherent substitution of another proposal's trusted scope/history or
+all receipt-level authority and human-review claims.
+
+The continuing harness adds regressions for both gaps, with an immutable
+resolver-owned proposal/scope attestation and complete receipt comparison.
+Historical runtime and log observations remain distinct from invariant claims.
+The [agent review record](agent-review.md) attributes the findings and points to
+the repair evidence. These new repair results do not retroactively expand the
+claims of either earlier PR head or satisfy independent human review.
+
+#106 is the continuing implementation in this work. #105 retains its exact source
+head and history; no second adapter implementation or third proof PR is added.
+Both remain draft candidates pending human disposition.
+
+The continuing repair also preserves the subsequent consolidation at
+`3f61af2d9a4dbc966e35bc757db14e5fbbee4a86`: its 13 extra tests, full source-group
+coverage map, historical first-run log and development-evidence record remain
+present. Final combined counts and review appear in the current receipt and
+[repair record](repair-evidence/README.md). Earlier successful heads remain bounded
+by their own tests; they do not inherit these later repairs.

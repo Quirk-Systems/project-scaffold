@@ -2,15 +2,15 @@ TAP version 13
 # Subtest: actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with clean history
 ok 1 - actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with clean history
   ---
-  duration_ms: 11.638891
+  duration_ms: 12.062596
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with prohibited history
 not ok 2 - actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with prohibited history
   ---
-  duration_ms: 4.03944
+  duration_ms: 4.305662
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:60:5'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:60:5'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -23,7 +23,7 @@ not ok 2 - actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with prohibited hist
   actual: true
   operator: 'strictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:66:14)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:66:14)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -34,69 +34,69 @@ not ok 2 - actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with prohibited hist
 # Subtest: actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with untrusted history
 ok 3 - actual Task 4/5 shapes: PERMITTED_CANDIDATE_ONLY with untrusted history
   ---
-  duration_ms: 3.278296
+  duration_ms: 3.306669
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: HUMAN_REVIEW with clean history
 ok 4 - actual Task 4/5 shapes: HUMAN_REVIEW with clean history
   ---
-  duration_ms: 2.102832
+  duration_ms: 2.165725
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: HUMAN_REVIEW with prohibited history
 ok 5 - actual Task 4/5 shapes: HUMAN_REVIEW with prohibited history
   ---
-  duration_ms: 2.139286
+  duration_ms: 2.216791
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: HUMAN_REVIEW with untrusted history
 ok 6 - actual Task 4/5 shapes: HUMAN_REVIEW with untrusted history
   ---
-  duration_ms: 2.594447
+  duration_ms: 2.588799
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: PROHIBITED with clean history
 ok 7 - actual Task 4/5 shapes: PROHIBITED with clean history
   ---
-  duration_ms: 4.801224
+  duration_ms: 7.514161
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: PROHIBITED with prohibited history
 ok 8 - actual Task 4/5 shapes: PROHIBITED with prohibited history
   ---
-  duration_ms: 2.435894
+  duration_ms: 2.131194
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: PROHIBITED with untrusted history
 ok 9 - actual Task 4/5 shapes: PROHIBITED with untrusted history
   ---
-  duration_ms: 1.818673
+  duration_ms: 1.923778
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: UNRESOLVED with clean history
 ok 10 - actual Task 4/5 shapes: UNRESOLVED with clean history
   ---
-  duration_ms: 2.028102
+  duration_ms: 2.022153
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: UNRESOLVED with prohibited history
 ok 11 - actual Task 4/5 shapes: UNRESOLVED with prohibited history
   ---
-  duration_ms: 1.912201
+  duration_ms: 1.682211
   type: 'test'
   ...
 # Subtest: actual Task 4/5 shapes: UNRESOLVED with untrusted history
 ok 12 - actual Task 4/5 shapes: UNRESOLVED with untrusted history
   ---
-  duration_ms: 1.542405
+  duration_ms: 1.515115
   type: 'test'
   ...
 # Subtest: Mode A incremental value: history rejects second selection and preserves rationale control
 not ok 13 - Mode A incremental value: history rejects second selection and preserves rationale control
   ---
-  duration_ms: 2.093919
+  duration_ms: 2.068862
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:105:1'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:105:1'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -109,8 +109,8 @@ not ok 13 - Mode A incremental value: history rejects second selection and prese
   actual: true
   operator: 'strictEqual'
   stack: |-
-    assertBlocked (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:50:10)
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:119:3)
+    assertBlocked (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:50:10)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:119:3)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -121,9 +121,9 @@ not ok 13 - Mode A incremental value: history rejects second selection and prese
 # Subtest: cheapest disproof: ablating declared composition restriction loses the added denial
 not ok 14 - cheapest disproof: ablating declared composition restriction loses the added denial
   ---
-  duration_ms: 1.678406
+  duration_ms: 1.646359
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:123:1'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:123:1'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -136,8 +136,8 @@ not ok 14 - cheapest disproof: ablating declared composition restriction loses t
   actual: true
   operator: 'strictEqual'
   stack: |-
-    assertBlocked (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:50:10)
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:125:3)
+    assertBlocked (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:50:10)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:125:3)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -148,27 +148,27 @@ not ok 14 - cheapest disproof: ablating declared composition restriction loses t
 # Subtest: blind-review inherited expectation: answer key alone
 ok 15 - blind-review inherited expectation: answer key alone
   ---
-  duration_ms: 1.684666
+  duration_ms: 2.747252
   type: 'test'
   ...
 # Subtest: blind-review inherited expectation: blind rationale alone
 ok 16 - blind-review inherited expectation: blind rationale alone
   ---
-  duration_ms: 1.602414
+  duration_ms: 2.705992
   type: 'test'
   ...
 # Subtest: blind-review inherited expectation: public rubric control
 ok 17 - blind-review inherited expectation: public rubric control
   ---
-  duration_ms: 2.068312
+  duration_ms: 1.745114
   type: 'test'
   ...
 # Subtest: blind-review inherited expectation: answer key contamination
 not ok 18 - blind-review inherited expectation: answer key contamination
   ---
-  duration_ms: 3.830772
+  duration_ms: 4.312751
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:147:3'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:147:3'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -181,7 +181,7 @@ not ok 18 - blind-review inherited expectation: answer key contamination
   actual: true
   operator: 'strictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:159:12)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:159:12)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -192,9 +192,9 @@ not ok 18 - blind-review inherited expectation: answer key contamination
 # Subtest: blind-review inherited expectation: reverse-order contamination
 not ok 19 - blind-review inherited expectation: reverse-order contamination
   ---
-  duration_ms: 1.882708
+  duration_ms: 2.54836
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:147:3'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:147:3'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -207,7 +207,7 @@ not ok 19 - blind-review inherited expectation: reverse-order contamination
   actual: true
   operator: 'strictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:159:12)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:159:12)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -218,15 +218,15 @@ not ok 19 - blind-review inherited expectation: reverse-order contamination
 # Subtest: blind-review history from another candidate cannot replace the scoped ledger
 ok 20 - blind-review history from another candidate cannot replace the scoped ledger
   ---
-  duration_ms: 2.204782
+  duration_ms: 2.639284
   type: 'test'
   ...
-# Subtest: blind-review contamination preserves PERMITTED_CANDIDATE_ONLY source obligations
-not ok 21 - blind-review contamination preserves PERMITTED_CANDIDATE_ONLY source obligations
+# Subtest: validated context rejects coherent same-run clean other-candidate substitution for PERMITTED_CANDIDATE_ONLY
+not ok 21 - validated context rejects coherent same-run clean other-candidate substitution for PERMITTED_CANDIDATE_ONLY
   ---
-  duration_ms: 1.541715
+  duration_ms: 3.550939
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:175:3'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:175:3'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -239,8 +239,89 @@ not ok 21 - blind-review contamination preserves PERMITTED_CANDIDATE_ONLY source
   actual: true
   operator: 'strictEqual'
   stack: |-
-    assertBlocked (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:50:10)
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:181:5)
+    assertBlocked (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:50:10)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:191:5)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: validated context rejects coherent same-run clean other-candidate substitution for HUMAN_REVIEW
+ok 22 - validated context rejects coherent same-run clean other-candidate substitution for HUMAN_REVIEW
+  ---
+  duration_ms: 4.34513
+  type: 'test'
+  ...
+# Subtest: validated context rejects coherent same-run clean other-candidate substitution for PROHIBITED
+ok 23 - validated context rejects coherent same-run clean other-candidate substitution for PROHIBITED
+  ---
+  duration_ms: 3.13148
+  type: 'test'
+  ...
+# Subtest: validated context rejects coherent same-run clean other-candidate substitution for UNRESOLVED
+ok 24 - validated context rejects coherent same-run clean other-candidate substitution for UNRESOLVED
+  ---
+  duration_ms: 3.149997
+  type: 'test'
+  ...
+# Subtest: missing resolver-attested proposalDigest blocks clean candidate eligibility
+ok 25 - missing resolver-attested proposalDigest blocks clean candidate eligibility
+  ---
+  duration_ms: 2.520228
+  type: 'test'
+  ...
+# Subtest: changed resolver-attested proposalDigest blocks clean candidate eligibility
+ok 26 - changed resolver-attested proposalDigest blocks clean candidate eligibility
+  ---
+  duration_ms: 3.056028
+  type: 'test'
+  ...
+# Subtest: missing resolver-attested scopeDigest blocks clean candidate eligibility
+ok 27 - missing resolver-attested scopeDigest blocks clean candidate eligibility
+  ---
+  duration_ms: 1.95892
+  type: 'test'
+  ...
+# Subtest: changed resolver-attested scopeDigest blocks clean candidate eligibility
+ok 28 - changed resolver-attested scopeDigest blocks clean candidate eligibility
+  ---
+  duration_ms: 2.029794
+  type: 'test'
+  ...
+# Subtest: caller hash refresh cannot retarget the resolver-attested proposal
+ok 29 - caller hash refresh cannot retarget the resolver-attested proposal
+  ---
+  duration_ms: 1.854106
+  type: 'test'
+  ...
+# Subtest: caller hash refresh cannot retarget the resolver-attested scope
+ok 30 - caller hash refresh cannot retarget the resolver-attested scope
+  ---
+  duration_ms: 1.950497
+  type: 'test'
+  ...
+# Subtest: blind-review contamination preserves PERMITTED_CANDIDATE_ONLY source obligations
+not ok 31 - blind-review contamination preserves PERMITTED_CANDIDATE_ONLY source obligations
+  ---
+  duration_ms: 1.713057
+  type: 'test'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:281:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    assertBlocked (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:50:10)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:287:5)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -249,497 +330,497 @@ not ok 21 - blind-review contamination preserves PERMITTED_CANDIDATE_ONLY source
     async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
   ...
 # Subtest: blind-review contamination preserves HUMAN_REVIEW source obligations
-ok 22 - blind-review contamination preserves HUMAN_REVIEW source obligations
+ok 32 - blind-review contamination preserves HUMAN_REVIEW source obligations
   ---
-  duration_ms: 1.7354
+  duration_ms: 1.361779
   type: 'test'
   ...
 # Subtest: blind-review contamination preserves PROHIBITED source obligations
-ok 23 - blind-review contamination preserves PROHIBITED source obligations
+ok 33 - blind-review contamination preserves PROHIBITED source obligations
   ---
-  duration_ms: 1.634812
+  duration_ms: 1.441186
   type: 'test'
   ...
 # Subtest: blind-review contamination preserves UNRESOLVED source obligations
-ok 24 - blind-review contamination preserves UNRESOLVED source obligations
+ok 34 - blind-review contamination preserves UNRESOLVED source obligations
   ---
-  duration_ms: 1.55911
+  duration_ms: 1.250095
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects commitment with valid bindings
-ok 25 - simulation-smuggling inherited expectation rejects commitment with valid bindings
+ok 35 - simulation-smuggling inherited expectation rejects commitment with valid bindings
   ---
-  duration_ms: 2.576732
+  duration_ms: 2.550703
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects executed effect with valid bindings
-ok 26 - simulation-smuggling inherited expectation rejects executed effect with valid bindings
+ok 36 - simulation-smuggling inherited expectation rejects executed effect with valid bindings
   ---
-  duration_ms: 2.484195
+  duration_ms: 2.387523
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects effect receipt with valid bindings
-ok 27 - simulation-smuggling inherited expectation rejects effect receipt with valid bindings
+ok 37 - simulation-smuggling inherited expectation rejects effect receipt with valid bindings
   ---
-  duration_ms: 2.07456
+  duration_ms: 2.883544
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects receipt assertion with valid bindings
-ok 28 - simulation-smuggling inherited expectation rejects receipt assertion with valid bindings
+ok 38 - simulation-smuggling inherited expectation rejects receipt assertion with valid bindings
   ---
-  duration_ms: 2.042203
+  duration_ms: 2.116672
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects unknown execution assertion with valid bindings
-ok 29 - simulation-smuggling inherited expectation rejects unknown execution assertion with valid bindings
+ok 39 - simulation-smuggling inherited expectation rejects unknown execution assertion with valid bindings
   ---
-  duration_ms: 3.001438
+  duration_ms: 2.432459
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects execution time with valid bindings
-ok 30 - simulation-smuggling inherited expectation rejects execution time with valid bindings
+ok 40 - simulation-smuggling inherited expectation rejects execution time with valid bindings
   ---
-  duration_ms: 2.01312
+  duration_ms: 2.093529
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects unknown event field with valid bindings
-ok 31 - simulation-smuggling inherited expectation rejects unknown event field with valid bindings
+ok 41 - simulation-smuggling inherited expectation rejects unknown event field with valid bindings
   ---
-  duration_ms: 2.099597
+  duration_ms: 2.086227
   type: 'test'
   ...
 # Subtest: simulation-smuggling inherited expectation rejects an unknown operation field
-ok 32 - simulation-smuggling inherited expectation rejects an unknown operation field
+ok 42 - simulation-smuggling inherited expectation rejects an unknown operation field
   ---
-  duration_ms: 1.123768
+  duration_ms: 1.245468
   type: 'test'
   ...
 # Subtest: PROPOSED history does not count as simulated acceptance
-ok 33 - PROPOSED history does not count as simulated acceptance
+ok 43 - PROPOSED history does not count as simulated acceptance
   ---
-  duration_ms: 1.245358
+  duration_ms: 1.305787
   type: 'test'
   ...
 # Subtest: DENIED history does not count as simulated acceptance
-ok 34 - DENIED history does not count as simulated acceptance
+ok 44 - DENIED history does not count as simulated acceptance
   ---
-  duration_ms: 1.42964
+  duration_ms: 1.78242
   type: 'test'
   ...
 # Subtest: unsupported RESERVED event fails closed
-ok 35 - unsupported RESERVED event fails closed
+ok 45 - unsupported RESERVED event fails closed
   ---
-  duration_ms: 1.604928
+  duration_ms: 1.254921
   type: 'test'
   ...
 # Subtest: unsupported COMMITTED event fails closed
-ok 36 - unsupported COMMITTED event fails closed
+ok 46 - unsupported COMMITTED event fails closed
   ---
-  duration_ms: 1.212208
+  duration_ms: 1.712747
   type: 'test'
   ...
 # Subtest: unsupported FAILED event fails closed
-ok 37 - unsupported FAILED event fails closed
+ok 47 - unsupported FAILED event fails closed
   ---
-  duration_ms: 1.30164
+  duration_ms: 2.281311
   type: 'test'
   ...
 # Subtest: unsupported UNKNOWN_OUTCOME event fails closed
-ok 38 - unsupported UNKNOWN_OUTCOME event fails closed
+ok 48 - unsupported UNKNOWN_OUTCOME event fails closed
   ---
-  duration_ms: 1.317984
+  duration_ms: 1.263905
   type: 'test'
   ...
 # Subtest: a simulated accepted event and output never become executed-effect evidence
-ok 39 - a simulated accepted event and output never become executed-effect evidence
+ok 49 - a simulated accepted event and output never become executed-effect evidence
   ---
-  duration_ms: 1.208393
+  duration_ms: 1.347437
   type: 'test'
   ...
 # Subtest: accepted event with EXECUTION provenance fails closed
-ok 40 - accepted event with EXECUTION provenance fails closed
+ok 50 - accepted event with EXECUTION provenance fails closed
   ---
-  duration_ms: 2.003145
+  duration_ms: 1.539301
   type: 'test'
   ...
 # Subtest: accepted event with UNVERIFIED provenance fails closed
-ok 41 - accepted event with UNVERIFIED provenance fails closed
+ok 51 - accepted event with UNVERIFIED provenance fails closed
   ---
-  duration_ms: 2.408944
+  duration_ms: 1.24018
   type: 'test'
   ...
 # Subtest: accepted event with undefined provenance fails closed
-ok 42 - accepted event with undefined provenance fails closed
+ok 52 - accepted event with undefined provenance fails closed
   ---
-  duration_ms: 1.295852
+  duration_ms: 1.28123
   type: 'test'
   ...
 # Subtest: missing required history blocks otherwise valid eligibility
-ok 43 - missing required history blocks otherwise valid eligibility
+ok 53 - missing required history blocks otherwise valid eligibility
   ---
-  duration_ms: 1.165209
+  duration_ms: 1.250635
   type: 'test'
   ...
 # Subtest: incomplete required history blocks otherwise valid eligibility
-ok 44 - incomplete required history blocks otherwise valid eligibility
+ok 54 - incomplete required history blocks otherwise valid eligibility
   ---
-  duration_ms: 1.040105
+  duration_ms: 1.033214
   type: 'test'
   ...
 # Subtest: caller-supplied completeness and events cannot replace the opaque resolver handle
-ok 45 - caller-supplied completeness and events cannot replace the opaque resolver handle
+ok 55 - caller-supplied completeness and events cannot replace the opaque resolver handle
   ---
-  duration_ms: 1.33531
+  duration_ms: 1.257145
   type: 'test'
   ...
 # Subtest: replacing the request handle cannot change which history handle the fixture resolver trusts
-ok 46 - replacing the request handle cannot change which history handle the fixture resolver trusts
+ok 56 - replacing the request handle cannot change which history handle the fixture resolver trusts
   ---
-  duration_ms: 1.302071
+  duration_ms: 1.146481
   type: 'test'
   ...
 # Subtest: history resolver failure becomes blocked eligibility
-ok 47 - history resolver failure becomes blocked eligibility
+ok 57 - history resolver failure becomes blocked eligibility
   ---
-  duration_ms: 1.135515
+  duration_ms: 1.062637
   type: 'test'
   ...
 # Subtest: tampered proposalDigest binding blocks eligibility
-ok 48 - tampered proposalDigest binding blocks eligibility
+ok 58 - tampered proposalDigest binding blocks eligibility
   ---
-  duration_ms: 1.170587
+  duration_ms: 1.028277
   type: 'test'
   ...
 # Subtest: missing proposalDigest binding blocks eligibility
-ok 49 - missing proposalDigest binding blocks eligibility
+ok 59 - missing proposalDigest binding blocks eligibility
   ---
-  duration_ms: 0.879777
+  duration_ms: 0.860009
   type: 'test'
   ...
 # Subtest: tampered authorityResolutionDigest binding blocks eligibility
-ok 50 - tampered authorityResolutionDigest binding blocks eligibility
+ok 60 - tampered authorityResolutionDigest binding blocks eligibility
   ---
-  duration_ms: 1.160192
+  duration_ms: 1.481576
   type: 'test'
   ...
 # Subtest: missing authorityResolutionDigest binding blocks eligibility
-ok 51 - missing authorityResolutionDigest binding blocks eligibility
+ok 61 - missing authorityResolutionDigest binding blocks eligibility
   ---
-  duration_ms: 0.800511
+  duration_ms: 0.759741
   type: 'test'
   ...
 # Subtest: tampered policyStateDigest binding blocks eligibility
-ok 52 - tampered policyStateDigest binding blocks eligibility
+ok 62 - tampered policyStateDigest binding blocks eligibility
   ---
-  duration_ms: 1.033895
+  duration_ms: 1.034266
   type: 'test'
   ...
 # Subtest: missing policyStateDigest binding blocks eligibility
-ok 53 - missing policyStateDigest binding blocks eligibility
+ok 63 - missing policyStateDigest binding blocks eligibility
   ---
-  duration_ms: 0.819589
+  duration_ms: 1.896738
   type: 'test'
   ...
 # Subtest: tampered scopeDigest binding blocks eligibility
-ok 54 - tampered scopeDigest binding blocks eligibility
+ok 64 - tampered scopeDigest binding blocks eligibility
   ---
-  duration_ms: 1.04385
+  duration_ms: 0.971393
   type: 'test'
   ...
 # Subtest: missing scopeDigest binding blocks eligibility
-ok 55 - missing scopeDigest binding blocks eligibility
+ok 65 - missing scopeDigest binding blocks eligibility
   ---
-  duration_ms: 1.004202
+  duration_ms: 0.734444
   type: 'test'
   ...
 # Subtest: tampered historyHeadDigest binding blocks eligibility
-ok 56 - tampered historyHeadDigest binding blocks eligibility
+ok 66 - tampered historyHeadDigest binding blocks eligibility
   ---
-  duration_ms: 1.26082
+  duration_ms: 1.049679
   type: 'test'
   ...
 # Subtest: missing historyHeadDigest binding blocks eligibility
-ok 57 - missing historyHeadDigest binding blocks eligibility
+ok 67 - missing historyHeadDigest binding blocks eligibility
   ---
-  duration_ms: 0.907959
+  duration_ms: 0.762064
   type: 'test'
   ...
 # Subtest: tampered actionTaxonomyVersion binding blocks eligibility
-ok 58 - tampered actionTaxonomyVersion binding blocks eligibility
+ok 68 - tampered actionTaxonomyVersion binding blocks eligibility
   ---
-  duration_ms: 2.153707
+  duration_ms: 1.075897
   type: 'test'
   ...
 # Subtest: missing actionTaxonomyVersion binding blocks eligibility
-ok 59 - missing actionTaxonomyVersion binding blocks eligibility
+ok 69 - missing actionTaxonomyVersion binding blocks eligibility
   ---
-  duration_ms: 0.842252
+  duration_ms: 0.808412
   type: 'test'
   ...
 # Subtest: tampered compositionPolicyDigest binding blocks eligibility
-ok 60 - tampered compositionPolicyDigest binding blocks eligibility
+ok 70 - tampered compositionPolicyDigest binding blocks eligibility
   ---
-  duration_ms: 1.210506
+  duration_ms: 1.086262
   type: 'test'
   ...
 # Subtest: missing compositionPolicyDigest binding blocks eligibility
-ok 61 - missing compositionPolicyDigest binding blocks eligibility
+ok 71 - missing compositionPolicyDigest binding blocks eligibility
   ---
-  duration_ms: 0.736267
+  duration_ms: 0.747723
   type: 'test'
   ...
 # Subtest: tampered operationsDigest binding blocks eligibility
-ok 62 - tampered operationsDigest binding blocks eligibility
+ok 72 - tampered operationsDigest binding blocks eligibility
   ---
-  duration_ms: 1.012795
+  duration_ms: 0.98981
   type: 'test'
   ...
 # Subtest: missing operationsDigest binding blocks eligibility
-ok 63 - missing operationsDigest binding blocks eligibility
+ok 73 - missing operationsDigest binding blocks eligibility
   ---
-  duration_ms: 0.764178
+  duration_ms: 0.730548
   type: 'test'
   ...
 # Subtest: snapshot event change without a new head is rejected
-ok 64 - snapshot event change without a new head is rejected
+ok 74 - snapshot event change without a new head is rejected
   ---
-  duration_ms: 1.232989
+  duration_ms: 1.947012
   type: 'test'
   ...
 # Subtest: valid new history head cannot reuse an old request binding
-ok 65 - valid new history head cannot reuse an old request binding
+ok 75 - valid new history head cannot reuse an old request binding
   ---
-  duration_ms: 1.281691
+  duration_ms: 1.270063
   type: 'test'
   ...
 # Subtest: history from another runId is blocked even when its digest is valid
-ok 66 - history from another runId is blocked even when its digest is valid
+ok 76 - history from another runId is blocked even when its digest is valid
   ---
-  duration_ms: 1.562134
+  duration_ms: 1.518139
   type: 'test'
   ...
 # Subtest: history from another sessionId is blocked even when its digest is valid
-ok 67 - history from another sessionId is blocked even when its digest is valid
+ok 77 - history from another sessionId is blocked even when its digest is valid
   ---
-  duration_ms: 1.654331
+  duration_ms: 1.474355
   type: 'test'
   ...
 # Subtest: history from another tenantId is blocked even when its digest is valid
-ok 68 - history from another tenantId is blocked even when its digest is valid
+ok 78 - history from another tenantId is blocked even when its digest is valid
   ---
-  duration_ms: 1.339536
+  duration_ms: 1.256123
   type: 'test'
   ...
 # Subtest: history from another environment is blocked even when its digest is valid
-ok 69 - history from another environment is blocked even when its digest is valid
+ok 79 - history from another environment is blocked even when its digest is valid
   ---
-  duration_ms: 1.320648
+  duration_ms: 2.973107
   type: 'test'
   ...
 # Subtest: history from another decisionSlotId is blocked even when its digest is valid
-ok 70 - history from another decisionSlotId is blocked even when its digest is valid
+ok 80 - history from another decisionSlotId is blocked even when its digest is valid
   ---
-  duration_ms: 1.139892
+  duration_ms: 1.143988
   type: 'test'
   ...
 # Subtest: history from another policy revision is blocked
-ok 71 - history from another policy revision is blocked
+ok 81 - history from another policy revision is blocked
   ---
-  duration_ms: 1.278066
+  duration_ms: 1.174723
   type: 'test'
   ...
 # Subtest: history from another taxonomy revision is blocked
-ok 72 - history from another taxonomy revision is blocked
+ok 82 - history from another taxonomy revision is blocked
   ---
-  duration_ms: 1.28159
+  duration_ms: 1.238567
   type: 'test'
   ...
 # Subtest: history beyond the declared bound fails closed rather than truncating
-ok 73 - history beyond the declared bound fails closed rather than truncating
+ok 83 - history beyond the declared bound fails closed rather than truncating
   ---
-  duration_ms: 2.811067
+  duration_ms: 1.59261
   type: 'test'
   ...
 # Subtest: duplicate history event IDs fail closed
-ok 74 - duplicate history event IDs fail closed
+ok 84 - duplicate history event IDs fail closed
   ---
-  duration_ms: 1.465802
+  duration_ms: 1.36244
   type: 'test'
   ...
 # Subtest: unknown history action fails closed
-ok 75 - unknown history action fails closed
+ok 85 - unknown history action fails closed
   ---
-  duration_ms: 1.456909
+  duration_ms: 1.234902
   type: 'test'
   ...
 # Subtest: honestly classified external operation remains denied with clean history
-ok 76 - honestly classified external operation remains denied with clean history
+ok 86 - honestly classified external operation remains denied with clean history
   ---
-  duration_ms: 1.268992
+  duration_ms: 1.16596
   type: 'test'
   ...
 # Subtest: honestly classified external operation remains denied with prohibited history
-ok 77 - honestly classified external operation remains denied with prohibited history
+ok 87 - honestly classified external operation remains denied with prohibited history
   ---
-  duration_ms: 0.923242
+  duration_ms: 0.941749
   type: 'test'
   ...
 # Subtest: honestly classified external operation remains denied with untrusted history
-ok 78 - honestly classified external operation remains denied with untrusted history
+ok 88 - honestly classified external operation remains denied with untrusted history
   ---
-  duration_ms: 0.982259
+  duration_ms: 0.886728
   type: 'test'
   ...
 # Subtest: UNKNOWN operation remains denied with clean history
-ok 79 - UNKNOWN operation remains denied with clean history
+ok 89 - UNKNOWN operation remains denied with clean history
   ---
-  duration_ms: 1.027446
+  duration_ms: 0.952175
   type: 'test'
   ...
 # Subtest: external action relabeled as PURE is rejected by the declared taxonomy
-ok 80 - external action relabeled as PURE is rejected by the declared taxonomy
+ok 90 - external action relabeled as PURE is rejected by the declared taxonomy
   ---
-  duration_ms: 1.138159
+  duration_ms: 1.287179
   type: 'test'
   ...
 # Subtest: secret material is denied by the actual base policy and stays denied
-ok 81 - secret material is denied by the actual base policy and stays denied
+ok 91 - secret material is denied by the actual base policy and stays denied
   ---
-  duration_ms: 1.18658
+  duration_ms: 1.120743
   type: 'test'
   ...
 # Subtest: unknown operation cannot borrow a known action classification
-ok 82 - unknown operation cannot borrow a known action classification
+ok 92 - unknown operation cannot borrow a known action classification
   ---
-  duration_ms: 1.406335
+  duration_ms: 1.327448
   type: 'test'
   ...
 # Subtest: mismatched tool identity fails closed
-ok 83 - mismatched tool identity fails closed
+ok 93 - mismatched tool identity fails closed
   ---
-  duration_ms: 1.573482
+  duration_ms: 1.164087
   type: 'test'
   ...
 # Subtest: a multi-operation request is outside the bounded adapter contract
-ok 84 - a multi-operation request is outside the bounded adapter contract
+ok 94 - a multi-operation request is outside the bounded adapter contract
   ---
-  duration_ms: 0.96953
+  duration_ms: 2.179314
   type: 'test'
   ...
 # Subtest: an empty operation list cannot create eligibility
-ok 85 - an empty operation list cannot create eligibility
+ok 95 - an empty operation list cannot create eligibility
   ---
-  duration_ms: 1.114384
+  duration_ms: 0.901459
   type: 'test'
   ...
 # Subtest: malformed base result null blocks eligibility
-ok 86 - malformed base result null blocks eligibility
+ok 96 - malformed base result null blocks eligibility
   ---
-  duration_ms: 0.761964
+  duration_ms: 0.734573
   type: 'test'
   ...
 # Subtest: malformed base result {} blocks eligibility
-ok 87 - malformed base result {} blocks eligibility
+ok 97 - malformed base result {} blocks eligibility
   ---
-  duration_ms: 0.963531
+  duration_ms: 0.864776
   type: 'test'
   ...
 # Subtest: malformed base result {"ok":true,"value":null,"issues":[]} blocks eligibility
-ok 88 - malformed base result {"ok":true,"value":null,"issues":[]} blocks eligibility
+ok 98 - malformed base result {"ok":true,"value":null,"issues":[]} blocks eligibility
   ---
-  duration_ms: 1.168094
+  duration_ms: 1.093463
   type: 'test'
   ...
 # Subtest: malformed base result {"ok":"true","value":{},"issues":[]} blocks eligibility
-ok 89 - malformed base result {"ok":"true","value":{},"issues":[]} blocks eligibility
+ok 99 - malformed base result {"ok":"true","value":{},"issues":[]} blocks eligibility
   ---
-  duration_ms: 0.800421
+  duration_ms: 0.825347
   type: 'test'
   ...
 # Subtest: effectExecutionAllowed true cannot enter through a forged base decision
-ok 90 - effectExecutionAllowed true cannot enter through a forged base decision
+ok 100 - effectExecutionAllowed true cannot enter through a forged base decision
   ---
-  duration_ms: 2.119988
+  duration_ms: 0.991073
   type: 'test'
   ...
 # Subtest: ok true with blocking issues never becomes candidate permission
-ok 91 - ok true with blocking issues never becomes candidate permission
+ok 101 - ok true with blocking issues never becomes candidate permission
   ---
-  duration_ms: 1.345455
+  duration_ms: 0.973436
   type: 'test'
   ...
 # Subtest: failed authority resolution remains failed rather than trusting a forged allow decision
-ok 92 - failed authority resolution remains failed rather than trusting a forged allow decision
+ok 102 - failed authority resolution remains failed rather than trusting a forged allow decision
   ---
-  duration_ms: 1.234712
+  duration_ms: 1.052893
   type: 'test'
   ...
 # Subtest: a schema-valid forged allow does not override human review
-ok 93 - a schema-valid forged allow does not override human review
+ok 103 - a schema-valid forged allow does not override human review
   ---
-  duration_ms: 1.679328
+  duration_ms: 1.191588
   type: 'test'
   ...
 # Subtest: a schema-valid forged grant expansion does not broaden the base decision
-ok 94 - a schema-valid forged grant expansion does not broaden the base decision
+ok 104 - a schema-valid forged grant expansion does not broaden the base decision
   ---
-  duration_ms: 1.526752
+  duration_ms: 1.541874
   type: 'test'
   ...
 # Subtest: source content tampering without canonical digest refresh is rejected
-ok 95 - source content tampering without canonical digest refresh is rejected
+ok 105 - source content tampering without canonical digest refresh is rejected
   ---
-  duration_ms: 1.153542
+  duration_ms: 1.020206
   type: 'test'
   ...
 # Subtest: inherited integrity: permitted authority with requiredHumanReview stays blocked
-ok 96 - inherited integrity: permitted authority with requiredHumanReview stays blocked
+ok 106 - inherited integrity: permitted authority with requiredHumanReview stays blocked
   ---
-  duration_ms: 2.190932
+  duration_ms: 2.271661
   type: 'test'
   ...
 # Subtest: inherited integrity: permitted authority with unresolvedConflictIds stays blocked
-ok 97 - inherited integrity: permitted authority with unresolvedConflictIds stays blocked
+ok 107 - inherited integrity: permitted authority with unresolvedConflictIds stays blocked
   ---
-  duration_ms: 1.898912
+  duration_ms: 2.166927
   type: 'test'
   ...
 # Subtest: inherited integrity: forged REQUIRE_HUMAN_REVIEW cannot replace PROHIBITED
-ok 98 - inherited integrity: forged REQUIRE_HUMAN_REVIEW cannot replace PROHIBITED
+ok 108 - inherited integrity: forged REQUIRE_HUMAN_REVIEW cannot replace PROHIBITED
   ---
-  duration_ms: 1.2881
+  duration_ms: 1.364273
   type: 'test'
   ...
 # Subtest: inherited integrity: forged REQUIRE_HUMAN_REVIEW cannot replace UNRESOLVED
-ok 99 - inherited integrity: forged REQUIRE_HUMAN_REVIEW cannot replace UNRESOLVED
+ok 109 - inherited integrity: forged REQUIRE_HUMAN_REVIEW cannot replace UNRESOLVED
   ---
-  duration_ms: 1.110248
+  duration_ms: 1.105341
   type: 'test'
   ...
 # Subtest: inherited integrity: forged ALLOW_CANDIDATE_ONLY cannot replace PROHIBITED
-ok 100 - inherited integrity: forged ALLOW_CANDIDATE_ONLY cannot replace PROHIBITED
+ok 110 - inherited integrity: forged ALLOW_CANDIDATE_ONLY cannot replace PROHIBITED
   ---
-  duration_ms: 1.24724
+  duration_ms: 2.16232
   type: 'test'
   ...
 # Subtest: inherited integrity: an existing policy denial survives clean history and permitted authority
-ok 101 - inherited integrity: an existing policy denial survives clean history and permitted authority
+ok 111 - inherited integrity: an existing policy denial survives clean history and permitted authority
   ---
-  duration_ms: 1.842559
+  duration_ms: 1.743182
   type: 'test'
   ...
 # Subtest: inherited integrity: receipt survives caller mutation after eligible control
-ok 102 - inherited integrity: receipt survives caller mutation after eligible control
+ok 112 - inherited integrity: receipt survives caller mutation after eligible control
   ---
-  duration_ms: 1.164809
+  duration_ms: 1.257315
   type: 'test'
   ...
 # Subtest: inherited integrity: receipt survives caller mutation after composition denial
-not ok 103 - inherited integrity: receipt survives caller mutation after composition denial
+not ok 113 - inherited integrity: receipt survives caller mutation after composition denial
   ---
-  duration_ms: 1.91843
+  duration_ms: 1.398954
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:652:3'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:758:3'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -752,7 +833,7 @@ not ok 103 - inherited integrity: receipt survives caller mutation after composi
   actual: true
   operator: 'strictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:656:12)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:762:12)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -761,83 +842,83 @@ not ok 103 - inherited integrity: receipt survives caller mutation after composi
     async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
   ...
 # Subtest: inherited integrity: receipt survives caller mutation after human review
-ok 104 - inherited integrity: receipt survives caller mutation after human review
+ok 114 - inherited integrity: receipt survives caller mutation after human review
   ---
-  duration_ms: 1.942326
+  duration_ms: 1.151018
   type: 'test'
   ...
 # Subtest: inherited integrity: coherent policy-and-taxonomy-revisions changes the receipt digest
-ok 105 - inherited integrity: coherent policy-and-taxonomy-revisions changes the receipt digest
+ok 115 - inherited integrity: coherent policy-and-taxonomy-revisions changes the receipt digest
   ---
-  duration_ms: 2.056654
+  duration_ms: 1.914735
   type: 'test'
   ...
 # Subtest: inherited integrity: coherent canonical-authority-identity changes the receipt digest
-ok 106 - inherited integrity: coherent canonical-authority-identity changes the receipt digest
+ok 116 - inherited integrity: coherent canonical-authority-identity changes the receipt digest
   ---
-  duration_ms: 1.753357
+  duration_ms: 1.811092
   type: 'test'
   ...
 # Subtest: inherited integrity: unchanged-label policy-body substitution requires a new binding
-ok 107 - inherited integrity: unchanged-label policy-body substitution requires a new binding
+ok 117 - inherited integrity: unchanged-label policy-body substitution requires a new binding
   ---
-  duration_ms: 2.687855
+  duration_ms: 3.54822
   type: 'test'
   ...
 # Subtest: inherited integrity: unchanged-label taxonomy-body substitution requires a new binding
-ok 108 - inherited integrity: unchanged-label taxonomy-body substitution requires a new binding
+ok 118 - inherited integrity: unchanged-label taxonomy-body substitution requires a new binding
   ---
-  duration_ms: 2.33153
+  duration_ms: 2.724209
   type: 'test'
   ...
 # Subtest: incoherent permitted authority empty-permission cannot create eligibility
-ok 109 - incoherent permitted authority empty-permission cannot create eligibility
+ok 119 - incoherent permitted authority empty-permission cannot create eligibility
   ---
-  duration_ms: 1.224977
+  duration_ms: 1.189936
   type: 'test'
   ...
 # Subtest: incoherent permitted authority prohibited-effect cannot create eligibility
-ok 110 - incoherent permitted authority prohibited-effect cannot create eligibility
+ok 120 - incoherent permitted authority prohibited-effect cannot create eligibility
   ---
-  duration_ms: 1.133092
+  duration_ms: 1.143577
   type: 'test'
   ...
 # Subtest: incoherent permitted authority different-target cannot create eligibility
-ok 111 - incoherent permitted authority different-target cannot create eligibility
+ok 121 - incoherent permitted authority different-target cannot create eligibility
   ---
-  duration_ms: 1.300799
+  duration_ms: 2.197782
   type: 'test'
   ...
 # Subtest: incoherent permitted authority empty-grants cannot create eligibility
-ok 112 - incoherent permitted authority empty-grants cannot create eligibility
+ok 122 - incoherent permitted authority empty-grants cannot create eligibility
   ---
-  duration_ms: 1.272337
+  duration_ms: 1.178749
   type: 'test'
   ...
 # Subtest: policy expiry before its evaluation time fails closed
-ok 113 - policy expiry before its evaluation time fails closed
+ok 123 - policy expiry before its evaluation time fails closed
   ---
-  duration_ms: 1.07135
+  duration_ms: 1.037791
   type: 'test'
   ...
 # Subtest: schema-valid forged policyReasonCodes at its limit remains blocked with review evidence preserved
-ok 114 - schema-valid forged policyReasonCodes at its limit remains blocked with review evidence preserved
+ok 124 - schema-valid forged policyReasonCodes at its limit remains blocked with review evidence preserved
   ---
-  duration_ms: 1.278296
+  duration_ms: 1.443229
   type: 'test'
   ...
 # Subtest: schema-valid forged deniedOperationIds at its limit remains blocked with review evidence preserved
-ok 115 - schema-valid forged deniedOperationIds at its limit remains blocked with review evidence preserved
+ok 125 - schema-valid forged deniedOperationIds at its limit remains blocked with review evidence preserved
   ---
-  duration_ms: 2.610482
+  duration_ms: 1.845553
   type: 'test'
   ...
 # Subtest: evaluation is deterministic and does not mutate frozen inputs or history
-not ok 116 - evaluation is deterministic and does not mutate frozen inputs or history
+not ok 126 - evaluation is deterministic and does not mutate frozen inputs or history
   ---
-  duration_ms: 2.978484
+  duration_ms: 3.176737
   type: 'test'
-  location: '/workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:810:1'
+  location: '/workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:916:1'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -850,8 +931,8 @@ not ok 116 - evaluation is deterministic and does not mutate frozen inputs or hi
   actual: true
   operator: 'strictEqual'
   stack: |-
-    assertBlocked (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:50:10)
-    TestContext.<anonymous> (file:///workspace/scratch/e6e01e59667b/project-scaffold/evals/session-composition/.adapter-ablation-2ybz5r/adapter.test.mjs:824:3)
+    assertBlocked (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:50:10)
+    TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/composition-improvements/evals/session-composition/.adapter-ablation-TUjOCt/adapter.test.mjs:930:3)
     Test.runInAsyncScope (node:async_hooks:227:14)
     Test.run (node:internal/test_runner/test:1382:25)
     Test.processPendingSubtests (node:internal/test_runner/test:960:18)
@@ -859,12 +940,12 @@ not ok 116 - evaluation is deterministic and does not mutate frozen inputs or hi
     Test.run (node:internal/test_runner/test:1447:12)
     async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
   ...
-1..116
-# tests 116
+1..126
+# tests 126
 # suites 0
-# pass 108
-# fail 8
+# pass 117
+# fail 9
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 756.389828
+# duration_ms 796.220532

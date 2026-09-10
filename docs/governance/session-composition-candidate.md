@@ -49,6 +49,13 @@ handles. Caller-supplied history payloads and completeness/trust flags cannot
 establish trust. This dependency injection tests the boundary's use of supplied
 trust; it does not authenticate durable history, principals, or grants.
 
+The trusted resolver must also attest which proposal belongs to which complete
+validated scope. Checking the run ID and matching caller-supplied scope/history
+digests is insufficient: a caller could coherently substitute another candidate's
+clean history within the same run. The test-only attestation binds the proposal
+digest and full scope digest to the resolved history. Missing or mismatched
+attestations block eligibility, even when the substituted history is itself valid.
+
 The strict canonical `ExecutionPolicyDecision` receives no extra fields in this
 proof. A test-only wrapper retains the original objects, effective canonical
 policy result, and composition bindings. It is diagnostic evidence for review,
@@ -121,3 +128,27 @@ detected history-removal regression at the tested versions. Repository integrati
 durable history/grant authentication, concurrent admission, and independent human
 review remain open. Draft status and `Constrain` persist; no runtime, Canon,
 Mode B/C, or merge authority is granted.
+
+## September 10 candidate repairs and handoff
+
+Continue implementation and replay in #106. Retain #105 at
+`a723d5dbe53c17315ad5013ddb1ac17df39dde60` as an attributed source of expectations
+and historical development evidence. This avoids maintaining two copies of the
+adapter while preserving their distinct history and human-review semantics.
+PR closure and independent human disposition remain open.
+
+Two reproduced gaps in #106 at `5f27d1c3ec5aa15e991c63582b5d8d25f55ca58e`
+require regression evidence: trusted clean history from another proposal/scope
+could restore eligibility, and edited receipt claims could evade the verifier's
+selective comparisons. The continuing proof must reject both attacks while
+preserving valid same-proposal histories and honest historical runtime records.
+See the [review record](../../evals/session-composition/adapter/agent-review.md)
+and [verification receipt](../../evals/session-composition/adapter/verification.json)
+for the actual tested changes and results.
+
+The next human decision is whether this exact candidate supports carrying these
+test obligations into a separately reviewed canonical integration. Review the
+trusted-context boundary, the legitimate controls, preservation of review/conflict
+and grant data, and the receipt's explicit unproved surfaces. Record the reviewed
+Git head, reviewer identity, decision and unresolved issues. Until then the
+disposition is **Constrain**, with no runtime admission or completed human gate.
