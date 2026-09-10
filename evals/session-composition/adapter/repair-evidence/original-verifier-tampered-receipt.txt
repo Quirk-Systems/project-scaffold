@@ -1,0 +1,36 @@
+{
+  "mode": "--check",
+  "checks": {
+    "originalProbe": {
+      "exitCode": 0,
+      "tests": 48,
+      "passed": 48,
+      "failed": 0
+    },
+    "adapter": {
+      "exitCode": 0,
+      "tests": 103,
+      "passed": 103,
+      "failed": 0
+    },
+    "historyErasureAblation": {
+      "exitCode": 1,
+      "tests": 103,
+      "passed": 96,
+      "failed": 7,
+      "detected": true
+    },
+    "matrixCells": 12,
+    "blindReviewExamples": 5,
+    "inheritedExpectationTests": 18,
+    "deterministicExampleReceipts": true
+  },
+  "sourceFiles": 16,
+  "replayRuntime": {
+    "node": "24.19.0",
+    "typescript": "6.0.3",
+    "zod": "3.25.76"
+  },
+  "scope": "PLAN_CONTRACT_ADAPTER_ONLY",
+  "independentHumanReview": "OPEN"
+}

@@ -1,0 +1,32 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { loadPlanContracts } from "../composition-improvements/evals/session-composition/adapter/plan-contracts.mjs";
+import { makeBlindFixture } from "../composition-improvements/evals/session-composition/adapter/fixtures.mjs";
+import { createCompositionAdapter } from "../composition-improvements/evals/session-composition/adapter/adapter.mjs";
+
+test("trusted clean other-candidate context cannot replace contaminated proposal history", async () => {
+  const contracts = await loadPlanContracts();
+  try {
+    const contaminated = makeBlindFixture(contracts, { history: "answer-key" });
+    const cleanOther = makeBlindFixture(contracts, { history: "empty" });
+    cleanOther.request.scope.decisionSlotId = "blind.case_7.candidate_other";
+    cleanOther.snapshot.scope.decisionSlotId = "blind.case_7.candidate_other";
+    cleanOther.request.proposal.requestedEffect.targetLocator = "fixture://blind/case-7/candidate-other";
+    cleanOther.request.authorityResult.value.permittedEffects = [structuredClone(cleanOther.request.proposal.requestedEffect)];
+    cleanOther.refreshBindings();
+    const resolveHistory = (handle) => contaminated.resolveHistory(handle) ?? cleanOther.resolveHistory(handle);
+    const evaluate = createCompositionAdapter({ contracts, policy: contaminated.policy, resolveHistory });
+    assert.equal(evaluate(contaminated.request).candidateEligible, false);
+    assert.equal(evaluate(cleanOther.request).candidateEligible, true);
+    const unchangedProposal = structuredClone(contaminated.request.proposal);
+    contaminated.request.scope = structuredClone(cleanOther.request.scope);
+    contaminated.request.historyHandle = cleanOther.request.historyHandle;
+    contaminated.request.bindings.scopeDigest = cleanOther.request.bindings.scopeDigest;
+    contaminated.request.bindings.historyHeadDigest = cleanOther.request.bindings.historyHeadDigest;
+    const result = evaluate(contaminated.request);
+    assert.deepEqual(contaminated.request.proposal, unchangedProposal);
+    assert.equal(result.candidateEligible, false, "other-candidate history must not authorize the unchanged contaminated proposal");
+  } finally {
+    await contracts.cleanup();
+  }
+});

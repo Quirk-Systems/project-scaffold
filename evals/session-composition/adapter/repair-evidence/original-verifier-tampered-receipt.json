@@ -1,0 +1,16 @@
+{
+  "baselineHead": "5f27d1c3ec5aa15e991c63582b5d8d25f55ca58e",
+  "localProjectionCommit": "9d9b40c",
+  "command": "node evals/session-composition/adapter/verify.mjs --check",
+  "onlyMutatedFile": "evals/session-composition/adapter/verification.json",
+  "mutations": {
+    "status": "ADMITTED",
+    "authorityEffect": "RUNTIME_ALLOWED",
+    "effectExecutionAllowed": true,
+    "unproved": [],
+    "provenance.independentHumanReviewSatisfied": true,
+    "provenance.runtimeSafetyProved": true
+  },
+  "exitCode": 0,
+  "falseReceiptAccepted": true
+}

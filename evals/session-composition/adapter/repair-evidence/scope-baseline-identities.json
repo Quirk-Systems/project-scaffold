@@ -1,0 +1,9 @@
+{
+  "remoteHead": "5f27d1c3ec5aa15e991c63582b5d8d25f55ca58e",
+  "localBaseline": "9d9b40cbeff2a381be8fa80ea7a0209e49436207",
+  "files": {
+    "evals/session-composition/adapter/adapter.mjs": "6756a012523f37acb76390d38d704eaefa356e1ee1d37a58ce20d068f2b7673f",
+    "evals/session-composition/adapter/fixtures.mjs": "1cbbc84e725d2830a0e52f5205eac9cdac3a14a7160289b4e7e9cbb6d9a900eb",
+    "evals/session-composition/adapter/adapter.test.mjs": "e228fd7ca5530e282d003f6eeed86d3ff7acf310a035f6495e0d506e6726105b"
+  }
+}

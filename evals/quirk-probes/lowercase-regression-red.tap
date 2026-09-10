@@ -1,0 +1,27 @@
+TAP version 13
+# Subtest: hashes use canonical lowercase wire form
+not ok 1 - hashes use canonical lowercase wire form
+  ---
+  duration_ms: 8.066991
+  type: 'test'
+  location: '/workspace/scratch/d035408decaf/project-scaffold/evals/quirk-probes/core.test.mjs:65:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (ProbeValidationError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/d035408decaf/project-scaffold/evals/quirk-probes/core.test.mjs:70:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.start (node:internal/test_runner/test:1242:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 83.154188

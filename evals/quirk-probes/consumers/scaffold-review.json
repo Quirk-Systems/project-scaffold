@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "consumer.scaffold.proof-review",
+  "owner": "Quirk-Systems/project-scaffold",
+  "requirements": [
+    {
+      "probeId": "probe.session-composition.paired-boundary",
+      "definitionDigest": "7c2153ebb941a06be23ba1829739a3b967742a9d5c6130e15e8b51d997b42b3b",
+      "label": "Session composition boundary",
+      "replayId": "session-composition"
+    }
+  ]
+}

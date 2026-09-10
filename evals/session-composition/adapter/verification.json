@@ -1,0 +1,363 @@
+{
+  "kind": "CompositionAdapterVerification",
+  "version": 2,
+  "status": "CANDIDATE",
+  "disposition": "Constrain",
+  "scope": "PLAN_CONTRACT_ADAPTER_ONLY",
+  "authorityEffect": "NONE",
+  "effectExecutionAllowed": false,
+  "provenance": {
+    "status": "CANDIDATE_TEST_ONLY",
+    "planPath": "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md",
+    "planHead": "47279f5f9cbee8dfcb97b21ca3da024294f1bad9",
+    "probeHead": "58cefdb21164f1e7968d03051dfb52a93a24f4e8",
+    "protectedPlanCodeBlocks": 60,
+    "protectedPlanCodeSha256": "2ae7c9a0e4089f68810ac8d7aefeba2733903ce6f4790637869089286ab7832b",
+    "sources": [
+      {
+        "path": "src/lib/quirk/governed-runs/contracts/primitives.ts",
+        "origin": "plan-code-block",
+        "sha256": "8ab49fb5188518018147836e78aecd6d4764f3531612af64527beb831b42a20d"
+      },
+      {
+        "path": "src/lib/quirk/governed-runs/contracts/action.ts",
+        "origin": "plan-code-block",
+        "sha256": "c0cfaf7b141b6397ac32962f94617a7996d37195fb5d090c9e5899809143e84c"
+      },
+      {
+        "path": "src/lib/quirk/governed-runs/state-only-policy.ts",
+        "origin": "plan-code-block",
+        "sha256": "16a4660bfa8a57af4098cdd650c4c58776a0804e45fa62abfff4b694cbe1143c"
+      },
+      {
+        "path": "src/lib/quirk/design-tribunal/protocol.ts",
+        "origin": "canonical-repository-file",
+        "sha256": "a4778b6d16d6555a495b4fc5f4e89574dc211f094b82ecfa10e778fde447c5f1"
+      },
+      {
+        "path": "src/lib/quirk/design-tribunal/contracts.ts",
+        "origin": "canonical-repository-file",
+        "sha256": "c49b92c2c14adb1f165cd2d8004bcbe9d0fe7446223d5cb73697d2f59a438bb2"
+      },
+      {
+        "path": "src/lib/quirk/governance/authority.ts",
+        "origin": "canonical-repository-file",
+        "sha256": "751cd9c1fe864e7867172a0aabd1952e3471553164462c731ceab00e63b665eb"
+      }
+    ],
+    "generatedModules": [
+      {
+        "source": "src/lib/quirk/governed-runs/contracts/primitives.ts",
+        "module": "contracts-primitives.mjs"
+      },
+      {
+        "source": "src/lib/quirk/governed-runs/contracts/action.ts",
+        "module": "contracts-action.mjs"
+      },
+      {
+        "source": "src/lib/quirk/governed-runs/state-only-policy.ts",
+        "module": "state-only-policy.mjs"
+      },
+      {
+        "source": "src/lib/quirk/design-tribunal/protocol.ts",
+        "module": "tribunal-protocol.mjs"
+      },
+      {
+        "source": "src/lib/quirk/design-tribunal/contracts.ts",
+        "module": "tribunal-contracts.mjs"
+      },
+      {
+        "source": "src/lib/quirk/governance/authority.ts",
+        "module": "governance-authority.mjs"
+      }
+    ],
+    "dependencyVersions": {
+      "node": "24.19.0",
+      "typescript": "6.0.3",
+      "zod": "3.25.76"
+    },
+    "plannedTask5Loaded": true,
+    "productionTask4Executed": false,
+    "productionIntegrationProved": false,
+    "semanticTypecheckPerformed": false,
+    "runtimeSafetyProved": false,
+    "independentHumanReviewSatisfied": false,
+    "executedPlannedTask5": true
+  },
+  "expectationLineage": {
+    "sourcePr": 105,
+    "sourceHead": "a723d5dbe53c17315ad5013ddb1ac17df39dde60",
+    "sourceTestPath": "evals/task5-composition/adapter.test.mjs",
+    "sourceTestGitBlob": "24335471057c2a18cab34d67c61c466dac49a69d",
+    "adoption": "EXPECTATIONS_ONLY",
+    "sourceAdapterExecuted": false,
+    "originalRecipientHead": "050a2f7a5e5c2d9206205fe22b8a8af3dcafb99c",
+    "consolidationAuditBaseline": "5f27d1c3ec5aa15e991c63582b5d8d25f55ca58e"
+  },
+  "checks": {
+    "originalProbe": {
+      "exitCode": 0,
+      "tests": 48,
+      "passed": 48,
+      "failed": 0
+    },
+    "adapter": {
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0
+    },
+    "receiptIntegrity": {
+      "exitCode": 0,
+      "tests": 93,
+      "passed": 93,
+      "failed": 0
+    },
+    "historyErasureAblation": {
+      "exitCode": 1,
+      "tests": 126,
+      "passed": 117,
+      "failed": 9,
+      "detected": true
+    },
+    "matrixCells": 12,
+    "blindReviewExamples": 5,
+    "inheritedExpectationTests": 31,
+    "deterministicExampleReceipts": true
+  },
+  "matrix": [
+    {
+      "authority": "PERMITTED_CANDIDATE_ONLY",
+      "history": "clean",
+      "candidateEligible": true,
+      "effectiveDecision": "ALLOW_CANDIDATE_ONLY",
+      "reasonCodes": [
+        "CANDIDATE_ONLY"
+      ],
+      "receiptDigest": "sha256:9f615a3af8549a53642279293c371a36ca0ea857227e838451df0fd6befb71b5"
+    },
+    {
+      "authority": "PERMITTED_CANDIDATE_ONLY",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:81025640e550be4a2306580a060a8f21668248058ff3bd8895e71ece1f8e1464"
+    },
+    {
+      "authority": "PERMITTED_CANDIDATE_ONLY",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:71911d6e6a19d8b761c6679891b4114314161260473604ad93c7d40f1b87e9e6"
+    },
+    {
+      "authority": "HUMAN_REVIEW",
+      "history": "clean",
+      "candidateEligible": false,
+      "effectiveDecision": "REQUIRE_HUMAN_REVIEW",
+      "reasonCodes": [
+        "BASE_OBLIGATIONS_PRESERVED"
+      ],
+      "receiptDigest": "sha256:87c6f452c80b91ae4b3742cc2dfb930cc9ea5827e95f13c84681ee321f8f019b"
+    },
+    {
+      "authority": "HUMAN_REVIEW",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:e7a78f7274b258e63a902d8cb07ea317b9357c45152b70c246593f4cada9ab8e"
+    },
+    {
+      "authority": "HUMAN_REVIEW",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:05649a917e47edd94297dc8c2957c4eaf6b6a95cf0de7d34c998464eddd3b994"
+    },
+    {
+      "authority": "PROHIBITED",
+      "history": "clean",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "BASE_OBLIGATIONS_PRESERVED"
+      ],
+      "receiptDigest": "sha256:f7778efc22e6d61228af1a5ce5a5ef51f5a325e7cfd635dc280a4866c25d9b48"
+    },
+    {
+      "authority": "PROHIBITED",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:b376e4407eaa452339a249a456e908becc4deccabb7be38fc90ffa610eb26ef4"
+    },
+    {
+      "authority": "PROHIBITED",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:f2b57a78b49da6a802d7ab91b9bf1fb53ef6ed54c14187a8eb162ae6b2250df1"
+    },
+    {
+      "authority": "UNRESOLVED",
+      "history": "clean",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "BASE_OBLIGATIONS_PRESERVED"
+      ],
+      "receiptDigest": "sha256:8f7af601f83ac30ac965efa2b66e105c2e1158a6dccca952b1acbf5e98555939"
+    },
+    {
+      "authority": "UNRESOLVED",
+      "history": "prohibited",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "COMPOSITION_PROHIBITED"
+      ],
+      "receiptDigest": "sha256:f1c2718dcae49f1ad2b97eb3e7030bff1431bc5c37b7ac43bc6588a6c7270ab5"
+    },
+    {
+      "authority": "UNRESOLVED",
+      "history": "untrusted",
+      "candidateEligible": false,
+      "effectiveDecision": "DENY",
+      "reasonCodes": [
+        "UNTRUSTED_OR_INCOMPLETE_HISTORY"
+      ],
+      "receiptDigest": "sha256:1970a50f1d2a82d4fbf4c5032d069e4fb125f8c060682ceec8bb94f4b6bc692b"
+    }
+  ],
+  "examples": [
+    {
+      "name": "conflicting-simulated-candidate",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:81025640e550be4a2306580a060a8f21668248058ff3bd8895e71ece1f8e1464"
+    },
+    {
+      "name": "rationale-update-control",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:ff65a14e64bc189654e9e5e8a7af099d48ce3dc81a19bf3005c87314ca39d9a1"
+    },
+    {
+      "name": "honestly-classified-external-operation",
+      "baseDecision": "BLOCKED",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:9cf9593509b35bf7830b24d9501fa8964f79af531f11b285b5bf73c537679e91"
+    }
+  ],
+  "blindReviewExamples": [
+    {
+      "name": "answer-key-alone",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:3b08c59ca05030e3b25f46cb51c332179aa2eb59b16f7479dad9237c34f76c29"
+    },
+    {
+      "name": "blind-rationale-alone",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:ab8d5accc6f4cc31519cd15654723e9dc01d5b7e7fbfeea5fa0aa46497818fd3"
+    },
+    {
+      "name": "public-rubric-control",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:b333176a87e1450c7168d9e1226dee38fc1eb6cb814101e4615ab32fad1af7dc"
+    },
+    {
+      "name": "answer-key-contamination",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:bc7cb6ff88e3fbeebd9eb8939c21f73e6ad2ec5640e83723acef68e7ce4a4cab"
+    },
+    {
+      "name": "reverse-order-contamination",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:43e26d1cd48d7dd2fbc41d06850015ff271ddc5e3c6bf639f60dcf3057636e1b"
+    }
+  ],
+  "files": {
+    "evals/session-composition/adapter/adapter.mjs": "4cd52b6582cc8b48e5990c9f5d5750f4fab2344cd1df3a26203348d8969889b4",
+    "evals/session-composition/adapter/adapter.test.mjs": "d0240ce528a2b20e355b80c6f870f58f0c803f9cca805d0f5f050917580b209c",
+    "evals/session-composition/adapter/fixtures.mjs": "3d34a6301f1a0b9b2fd8c7d6ab33a0d81e14ad726b5b7c0d015ffc206d589cb6",
+    "evals/session-composition/adapter/plan-contracts.mjs": "6fae08267831dcabc9a5314bcb600c4da8e71a5b3752df01f2295d0d7a7de12a",
+    "evals/session-composition/adapter/verify.mjs": "c507ba16f166116a7e3a1d8cc5b61e847d34edbead965d065c5cd2d976e38581",
+    "evals/session-composition/adapter/verification-receipt.mjs": "c9f683bd2510138a2c561a1df61548de305ea42a56e4ba08f731001055a147f1",
+    "evals/session-composition/adapter/verification-receipt.test.mjs": "1d695764130c74587e3fe39acc38c3c1d5c4dc53fd231ab7750a1879f513dbd9",
+    "evals/session-composition/adapter/README.md": "778747ce031e907d0cd946eba6e67bcbb4c188e196aa6c0879a7cb92241e32a8",
+    "evals/session-composition/adapter/agent-review.md": "96032cd712c6daa0fcf561f6c43b963939cf116d344222bd00785cf34e298abe",
+    "evals/session-composition/adapter/evidence-lineage.md": "18987322f4831a7df3a1fd395fefd91f8446ba0c2000311fb2e8f5df716f91ff",
+    "evals/session-composition/adapter/repair-evidence/README.md": "d351c47688b134d51718cbb53625756878030f93d68fad252d5935881a5f15f0",
+    "evals/session-composition/adapter/repair-evidence/scope-red.tap": "44a7e7080e0edf0f2f4e576deaaa59ee7512d269b46a6480bfd925242b5c7c48",
+    "evals/session-composition/adapter/repair-evidence/scope-red-test.mjs.txt": "75a5eecc251a6e8184ee5b27c7c671bbca8095eebacbf5321a3b25d54f6b2091",
+    "evals/session-composition/adapter/repair-evidence/scope-baseline-identities.json": "422e01e819787257881e070343984ec4ac9630c6c99ba7c10aac895817dd5468",
+    "evals/session-composition/adapter/repair-evidence/receipt-initial-red.tap": "c71c261a61e160a9c232d8adea1908a5fa2e5389a36605f2f7f04cf38ffce0d0",
+    "evals/session-composition/adapter/repair-evidence/receipt-initial-green.tap": "1947c73f48ec87eb86287f5e544307923d8fdd6e1d44786ae6fecd04683a57b1",
+    "evals/session-composition/adapter/repair-evidence/receipt-legacy-helper.mjs.txt": "aea4fd05cdf589e11aef38c04735e1b58c5a92565c8737e27b9dc7b80819fe27",
+    "evals/session-composition/adapter/repair-evidence/receipt-initial-tests.mjs.txt": "44d4238ae2551906c7ecfebf11c424df870fefb23f4341965af25c82494cd6ca",
+    "evals/session-composition/adapter/repair-evidence/original-verifier-tampered-receipt.json": "3cd136705e28f3a26a6171b29c0a40eae8804b6f5ab57c17a7590a055a34dde4",
+    "evals/session-composition/adapter/repair-evidence/original-verifier-tampered-receipt.txt": "640fe3a11e9a4020f407d2c86ccc42ca5a3aed66956e049bcb55cf4ed1b3e541",
+    "evals/session-composition/adapter/repair-evidence/repository-validation.txt": "1e405e3fc3e0884346280dd77501558634eb64a245110148dadf52a2634f61b9",
+    "evals/session-composition/adapter/repair-evidence/scope-review.md": "824ad668463d61433e1477b4f31ac4e24c3c4eeb11985b4ffec9e48da31fdbde",
+    "evals/session-composition/adapter/repair-evidence/receipt-review.md": "11082dc9d40b0d3c10b53bfdf4446d9e26d81bf4202130cb3be83fe793e76cb1",
+    "evals/session-composition/adapter/repair-evidence/integration-review.md": "11c3aaa2e49678aadbc39570437932269049c09175ff639d0190c91ba4aeebc8",
+    "evals/session-composition/gate.mjs": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703",
+    "evals/session-composition/probe.test.mjs": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0",
+    "evals/session-composition/fixtures.json": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
+    "evals/session-composition/run.mjs": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5",
+    "docs/governance/session-composition-candidate.md": "408ca2dda9b0ed8897ec6334dd3eaee188668b8ec924f4374b8c9d0c670c9934",
+    "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md": "5f41155083877977b565790fba2daab33cec2a4b5a8fa8157bc41f14d2f83fd1",
+    "package.json": "89787ce359776c488338f503e8e292bd4c19571d0af39e68ce26f0542f21cdce",
+    ".github/workflows/session-composition-candidate.yml": "cfd8c1b29e189e6c7e9c0cf5e6cb2d3a6df93a6f3474a0743377ad283cf80964"
+  },
+  "rawLogs": {
+    "verification-tests.tap": "a2e85cdf0635a892979e6c760a0270a86b79e75e1272d6104ac052de9bfd2c60",
+    "history-ablation.tap": "4cab1d207875019eccd8a9c219cad9ba13354003ece0969d4d613f5310c3ee1a",
+    "verification-receipt-tests.tap": "f73ff901a9046d95dbc4fbc54d05a3dbdbf3f218e2b9eef17811bae740523d32",
+    "consolidation-first-run.tap": "68f7dbe811cacc3eb954895e2bbf2d61ffe11ea80604159c09dadb58f0775992"
+  },
+  "developmentEvidence": {
+    "initialConsolidationRun": {
+      "tests": 116,
+      "passed": 114,
+      "failed": 2
+    },
+    "correction": "Two new fixture identifiers used camelCase and failed the planned identifier schema before the expected semantic-denial reason. Replaced with valid fixture effect/instruction identifiers and added explicit schema parsing; denial and source-preservation expectations and adapter implementation are unchanged.",
+    "implementationRedGreenClaimed": false
+  },
+  "unproved": [
+    "production Task 4/5 module integration",
+    "Task 4 resolver execution with verified grants",
+    "durable history and principal authentication",
+    "live-clock freshness and revocation",
+    "Task 6 consumer enforcement",
+    "full repository Bun/Vitest/typecheck/lint/build",
+    "concurrency and delegated session inheritance",
+    "Mode B/C behavior",
+    "independent human review"
+  ],
+  "testOrder": "The original adapter suite first ran green. The consolidation audit had two invalid-fixture assertion failures, recorded separately. September 10 repairs preserved one failing scope-substitution regression and 87 initial receipt regressions (22 pass, 65 fail) before repair; later receipt cases are supplemental. History erasure and expanded legacy-helper replay are subsequent mutation evidence. See repair-evidence/README.md for chronology."
+}

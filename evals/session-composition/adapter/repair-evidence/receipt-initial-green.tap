@@ -1,0 +1,532 @@
+TAP version 13
+# Subtest: receipt integrity: unchanged receipt and committed logs pass
+ok 1 - receipt integrity: unchanged receipt and committed logs pass
+  ---
+  duration_ms: 15.876275
+  type: 'test'
+  ...
+# Subtest: receipt integrity: historical dependency versions remain distinct from replay
+ok 2 - receipt integrity: historical dependency versions remain distinct from replay
+  ---
+  duration_ms: 2.746582
+  type: 'test'
+  ...
+# Subtest: receipt integrity: well-shaped prerelease/build versions remain observations
+ok 3 - receipt integrity: well-shaped prerelease/build versions remain observations
+  ---
+  duration_ms: 0.350267
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed kind
+ok 4 - receipt integrity: rejects changed kind
+  ---
+  duration_ms: 2.031447
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed version
+ok 5 - receipt integrity: rejects changed version
+  ---
+  duration_ms: 0.525905
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed status
+ok 6 - receipt integrity: rejects changed status
+  ---
+  duration_ms: 0.456614
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed disposition
+ok 7 - receipt integrity: rejects changed disposition
+  ---
+  duration_ms: 0.477925
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed scope
+ok 8 - receipt integrity: rejects changed scope
+  ---
+  duration_ms: 0.528079
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed authorityEffect
+ok 9 - receipt integrity: rejects changed authorityEffect
+  ---
+  duration_ms: 0.383215
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed effectExecutionAllowed
+ok 10 - receipt integrity: rejects changed effectExecutionAllowed
+  ---
+  duration_ms: 0.577372
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed unproved
+ok 11 - receipt integrity: rejects changed unproved
+  ---
+  duration_ms: 0.340953
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed testOrder
+ok 12 - receipt integrity: rejects changed testOrder
+  ---
+  duration_ms: 0.742456
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted kind
+ok 13 - receipt integrity: rejects omitted kind
+  ---
+  duration_ms: 0.504545
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted version
+ok 14 - receipt integrity: rejects omitted version
+  ---
+  duration_ms: 0.4206
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted status
+ok 15 - receipt integrity: rejects omitted status
+  ---
+  duration_ms: 0.60313
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted disposition
+ok 16 - receipt integrity: rejects omitted disposition
+  ---
+  duration_ms: 0.403556
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted scope
+ok 17 - receipt integrity: rejects omitted scope
+  ---
+  duration_ms: 1.418133
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted authorityEffect
+ok 18 - receipt integrity: rejects omitted authorityEffect
+  ---
+  duration_ms: 0.631882
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted effectExecutionAllowed
+ok 19 - receipt integrity: rejects omitted effectExecutionAllowed
+  ---
+  duration_ms: 0.384086
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted provenance
+ok 20 - receipt integrity: rejects omitted provenance
+  ---
+  duration_ms: 0.155088
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted expectationLineage
+ok 21 - receipt integrity: rejects omitted expectationLineage
+  ---
+  duration_ms: 0.525486
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted checks
+ok 22 - receipt integrity: rejects omitted checks
+  ---
+  duration_ms: 0.434831
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted matrix
+ok 23 - receipt integrity: rejects omitted matrix
+  ---
+  duration_ms: 0.376666
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted examples
+ok 24 - receipt integrity: rejects omitted examples
+  ---
+  duration_ms: 0.46108
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted blindReviewExamples
+ok 25 - receipt integrity: rejects omitted blindReviewExamples
+  ---
+  duration_ms: 0.561188
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted files
+ok 26 - receipt integrity: rejects omitted files
+  ---
+  duration_ms: 1.296262
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted rawLogs
+ok 27 - receipt integrity: rejects omitted rawLogs
+  ---
+  duration_ms: 0.178674
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted unproved
+ok 28 - receipt integrity: rejects omitted unproved
+  ---
+  duration_ms: 0.348344
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted testOrder
+ok 29 - receipt integrity: rejects omitted testOrder
+  ---
+  duration_ms: 0.387311
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.status
+ok 30 - receipt integrity: rejects changed or omitted provenance.status
+  ---
+  duration_ms: 0.866178
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.planPath
+ok 31 - receipt integrity: rejects changed or omitted provenance.planPath
+  ---
+  duration_ms: 0.523693
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.planHead
+ok 32 - receipt integrity: rejects changed or omitted provenance.planHead
+  ---
+  duration_ms: 0.473749
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.probeHead
+ok 33 - receipt integrity: rejects changed or omitted provenance.probeHead
+  ---
+  duration_ms: 0.502842
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.protectedPlanCodeBlocks
+ok 34 - receipt integrity: rejects changed or omitted provenance.protectedPlanCodeBlocks
+  ---
+  duration_ms: 0.584232
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.protectedPlanCodeSha256
+ok 35 - receipt integrity: rejects changed or omitted provenance.protectedPlanCodeSha256
+  ---
+  duration_ms: 0.93901
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.sources
+ok 36 - receipt integrity: rejects changed or omitted provenance.sources
+  ---
+  duration_ms: 0.600606
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.generatedModules
+ok 37 - receipt integrity: rejects changed or omitted provenance.generatedModules
+  ---
+  duration_ms: 0.646564
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.plannedTask5Loaded
+ok 38 - receipt integrity: rejects changed or omitted provenance.plannedTask5Loaded
+  ---
+  duration_ms: 0.630891
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.productionTask4Executed
+ok 39 - receipt integrity: rejects changed or omitted provenance.productionTask4Executed
+  ---
+  duration_ms: 1.068887
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.productionIntegrationProved
+ok 40 - receipt integrity: rejects changed or omitted provenance.productionIntegrationProved
+  ---
+  duration_ms: 0.604222
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.semanticTypecheckPerformed
+ok 41 - receipt integrity: rejects changed or omitted provenance.semanticTypecheckPerformed
+  ---
+  duration_ms: 0.843815
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.runtimeSafetyProved
+ok 42 - receipt integrity: rejects changed or omitted provenance.runtimeSafetyProved
+  ---
+  duration_ms: 1.264666
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.independentHumanReviewSatisfied
+ok 43 - receipt integrity: rejects changed or omitted provenance.independentHumanReviewSatisfied
+  ---
+  duration_ms: 0.41392
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed or omitted provenance.executedPlannedTask5
+ok 44 - receipt integrity: rejects changed or omitted provenance.executedPlannedTask5
+  ---
+  duration_ms: 0.381182
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved top-level claim
+ok 45 - receipt integrity: rejects unapproved top-level claim
+  ---
+  duration_ms: 0.456914
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved provenance claim
+ok 46 - receipt integrity: rejects unapproved provenance claim
+  ---
+  duration_ms: 0.274265
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved source metadata
+ok 47 - receipt integrity: rejects unapproved source metadata
+  ---
+  duration_ms: 0.379269
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved generated module metadata
+ok 48 - receipt integrity: rejects unapproved generated module metadata
+  ---
+  duration_ms: 0.379159
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved expectation lineage
+ok 49 - receipt integrity: rejects unapproved expectation lineage
+  ---
+  duration_ms: 0.262307
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved check count
+ok 50 - receipt integrity: rejects unapproved check count
+  ---
+  duration_ms: 0.322737
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved matrix outcome
+ok 51 - receipt integrity: rejects unapproved matrix outcome
+  ---
+  duration_ms: 0.320904
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved example outcome
+ok 52 - receipt integrity: rejects unapproved example outcome
+  ---
+  duration_ms: 0.283067
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved blind-review outcome
+ok 53 - receipt integrity: rejects unapproved blind-review outcome
+  ---
+  duration_ms: 0.276418
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved source file hash
+ok 54 - receipt integrity: rejects unapproved source file hash
+  ---
+  duration_ms: 0.279743
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved source file omission
+ok 55 - receipt integrity: rejects unapproved source file omission
+  ---
+  duration_ms: 0.37977
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects unapproved source file addition
+ok 56 - receipt integrity: rejects unapproved source file addition
+  ---
+  duration_ms: 0.373912
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects null map
+ok 57 - receipt integrity: rejects null map
+  ---
+  duration_ms: 0.190712
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects array map
+ok 58 - receipt integrity: rejects array map
+  ---
+  duration_ms: 0.10843
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects missing map keys
+ok 59 - receipt integrity: rejects missing map keys
+  ---
+  duration_ms: 0.205924
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted node
+ok 60 - receipt integrity: rejects omitted node
+  ---
+  duration_ms: 0.206625
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects extra claim
+ok 61 - receipt integrity: rejects extra claim
+  ---
+  duration_ms: 0.235828
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node null
+ok 62 - receipt integrity: rejects invalid node null
+  ---
+  duration_ms: 0.229859
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node 24
+ok 63 - receipt integrity: rejects invalid node 24
+  ---
+  duration_ms: 0.12221
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node {}
+ok 64 - receipt integrity: rejects invalid node {}
+  ---
+  duration_ms: 0.108721
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node ""
+ok 65 - receipt integrity: rejects invalid node ""
+  ---
+  duration_ms: 0.134628
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node "24"
+ok 66 - receipt integrity: rejects invalid node "24"
+  ---
+  duration_ms: 0.128109
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node "v24.19.0"
+ok 67 - receipt integrity: rejects invalid node "v24.19.0"
+  ---
+  duration_ms: 0.101891
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node "01.2.3"
+ok 68 - receipt integrity: rejects invalid node "01.2.3"
+  ---
+  duration_ms: 0.097213
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node "1.2.3-01"
+ok 69 - receipt integrity: rejects invalid node "1.2.3-01"
+  ---
+  duration_ms: 0.107458
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node "1.2.3-x..y"
+ok 70 - receipt integrity: rejects invalid node "1.2.3-x..y"
+  ---
+  duration_ms: 0.10132
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects invalid node "24.19.0\\n"
+ok 71 - receipt integrity: rejects invalid node "24.19.0\\n"
+  ---
+  duration_ms: 0.100648
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects malformed versions for every dependency and missing observation
+ok 72 - receipt integrity: rejects malformed versions for every dependency and missing observation
+  ---
+  duration_ms: 0.588869
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects null log map
+ok 73 - receipt integrity: rejects null log map
+  ---
+  duration_ms: 0.196871
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects array log map
+ok 74 - receipt integrity: rejects array log map
+  ---
+  duration_ms: 0.121509
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects empty log map
+ok 75 - receipt integrity: rejects empty log map
+  ---
+  duration_ms: 0.127728
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects omitted ablation log
+ok 76 - receipt integrity: rejects omitted ablation log
+  ---
+  duration_ms: 0.164804
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects extra log
+ok 77 - receipt integrity: rejects extra log
+  ---
+  duration_ms: 0.139876
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects traversal log
+ok 78 - receipt integrity: rejects traversal log
+  ---
+  duration_ms: 0.124554
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects malformed digest
+ok 79 - receipt integrity: rejects malformed digest
+  ---
+  duration_ms: 0.119747
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects uppercase digest
+ok 80 - receipt integrity: rejects uppercase digest
+  ---
+  duration_ms: 0.175309
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects nonstring digest
+ok 81 - receipt integrity: rejects nonstring digest
+  ---
+  duration_ms: 0.124854
+  type: 'test'
+  ...
+# Subtest: receipt integrity: omitting the log map cannot skip committed log checks
+ok 82 - receipt integrity: omitting the log map cannot skip committed log checks
+  ---
+  duration_ms: 15.953318
+  type: 'test'
+  ...
+# Subtest: receipt integrity: historical log bytes may differ from replay if committed digests match
+ok 83 - receipt integrity: historical log bytes may differ from replay if committed digests match
+  ---
+  duration_ms: 3.213351
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects missing committed verification-tests.tap
+ok 84 - receipt integrity: rejects missing committed verification-tests.tap
+  ---
+  duration_ms: 1.962896
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed committed verification-tests.tap
+ok 85 - receipt integrity: rejects changed committed verification-tests.tap
+  ---
+  duration_ms: 2.538195
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects missing committed history-ablation.tap
+ok 86 - receipt integrity: rejects missing committed history-ablation.tap
+  ---
+  duration_ms: 1.848988
+  type: 'test'
+  ...
+# Subtest: receipt integrity: rejects changed committed history-ablation.tap
+ok 87 - receipt integrity: rejects changed committed history-ablation.tap
+  ---
+  duration_ms: 2.489033
+  type: 'test'
+  ...
+1..87
+# tests 87
+# suites 0
+# pass 87
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 178.608962

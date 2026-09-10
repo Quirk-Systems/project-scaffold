@@ -18,6 +18,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:tribunal": "vitest run src/lib/quirk/governance/authority.test.ts src/lib/quirk/design-tribunal/protocol.test.ts src/lib/quirk/design-tribunal/compatibility.test.ts",
+    "test:composition-candidate": "node evals/session-composition/adapter/verify.mjs --check",
     "fixture:tribunal": "bun scripts/generate-tribunal-fixture.ts --check",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
