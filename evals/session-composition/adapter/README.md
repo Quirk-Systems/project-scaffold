@@ -78,7 +78,7 @@ effective result as blocked. The wrapper is test-only. Task 2/3 schema and diges
 review and Task 6 consumer enforcement are prerequisites for an operative integration.
 The original policy object alone has not acquired history validation.
 
-## Useful Mode A case
+## Useful Mode A cases
 
 The fixture declares one simulated allocation slot. Accepting candidate A and then
 accepting mutually exclusive candidate B violates that fixture policy. Revising the
@@ -87,6 +87,15 @@ ordinary comparison or drafting of alternatives is not prohibited by this rule.
 The `probe.*` action taxonomy is a declared test vocabulary, not admitted Quirk Moves.
 An honestly classified external operation remains blocked by the actual planned
 Task 5 code under every tested history.
+
+A second fixture declares one synthetic blind-review candidate. Reading its
+non-secret answer key and building its blind rationale is a prohibited pair in
+either order. Either action alone remains eligible, as does building the rationale
+after reading a public rubric. This tests a supplied composition rule; it does not
+detect semantic contamination. The cases and execution/receipt-spoofing expectations
+are adapted from #105 into this same harness. See the
+[source comparison and proposed disposition](evidence-lineage.md) for exact source
+identities, retained history semantics, and development-evidence limits.
 
 The history resolver owns the initial opaque handles. Caller JSON or a replacement
 handle cannot manufacture a trusted snapshot. This models an upstream verifier;
@@ -101,7 +110,10 @@ simulation event becomes executed-effect evidence.
 The [receipt](verification.json) provides counts and exact matrix outcomes. Tests
 cover binding substitution, review/conflict/grant preservation, source contradictions,
 misclassification, missing/untrusted history, schema limits, and nonmutation. Erasing
-history in a disposable adapter copy must fail the meaningful Mode A fixture. The
+history in a disposable adapter copy must fail both the exclusive-selection and
+blind-review fixture families. Execution/receipt claims and unexpected event or
+operation fields must be rejected even after their bindings are recomputed. These
+are strict schema-boundary tests, not evidence of real history authentication. The
 first complete suite run was green; the mutation is subsequent disproof evidence,
 not preimplementation red/green evidence.
 

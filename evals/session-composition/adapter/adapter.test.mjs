@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { after, test } from "node:test";
 import { createCompositionAdapter } from "./adapter.mjs";
 import { loadPlanContracts } from "./plan-contracts.mjs";
-import { makeFixture, rehash } from "./fixtures.mjs";
+import { makeFixture, makeBlindFixture, rehash } from "./fixtures.mjs";
 
 const contracts = await loadPlanContracts();
 after(() => contracts.cleanup());
@@ -126,6 +126,93 @@ test("cheapest disproof: ablating declared composition restriction loses the add
   fixture.policy.forbiddenPairs = [];
   fixture.refreshBindings();
   assert.equal(evaluate(fixture).candidateEligible, true);
+});
+
+// Port #105's useful expectations, not its synthetic-digest adapter or whole-trace API.
+for (const [name, options, eligible] of [
+  [
+    "answer key alone",
+    { history: "empty", action: "probe.read_answer_key" },
+    true,
+  ],
+  ["blind rationale alone", { history: "empty" }, true],
+  ["public rubric control", { history: "rubric" }, true],
+  ["answer key contamination", { history: "answer-key" }, false],
+  [
+    "reverse-order contamination",
+    { history: "rationale", action: "probe.read_answer_key" },
+    false,
+  ],
+]) {
+  test(`blind-review inherited expectation: ${name}`, () => {
+    const fixture = makeBlindFixture(contracts, options);
+    assert.equal(
+      fixture.request.policyResult.value.decision,
+      "ALLOW_CANDIDATE_ONLY",
+    );
+    assert.equal(
+      fixture.request.proposal.requestedEffect.targetLocator,
+      "fixture://blind/case-7/candidate-3",
+    );
+    const result = evaluate(fixture);
+    assertBounded(result);
+    assert.equal(result.candidateEligible, eligible);
+    if (!eligible) {
+      assertBlocked(result);
+      assert.ok(result.reasonCodes.includes("COMPOSITION_PROHIBITED"));
+    }
+  });
+}
+
+test("blind-review history from another candidate cannot replace the scoped ledger", () => {
+  const fixture = makeBlindFixture(contracts);
+  fixture.snapshot.scope.decisionSlotId = "blind.case_7.candidate_other";
+  fixture.refreshBindings();
+  assertBlocked(evaluate(fixture));
+});
+
+for (const authority of authorities) {
+  test(`blind-review contamination preserves ${authority} source obligations`, () => {
+    const fixture = makeBlindFixture(contracts, {
+      authority,
+      history: "answer-key",
+    });
+    const result = evaluate(fixture);
+    assertBlocked(result);
+    assert.deepEqual(result.authorityResult, fixture.request.authorityResult);
+    assert.deepEqual(result.basePolicyResult, fixture.request.policyResult);
+  });
+}
+
+for (const [name, injected] of [
+  ["commitment", { committed: true }],
+  ["executed effect", { effectExecuted: true }],
+  ["effect receipt", { kind: "EffectReceipt" }],
+  [
+    "receipt assertion",
+    { assertions: [{ kind: "EffectReceipt", receiptId: "receipt.fake" }] },
+  ],
+  [
+    "unknown execution assertion",
+    { assertions: [{ kind: "UnknownExecutionAssertion", value: true }] },
+  ],
+  ["execution time", { executedAt: "2026-09-09T12:01:00.000Z" }],
+  ["unknown event field", { unknownEventField: true }],
+]) {
+  test(`simulation-smuggling inherited expectation rejects ${name} with valid bindings`, () => {
+    const fixture = makeBlindFixture(contracts); // legitimate public-rubric control
+    assert.equal(evaluate(fixture).candidateEligible, true);
+    Object.assign(fixture.snapshot.events[0], injected);
+    fixture.refreshBindings(); // hash the corruption: rejection must come from the strict schema
+    assertBlocked(evaluate(fixture));
+  });
+}
+
+test("simulation-smuggling inherited expectation rejects an unknown operation field", () => {
+  const fixture = makeBlindFixture(contracts);
+  fixture.request.operations[0].unknownOperationField = true;
+  fixture.refreshBindings();
+  assertBlocked(evaluate(fixture));
 });
 
 for (const status of ["PROPOSED", "DENIED"]) {

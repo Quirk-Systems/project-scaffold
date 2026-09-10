@@ -84,6 +84,15 @@
     "independentHumanReviewSatisfied": false,
     "executedPlannedTask5": true
   },
+  "expectationLineage": {
+    "sourcePr": 105,
+    "sourceHead": "a723d5dbe53c17315ad5013ddb1ac17df39dde60",
+    "sourceTestPath": "evals/task5-composition/adapter.test.mjs",
+    "sourceTestGitBlob": "24335471057c2a18cab34d67c61c466dac49a69d",
+    "adoption": "EXPECTATIONS_ONLY",
+    "sourceAdapterExecuted": false,
+    "originalRecipientHead": "050a2f7a5e5c2d9206205fe22b8a8af3dcafb99c"
+  },
   "checks": {
     "originalProbe": {
       "exitCode": 0,
@@ -93,18 +102,20 @@
     },
     "adapter": {
       "exitCode": 0,
-      "tests": 85,
-      "passed": 85,
+      "tests": 103,
+      "passed": 103,
       "failed": 0
     },
     "historyErasureAblation": {
       "exitCode": 1,
-      "tests": 85,
-      "passed": 81,
-      "failed": 4,
+      "tests": 103,
+      "passed": 96,
+      "failed": 7,
       "detected": true
     },
     "matrixCells": 12,
+    "blindReviewExamples": 5,
+    "inheritedExpectationTests": 18,
     "deterministicExampleReceipts": true
   },
   "matrix": [
@@ -249,14 +260,47 @@
       "receiptDigest": "sha256:9cf9593509b35bf7830b24d9501fa8964f79af531f11b285b5bf73c537679e91"
     }
   ],
+  "blindReviewExamples": [
+    {
+      "name": "answer-key-alone",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:3b08c59ca05030e3b25f46cb51c332179aa2eb59b16f7479dad9237c34f76c29"
+    },
+    {
+      "name": "blind-rationale-alone",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:ab8d5accc6f4cc31519cd15654723e9dc01d5b7e7fbfeea5fa0aa46497818fd3"
+    },
+    {
+      "name": "public-rubric-control",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": true,
+      "receiptDigest": "sha256:b333176a87e1450c7168d9e1226dee38fc1eb6cb814101e4615ab32fad1af7dc"
+    },
+    {
+      "name": "answer-key-contamination",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:bc7cb6ff88e3fbeebd9eb8939c21f73e6ad2ec5640e83723acef68e7ce4a4cab"
+    },
+    {
+      "name": "reverse-order-contamination",
+      "baseDecision": "ALLOW_CANDIDATE_ONLY",
+      "candidateEligible": false,
+      "receiptDigest": "sha256:43e26d1cd48d7dd2fbc41d06850015ff271ddc5e3c6bf639f60dcf3057636e1b"
+    }
+  ],
   "files": {
     "evals/session-composition/adapter/adapter.mjs": "6756a012523f37acb76390d38d704eaefa356e1ee1d37a58ce20d068f2b7673f",
-    "evals/session-composition/adapter/adapter.test.mjs": "dacb7883ace02ecf8abd2c663e4c31fe859410add424632623ee2048c93c52ab",
-    "evals/session-composition/adapter/fixtures.mjs": "912a652198af7e006c29adc6621b2b6d2c1e56de3ce8dc2af5cedbd66ccd1853",
+    "evals/session-composition/adapter/adapter.test.mjs": "e228fd7ca5530e282d003f6eeed86d3ff7acf310a035f6495e0d506e6726105b",
+    "evals/session-composition/adapter/fixtures.mjs": "1cbbc84e725d2830a0e52f5205eac9cdac3a14a7160289b4e7e9cbb6d9a900eb",
     "evals/session-composition/adapter/plan-contracts.mjs": "6fae08267831dcabc9a5314bcb600c4da8e71a5b3752df01f2295d0d7a7de12a",
-    "evals/session-composition/adapter/verify.mjs": "d281bfeb7d41436c4e7627dcb1ce4b03ea47275d9d793d2121c4fc644b64c0be",
-    "evals/session-composition/adapter/README.md": "967ea953acd6ca9974f72ad2240b2e24fd680ec76fcae64465972802163e1b35",
+    "evals/session-composition/adapter/verify.mjs": "3c7bec41a9b03fd9ebbc07c94d5f3f8fa429fe2eace426db5a04502b7a8479cf",
+    "evals/session-composition/adapter/README.md": "5efdeda7e814874e627c10267d4e5e1799a50b1f2004fbfb4a19705847eb59b4",
     "evals/session-composition/adapter/agent-review.md": "dbcb10c45755477a5e3399e1f61ff2dc918b8b7f80cdb60d7b7b6b695d889417",
+    "evals/session-composition/adapter/evidence-lineage.md": "1802d15c7d5a550e316f6999ff4740d8fe51658f2d10bdf85fd06097f9156b50",
     "evals/session-composition/gate.mjs": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703",
     "evals/session-composition/probe.test.mjs": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0",
     "evals/session-composition/fixtures.json": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
@@ -267,8 +311,8 @@
     ".github/workflows/session-composition-candidate.yml": "cfd8c1b29e189e6c7e9c0cf5e6cb2d3a6df93a6f3474a0743377ad283cf80964"
   },
   "rawLogs": {
-    "verification-tests.tap": "45b2908d432103820aaca9f5e947ac9af9022a52b1e5757659826e07acfac11a",
-    "history-ablation.tap": "609320005f8321bb57c019c34bd9f614af488682a8a598bde76b14d52a0a6499"
+    "verification-tests.tap": "363d8fdd363b05abfa0665bc6699b76a83dd473bf8a5b49e85872a0d8cef4037",
+    "history-ablation.tap": "c612193851089846dadc351b9c353fb1af902955feebe6f46f9a078590fba43a"
   },
   "unproved": [
     "production Task 4/5 module integration",

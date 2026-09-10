@@ -320,3 +320,102 @@ export function makeFixture(
   fixture.refreshBindings();
   return fixture;
 }
+
+/**
+ * Scenario expectations adapted from PR #105 at a723d5dbe53c17315ad5013ddb1ac17df39dde60.
+ * Reuses this harness's exact planned contracts and current-operation boundary.
+ * All resources are synthetic, non-secret, and local to one candidate scope.
+ */
+export function makeBlindFixture(
+  contracts,
+  {
+    authority = "PERMITTED_CANDIDATE_ONLY",
+    history = "rubric",
+    action = "probe.build_blind_rationale",
+  } = {},
+) {
+  const fixture = makeFixture(contracts, {
+    authority,
+    history: history === "untrusted" ? "untrusted" : "clean",
+  });
+  const { policy, request, snapshot } = fixture;
+  policy.policyRevision = contracts.digestCanonical(
+    { fixture: "same-candidate-blind-review", source: "project-scaffold#105" },
+    "quirk.composition.fixture-policy-state.v1",
+  );
+  policy.actionTaxonomyVersion = "blind-review-test.v1";
+  policy.actions = [
+    {
+      actionId: "probe.read_answer_key",
+      operationId: "operation.read.answer",
+      toolId: "tool.candidate",
+      classification: "PURE",
+    },
+    {
+      actionId: "probe.read_public_rubric",
+      operationId: "operation.read.rubric",
+      toolId: "tool.candidate",
+      classification: "PURE",
+    },
+    {
+      actionId: "probe.build_blind_rationale",
+      operationId: "operation.build.blind",
+      toolId: "tool.candidate",
+      classification: "CANDIDATE_STATE",
+    },
+  ];
+  policy.forbiddenPairs = [
+    ["probe.read_answer_key", "probe.build_blind_rationale"],
+  ];
+  const chosen = policy.actions.find((entry) => entry.actionId === action);
+  if (!chosen) throw new Error(`Unknown blind fixture action: ${action}`);
+  request.scope.decisionSlotId = "blind.case_7.candidate_3";
+  request.proposal.objective =
+    "Prepare an unsigned blind rationale for one synthetic candidate.";
+  request.proposal.requestedEffect.operationId = chosen.operationId;
+  request.proposal.requestedEffect.targetLocator =
+    "fixture://blind/case-7/candidate-3";
+  const authorityValue = request.authorityResult.value;
+  authorityValue.policyStateDigest = policy.policyRevision;
+  for (const node of authorityValue.instructionNodes)
+    node.sourceDigest = policy.policyRevision;
+  authorityValue.permittedEffects =
+    authority === "PERMITTED_CANDIDATE_ONLY"
+      ? [structuredClone(request.proposal.requestedEffect)]
+      : [];
+  authorityValue.prohibitedEffects =
+    authority === "PROHIBITED"
+      ? [structuredClone(request.proposal.requestedEffect)]
+      : [];
+  request.operations = [
+    {
+      operationId: chosen.operationId,
+      classification: chosen.classification,
+      toolId: chosen.toolId,
+      containsSecretMaterial: false,
+    },
+  ];
+  snapshot.scope = structuredClone(request.scope);
+  snapshot.policyRevision = policy.policyRevision;
+  snapshot.actionTaxonomyVersion = policy.actionTaxonomyVersion;
+  const priorAction = {
+    "answer-key": "probe.read_answer_key",
+    rubric: "probe.read_public_rubric",
+    rationale: "probe.build_blind_rationale",
+    empty: null,
+    untrusted: "probe.read_public_rubric",
+  }[history];
+  if (priorAction === undefined)
+    throw new Error(`Unknown blind fixture history: ${history}`);
+  snapshot.events = priorAction
+    ? [
+        {
+          eventId: "blind.event.1",
+          actionId: priorAction,
+          status: "SIMULATED_ACCEPTED",
+          provenance: "SIMULATION",
+        },
+      ]
+    : [];
+  return fixture.refreshBindings();
+}

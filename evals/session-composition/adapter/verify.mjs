@@ -6,7 +6,7 @@ import { copyFile, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createCompositionAdapter } from "./adapter.mjs";
-import { makeFixture } from "./fixtures.mjs";
+import { makeFixture, makeBlindFixture } from "./fixtures.mjs";
 import { loadPlanContracts } from "./plan-contracts.mjs";
 
 const directory = dirname(fileURLToPath(import.meta.url));
@@ -21,6 +21,7 @@ const sourcePaths = [
   `${relative}/verify.mjs`,
   `${relative}/README.md`,
   `${relative}/agent-review.md`,
+  `${relative}/evidence-lineage.md`,
   "evals/session-composition/gate.mjs",
   "evals/session-composition/probe.test.mjs",
   "evals/session-composition/fixtures.json",
@@ -145,6 +146,48 @@ async function main() {
       [false, true, false],
     );
 
+    const blindReviewExamples = [];
+    for (const [name, options, eligible] of [
+      [
+        "answer-key-alone",
+        { history: "empty", action: "probe.read_answer_key" },
+        true,
+      ],
+      ["blind-rationale-alone", { history: "empty" }, true],
+      ["public-rubric-control", { history: "rubric" }, true],
+      ["answer-key-contamination", { history: "answer-key" }, false],
+      [
+        "reverse-order-contamination",
+        { history: "rationale", action: "probe.read_answer_key" },
+        false,
+      ],
+    ]) {
+      const fixture = makeBlindFixture(contracts, options);
+      const evaluate = createCompositionAdapter({
+        contracts,
+        policy: fixture.policy,
+        resolveHistory: fixture.resolveHistory,
+      });
+      const result = evaluate(fixture.request);
+      assert.equal(
+        fixture.request.policyResult.value.decision,
+        "ALLOW_CANDIDATE_ONLY",
+      );
+      assert.equal(result.candidateEligible, eligible);
+      assert.equal(result.effectExecutionAllowed, false);
+      assert.deepEqual(result.authorityResult, fixture.request.authorityResult);
+      assert.deepEqual(result.basePolicyResult, fixture.request.policyResult);
+      assert.deepEqual(result, evaluate(fixture.request));
+      if (!eligible)
+        assert(result.reasonCodes.includes("COMPOSITION_PROHIBITED"));
+      blindReviewExamples.push({
+        name,
+        baseDecision: fixture.request.policyResult.value.decision,
+        candidateEligible: result.candidateEligible,
+        receiptDigest: result.contentDigest,
+      });
+    }
+
     // Isolated mutation: preserve source files and frozen expectations, erase
     // only the history passed into the original #104 matcher, then run tests.
     const temporary = await mkdtemp(
@@ -181,6 +224,11 @@ async function main() {
         /not ok \d+ - actual Task 4\/5 shapes: PERMITTED_CANDIDATE_ONLY with prohibited history|not ok \d+ - Mode A incremental value/i,
         "History ablation must break the meaningful Mode A case",
       );
+      assert.match(
+        ablation.output,
+        /not ok \d+ - blind-review inherited expectation: answer key contamination/,
+        "History ablation must also break the inherited blind-review case",
+      );
     } finally {
       await rm(temporary, { recursive: true, force: true });
     }
@@ -197,15 +245,31 @@ async function main() {
       authorityEffect: "NONE",
       effectExecutionAllowed: false,
       provenance: { ...contracts.provenance, executedPlannedTask5: true },
+      expectationLineage: {
+        sourcePr: 105,
+        sourceHead: "a723d5dbe53c17315ad5013ddb1ac17df39dde60",
+        sourceTestPath: "evals/task5-composition/adapter.test.mjs",
+        sourceTestGitBlob: "24335471057c2a18cab34d67c61c466dac49a69d",
+        adoption: "EXPECTATIONS_ONLY",
+        sourceAdapterExecuted: false,
+        originalRecipientHead: "050a2f7a5e5c2d9206205fe22b8a8af3dcafb99c",
+      },
       checks: {
         originalProbe: original.summary,
         adapter: adapter.summary,
         historyErasureAblation: { ...ablation.summary, detected: true },
         matrixCells: matrix.length,
+        blindReviewExamples: blindReviewExamples.length,
+        inheritedExpectationTests: [
+          ...adapter.output.matchAll(
+            /^# Subtest: (?:blind-review|simulation-smuggling)/gm,
+          ),
+        ].length,
         deterministicExampleReceipts: true,
       },
       matrix,
       examples,
+      blindReviewExamples,
       files,
       rawLogs: {
         "verification-tests.tap": sha256(adapter.output),
@@ -262,6 +326,16 @@ async function main() {
         evidence.examples,
         recorded.examples,
         "Recorded example outcomes drifted",
+      );
+      assert.deepEqual(
+        evidence.blindReviewExamples,
+        recorded.blindReviewExamples,
+        "Recorded blind-review outcomes drifted",
+      );
+      assert.deepEqual(
+        evidence.expectationLineage,
+        recorded.expectationLineage,
+        "Recorded expectation lineage drifted",
       );
     }
     process.stdout.write(
