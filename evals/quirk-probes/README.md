@@ -18,8 +18,21 @@ sees the old result as `STALE`, even when the old result passed.
 
 Use Node 20+ from the repository root. The package adds no dependencies.
 
+Start with the read-only consumer check:
+
 ```bash
-node --test evals/session-composition/probe.test.mjs evals/quirk-probes/core.test.mjs evals/quirk-probes/replay.test.mjs
+node evals/quirk-probes/inspect.mjs
+```
+
+It reads the checked-in Scaffold review requirement, inspects the recorded result,
+and runs the fixed local replay. It explains what needs attention and leaves every
+input unchanged. `--json` provides the same diagnosis for an agent or CI consumer.
+See [consumer usage and contract](consumer.md) for file inputs, exit codes, and recovery.
+
+To reproduce all bounded tests and the original evidence check:
+
+```bash
+node --test evals/session-composition/probe.test.mjs evals/quirk-probes/*.test.mjs
 node evals/quirk-probes/replay.mjs --check
 ```
 
@@ -46,17 +59,11 @@ independent review obligations and existing verification receipt stay intact.
 ## Small API, explicit trust boundary
 
 ```js
-import { replay } from './evals/quirk-probes/replay.mjs';
-import { inspectLinkedEvidence } from './evals/quirk-probes/core.mjs';
+import { inspectFiles } from './evals/quirk-probes/inspect.mjs';
 
-const { result } = await replay();
-const requirements = [{
-  probeId: result.probeId,
-  definitionDigest: result.definitionDigest,
-}]; // Demo only: a real consumer pins these independently before receiving evidence.
-
-const inspection = inspectLinkedEvidence(requirements, [result]);
-console.log(inspection.rows, inspection.allCurrent);
+// Reads literal consumer requirements separately from incoming evidence.
+const inspection = await inspectFiles();
+console.log(inspection.rows, inspection.evidenceReady);
 ```
 
 `allCurrent` means every required result is structurally intact, matches the
@@ -64,12 +71,19 @@ consumer's exact expected definition, and supports its bounded claim. It is an
 evidence applicability result. It is never permission, eligibility to execute,
 human approval, authenticated history, or runtime safety proof.
 
+The consumer's `evidenceReady` additionally requires matching fresh local replay
+and, when supplied, an intact complete replay report. A static expected digest
+alone does not detect source drift; the separate local replay check supplies that
+bounded observation. Neither field establishes current production policy.
+
 | Export | Input → output |
 | --- | --- |
 | `digest(value)` | Strict bounded JSON → sorted-key SHA-256 digest |
 | `assessProbe(definition, observations)` | Paired specification and observations → unsigned candidate result |
 | `inspectLinkedEvidence(requirements, results)` | Independently pinned requirements and supplied results → per-probe applicability |
 | `replay()` | Fixed trusted local source files → freshly reproduced example evidence |
+| `inspectConsumer(profile, recorded, replayed)` | Separately pinned consumer profile and two evidence sets → candidate review diagnosis |
+| `inspectFiles(options)` | Bounded file inputs and fixed local replay → read-only operator/agent report |
 
 The generic assessor accepts supplied observations. **It does not authenticate
 them or execute their claimed source.** A caller could fabricate internally
@@ -210,12 +224,17 @@ duplicate, corrupted and self-promoted results cannot produce `allCurrent`; an
 isolated local copy can record/check evidence and diagnose drift without private
 context. See [development evidence](development.md) and [replay evidence](evidence.json).
 
-Next proof: use one consumer-owned definition pin in a real Quirk OS or Skills
-candidate workflow. Change one linked source, observe `STALE`, and measure whether
-the operator identifies the required rerun more quickly than from the existing
-receipt alone. Preserve human review and effect boundaries throughout. Keep if it
-improves that decision; mutate if the reason is unclear; drop the extra wrapper if
-it adds maintenance without useful discrimination.
+The [Scaffold review consumer](consumer.md) now demonstrates a separate frozen pin,
+fresh local replay, and recovery guidance. Changing its independently required
+definition makes old evidence `STALE`; changing a pinned local source blocks replay
+even while recorded evidence still matches the old definition. These are different
+failure modes and remain visible separately.
+
+Next proof: use the inspector to finish one real review decision and measure whether
+the operator identifies the required next step more quickly and correctly than
+from the existing receipt alone. OS/Skills adoption remains proposed. Preserve human
+review and effect boundaries. Keep if the diagnosis helps; mutate unclear guidance;
+drop the wrapper if it adds maintenance without useful discrimination.
 
 Admission remains **Constrain**: local candidate evaluation and development use.
 Independent human review, broad runtime admission, and measured cross-system

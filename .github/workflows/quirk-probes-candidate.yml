@@ -26,6 +26,8 @@ jobs:
         with:
           node-version: 24
       - name: Exercise original and reusable candidate probes
-        run: node --test evals/session-composition/probe.test.mjs evals/quirk-probes/core.test.mjs evals/quirk-probes/replay.test.mjs
+        run: node --test evals/session-composition/probe.test.mjs evals/quirk-probes/*.test.mjs
       - name: Replay the complete bound evidence
         run: node evals/quirk-probes/replay.mjs --check
+      - name: Inspect independently pinned consumer evidence
+        run: node evals/quirk-probes/inspect.mjs --json
