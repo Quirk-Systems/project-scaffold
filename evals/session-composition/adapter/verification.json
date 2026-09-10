@@ -91,7 +91,8 @@
     "sourceTestGitBlob": "24335471057c2a18cab34d67c61c466dac49a69d",
     "adoption": "EXPECTATIONS_ONLY",
     "sourceAdapterExecuted": false,
-    "originalRecipientHead": "050a2f7a5e5c2d9206205fe22b8a8af3dcafb99c"
+    "originalRecipientHead": "050a2f7a5e5c2d9206205fe22b8a8af3dcafb99c",
+    "consolidationAuditBaseline": "5f27d1c3ec5aa15e991c63582b5d8d25f55ca58e"
   },
   "checks": {
     "originalProbe": {
@@ -102,20 +103,20 @@
     },
     "adapter": {
       "exitCode": 0,
-      "tests": 103,
-      "passed": 103,
+      "tests": 116,
+      "passed": 116,
       "failed": 0
     },
     "historyErasureAblation": {
       "exitCode": 1,
-      "tests": 103,
-      "passed": 96,
-      "failed": 7,
+      "tests": 116,
+      "passed": 108,
+      "failed": 8,
       "detected": true
     },
     "matrixCells": 12,
     "blindReviewExamples": 5,
-    "inheritedExpectationTests": 18,
+    "inheritedExpectationTests": 31,
     "deterministicExampleReceipts": true
   },
   "matrix": [
@@ -294,25 +295,35 @@
   ],
   "files": {
     "evals/session-composition/adapter/adapter.mjs": "6756a012523f37acb76390d38d704eaefa356e1ee1d37a58ce20d068f2b7673f",
-    "evals/session-composition/adapter/adapter.test.mjs": "e228fd7ca5530e282d003f6eeed86d3ff7acf310a035f6495e0d506e6726105b",
+    "evals/session-composition/adapter/adapter.test.mjs": "0399c025cefcd634d9a916db84cc22ee56641be694a31a1f508667447fc851aa",
     "evals/session-composition/adapter/fixtures.mjs": "1cbbc84e725d2830a0e52f5205eac9cdac3a14a7160289b4e7e9cbb6d9a900eb",
     "evals/session-composition/adapter/plan-contracts.mjs": "6fae08267831dcabc9a5314bcb600c4da8e71a5b3752df01f2295d0d7a7de12a",
-    "evals/session-composition/adapter/verify.mjs": "3c7bec41a9b03fd9ebbc07c94d5f3f8fa429fe2eace426db5a04502b7a8479cf",
-    "evals/session-composition/adapter/README.md": "5efdeda7e814874e627c10267d4e5e1799a50b1f2004fbfb4a19705847eb59b4",
+    "evals/session-composition/adapter/verify.mjs": "5fe2e5aecb8594b58d88976f9b5ed1bbaf22c3f7b25e4f4b4dcbdd496c413fca",
+    "evals/session-composition/adapter/README.md": "ff08261b591a38d3d56367caf24c97dec6ed87816011035870a395240cbce33f",
     "evals/session-composition/adapter/agent-review.md": "dbcb10c45755477a5e3399e1f61ff2dc918b8b7f80cdb60d7b7b6b695d889417",
-    "evals/session-composition/adapter/evidence-lineage.md": "1802d15c7d5a550e316f6999ff4740d8fe51658f2d10bdf85fd06097f9156b50",
+    "evals/session-composition/adapter/evidence-lineage.md": "2d013588ae7143949e943e36dc62581db7357ec75b0e4aa47a2f08423bbd3ae6",
     "evals/session-composition/gate.mjs": "b14519c12f1fcf0af54ce0a5cc4a295ff01768ddfab86bdcd3b84a1c0d807703",
     "evals/session-composition/probe.test.mjs": "5bb693c92fe076aea396d001d2c8eba1b46f9dd3d731d304a86eda28dc7a78b0",
     "evals/session-composition/fixtures.json": "34c08a8ecf0e4688efcc6a944879b841f11415045c65cb6b918a559337958f45",
     "evals/session-composition/run.mjs": "369292be328d5f5eb45d91674efbe7d89b67652fe27ddd03ca54bd94715b79b5",
     "docs/governance/session-composition-candidate.md": "1fb7ef20ed9afffe673dbb6bfdd3205128bcebeb8a9b735946dddb840ed7c411",
-    "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md": "3b1cceb654b155449aecb5da498cdd8cba32a99daf05cae9f6b958b69bbe56c5",
+    "docs/superpowers/plans/2026-08-28-governed-agent-run-state-only.md": "8dfdf1e10668743b5d10e75eb9c7ecad39027f4b7c4648a7135b041bf82701db",
     "package.json": "89787ce359776c488338f503e8e292bd4c19571d0af39e68ce26f0542f21cdce",
     ".github/workflows/session-composition-candidate.yml": "cfd8c1b29e189e6c7e9c0cf5e6cb2d3a6df93a6f3474a0743377ad283cf80964"
   },
   "rawLogs": {
-    "verification-tests.tap": "363d8fdd363b05abfa0665bc6699b76a83dd473bf8a5b49e85872a0d8cef4037",
-    "history-ablation.tap": "c612193851089846dadc351b9c353fb1af902955feebe6f46f9a078590fba43a"
+    "verification-tests.tap": "9b1bc255b41ef89d84e5b726f402d4dc8230fe966c554a40bdcbcbe9f826d0af",
+    "history-ablation.tap": "5653b85f6cf022559d2e2956ab7a42d2826757a7bd80a7ce1a01e76eb38e2bfc",
+    "consolidation-first-run.tap": "68f7dbe811cacc3eb954895e2bbf2d61ffe11ea80604159c09dadb58f0775992"
+  },
+  "developmentEvidence": {
+    "initialConsolidationRun": {
+      "tests": 116,
+      "passed": 114,
+      "failed": 2
+    },
+    "correction": "Two new fixture identifiers used camelCase and failed the planned identifier schema before the expected semantic-denial reason. Replaced with valid fixture effect/instruction identifiers and added explicit schema parsing; denial and source-preservation expectations and adapter implementation are unchanged.",
+    "implementationRedGreenClaimed": false
   },
   "unproved": [
     "production Task 4/5 module integration",
@@ -325,5 +336,5 @@
     "Mode B/C behavior",
     "independent human review"
   ],
-  "testOrder": "First complete adapter-suite run was green; history erasure is subsequent mutation evidence, not preimplementation TDD evidence."
+  "testOrder": "The original adapter suite first ran green. The later consolidation audit first had two invalid-fixture assertion failures, recorded separately. History erasure is subsequent mutation evidence, not preimplementation TDD evidence."
 }

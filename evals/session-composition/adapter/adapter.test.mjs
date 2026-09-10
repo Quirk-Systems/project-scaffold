@@ -578,6 +578,168 @@ test("source content tampering without canonical digest refresh is rejected", ()
   assertBlocked(evaluate(fixture));
 });
 
+// Remaining #105 integrity expectations, adapted to canonical hashing and the
+// separate current-operation/prior-history contract used by this harness.
+for (const obligation of ["requiredHumanReview", "unresolvedConflictIds"]) {
+  test(`inherited integrity: permitted authority with ${obligation} stays blocked`, () => {
+    const fixture = makeFixture(contracts);
+    assert.equal(evaluate(fixture).candidateEligible, true);
+    fixture.request.authorityResult.value[obligation] = [
+      obligation === "requiredHumanReview"
+        ? "effect.candidate"
+        : "instruction.primary",
+    ];
+    fixture.refreshBindings();
+    contracts.ManyTierAuthorityResolutionSchema.parse(
+      fixture.request.authorityResult.value,
+    );
+    assert.equal(
+      fixture.request.policyResult.value.decision,
+      "ALLOW_CANDIDATE_ONLY",
+    );
+    const result = evaluate(fixture);
+    assertBlocked(result);
+    assert.ok(result.reasonCodes.includes("AUTHORITY_RESULT_INCONSISTENT"));
+    assert.deepEqual(result.authorityResult, fixture.request.authorityResult);
+    assert.deepEqual(result.basePolicyResult, fixture.request.policyResult);
+  });
+}
+
+for (const [authority, decision] of [
+  ["PROHIBITED", "REQUIRE_HUMAN_REVIEW"],
+  ["UNRESOLVED", "REQUIRE_HUMAN_REVIEW"],
+  ["PROHIBITED", "ALLOW_CANDIDATE_ONLY"],
+]) {
+  test(`inherited integrity: forged ${decision} cannot replace ${authority}`, () => {
+    const fixture = makeFixture(contracts, { authority });
+    fixture.request.policyResult.value.decision = decision;
+    rehash(
+      contracts,
+      fixture.request.policyResult.value,
+      "quirk.governed-run.execution-policy.v1",
+    );
+    const result = evaluate(fixture);
+    assertBlocked(result);
+    assert.ok(result.reasonCodes.includes("SOURCE_BINDING_MISMATCH"));
+    assert.deepEqual(result.authorityResult, fixture.request.authorityResult);
+    assert.deepEqual(result.basePolicyResult, fixture.request.policyResult);
+  });
+}
+
+test("inherited integrity: an existing policy denial survives clean history and permitted authority", () => {
+  const fixture = makeFixture(contracts);
+  assert.equal(evaluate(fixture).candidateEligible, true);
+  fixture.request.policyResult.value.decision = "DENY";
+  fixture.request.policyResult.value.permittedPreparatoryOperationIds = [];
+  fixture.request.policyResult.value.deniedOperationIds = [
+    fixture.request.operations[0].operationId,
+  ];
+  rehash(
+    contracts,
+    fixture.request.policyResult.value,
+    "quirk.governed-run.execution-policy.v1",
+  );
+  const result = evaluate(fixture);
+  assertBlocked(result);
+  assert.deepEqual(result.effectivePolicyResult, fixture.request.policyResult);
+});
+
+for (const [name, options] of [
+  ["eligible control", {}],
+  ["composition denial", { history: "prohibited" }],
+  ["human review", { authority: "HUMAN_REVIEW" }],
+]) {
+  test(`inherited integrity: receipt survives caller mutation after ${name}`, () => {
+    const fixture = makeFixture(contracts, options);
+    const result = evaluate(fixture);
+    assertBounded(result);
+    assert.equal(result.candidateEligible, name === "eligible control");
+    const before = structuredClone(result);
+    fixture.request.authorityResult.value.requiredHumanReview.push(
+      "review.after-return",
+    );
+    fixture.request.authorityResult.value.activeAuthorityGrantIds.push(
+      "grant.after-return",
+    );
+    fixture.request.policyResult.value.policyReasonCodes.push(
+      "reason.after-return",
+    );
+    fixture.request.bindings.actionTaxonomyVersion = "after-return";
+    fixture.request.scope.sessionId = "session.after-return";
+    fixture.snapshot.events.push({ eventId: "event.after-return" });
+    fixture.policy.forbiddenPairs.length = 0;
+    assert.deepEqual(result, before);
+  });
+}
+
+for (const changed of [
+  "policy-and-taxonomy-revisions",
+  "canonical-authority-identity",
+]) {
+  test(`inherited integrity: coherent ${changed} changes the receipt digest`, () => {
+    const fixture = makeFixture(contracts);
+    const before = evaluate(fixture);
+    assert.equal(before.candidateEligible, true);
+    if (changed === "canonical-authority-identity") {
+      fixture.request.authorityResult.value.resolutionId = "resolution.next";
+    } else {
+      fixture.policy.policyRevision = contracts.digestCanonical(
+        { fixture: "next-policy" },
+        "quirk.composition.fixture-policy-state.v1",
+      );
+      fixture.policy.actionTaxonomyVersion = "next-taxonomy.v2";
+      fixture.request.authorityResult.value.policyStateDigest =
+        fixture.policy.policyRevision;
+      for (const node of fixture.request.authorityResult.value.instructionNodes)
+        node.sourceDigest = fixture.policy.policyRevision;
+      fixture.snapshot.policyRevision = fixture.policy.policyRevision;
+      fixture.snapshot.actionTaxonomyVersion =
+        fixture.policy.actionTaxonomyVersion;
+    }
+    fixture.refreshBindings();
+    const after = evaluate(fixture);
+    assertBounded(after);
+    assert.equal(after.candidateEligible, true);
+    assert.notDeepEqual(after.bindings, before.bindings);
+    assert.notEqual(after.contentDigest, before.contentDigest);
+    assert.deepEqual(after.authorityResult, fixture.request.authorityResult);
+  });
+}
+
+for (const changed of ["policy-body", "taxonomy-body"]) {
+  test(`inherited integrity: unchanged-label ${changed} substitution requires a new binding`, () => {
+    const fixture = makeFixture(contracts);
+    const before = evaluate(fixture);
+    assert.equal(before.candidateEligible, true);
+    const labels = [
+      fixture.policy.policyRevision,
+      fixture.policy.actionTaxonomyVersion,
+    ];
+    if (changed === "policy-body") {
+      fixture.policy.forbiddenPairs = [
+        ["probe.select_candidate_a", "probe.revise_rationale"],
+      ];
+    } else {
+      // Change an unused action so action mismatch cannot explain the denial.
+      fixture.policy.actions.find(
+        (action) => action.actionId === "probe.select_candidate_a",
+      ).toolId = "tool.changed";
+    }
+    const stale = evaluate(fixture);
+    assertBlocked(stale);
+    assert.deepEqual(stale.reasonCodes, ["DECISION_BINDING_MISMATCH"]);
+    fixture.refreshBindings();
+    const rebound = evaluate(fixture);
+    assertBounded(rebound);
+    assert.equal(rebound.candidateEligible, true);
+    assert.deepEqual(
+      [fixture.policy.policyRevision, fixture.policy.actionTaxonomyVersion],
+      labels,
+    );
+    assert.notEqual(rebound.contentDigest, before.contentDigest);
+  });
+}
+
 for (const contradiction of [
   "empty-permission",
   "prohibited-effect",

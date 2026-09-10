@@ -236,6 +236,26 @@ async function main() {
     const files = {};
     for (const path of sourcePaths)
       files[path] = sha256(await readFile(join(root, path)));
+    const initialConsolidationLog = await readFile(
+      join(directory, "consolidation-first-run.tap"),
+      "utf8",
+    );
+    const initialCount = (name) =>
+      Number(
+        initialConsolidationLog.match(
+          new RegExp(`^# ${name} (\\d+)$`, "m"),
+        )?.[1],
+      );
+    const initialConsolidationRun = {
+      tests: initialCount("tests"),
+      passed: initialCount("pass"),
+      failed: initialCount("fail"),
+    };
+    assert.deepEqual(initialConsolidationRun, {
+      tests: 116,
+      passed: 114,
+      failed: 2,
+    });
     const evidence = {
       kind: "CompositionAdapterVerification",
       version: 1,
@@ -253,6 +273,7 @@ async function main() {
         adoption: "EXPECTATIONS_ONLY",
         sourceAdapterExecuted: false,
         originalRecipientHead: "050a2f7a5e5c2d9206205fe22b8a8af3dcafb99c",
+        consolidationAuditBaseline: "5f27d1c3ec5aa15e991c63582b5d8d25f55ca58e",
       },
       checks: {
         originalProbe: original.summary,
@@ -262,7 +283,7 @@ async function main() {
         blindReviewExamples: blindReviewExamples.length,
         inheritedExpectationTests: [
           ...adapter.output.matchAll(
-            /^# Subtest: (?:blind-review|simulation-smuggling)/gm,
+            /^# Subtest: (?:blind-review|simulation-smuggling|inherited integrity:)/gm,
           ),
         ].length,
         deterministicExampleReceipts: true,
@@ -274,6 +295,13 @@ async function main() {
       rawLogs: {
         "verification-tests.tap": sha256(adapter.output),
         "history-ablation.tap": sha256(ablation.output),
+        "consolidation-first-run.tap": sha256(initialConsolidationLog),
+      },
+      developmentEvidence: {
+        initialConsolidationRun,
+        correction:
+          "Two new fixture identifiers used camelCase and failed the planned identifier schema before the expected semantic-denial reason. Replaced with valid fixture effect/instruction identifiers and added explicit schema parsing; denial and source-preservation expectations and adapter implementation are unchanged.",
+        implementationRedGreenClaimed: false,
       },
       unproved: [
         "production Task 4/5 module integration",
@@ -287,7 +315,7 @@ async function main() {
         "independent human review",
       ],
       testOrder:
-        "First complete adapter-suite run was green; history erasure is subsequent mutation evidence, not preimplementation TDD evidence.",
+        "The original adapter suite first ran green. The later consolidation audit first had two invalid-fixture assertion failures, recorded separately. History erasure is subsequent mutation evidence, not preimplementation TDD evidence.",
     };
     const file = join(directory, "verification.json");
     if (mode === "--write") {
@@ -336,6 +364,11 @@ async function main() {
         evidence.expectationLineage,
         recorded.expectationLineage,
         "Recorded expectation lineage drifted",
+      );
+      assert.deepEqual(
+        evidence.developmentEvidence,
+        recorded.developmentEvidence,
+        "Recorded development evidence drifted",
       );
     }
     process.stdout.write(

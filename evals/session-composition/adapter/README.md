@@ -114,8 +114,12 @@ history in a disposable adapter copy must fail both the exclusive-selection and
 blind-review fixture families. Execution/receipt claims and unexpected event or
 operation fields must be rejected even after their bindings are recomputed. These
 are strict schema-boundary tests, not evidence of real history authentication. The
-first complete suite run was green; the mutation is subsequent disproof evidence,
-not preimplementation red/green evidence.
+original suite first ran green. A later consolidation audit retained additional
+contradictory-obligation, output-isolation, digest-sensitivity, and unchanged-label
+policy/taxonomy substitution regressions. Its first run had two invalid fixture
+identifiers; the [raw log](consolidation-first-run.tap) and receipt preserve that
+correction without claiming an implementation repair. The history mutation is
+subsequent disproof evidence, not preimplementation red/green evidence.
 
 History trust, real grant verification, live-clock freshness/revocation, concurrent
 admission, child-session inheritance, and production consumers remain unproved.
