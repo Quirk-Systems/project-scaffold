@@ -16,14 +16,14 @@ const validAudit = JSON.stringify({
   ],
 });
 
-// lucide-react carries the 0.x range: below 1.0.0 the compatibility line is
-// 0.<minor>, so a minor bump there is a breaking crossing rather than a
-// routine in-line update.
+// Fixture for policy-coupled pre-1.0 behavior: @t3-oss/env-nextjs 0.11.x ->
+// 0.13.x is semver-minor but crosses the compatibility line (0.11 -> 0.13),
+// so verification must fail unless the migration path is explicitly reviewed.
 const manifestBefore: DependencyManifest = {
   dependencies: {
     next: "^15.1.0",
     react: "^19.0.0",
-    "lucide-react": "^0.468.0",
+    "@t3-oss/env-nextjs": "^0.11.1",
   },
   devDependencies: {
     vitest: "~3.2.6",
@@ -34,7 +34,7 @@ const safeManifestAfter: DependencyManifest = {
   dependencies: {
     next: "^15.5.0",
     react: "^19.2.0",
-    "lucide-react": "^0.468.2",
+    "@t3-oss/env-nextjs": "^0.11.3",
   },
   devDependencies: {
     vitest: "~3.2.7",
@@ -74,18 +74,18 @@ describe("dependency verification evidence", () => {
       expectedFailure: "next crossed compatibility line",
     },
     {
-      name: "fails when a 0.x update crosses its minor compatibility line",
+      name: "fails on a synthetic @t3-oss/env-nextjs 0.x minor-line jump",
       auditError: null,
       auditOutput: validAudit,
       manifestAfter: {
         ...safeManifestAfter,
         dependencies: {
           ...safeManifestAfter.dependencies,
-          "lucide-react": "^0.469.0",
+          "@t3-oss/env-nextjs": "^0.13.11",
         },
       },
       expectedVerdict: "failed",
-      expectedFailure: "lucide-react crossed compatibility line",
+      expectedFailure: "@t3-oss/env-nextjs crossed compatibility line",
     },
     {
       name: "fails when an update removes a direct dependency",

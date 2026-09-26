@@ -15,8 +15,16 @@ updates:
       # its migration PR.
       - dependency-name: zod
         update-types: ["version-update:semver-major"]
+      # @t3-oss/env-nextjs is still pre-1.0; upstream 0.12.0 and 0.13.0 both
+      # shipped breaking changes behind semver-minor bumps. Hold minors until a
+      # migration review explicitly confirms compatibility evidence:
+      # 1) upstream changelog + API diff, 2) peer-floor check (notably zod),
+      # 3) regenerated bun.lock committed, 4) full validate + e2e green.
+      # Keep patches flowing; do not generalize this guard to other 0.x deps
+      # unless they show the same breakage pattern.
       - dependency-name: "@t3-oss/env-nextjs"
-        update-types: ["version-update:semver-major"]
+        update-types:
+          ["version-update:semver-major", "version-update:semver-minor"]
       - dependency-name: "@hookform/resolvers"
         update-types: ["version-update:semver-major"]
       - dependency-name: next-auth
