@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/schemas/governance/oss-component-admission.schema.json",
+  "title": "OSS Component Admission Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["oss_component"],
+  "properties": {
+    "oss_component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "version",
+        "source",
+        "primary_layer",
+        "quirk_role",
+        "admission_status",
+        "boundaries",
+        "required_authority_grants_for",
+        "evidence_outputs",
+        "integration_surfaces",
+        "risk",
+        "evaluation",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "homepage",
+            "repository",
+            "package",
+            "license",
+            "maintainers"
+          ],
+          "properties": {
+            "homepage": { "type": "string", "format": "uri" },
+            "repository": { "type": "string", "format": "uri" },
+            "package": { "type": "string", "minLength": 1 },
+            "license": { "type": "string", "minLength": 1 },
+            "maintainers": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "primary_layer": { "type": "string", "minLength": 1 },
+        "quirk_role": { "type": "string", "minLength": 1 },
+        "admission_status": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "admitted",
+            "quarantined",
+            "deprecated",
+            "rejected"
+          ]
+        },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "owns_canon",
+            "may_grant_authority",
+            "may_store_secrets",
+            "may_define_ontology",
+            "may_define_memory_truth",
+            "may_emit_evidence",
+            "may_execute_runtime_actions"
+          ],
+          "properties": {
+            "owns_canon": { "type": "boolean" },
+            "may_grant_authority": { "type": "boolean" },
+            "may_store_secrets": { "type": "boolean" },
+            "may_define_ontology": { "type": "boolean" },
+            "may_define_memory_truth": { "type": "boolean" },
+            "may_emit_evidence": { "type": "boolean" },
+            "may_execute_runtime_actions": { "type": "boolean" }
+          }
+        },
+        "required_authority_grants_for": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "writes",
+              "external_calls",
+              "production_execution",
+              "publication",
+              "canon_mutation",
+              "secret_access",
+              "evaluator_verdicts"
+            ]
+          }
+        },
+        "evidence_outputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "traces",
+              "scan_results",
+              "eval_scores",
+              "policy_decisions",
+              "receipts",
+              "provenance",
+              "decision_receipts"
+            ]
+          }
+        },
+        "integration_surfaces": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "github",
+            "supabase",
+            "vercel",
+            "cloudflare",
+            "temporal",
+            "airtable",
+            "agent_ready",
+            "plugin_autopilot",
+            "plugin_eval",
+            "code_ontology_companion"
+          ],
+          "properties": {
+            "github": { "type": "boolean" },
+            "supabase": { "type": "boolean" },
+            "vercel": { "type": "boolean" },
+            "cloudflare": { "type": "boolean" },
+            "temporal": { "type": "boolean" },
+            "airtable": { "type": "boolean" },
+            "agent_ready": { "type": "boolean" },
+            "plugin_autopilot": { "type": "boolean" },
+            "plugin_eval": { "type": "boolean" },
+            "code_ontology_companion": { "type": "boolean" }
+          }
+        },
+        "risk": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "failure_modes",
+            "stale_doc_risk",
+            "supply_chain_risk",
+            "secret_handling_risk",
+            "lock_in_risk",
+            "authority_laundering_risk",
+            "evidence_laundering_risk"
+          ],
+          "properties": {
+            "failure_modes": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "stale_doc_risk": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            },
+            "supply_chain_risk": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            },
+            "secret_handling_risk": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            },
+            "lock_in_risk": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            },
+            "authority_laundering_risk": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            },
+            "evidence_laundering_risk": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            }
+          }
+        },
+        "evaluation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required_fixtures",
+            "tribunal_declaration_required",
+            "authority_grant_required",
+            "eval_of_eval_required"
+          ],
+          "properties": {
+            "required_fixtures": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "tribunal_declaration_required": { "type": "boolean" },
+            "authority_grant_required": { "type": "boolean" },
+            "eval_of_eval_required": { "type": "boolean" }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "canonical_path",
+            "content_hash",
+            "reviewed_by",
+            "reviewed_at",
+            "supersedes",
+            "superseded_by"
+          ],
+          "properties": {
+            "canonical_path": { "type": "string", "minLength": 1 },
+            "content_hash": { "type": "string", "minLength": 1 },
+            "reviewed_by": { "type": "string", "minLength": 1 },
+            "reviewed_at": { "type": "string", "format": "date-time" },
+            "supersedes": { "type": "string" },
+            "superseded_by": { "type": "string" }
+          }
+        }
+      }
+    },
+    "authority_grant_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "admission_evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "canonical_evidence_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "decision_inputs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "runtime_behavior_claims": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "secret_data_paths": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "documentation_current": { "type": "boolean" },
+    "cross_surface_authority_reuse": { "type": "boolean" },
+    "expected_failures": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
