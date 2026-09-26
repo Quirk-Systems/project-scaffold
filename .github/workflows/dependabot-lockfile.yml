@@ -10,8 +10,6 @@ name: Dependabot lockfile
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - package.json
 
 # No workflow-level permissions: the write scope is granted to the one job that
 # needs it and withheld from the one that runs dependency code. See below.
@@ -97,6 +95,7 @@ jobs:
   # to steal and nothing to push with.
   verify:
     needs: sync
+    if: ${{ needs.sync.result == 'success' || needs.sync.result == 'skipped' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -119,7 +118,17 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
+      - name: Decide verification mode
+        id: mode
+        run: |
+          if [ "${{ github.event.pull_request.user.login }}" = "dependabot[bot]" ]; then
+            echo "dependabot=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "dependabot=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.mode.outputs.dependabot == 'true'
         with:
           # The synced branch, as the sync job left it.
           ref: ${{ github.head_ref }}
@@ -129,6 +138,7 @@ jobs:
           persist-credentials: false
 
       - uses: oven-sh/setup-bun@v2
+        if: steps.mode.outputs.dependabot == 'true'
         with:
           bun-version: latest
 
@@ -136,15 +146,28 @@ jobs:
       # — matching it keeps a passing verify from meaning something different
       # than a passing CI run.
       - uses: actions/setup-node@v7
+        if: steps.mode.outputs.dependabot == 'true'
         with:
           node-version: 20
 
+      - name: Non-Dependabot no-op
+        if: steps.mode.outputs.dependabot != 'true'
+        run: |
+          echo "Non-Dependabot PR: CI/validate, CI/security, CI/e2e provide the required gates."
+          echo "Dependabot lockfile / verify remains a stable required check name."
+
       - name: Prove the drift is gone
+        if: steps.mode.outputs.dependabot == 'true'
         # The exact command that fails on a drifted lockfile, and the first
         # step of every CI job.
         run: bun install --frozen-lockfile
 
+      - name: Verify the update against the security gate
+        if: steps.mode.outputs.dependabot == 'true'
+        run: bun audit --prod
+
       - name: Verify the update against the real gate
+        if: steps.mode.outputs.dependabot == 'true'
         # Worth the runner minutes on a dependency PR: a lockfile that installs
         # is not the same as a dependency update that works. This is how the
         # plugin-react major was caught — it resolved fine and then vitest
@@ -154,8 +177,10 @@ jobs:
           SKIP_ENV_VALIDATION: "1"
 
       - run: bunx playwright install --with-deps
+        if: steps.mode.outputs.dependabot == 'true'
 
       - name: Verify the update against the e2e gate
+        if: steps.mode.outputs.dependabot == 'true'
         # `validate` stops at the build; `test:e2e` is the other half of
         # `validate:full`. Run it explicitly rather than calling validate:full,
         # which would repeat everything above.
