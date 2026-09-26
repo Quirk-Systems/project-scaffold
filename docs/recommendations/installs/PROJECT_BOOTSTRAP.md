@@ -118,17 +118,19 @@ Required for real projects:
    - `CI / security`
    - `CI / e2e`
    - `Quirk Semantic Check / semantic-governance`
-   - `Dependabot lockfile / verify`
 7. Enable: "Require branches to be up to date before merging" (strict)
 8. Enable: "Require conversation resolution before merging"
 9. Enable: "Do not allow bypassing the above settings"
 
 Dependabot caveat:
-- `Dependabot lockfile / verify` is intentionally the post-sync gate.
-- CI jobs are skipped for Dependabot PRs until lockfile sync is done, because a
-  `GITHUB_TOKEN` lockfile push does not re-trigger workflows.
-- This prevents an impossible stale pre-sync check while still requiring
-  install + security + validate + e2e evidence for the synced dependency head.
+- `Dependabot lockfile / verify` is intentionally the post-sync gate for
+  Dependabot dependency `package.json` PRs.
+- CI jobs are skipped only for stale Dependabot `npm`/`bun` heads (where
+  `package.json` changed but `bun.lock` has not yet been synced).
+- Once lockfile sync lands, the dedicated Dependabot `verify` job validates the
+  synced tree with install + security + validate + e2e evidence.
+- This avoids impossible stale pre-sync checks while keeping required CI checks
+  tied to the exact commit under review.
 
 Emergency path (explicit + auditable):
 - Keep bypass disabled by default.

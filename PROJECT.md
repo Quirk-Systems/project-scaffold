@@ -171,7 +171,7 @@ Store ADRs in `docs/adr/ADR-001-*.md`.
 - [ ] Create GitHub repo + push initial commit
 - [ ] Enable branch protection (or ruleset) on `main`
 - [ ] Require PRs + code-owner review + strict up-to-date branches
-- [ ] Set required checks: `CI / validate`, `CI / security`, `CI / e2e`, `Quirk Semantic Check / semantic-governance`, `Dependabot lockfile / verify`
+- [ ] Set required checks: `CI / validate`, `CI / security`, `CI / e2e`, `Quirk Semantic Check / semantic-governance`
 - [ ] Define and document an explicit emergency bypass path (not implicit admin bypass)
 
 ### Day 1 — First Feature
