@@ -4,11 +4,11 @@
 
 This repository is currently an active scaffold. Security updates apply to the `main` branch and the latest tagged release, if releases are in use.
 
-| Version / Branch | Supported |
-| --- | --- |
-| `main` | :white_check_mark: |
-| Latest release | :white_check_mark: |
-| Older releases / branches | Best effort |
+| Version / Branch          | Supported          |
+| ------------------------- | ------------------ |
+| `main`                    | :white_check_mark: |
+| Latest release            | :white_check_mark: |
+| Older releases / branches | Best effort        |
 
 ## Reporting a Vulnerability
 
@@ -66,3 +66,21 @@ For filesystem-touching tools, especially MCP-style servers, the expected baseli
 - Input validation
 - No secret logging
 - Least-privilege configuration
+
+## OpenAI API Key Handling (`OPENAI_API_KEY`)
+
+`OPENAI_API_KEY` is a runtime secret credential. It must not be committed, pasted into issues/chat, stored in Supabase application tables, or exposed through any `NEXT_PUBLIC_*` variable.
+
+Approved storage targets:
+
+- Local development: `.env.local` only (untracked/ignored)
+- GitHub Actions: `${{ secrets.OPENAI_API_KEY }}`
+- Deployment runtime (for example Vercel): server-side `OPENAI_API_KEY` scoped per environment
+- Supabase: function secret/vault runtime bindings only (never table data)
+
+Operational metadata policy:
+
+- Secret value is never documented in this repository
+- Rotation owner: repository maintainers
+- Rotation cadence: rotate immediately on suspicion and at least quarterly
+- Runtime receipts may include provider/model/run identifiers and usage/cost estimates, but never raw key material or prompt transcript dumps

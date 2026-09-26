@@ -20,6 +20,7 @@ export const env = createEnv({
       .optional(),
     RESEND_API_KEY: z.string().optional(),
     ANTHROPIC_API_KEY: z.string().optional(),
+    OPENAI_API_KEY: z.string().optional(),
     EMBEDDINGS_API_KEY: z.string().optional(),
     EMBEDDINGS_BASE_URL: z.string().url().optional(),
     EMBEDDINGS_MODEL: z.string().optional(),
