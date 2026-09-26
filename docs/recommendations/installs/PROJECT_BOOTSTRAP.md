@@ -110,9 +110,42 @@ git push -u origin main
 Required for real projects:
 1. Settings → Branches → Add rule for `main`
 2. Enable: "Require a pull request before merging"
-3. Enable: "Require status checks to pass" → select `validate` and `e2e`
-4. Enable: "Require conversation resolution before merging"
-5. Enable: "Do not allow bypassing the above settings"
+3. Enable: "Require approvals" (minimum 1)
+4. Enable: "Require review from Code Owners"
+5. Enable: "Require status checks to pass before merging"
+6. Require these stable checks:
+   - `CI / validate`
+   - `CI / security`
+   - `CI / e2e`
+   - `Quirk Semantic Check / semantic-governance`
+7. Enable: "Require branches to be up to date before merging" (strict)
+8. Enable: "Require conversation resolution before merging"
+9. Enable: "Do not allow bypassing the above settings"
+
+Dependabot caveat:
+- `Dependabot lockfile / verify` is intentionally the post-sync gate for
+  Dependabot dependency `package.json` PRs.
+- CI jobs are skipped only for stale Dependabot `npm`/`bun` heads (where
+  `package.json` changed but `bun.lock` has not yet been synced).
+- Once lockfile sync lands, the dedicated Dependabot `verify` job validates the
+  synced tree with install + security + validate + e2e evidence.
+- This avoids impossible stale pre-sync checks while keeping required CI checks
+  tied to the exact commit under review.
+
+Emergency path (explicit + auditable):
+- Keep bypass disabled by default.
+- In an incident, temporarily add a dedicated maintainer/team as the only ruleset bypass actor.
+- Require a same-day incident record (issue/discussion) with reason, actor, and commit/PR link.
+- Remove bypass access immediately after the emergency change ships.
+
+Validation before considering setup complete:
+1. Ordinary PR:
+   - verify all required checks above are present and green
+   - verify merge is blocked without at least one approval on owned files
+2. Dependabot PR:
+   - verify `Dependabot lockfile / sync` runs when needed
+   - verify `Dependabot lockfile / verify` passes on the synced tree
+   - verify strict update requirement still blocks stale heads
 
 ### Repository Secrets (CI)
 

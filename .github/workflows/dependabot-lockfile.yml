@@ -144,6 +144,9 @@ jobs:
         # step of every CI job.
         run: bun install --frozen-lockfile
 
+      - name: Verify the update against the security gate
+        run: bun audit --prod
+
       - name: Verify the update against the real gate
         # Worth the runner minutes on a dependency PR: a lockfile that installs
         # is not the same as a dependency update that works. This is how the
