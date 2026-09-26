@@ -31,6 +31,14 @@ describe("scanWorkflowLineForOpenAiLeak", () => {
     ).toEqual([]);
   });
 
+  it("supports inline env mapping syntax", () => {
+    expect(
+      scanWorkflowLineForOpenAiLeak(
+        "env: { OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} }",
+      ),
+    ).toEqual([]);
+  });
+
   it("rejects unsafe workflow binding and secret logging", () => {
     expect(
       scanWorkflowLineForOpenAiLeak(
