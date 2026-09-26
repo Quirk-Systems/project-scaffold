@@ -14,6 +14,7 @@ import {
 type JsonSchema = Record<string, unknown>;
 
 const repoRoot = process.cwd();
+const fixtureEvaluationNow = new Date("2026-09-26T12:00:00.000Z");
 
 const schemaPairs = [
   {
@@ -201,6 +202,7 @@ function runFixture(path: string): string[] {
     declaration,
     evidenceClaims: evidence,
     verdict,
+    now: fixtureEvaluationNow,
   });
   const receiptResult = validateDecisionReceipt({
     receipt,

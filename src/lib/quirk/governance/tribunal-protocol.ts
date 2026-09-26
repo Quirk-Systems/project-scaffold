@@ -308,6 +308,7 @@ export function validateVerdictAgainstGrant(input: {
     }
 
     if (
+      grant.evidence_requirement.required &&
       !grant.evidence_requirement.classes.includes(
         claim.evidence_claim.observable,
       )
@@ -352,6 +353,14 @@ export function validateVerdictAgainstGrant(input: {
     !effectSubset(parsedVerdict.authority_effect_permitted, declarationEffects)
   ) {
     return { ok: false, reason: "permitted_effect_not_declared" };
+  }
+  if (
+    !effectSubset(
+      parsedVerdict.authority_effect_requested,
+      parsedVerdict.authority_effect_permitted,
+    )
+  ) {
+    return { ok: false, reason: "requested_effect_not_permitted" };
   }
 
   return { ok: true };

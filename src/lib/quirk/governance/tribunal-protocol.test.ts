@@ -9,11 +9,13 @@ import {
   EvaluatorDeclarationSchema,
   EvidenceClaimSchema,
   TribunalVerdictSchema,
+  validateGrantIsActive,
   validateDecisionReceipt,
   validateVerdictAgainstGrant,
 } from "./tribunal-protocol";
 
 const root = process.cwd();
+const evaluationNow = new Date("2026-09-26T12:00:00.000Z");
 
 type Fixture = {
   expected: { admissible: boolean; reason?: string };
@@ -41,6 +43,7 @@ function evaluateFixture(path: string) {
     declaration,
     evidenceClaims: evidence,
     verdict,
+    now: evaluationNow,
   });
 
   const receiptResult = validateDecisionReceipt({
@@ -96,5 +99,39 @@ describe("tribunal protocol invariants", () => {
         expect(result.reason, fixture).toBe(result.expected.reason);
       }
     }
+  });
+
+  it("enforces grant activity windows against explicit time", () => {
+    const grant = AuthorityGrantSchema.parse({
+      grant_id: "grant.time.001",
+      principal: "principal.human.bryan",
+      grantee: "evaluator.tribunal.fixture",
+      grant_scope: {
+        realms: ["quirk.governance"],
+        subjects: ["run:fixture"],
+        target_classes: ["candidate"],
+      },
+      permitted_verdict_effects: {
+        may_observe: ["observe.evidence"],
+        may_recommend: [],
+        may_block: [],
+        may_approve: [],
+      },
+      issued_at: "2026-09-26T00:00:00Z",
+      expires_at: "2026-09-27T00:00:00Z",
+      delegation: { allow_delegation: false },
+      evidence_requirement: { required: true, classes: ["code_reference"] },
+      grant_hash: "sha256:grant-time",
+    });
+
+    expect(
+      validateGrantIsActive(grant, new Date("2026-09-26T12:00:00Z")),
+    ).toEqual({ ok: true });
+    expect(
+      validateGrantIsActive(grant, new Date("2026-09-25T12:00:00Z")),
+    ).toEqual({ ok: false, reason: "grant_not_yet_active" });
+    expect(
+      validateGrantIsActive(grant, new Date("2026-09-27T00:00:00Z")),
+    ).toEqual({ ok: false, reason: "expired_grant" });
   });
 });
