@@ -39,10 +39,23 @@ describe("scanWorkflowLineForOpenAiLeak", () => {
     ).toEqual([]);
   });
 
+  it("supports shell-style env assignment syntax", () => {
+    expect(
+      scanWorkflowLineForOpenAiLeak(
+        "run: OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} bun run evals",
+      ),
+    ).toEqual([]);
+  });
+
   it("rejects unsafe workflow binding and secret logging", () => {
     expect(
       scanWorkflowLineForOpenAiLeak(
         "OPENAI_API_KEY: ${{ vars.OPENAI_API_KEY }}",
+      ),
+    ).toContain("workflow OpenAI key binding must use secrets.OPENAI_API_KEY");
+    expect(
+      scanWorkflowLineForOpenAiLeak(
+        "run: OPENAI_API_KEY=${{ vars.OPENAI_API_KEY }} bun run evals",
       ),
     ).toContain("workflow OpenAI key binding must use secrets.OPENAI_API_KEY");
     expect(
