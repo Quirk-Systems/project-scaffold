@@ -128,8 +128,12 @@ function validateWithSchema(
     ) {
       errors.push(`${at}: expected min length ${schema.minLength}`);
     }
-    if (schema.format === "date-time" && Number.isNaN(Date.parse(data))) {
-      errors.push(`${at}: invalid date-time`);
+    if (schema.format === "date-time") {
+      const isoWithOffset =
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+      if (!isoWithOffset.test(data) || Number.isNaN(Date.parse(data))) {
+        errors.push(`${at}: invalid date-time with offset`);
+      }
     }
   }
 

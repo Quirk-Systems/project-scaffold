@@ -199,7 +199,11 @@ export function validateGrantIsActive(
   grant: AuthorityGrant,
   now = new Date(),
 ): ValidationResult {
+  const issuedAt = new Date(grant.issued_at).getTime();
   const expiresAt = new Date(grant.expires_at).getTime();
+  if (issuedAt > now.getTime()) {
+    return { ok: false, reason: "grant_not_yet_active" };
+  }
   if (expiresAt <= now.getTime()) return { ok: false, reason: "expired_grant" };
   if (grant.revoked_at) return { ok: false, reason: "revoked_grant" };
   if (grant.superseded_by_grant_id)
@@ -370,6 +374,15 @@ export function validateDecisionReceipt(input: {
     !decisionReceipt.considered_verdicts.includes(verdict.tribunal_verdict.id)
   ) {
     return { ok: false, reason: "receipt_missing_verdict_ref" };
+  }
+
+  const verdictEvidence = new Set(verdict.tribunal_verdict.evidence_claim_ids);
+  const receiptEvidence = [
+    ...decisionReceipt.accepted_evidence_claims,
+    ...decisionReceipt.rejected_or_disputed_evidence,
+  ];
+  if (receiptEvidence.some((evidenceId) => !verdictEvidence.has(evidenceId))) {
+    return { ok: false, reason: "receipt_unknown_evidence_ref" };
   }
 
   if (!verdictAdmissible && decisionReceipt.decision === "authorized") {
