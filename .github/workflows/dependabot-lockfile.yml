@@ -32,6 +32,9 @@ jobs:
     # lockfile stale, despite `reopened` and `synchronize` being triggers here.
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.sync.outputs.changed }}
+      synced_sha: ${{ steps.sync.outputs.synced_sha }}
     # Dependabot runs get a read-only token by default, because a malicious
     # dependency would otherwise run with write access. Since October 2021 the
     # permissions key is respected for these runs, so this grants exactly the
@@ -71,25 +74,25 @@ jobs:
           if git diff --quiet -- bun.lock; then
             echo "lockfile already matches package.json — nothing to do"
             echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "synced_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add bun.lock
-          git commit -m "chore(deps): sync bun.lock with package.json"
+          git commit -m "chore(deps): sync bun.lock with package.json" -m "skip-checks: true"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "synced_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Note the stale-checks caveat
+      - name: Note the intentional post-sync check skip
         if: steps.sync.outputs.changed == 'true'
-        # Pushes made with GITHUB_TOKEN deliberately do not trigger new workflow
-        # runs, so the PR's own validate/security/e2e checks still show their
-        # result from before this commit. The verify job below covers the synced
-        # tree. Dependabot's next rebase re-triggers the rest; a repository that
-        # would rather not wait can push this step with an App token or PAT
-        # instead, which does trigger normally.
+        # The sync commit uses the `skip-checks: true` trailer, so workflow runs
+        # that would otherwise be created from the bot-authored synchronize event
+        # are skipped intentionally. The read-only jobs below run on that synced
+        # SHA and provide the dependency-update evidence instead.
         run: |
-          echo "::notice::bun.lock synced and pushed. The PR's validate/security/e2e checks predate this commit — GITHUB_TOKEN pushes do not re-trigger workflows. The verify job covers the synced tree."
+          echo "::notice::bun.lock synced and pushed with skip-checks trailer. verify/security/semantic jobs in this workflow now cover the synced SHA."
 
   # Runs dependency-controlled code — ESLint plugins, the test suite, the Next
   # build — so it is deliberately a separate job with no write scope and no
@@ -121,12 +124,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # The synced branch, as the sync job left it.
-          ref: ${{ github.head_ref }}
+          # The exact synced commit from the write-scoped sync job.
+          ref: ${{ needs.sync.outputs.synced_sha }}
           # actions/checkout stores the token in .git/config by default, where
           # any code running later in the job can read it. This job runs
           # dependency code, so the credential must not be on disk.
           persist-credentials: false
+
+      - name: Prove verify runs on the synced SHA
+        run: |
+          actual="$(git rev-parse HEAD)"
+          expected="${{ needs.sync.outputs.synced_sha }}"
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::verify checkout SHA $actual does not match synced SHA $expected"
+            exit 1
+          fi
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -162,4 +174,95 @@ jobs:
         run: bun run test:e2e
         env:
           SKIP_ENV_VALIDATION: "1"
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
+
+  security:
+    needs: sync
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.sync.outputs.synced_sha }}
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Dependency audit
+        run: bun audit --prod
+
+      - name: Secret scan (TruffleHog)
+        uses: trufflesecurity/trufflehog@88524578ce32e1a8521c29dd38af9d9200ff92cc
+        with:
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ needs.sync.outputs.synced_sha }}
+          extra_args: --results=verified,unknown
+
+  semantic:
+    needs: sync
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout synced head manifest
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.sync.outputs.synced_sha }}
+          fetch-depth: 1
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .quirk/manifest.json
+
+      - name: Checkout Quirk semantic core
+        uses: actions/checkout@v4
+        with:
+          repository: Quirk-Systems/.github
+          ref: 1263f5008838f743b16ee218046e26dac5c9edd8
+          path: .quirk-core
+          fetch-depth: 1
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .quirk/registry.json
+            scripts/quirk_concept.py
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Lint canonical registry
+        run: python .quirk-core/scripts/quirk_concept.py --registry .quirk-core/.quirk/registry.json lint
+
+      - name: Validate repository manifest
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          path = Path('.quirk/manifest.json')
+          if not path.exists():
+              raise SystemExit('Missing .quirk/manifest.json')
+
+          data = json.loads(path.read_text(encoding='utf-8'))
+          required = ['repository', 'registry', 'policy', 'semantic_impact']
+          missing = [key for key in required if key not in data]
+          if missing:
+              raise SystemExit(f'Manifest missing required keys: {missing}')
+
+          registry = data['registry']
+          if registry.get('authority') != 'Quirk-Systems/.github':
+              raise SystemExit('Registry authority must be Quirk-Systems/.github')
+
+          mode = data['policy'].get('mode')
+          if mode not in {'warn', 'required'}:
+              raise SystemExit("policy.mode must be 'warn' or 'required'")
+
+          print(f"Semantic manifest OK: {data['repository']} ({mode})")
