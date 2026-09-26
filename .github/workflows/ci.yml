@@ -96,6 +96,9 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      - name: OpenAI secret hygiene
+        run: bun run security:openai-hygiene
+
       - name: Dependency audit
         run: bun audit --prod
 
