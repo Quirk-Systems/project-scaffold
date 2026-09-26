@@ -16,7 +16,13 @@ A. STATE_ONLY
 → C. PRODUCTION_GATED
 ```
 
-Mode **A** is the immediate implementation target. Mode **B** is the first adversarial integration proof. Mode **C** is unavailable until durable runtime ports and independent approvals required by `Quirk-Systems/project-scaffold#98` at head `58d73b083293b745c126b2031b4295e74417e1d5` exist.
+Mode **A** is the immediate implementation target. Mode **B** is the first adversarial integration proof. Mode **C** is unavailable until durable runtime ports and independent approvals required by `Quirk-Systems/project-scaffold#98` exist. If `#98` advances beyond the [Compatibility pin](#compatibility-pin), this spec must be explicitly re-reviewed and re-pinned before enabling C.
+
+## Compatibility pin
+
+`#98` compatibility reference for this design cut: `Quirk-Systems/project-scaffold@58d73b083293b745c126b2031b4295e74417e1d5`.
+
+Pinned artifact type: the exact merged repository commit used as the Tribunal compatibility baseline for enabling Mode C gates in follow-up implementation work.
 
 ## Dependencies and composition boundaries
 
@@ -31,7 +37,7 @@ This protocol composes with (and does not redefine):
 It depends on:
 
 - `#97` Quirk Authority & Evaluation Protocol
-- `#98` Tribunal compatibility slice (exact head above)
+- `#98` Tribunal compatibility slice (see [Compatibility pin](#compatibility-pin))
 - `#99` OSS Component Admission Contract
 - existing Git-canonical / Supabase-projection posture
 - existing `quirk_sync` receipts, proposed moves, manifest registry, transition ledger, and outbox projections
@@ -195,6 +201,13 @@ Mode transitions are explicit and monotonic by run lineage:
 | successful sandbox effect ≠ production authority | `contract_sandbox_success_requires_fresh_production_resolution` |
 | successful output cannot excuse invalid trajectory | `contract_invalid_trajectory_fails_even_with_successful_output` |
 | confidence / consensus / evaluation cannot increase authority | `contract_evaluation_signals_do_not_mutate_authority` |
+
+Planned (proposed) contract suite placement and execution path for follow-up implementation (not implemented by this design-only PR). These paths follow repository test conventions (`src/**/*.{test,spec}.{ts,tsx}` for unit and `e2e/*.spec.ts` for Playwright) and should remain colocated where possible:
+
+- object contracts and state-machine tests: `src/lib/quirk/governance/**/*.test.ts`
+- invariant fixtures: `src/lib/quirk/governance/fixtures/**/*`
+- adversarial integration proofs (B and promotion boundaries): `e2e/*.spec.ts`
+- expected execution path: targeted `vitest` for unit contracts, `playwright` for adversarial mode-boundary proofs, then `bun run validate` for full gate
 
 ## Mode contracts
 
@@ -397,7 +410,7 @@ Reject any run design or implementation that:
 2. Add executable contract fixtures for all constitutional invariants.
 3. Implement `STATE_ONLY` policy decision that hard-forces `effectExecutionAllowed = false`.
 4. Emit `TrajectoryReceipt` with candidate-only proof and no-effect proof.
-5. Add CI checks for `STATE_ONLY` no-effect and no-silent-escalation invariants.
+5. Add CI checks for `STATE_ONLY` no-effect and no-silent-escalation invariants, wired to the test paths above.
 6. Defer B/C runtime ports behind explicit `unavailable_until_runtime_ports` guards.
 
 ---
