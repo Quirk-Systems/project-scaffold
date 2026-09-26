@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const OPENAI_KEY_LITERAL_PATTERN = /\bsk-[a-zA-Z0-9_-]{20,}\b/;
@@ -97,8 +97,15 @@ function checkTrackedFilesForOpenAiLeaks(
 
 function checkWorkflowsForUnsafeBindings(violations: string[]): void {
   const workflowsDir = ".github/workflows";
+  if (!existsSync(workflowsDir)) return;
+
   for (const entry of readdirSync(workflowsDir, { withFileTypes: true })) {
-    if (!entry.isFile() || !entry.name.endsWith(".yml")) continue;
+    if (
+      !entry.isFile() ||
+      (!entry.name.endsWith(".yml") && !entry.name.endsWith(".yaml"))
+    ) {
+      continue;
+    }
     const file = join(workflowsDir, entry.name);
     const lines = readFileSync(file, "utf8").split("\n");
     lines.forEach((line, index) => {
