@@ -214,9 +214,11 @@ export function validateOssComponentAdmission(
     errors.add("evidence_claim_cannot_be_decision_receipt");
   }
 
-  const needsGrantRef = component.required_authority_grants_for.some((scope) =>
-    REQUIRED_GRANT_SCOPES.has(scope),
-  );
+  const needsGrantRef =
+    component.evaluation.authority_grant_required ||
+    component.required_authority_grants_for.some((scope) =>
+      REQUIRED_GRANT_SCOPES.has(scope),
+    );
   if (needsGrantRef && fixture.authority_grant_refs.length === 0) {
     errors.add("authority_grant_reference_required");
   }

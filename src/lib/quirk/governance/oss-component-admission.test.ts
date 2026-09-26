@@ -129,6 +129,24 @@ describe("validateOssComponentAdmission", () => {
     expect(result.errors).toContain("authority_grant_reference_required");
   });
 
+  it("requires authority grant references when authority_grant_required is true", () => {
+    const result = validateOssComponentAdmission({
+      ...validComponent,
+      authority_grant_refs: [],
+      oss_component: {
+        ...validComponent.oss_component,
+        required_authority_grants_for: [],
+        evaluation: {
+          ...validComponent.oss_component.evaluation,
+          authority_grant_required: true,
+        },
+      },
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("authority_grant_reference_required");
+  });
+
   it("enforces all fixture expectations", () => {
     const positiveDir = resolve(
       process.cwd(),
