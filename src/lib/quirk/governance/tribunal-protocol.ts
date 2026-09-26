@@ -234,6 +234,16 @@ export function validateDeclarationAgainstGrant(input: {
   if (!effectSubset(declarationEffects, grant.permitted_verdict_effects)) {
     return { ok: false, reason: "declaration_authority_not_granted" };
   }
+  const prohibited = new Set(declaration.authority.prohibited_effects);
+  const declared = [
+    ...declaration.authority.may_observe,
+    ...declaration.authority.may_recommend,
+    ...declaration.authority.may_block,
+    ...declaration.authority.may_approve,
+  ];
+  if (declared.some((effect) => prohibited.has(effect))) {
+    return { ok: false, reason: "declaration_prohibited_effect_conflict" };
+  }
 
   return { ok: true };
 }
@@ -264,6 +274,9 @@ export function validateVerdictAgainstGrant(input: {
     parsedVerdict.evaluator_declaration_id !== declaration.identity.evaluator_id
   ) {
     return { ok: false, reason: "declaration_reference_mismatch" };
+  }
+  if (!grant.grant_scope.subjects.includes(parsedVerdict.subject)) {
+    return { ok: false, reason: "subject_out_of_scope" };
   }
 
   if (
@@ -305,6 +318,11 @@ export function validateVerdictAgainstGrant(input: {
       )
     ) {
       return { ok: false, reason: "out_of_scope" };
+    }
+    if (
+      claim.evidence_claim.inspected_by !== declaration.identity.evaluator_id
+    ) {
+      return { ok: false, reason: "evidence_inspector_mismatch" };
     }
 
     if (
