@@ -132,12 +132,6 @@ export type OssComponentAdmissionValidation = {
 
 const CANONICAL_SUBSTRATE_IDS = new Set(["quirk.canonical.substrate"]);
 
-const REQUIRED_GRANT_SCOPES = new Set<string>([
-  "writes",
-  "external_calls",
-  "secret_access",
-]);
-
 const FORBIDDEN_ADMISSION_EVIDENCE = [
   {
     code: "popularity_not_admission_evidence",
@@ -214,11 +208,7 @@ export function validateOssComponentAdmission(
     errors.add("evidence_claim_cannot_be_decision_receipt");
   }
 
-  const needsGrantRef =
-    component.evaluation.authority_grant_required ||
-    component.required_authority_grants_for.some((scope) =>
-      REQUIRED_GRANT_SCOPES.has(scope),
-    );
+  const needsGrantRef = component.evaluation.authority_grant_required;
   if (needsGrantRef && fixture.authority_grant_refs.length === 0) {
     errors.add("authority_grant_reference_required");
   }
