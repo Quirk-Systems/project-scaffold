@@ -153,6 +153,7 @@ describe("validateOssComponentAdmission", () => {
       authority_grant_refs: [],
       oss_component: {
         ...validComponent.oss_component,
+        required_authority_grants_for: [],
         evaluation: {
           ...validComponent.oss_component.evaluation,
           authority_grant_required: false,
@@ -161,6 +162,22 @@ describe("validateOssComponentAdmission", () => {
     });
 
     expect(result.valid).toBe(true);
+  });
+
+  it("fails when required scopes and authority_grant_required disagree", () => {
+    const result = validateOssComponentAdmission({
+      ...validComponent,
+      oss_component: {
+        ...validComponent.oss_component,
+        evaluation: {
+          ...validComponent.oss_component.evaluation,
+          authority_grant_required: false,
+        },
+      },
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("authority_grant_requirement_mismatch");
   });
 
   it("enforces all fixture expectations", () => {

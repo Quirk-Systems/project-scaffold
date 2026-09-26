@@ -208,6 +208,15 @@ export function validateOssComponentAdmission(
     errors.add("evidence_claim_cannot_be_decision_receipt");
   }
 
+  const declaresRequiredScopes =
+    component.required_authority_grants_for.length > 0;
+  if (
+    declaresRequiredScopes &&
+    !component.evaluation.authority_grant_required
+  ) {
+    errors.add("authority_grant_requirement_mismatch");
+  }
+
   const needsGrantRef = component.evaluation.authority_grant_required;
   if (needsGrantRef && fixture.authority_grant_refs.length === 0) {
     errors.add("authority_grant_reference_required");
