@@ -212,6 +212,10 @@ export function validateDeclarationAgainstGrant(input: {
   grant: AuthorityGrant;
 }): ValidationResult {
   const { declaration, grant } = input;
+  if (declaration.identity.evaluator_id !== grant.grantee) {
+    return { ok: false, reason: "declaration_grantee_mismatch" };
+  }
+
   if (declaration.authority.grant_id !== grant.grant_id) {
     return { ok: false, reason: "grant_mismatch" };
   }
@@ -252,10 +256,28 @@ export function validateVerdictAgainstGrant(input: {
   if (parsedVerdict.authority_grant_id !== grant.grant_id) {
     return { ok: false, reason: "grant_mismatch" };
   }
+  if (
+    parsedVerdict.evaluator_declaration_id !== declaration.identity.evaluator_id
+  ) {
+    return { ok: false, reason: "declaration_reference_mismatch" };
+  }
+
+  if (
+    grant.evidence_requirement.required &&
+    parsedVerdict.evidence_claim_ids.length === 0
+  ) {
+    return { ok: false, reason: "evidence_required" };
+  }
 
   const evidenceById = new Map(
     evidenceClaims.map((claim) => [claim.evidence_claim.id, claim]),
   );
+  const declarationEffects: EffectSet = {
+    may_observe: declaration.authority.may_observe,
+    may_recommend: declaration.authority.may_recommend,
+    may_block: declaration.authority.may_block,
+    may_approve: declaration.authority.may_approve,
+  };
 
   for (const evidenceId of parsedVerdict.evidence_claim_ids) {
     const claim = evidenceById.get(evidenceId);
@@ -280,6 +302,14 @@ export function validateVerdictAgainstGrant(input: {
     ) {
       return { ok: false, reason: "out_of_scope" };
     }
+
+    if (
+      !grant.evidence_requirement.classes.includes(
+        claim.evidence_claim.observable,
+      )
+    ) {
+      return { ok: false, reason: "evidence_class_not_granted" };
+    }
   }
 
   if (
@@ -300,6 +330,11 @@ export function validateVerdictAgainstGrant(input: {
   ) {
     return { ok: false, reason: "requested_effect_not_granted" };
   }
+  if (
+    !effectSubset(parsedVerdict.authority_effect_requested, declarationEffects)
+  ) {
+    return { ok: false, reason: "requested_effect_not_declared" };
+  }
 
   if (
     !effectSubset(
@@ -308,6 +343,11 @@ export function validateVerdictAgainstGrant(input: {
     )
   ) {
     return { ok: false, reason: "permitted_effect_not_granted" };
+  }
+  if (
+    !effectSubset(parsedVerdict.authority_effect_permitted, declarationEffects)
+  ) {
+    return { ok: false, reason: "permitted_effect_not_declared" };
   }
 
   return { ok: true };
