@@ -1,0 +1,40 @@
+identity:
+  evaluator_id: evaluator.tribunal.primary
+  evaluator_type: deterministic_checker
+  version: v1
+inspection:
+  can_inspect:
+    - code_reference
+    - test_result
+  cannot_inspect:
+    - secret_payload
+  tools:
+    - vitest
+    - static_analysis
+  evidence_classes:
+    - code_reference
+    - test_result
+  temporal_boundary: "commit-scoped"
+fallibility:
+  known_failure_modes:
+    - stale_fixtures
+  calibration_evidence:
+    - docs/governance/tribunal.md
+  error_tendencies:
+    - over-indexes on deterministic checks
+  unresolved_blind_spots:
+    - private runtime states
+authority:
+  grant_id: grant.example.001
+  may_observe:
+    - observe.evidence
+  may_recommend:
+    - recommend.promote
+  may_block:
+    - block.publish
+  may_approve: []
+  prohibited_effects:
+    - approve.canon
+provenance:
+  declaration_hash: sha256:declaration-example
+  canonical_version: v1

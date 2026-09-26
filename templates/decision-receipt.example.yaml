@@ -1,0 +1,16 @@
+decision_receipt:
+  id: receipt.example.001
+  decision: deferred
+  decision_authority: principal.human.bryan
+  decision_owner: governance.board
+  considered_verdicts:
+    - verdict.example.001
+  accepted_evidence_claims:
+    - evidence.example.001
+  rejected_or_disputed_evidence: []
+  authority_grant_refs:
+    - grant.example.001
+  rationale: "Verdict is advisory and requires external authorization."
+  reversibility: reversible_until_publish
+  issued_at: "2026-09-26T01:00:00Z"
+  content_hash: sha256:receipt-example

@@ -1,0 +1,34 @@
+tribunal_verdict:
+  id: verdict.example.001
+  evaluator_declaration_id: evaluator.tribunal.primary
+  authority_grant_id: grant.example.001
+  subject: run:run-001
+  claim: "Run is ready for recommendation only."
+  disposition: SUPPORTED
+  evidence_claim_ids:
+    - evidence.example.001
+  confidence: 0.62
+  uncertainty:
+    - limited_to_commit
+  dissent: []
+  authority_effect_requested:
+    may_observe:
+      - observe.evidence
+    may_recommend:
+      - recommend.promote
+    may_block: []
+    may_approve: []
+  authority_effect_permitted:
+    may_observe:
+      - observe.evidence
+    may_recommend:
+      - recommend.promote
+    may_block:
+      - block.publish
+    may_approve: []
+  provenance:
+    trajectory_id: trajectory.example.001
+    evaluator_version: v1
+    declaration_hash: sha256:declaration-example
+    evidence_hashes:
+      - sha256:evidence-example

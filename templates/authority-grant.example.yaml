@@ -1,0 +1,27 @@
+grant_id: grant.example.001
+principal: principal.human.bryan
+grantee: evaluator.tribunal.primary
+grant_scope:
+  realms:
+    - quirk.governance
+  subjects:
+    - run:run-001
+  target_classes:
+    - candidate
+permitted_verdict_effects:
+  may_observe:
+    - observe.evidence
+  may_recommend:
+    - recommend.promote
+  may_block:
+    - block.publish
+  may_approve: []
+issued_at: "2026-09-26T00:00:00Z"
+expires_at: "2026-10-26T00:00:00Z"
+delegation:
+  allow_delegation: false
+evidence_requirement:
+  required: true
+  classes:
+    - code_reference
+grant_hash: sha256:grant-example

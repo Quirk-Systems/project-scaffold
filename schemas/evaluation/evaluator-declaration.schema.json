@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/schemas/evaluation/evaluator-declaration.schema.json",
+  "title": "EvaluatorDeclaration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "identity",
+    "inspection",
+    "fallibility",
+    "authority",
+    "provenance"
+  ],
+  "properties": {
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evaluator_id", "evaluator_type", "version"],
+      "properties": {
+        "evaluator_id": { "type": "string", "minLength": 1 },
+        "evaluator_type": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "inspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "can_inspect",
+        "cannot_inspect",
+        "tools",
+        "evidence_classes",
+        "temporal_boundary"
+      ],
+      "properties": {
+        "can_inspect": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "cannot_inspect": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "evidence_classes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "temporal_boundary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "fallibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "known_failure_modes",
+        "calibration_evidence",
+        "error_tendencies",
+        "unresolved_blind_spots"
+      ],
+      "properties": {
+        "known_failure_modes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "calibration_evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "error_tendencies": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "unresolved_blind_spots": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grant_id",
+        "may_observe",
+        "may_recommend",
+        "may_block",
+        "may_approve",
+        "prohibited_effects"
+      ],
+      "properties": {
+        "grant_id": { "type": "string", "minLength": 1 },
+        "may_observe": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "may_recommend": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "may_block": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "may_approve": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "prohibited_effects": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declaration_hash", "canonical_version"],
+      "properties": {
+        "declaration_hash": { "type": "string", "minLength": 1 },
+        "canonical_version": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
