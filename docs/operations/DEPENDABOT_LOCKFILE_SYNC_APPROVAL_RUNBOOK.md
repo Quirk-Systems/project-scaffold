@@ -28,3 +28,17 @@ The sync commit now includes a `skip-checks: true` trailer, so post-sync bot-aut
 5. semantic governance checks (registry lint + manifest validation).
 
 This keeps dependency-controlled code out of write-token jobs while removing the hidden approval trap from post-sync PR updates.
+
+## Regression fixture: synced-SHA security wiring
+
+Keep the `security` job wired to the synced head by asserting these exact workflow fragments remain present in `.github/workflows/dependabot-lockfile.yml`:
+
+- `ref: ${{ needs.sync.outputs.synced_sha }}` on the `security` checkout step.
+- `base: ${{ github.event.pull_request.base.sha }}` on the TruffleHog step.
+- `head: ${{ needs.sync.outputs.synced_sha }}` on the TruffleHog step.
+
+Quick check:
+
+```bash
+rg -n \"needs\\.sync\\.outputs\\.synced_sha|github\\.event\\.pull_request\\.base\\.sha\" .github/workflows/dependabot-lockfile.yml
+```

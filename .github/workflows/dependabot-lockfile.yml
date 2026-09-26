@@ -174,7 +174,7 @@ jobs:
         run: bun run test:e2e
         env:
           SKIP_ENV_VALIDATION: "1"
-          DATABASE_URL: "******localhost:5432/postgres"
+          DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
 
   security:
     needs: sync
@@ -191,14 +191,16 @@ jobs:
         with:
           bun-version: latest
 
-      - run: bun install --frozen-lockfile
+      - run: bun install --frozen-lockfile --ignore-scripts
 
       - name: Dependency audit
         run: bun audit --prod
 
       - name: Secret scan (TruffleHog)
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@88524578ce32e1a8521c29dd38af9d9200ff92cc
         with:
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ needs.sync.outputs.synced_sha }}
           extra_args: --results=verified,unknown
 
   semantic:
@@ -222,7 +224,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Quirk-Systems/.github
-          ref: main
+          ref: 1263f5008838f743b16ee218046e26dac5c9edd8
           path: .quirk-core
           fetch-depth: 1
           filter: blob:none
@@ -231,6 +233,10 @@ jobs:
           sparse-checkout: |
             .quirk/registry.json
             scripts/quirk_concept.py
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
 
       - name: Lint canonical registry
         run: python .quirk-core/scripts/quirk_concept.py --registry .quirk-core/.quirk/registry.json lint
