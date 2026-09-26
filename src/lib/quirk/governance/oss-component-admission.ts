@@ -211,8 +211,7 @@ export function validateOssComponentAdmission(
   const declaresRequiredScopes =
     component.required_authority_grants_for.length > 0;
   if (
-    declaresRequiredScopes &&
-    !component.evaluation.authority_grant_required
+    declaresRequiredScopes !== component.evaluation.authority_grant_required
   ) {
     errors.add("authority_grant_requirement_mismatch");
   }

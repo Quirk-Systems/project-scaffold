@@ -180,6 +180,20 @@ describe("validateOssComponentAdmission", () => {
     expect(result.errors).toContain("authority_grant_requirement_mismatch");
   });
 
+  it("fails when authority_grant_required is true but required scopes are empty", () => {
+    const result = validateOssComponentAdmission({
+      ...validComponent,
+      authority_grant_refs: ["authority:grant:agent-ready-v1"],
+      oss_component: {
+        ...validComponent.oss_component,
+        required_authority_grants_for: [],
+      },
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("authority_grant_requirement_mismatch");
+  });
+
   it("enforces all fixture expectations", () => {
     const positiveDir = resolve(
       process.cwd(),
