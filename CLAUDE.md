@@ -119,6 +119,8 @@ Key recommendation docs:
 - Never commit `.env` files or secrets
 - Write tests for new components and utilities (`src/**/*.test.tsx` for unit, `e2e/*.spec.ts` for E2E)
 - Use conventional commit messages (enforced by commitlint)
-- Node.js >=20.0.0 is required (alongside Bun)
+- Node.js >=22.0.0 is required (alongside Bun)
+- App/runtime Node version is pinned in `package.json` + workflow setup-node;
+  GitHub Actions' internal JavaScript action runtimes are platform-managed and separate
 - For agent/AI work, see `AGENTS.md` and `docs/recommendations/ai/`
 - For project planning, see `PROJECT.md`
