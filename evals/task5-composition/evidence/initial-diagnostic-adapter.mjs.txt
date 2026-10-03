@@ -1,0 +1,4 @@
+/** RED placeholder: preserved in task5-work before implementation. */
+export function evaluateTask5Composition() {
+  throw new Error("Task 5 composition adapter is not implemented");
+}

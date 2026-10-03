@@ -1,0 +1,17 @@
+✔ matrix has literal expectations for all authority outcomes and history states (4.597534ms)
+✔ the one Mode A restriction applies to the same-candidate combination (0.524283ms)
+✔ retains canonical results, digests, grants, review and conflict obligations (1.101806ms)
+✔ fixtures carry every planned canonical top-level result field (0.33225ms)
+✔ attacks on every required binding fail closed (2.387652ms)
+✔ missing or reset-looking history is not authorization (0.446008ms)
+✔ simulation history cannot assert execution, commitment, or an EffectReceipt (0.635497ms)
+✔ Task 4/5 inconsistencies, failed results, and forbidden operation baselines never create permission (0.835703ms)
+✔ the adapter does not mutate trusted context, evidence, or either canonical result (0.422163ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.791799

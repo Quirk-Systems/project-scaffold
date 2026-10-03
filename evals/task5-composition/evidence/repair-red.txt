@@ -1,0 +1,156 @@
+✔ matrix has literal expectations for all authority outcomes and history states (5.019513ms)
+✔ the one Mode A restriction applies to the same-candidate combination (1.182254ms)
+✔ retains canonical results, digests, grants, review and conflict obligations (1.137458ms)
+✖ authority outcome and nonempty obligations prevent inconsistent permission (1.15981ms)
+✔ fixtures carry every planned canonical top-level result field (0.267324ms)
+✔ attacks on every required binding fail closed (2.224401ms)
+✔ missing or reset-looking history is not authorization (0.609609ms)
+✖ simulation history cannot assert execution, commitment, or an EffectReceipt (0.646183ms)
+✖ evaluation snapshots its bound context and test-only decision provenance (1.460924ms)
+✔ Task 4/5 inconsistencies, failed results, and forbidden operation baselines never create permission (1.686677ms)
+✔ the adapter does not mutate trusted context, evidence, or either canonical result (0.43432ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 8
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111.161959
+
+✖ failing tests:
+
+test at evals/task5-composition/adapter.test.mjs:229:1
+✖ authority outcome and nonempty obligations prevent inconsistent permission (1.15981ms)
+  AssertionError [ERR_ASSERTION]: requiredHumanReview
+  + actual - expected
+  
+  + 'ALLOW_CANDIDATE_ONLY'
+  - 'DENY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:234:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'ALLOW_CANDIDATE_ONLY',
+    expected: 'DENY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task5-composition/adapter.test.mjs:304:1
+✖ simulation history cannot assert execution, commitment, or an EffectReceipt (0.646183ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ALLOW_CANDIDATE_ONLY'
+  - 'DENY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:322:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ALLOW_CANDIDATE_ONLY',
+    expected: 'DENY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task5-composition/adapter.test.mjs:328:1
+✖ evaluation snapshots its bound context and test-only decision provenance (1.460924ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   authorityResolutionDigest: {
+  -     authority: 'sha256:f110169b61e22a5ffb516809fe5b36195e67fbd7a64dfc30564983bc2768715f',
+  -     policy: 'sha256:f110169b61e22a5ffb516809fe5b36195e67fbd7a64dfc30564983bc2768715f'
+  -   },
+  -   history: {
+  -     contentDigest: {
+  -       computed: 'sha256:f9430479bf12db127e39dafa45452512f334312d32c5ed9835d562f9860417c5',
+  -       expected: 'sha256:f9430479bf12db127e39dafa45452512f334312d32c5ed9835d562f9860417c5',
+  -       supplied: 'sha256:f9430479bf12db127e39dafa45452512f334312d32c5ed9835d562f9860417c5'
+  -     },
+  -     head: {
+  -       computed: 'sha256:66634e0a0f5526eb4f2b289edfe2bbf6c93389da2f0d3b9903439f2abbd657bd',
+  -       expected: 'sha256:66634e0a0f5526eb4f2b289edfe2bbf6c93389da2f0d3b9903439f2abbd657bd',
+  -       supplied: 'sha256:66634e0a0f5526eb4f2b289edfe2bbf6c93389da2f0d3b9903439f2abbd657bd'
+  -     }
+  -   },
+  -   policy: {
+  -     revision: {
+  -       expected: 'blind-review-policy.r7',
+  -       supplied: 'blind-review-policy.r7'
+  -     },
+  -     stateDigest: {
+  -       authority: 'sha256:4f65e16dd9d82c48bec333eabbd02a1e303ba24086808d63384b002b3691b2a8',
+  -       expected: 'sha256:4f65e16dd9d82c48bec333eabbd02a1e303ba24086808d63384b002b3691b2a8',
+  -       policy: 'sha256:4f65e16dd9d82c48bec333eabbd02a1e303ba24086808d63384b002b3691b2a8',
+  -       supplied: 'sha256:4f65e16dd9d82c48bec333eabbd02a1e303ba24086808d63384b002b3691b2a8'
+  -     }
+  -   },
+  -   proposalDigest: {
+  -     expected: 'sha256:79b439ef6204ebc94bc8a4be99cbfa5aa5f8727480e5e309b0c085a8feef2021',
+  -     policy: 'sha256:79b439ef6204ebc94bc8a4be99cbfa5aa5f8727480e5e309b0c085a8feef2021',
+  -     supplied: 'sha256:79b439ef6204ebc94bc8a4be99cbfa5aa5f8727480e5e309b0c085a8feef2021'
+  -   },
+  -   scope: {
+  -     expected: {
+  -       environment: 'test',
+  -       sessionId: 'session-7',
+  -       tenantId: 'tenant-1'
+  -     },
+  -     supplied: {
+  -       environment: 'test',
+  -       sessionId: 'session-7',
+  -       tenantId: 'tenant-1'
+  -     }
+  -   },
+  -   target: {
+  -     expected: {
+  -       candidateId: 'candidate-3',
+  -       caseId: 'case-7'
+  -     },
+  -     supplied: {
+  -       candidateId: 'candidate-3',
+  -       caseId: 'case-7'
+  -     }
+  -   },
+  -   taxonomy: {
+  -     contentDigest: {
+  -       expected: 'sha256:fc91216843eaa1701359dde271cb239ad1015611d8f549bf2771116d025d4f24',
+  -       supplied: 'sha256:fc91216843eaa1701359dde271cb239ad1015611d8f549bf2771116d025d4f24'
+  -     },
+  -     version: {
+  -       expected: 'action-taxonomy.v3',
+  -       supplied: 'action-taxonomy.v3'
+  -     }
+  -   }
+  - }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:331:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { proposalDigest: { expected: 'sha256:79b439ef6204ebc94bc8a4be99cbfa5aa5f8727480e5e309b0c085a8feef2021', supplied: 'sha256:79b439ef6204ebc94bc8a4be99cbfa5aa5f8727480e5e309b0c085a8feef2021', policy: 'sha256:79b439ef6204ebc94bc8a4be99cbfa5aa5f8727480e5e309b0c085a8feef2021' }, authorityResolutionDigest: { authority: 'sha256:f110169b61e22a5ffb516809fe5b36195e67fbd7a64dfc30564983bc2768715f', policy: 'sha256:f110169b61e22a5ffb516809fe5b36195e67fbd7a64dfc30564983bc2768715f' }, policy: { revision: [Object], stateDigest: [Object] }, scope: { expected: [Object], supplied: [Object] }, target: { expected: [Object], supplied: [Object] }, history: { head: [Object], contentDigest: [Object] }, taxonomy: { version: [Object], contentDigest: [Object] } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

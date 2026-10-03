@@ -1,0 +1,6 @@
+Command: bun run validate
+Working tree: isolated selected-file source projection
+Exit code: 127
+/bin/bash: line 1: bun: command not found
+
+No full repository test, lint, TypeScript, build or canonical Zod validation result is asserted.

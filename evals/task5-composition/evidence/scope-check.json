@@ -1,0 +1,13 @@
+{
+  "task4Unchanged": true,
+  "task4Sha256": "119e9a220388bf0fd9ae773139db85a83bad5c6e90bc36fad71dc2cc35349a5b",
+  "priorProbeFilesUnchanged": {
+    "gate.mjs": true,
+    "probe.test.mjs": true,
+    "fixtures.json": true,
+    "research-receipt.json": true,
+    "run.mjs": true,
+    "README.md": true
+  },
+  "task4HashBasis": "UTF-8 text between the end of the first literal ### Task 4: marker and the start of the first subsequent ### Task 5: marker; includes the remainder of the Task 4 heading and all intervening text."
+}

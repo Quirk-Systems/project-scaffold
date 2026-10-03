@@ -1,0 +1,151 @@
+✖ matrix has literal expectations for all authority outcomes and history states (2.115361ms)
+✖ retains canonical results, digests, grants, review and conflict obligations (4.443346ms)
+✖ attacks on every required binding fail closed (1.157278ms)
+✖ missing or reset-looking history is not authorization (0.344368ms)
+✖ simulation history cannot assert execution, commitment, or an EffectReceipt (0.391037ms)
+✖ Task 4/5 inconsistencies, failed results, and forbidden operation baselines never create permission (0.653363ms)
+✔ the adapter does not mutate trusted context, evidence, or either canonical result (0.369095ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 1
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 98.137436
+
+✖ failing tests:
+
+test at evals/task5-composition/adapter.test.mjs:170:1
+✖ matrix has literal expectations for all authority outcomes and history states (2.115361ms)
+  AssertionError [ERR_ASSERTION]: PERMITTED_CANDIDATE_ONLY/READ_REFERENCE_ANSWER_KEY/false
+  + actual - expected
+  
+  + 'ALLOW_CANDIDATE_ONLY'
+  - 'DENY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:191:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'ALLOW_CANDIDATE_ONLY',
+    expected: 'DENY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task5-composition/adapter.test.mjs:196:1
+✖ retains canonical results, digests, grants, review and conflict obligations (4.443346ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(result.blockReasons.includes("BLIND_REFERENCE_CONTAMINATION"))
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:208:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at evals/task5-composition/adapter.test.mjs:213:1
+✖ attacks on every required binding fail closed (1.157278ms)
+  AssertionError [ERR_ASSERTION]: proposal
+  + actual - expected
+  
+  + 'ALLOW_CANDIDATE_ONLY'
+  - 'DENY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:232:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'ALLOW_CANDIDATE_ONLY',
+    expected: 'DENY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task5-composition/adapter.test.mjs:238:1
+✖ missing or reset-looking history is not authorization (0.344368ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ALLOW_CANDIDATE_ONLY'
+  - 'DENY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:247:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ALLOW_CANDIDATE_ONLY',
+    expected: 'DENY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task5-composition/adapter.test.mjs:252:1
+✖ simulation history cannot assert execution, commitment, or an EffectReceipt (0.391037ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ALLOW_CANDIDATE_ONLY'
+  - 'DENY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:265:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ALLOW_CANDIDATE_ONLY',
+    expected: 'DENY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task5-composition/adapter.test.mjs:271:1
+✖ Task 4/5 inconsistencies, failed results, and forbidden operation baselines never create permission (0.653363ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ALLOW_CANDIDATE_ONLY'
+  - 'DENY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:284:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ALLOW_CANDIDATE_ONLY',
+    expected: 'DENY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

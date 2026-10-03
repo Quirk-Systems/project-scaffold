@@ -1,0 +1,99 @@
+✖ matrix has literal expectations for all authority outcomes and history states (1.448237ms)
+✖ retains canonical results, digests, grants, review and conflict obligations (0.259343ms)
+✖ attacks on every required binding fail closed (0.280354ms)
+✖ missing or reset-looking history is not authorization (0.292772ms)
+✖ simulation history cannot assert execution, commitment, or an EffectReceipt (0.315856ms)
+✖ Task 4/5 inconsistencies, failed results, and forbidden operation baselines never create permission (0.629258ms)
+✖ the adapter does not mutate trusted context, evidence, or either canonical result (0.906828ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 0
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 95.428203
+
+✖ failing tests:
+
+test at evals/task5-composition/adapter.test.mjs:170:1
+✖ matrix has literal expectations for all authority outcomes and history states (1.448237ms)
+  Error: Task 5 composition adapter is not implemented
+      at evaluateTask5Composition (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.mjs:3:9)
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:190:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at evals/task5-composition/adapter.test.mjs:196:1
+✖ retains canonical results, digests, grants, review and conflict obligations (0.259343ms)
+  Error: Task 5 composition adapter is not implemented
+      at evaluateTask5Composition (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.mjs:3:9)
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:199:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at evals/task5-composition/adapter.test.mjs:213:1
+✖ attacks on every required binding fail closed (0.280354ms)
+  Error: Task 5 composition adapter is not implemented
+      at evaluateTask5Composition (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.mjs:3:9)
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:231:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task5-composition/adapter.test.mjs:238:1
+✖ missing or reset-looking history is not authorization (0.292772ms)
+  Error: Task 5 composition adapter is not implemented
+      at evaluateTask5Composition (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.mjs:3:9)
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:246:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task5-composition/adapter.test.mjs:252:1
+✖ simulation history cannot assert execution, commitment, or an EffectReceipt (0.315856ms)
+  Error: Task 5 composition adapter is not implemented
+      at evaluateTask5Composition (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.mjs:3:9)
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:264:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task5-composition/adapter.test.mjs:271:1
+✖ Task 4/5 inconsistencies, failed results, and forbidden operation baselines never create permission (0.629258ms)
+  Error: Task 5 composition adapter is not implemented
+      at evaluateTask5Composition (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.mjs:3:9)
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:283:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task5-composition/adapter.test.mjs:289:1
+✖ the adapter does not mutate trusted context, evidence, or either canonical result (0.906828ms)
+  Error: Task 5 composition adapter is not implemented
+      at evaluateTask5Composition (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.mjs:3:9)
+      at TestContext.<anonymous> (file:///workspace/scratch/936609c61dd9/task5-composition-proof/evals/task5-composition/adapter.test.mjs:292:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
