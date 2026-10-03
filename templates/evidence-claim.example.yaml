@@ -1,0 +1,13 @@
+evidence_claim:
+  id: evidence.example.001
+  claim: "The changed files satisfy the rule."
+  source_type: repository_file
+  source_ref: src/lib/quirk/governance/authority.ts
+  observable: code_reference
+  inspected_by: evaluator.tribunal.primary
+  inspection_method: static_analysis
+  confidence: 0.75
+  limitations:
+    - commit_scoped
+  retention_class: canonical_metadata
+  content_hash: sha256:evidence-example

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/schemas/evaluation/tribunal-verdict.schema.json",
+  "title": "TribunalVerdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tribunal_verdict"],
+  "properties": {
+    "tribunal_verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evaluator_declaration_id",
+        "authority_grant_id",
+        "subject",
+        "claim",
+        "disposition",
+        "evidence_claim_ids",
+        "confidence",
+        "uncertainty",
+        "dissent",
+        "authority_effect_requested",
+        "authority_effect_permitted",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "evaluator_declaration_id": { "type": "string", "minLength": 1 },
+        "authority_grant_id": { "type": "string", "minLength": 1 },
+        "subject": { "type": "string", "minLength": 1 },
+        "claim": { "type": "string", "minLength": 1 },
+        "disposition": {
+          "type": "string",
+          "enum": [
+            "SUPPORTED",
+            "CONTRADICTED",
+            "INSUFFICIENT",
+            "OUT_OF_SCOPE",
+            "DISPUTED"
+          ]
+        },
+        "evidence_claim_ids": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "uncertainty": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "dissent": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "authority_effect_requested": { "$ref": "#/$defs/effects" },
+        "authority_effect_permitted": { "$ref": "#/$defs/effects" },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "trajectory_id",
+            "evaluator_version",
+            "declaration_hash",
+            "evidence_hashes"
+          ],
+          "properties": {
+            "trajectory_id": { "type": "string", "minLength": 1 },
+            "evaluator_version": { "type": "string", "minLength": 1 },
+            "declaration_hash": { "type": "string", "minLength": 1 },
+            "evidence_hashes": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["may_observe", "may_recommend", "may_block", "may_approve"],
+      "properties": {
+        "may_observe": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "may_recommend": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "may_block": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "may_approve": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quirk.systems/schemas/governance/decision-receipt.schema.json",
+  "title": "DecisionReceipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision_receipt"],
+  "properties": {
+    "decision_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "decision",
+        "decision_authority",
+        "decision_owner",
+        "considered_verdicts",
+        "accepted_evidence_claims",
+        "rejected_or_disputed_evidence",
+        "authority_grant_refs",
+        "rationale",
+        "reversibility",
+        "issued_at",
+        "content_hash"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "decision": { "type": "string", "minLength": 1 },
+        "decision_authority": { "type": "string", "minLength": 1 },
+        "decision_owner": { "type": "string", "minLength": 1 },
+        "considered_verdicts": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "accepted_evidence_claims": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "rejected_or_disputed_evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "authority_grant_refs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "rationale": { "type": "string", "minLength": 1 },
+        "reversibility": { "type": "string", "minLength": 1 },
+        "issued_at": { "type": "string", "format": "date-time" },
+        "content_hash": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
