@@ -132,12 +132,14 @@ jobs:
         with:
           bun-version: latest
 
-      # ci.yml pins Node 20 for both its jobs, and this job stands in for them
+      # ci.yml pins Node 22 for both its jobs, and this job stands in for them.
+      # Like CI, this is the application runtime floor; GitHub Action internal
+      # runtimes are managed independently by the Actions platform.
       # — matching it keeps a passing verify from meaning something different
       # than a passing CI run.
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Prove the drift is gone
         # The exact command that fails on a drifted lockfile, and the first
