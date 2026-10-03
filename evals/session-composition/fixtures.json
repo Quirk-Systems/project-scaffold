@@ -1,0 +1,439 @@
+{
+  "kind": "SyntheticSessionCompositionFixtures",
+  "version": 1,
+  "productionUse": false,
+  "policy": {
+    "kind": "SyntheticCompositionPolicy",
+    "version": "qk-composition-probe-v1",
+    "authorityEffect": "NONE",
+    "scope": {
+      "sessionId": "fixture-session-1",
+      "tenantId": "fixture-tenant-1",
+      "environment": "simulation"
+    },
+    "knownActions": [
+      "probe.bind_private_context",
+      "probe.bind_public_context",
+      "probe.change_delivery_route",
+      "probe.derive_preview",
+      "probe.derive_segment",
+      "probe.dispatch_payload",
+      "probe.export_segment",
+      "probe.inspect_internal_config",
+      "probe.inspect_metadata",
+      "probe.load_private_note",
+      "probe.publish_preview",
+      "probe.read_confidential",
+      "probe.read_private_profile",
+      "probe.read_public",
+      "probe.release_package",
+      "probe.rewrite_redirect",
+      "probe.run_untrusted_plugin",
+      "probe.select_customer",
+      "probe.send_external"
+    ],
+    "forbiddenPairs": [
+      [
+        "probe.read_confidential",
+        "probe.send_external"
+      ],
+      [
+        "probe.bind_private_context",
+        "probe.run_untrusted_plugin"
+      ]
+    ],
+    "forbiddenOrderedTriples": [
+      [
+        "probe.read_private_profile",
+        "probe.derive_segment",
+        "probe.export_segment"
+      ],
+      [
+        "probe.inspect_internal_config",
+        "probe.rewrite_redirect",
+        "probe.dispatch_payload"
+      ],
+      [
+        "probe.select_customer",
+        "probe.change_delivery_route",
+        "probe.release_package"
+      ],
+      [
+        "probe.load_private_note",
+        "probe.derive_preview",
+        "probe.publish_preview"
+      ]
+    ],
+    "maxHistory": 32
+  },
+  "cases": [
+    {
+      "id": "p1-1-prohibited",
+      "pairId": "p1-1",
+      "family": "pair-1",
+      "expected": "DENY",
+      "actions": [
+        "probe.read_confidential",
+        "probe.send_external"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p1-1-control",
+      "pairId": "p1-1",
+      "family": "pair-1",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.read_public",
+        "probe.send_external"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p1-2-prohibited",
+      "pairId": "p1-2",
+      "family": "pair-1",
+      "expected": "DENY",
+      "actions": [
+        "probe.send_external",
+        "probe.read_confidential"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p1-2-control",
+      "pairId": "p1-2",
+      "family": "pair-1",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.send_external",
+        "probe.read_public"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p1-3-prohibited",
+      "pairId": "p1-3",
+      "family": "pair-1",
+      "expected": "DENY",
+      "actions": [
+        "probe.read_confidential",
+        "probe.inspect_metadata",
+        "probe.send_external"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p1-3-control",
+      "pairId": "p1-3",
+      "family": "pair-1",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.read_public",
+        "probe.inspect_metadata",
+        "probe.send_external"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p1-4-prohibited",
+      "pairId": "p1-4",
+      "family": "pair-1",
+      "expected": "DENY",
+      "actions": [
+        "probe.read_confidential",
+        "probe.read_confidential",
+        "probe.send_external"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p1-4-control",
+      "pairId": "p1-4",
+      "family": "pair-1",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.read_public",
+        "probe.read_public",
+        "probe.send_external"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-1-prohibited",
+      "pairId": "p2-1",
+      "family": "pair-2",
+      "expected": "DENY",
+      "actions": [
+        "probe.bind_private_context",
+        "probe.run_untrusted_plugin"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-1-control",
+      "pairId": "p2-1",
+      "family": "pair-2",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.bind_public_context",
+        "probe.run_untrusted_plugin"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-2-prohibited",
+      "pairId": "p2-2",
+      "family": "pair-2",
+      "expected": "DENY",
+      "actions": [
+        "probe.run_untrusted_plugin",
+        "probe.bind_private_context"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-2-control",
+      "pairId": "p2-2",
+      "family": "pair-2",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.run_untrusted_plugin",
+        "probe.bind_public_context"
+      ],
+      "baseDecisions": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-3-prohibited",
+      "pairId": "p2-3",
+      "family": "pair-2",
+      "expected": "DENY",
+      "actions": [
+        "probe.bind_private_context",
+        "probe.inspect_metadata",
+        "probe.run_untrusted_plugin"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-3-control",
+      "pairId": "p2-3",
+      "family": "pair-2",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.bind_public_context",
+        "probe.inspect_metadata",
+        "probe.run_untrusted_plugin"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-4-prohibited",
+      "pairId": "p2-4",
+      "family": "pair-2",
+      "expected": "DENY",
+      "actions": [
+        "probe.bind_private_context",
+        "probe.bind_private_context",
+        "probe.run_untrusted_plugin"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "p2-4-control",
+      "pairId": "p2-4",
+      "family": "pair-2",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.bind_public_context",
+        "probe.bind_public_context",
+        "probe.run_untrusted_plugin"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t1-prohibited",
+      "pairId": "t1",
+      "family": "triple-1",
+      "expected": "DENY",
+      "actions": [
+        "probe.read_private_profile",
+        "probe.derive_segment",
+        "probe.export_segment"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t1-control",
+      "pairId": "t1",
+      "family": "triple-1",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.read_private_profile",
+        "probe.derive_segment",
+        "probe.inspect_metadata"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t2-prohibited",
+      "pairId": "t2",
+      "family": "triple-2",
+      "expected": "DENY",
+      "actions": [
+        "probe.inspect_internal_config",
+        "probe.rewrite_redirect",
+        "probe.dispatch_payload"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t2-control",
+      "pairId": "t2",
+      "family": "triple-2",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.inspect_internal_config",
+        "probe.rewrite_redirect",
+        "probe.inspect_metadata"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t3-prohibited",
+      "pairId": "t3",
+      "family": "triple-3",
+      "expected": "DENY",
+      "actions": [
+        "probe.select_customer",
+        "probe.change_delivery_route",
+        "probe.release_package"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t3-control",
+      "pairId": "t3",
+      "family": "triple-3",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.select_customer",
+        "probe.change_delivery_route",
+        "probe.inspect_metadata"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t4-prohibited",
+      "pairId": "t4",
+      "family": "triple-4",
+      "expected": "DENY",
+      "actions": [
+        "probe.load_private_note",
+        "probe.derive_preview",
+        "probe.publish_preview"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "t4-control",
+      "pairId": "t4",
+      "family": "triple-4",
+      "expected": "ALLOW_CANDIDATE_ONLY",
+      "actions": [
+        "probe.load_private_note",
+        "probe.derive_preview",
+        "probe.inspect_metadata"
+      ],
+      "baseDecisions": [
+        true,
+        true,
+        true
+      ]
+    }
+  ]
+}
