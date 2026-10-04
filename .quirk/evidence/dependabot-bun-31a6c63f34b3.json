@@ -1,0 +1,74 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.dependabot-bun.31a6c63f34b3",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "c40024d46de70e67b33fdd0f9315f1a87fe4fcb4",
+    "commit": "31a6c63f34b3a886b4dba62ed1e883a036b1bced",
+    "changed_paths": [
+      ".claude/commands/quirk-fix-ci.md",
+      ".github/dependabot.yml",
+      ".github/workflows/dependabot-lockfile.yml"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.dependabot-bun.31a6c63f34b3",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The scaffold changes the Dependabot npm ecosystem entry to bun, preserving all other parsed Dependabot configuration; updates the CI-failure guidance for frozen-lockfile drift and misconfigured_tooling; and deletes the obsolete Dependabot lockfile-sync workflow. This receipt binds only these three changed paths at the subject commit. A successful live Bun updater run remains an unobserved post-merge check. This receipt grants no merge, admission, runtime, or fleet-rollout authority and establishes no owner review.",
+      "evidence_paths": [
+        ".claude/commands/quirk-fix-ci.md",
+        ".github/dependabot.yml",
+        ".github/workflows/dependabot-lockfile.yml"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".claude/commands/quirk-fix-ci.md",
+      "state": "present",
+      "git_blob": "55deac1c4451ae781072fafe7ef27e8b0c5f245d",
+      "sha256": "sha256:b9f5ba7b00efb7ef5beb117e028eed10753df103f425f5d12b8a22edf1b2e51e"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "state": "present",
+      "git_blob": "24b53709ed2ad21cff319944ea09ecf0c80d4755",
+      "sha256": "sha256:682768193ea6acc0702d14ab83a8794df737f39c6811e5d8c74bf13f2604b6c6"
+    },
+    {
+      "path": ".github/workflows/dependabot-lockfile.yml",
+      "state": "deleted",
+      "git_blob": null,
+      "sha256": null
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "git diff --check c40024d46de70e67b33fdd0f9315f1a87fe4fcb4 31a6c63f34b3a886b4dba62ed1e883a036b1bced",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git merge-base --is-ancestor c40024d46de70e67b33fdd0f9315f1a87fe4fcb4 31a6c63f34b3a886b4dba62ed1e883a036b1bced",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T09:04:33Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:1c1337628fabdac4f1d4157646a176078e56ff7539829434635e5ef3428b9e60"
+}
