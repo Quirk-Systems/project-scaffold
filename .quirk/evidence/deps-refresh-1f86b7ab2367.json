@@ -1,0 +1,71 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.deps-refresh.1f86b7ab2367",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "de138f4164c8cebb87a363647428a84fb8159fb0",
+    "commit": "1f86b7ab23678ae9c6353fc4ba786be76ed4738c",
+    "changed_paths": ["bun.lock", "package.json", "vitest.config.ts"]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.deps-refresh.1f86b7ab2367",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The scaffold refreshes 33 direct dependencies to their latest in-range versions and migrates vitest and @vitest/coverage-v8 from 3.2.7 to 5.0.3, which clears GHSA-82fw-gwwq-j7x9 (fixed only at >=4.1.11 and therefore unreachable in range). vitest 5 peers vite ^6.4.0 || ^7 || ^8, so the existing vite ^6.4.3 override is unchanged. vitest.config.ts drops a UserConfig plugins cast that vitest 5 makes unnecessary; that export is also renamed to ViteUserConfig in 5, and type-check passes with the plugins array declared plainly. Full-tree advisories fall from 31 to 2; the two that remain are dev-path with no safe fix (braces 3.0.3 is both latest and vulnerable; the old esbuild arrives through the deprecated @esbuild-kit chain under drizzle-kit). bun audit --prod reports no vulnerabilities. This receipt binds only these three changed paths at the subject commit. It grants no merge, admission, runtime, or fleet-rollout authority and establishes no owner review.",
+      "evidence_paths": ["bun.lock", "package.json", "vitest.config.ts"]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "76aa8d92125f4096c308741597e14817190c4816",
+      "sha256": "sha256:a61e17ceca9429c7856655aef98d1d3a6eda817632dda2726017938882e7ddfc"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "197017b86c0d805046418ff216fb7d6280bae0cd",
+      "sha256": "sha256:345a7ad67aab01e4459de741e23777c2f2ca1e016f6dd0daea5580812a6665e9"
+    },
+    {
+      "path": "vitest.config.ts",
+      "state": "present",
+      "git_blob": "642657e32914929399b3401c2e30779a72719816",
+      "sha256": "sha256:9b5da80d1619265768422902fb5b2979021fd0f25161ff71491a59f024ab589f"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T12:16:48Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:b25a32ab8331dde7d158f53db9c722faf8a3ee5583f8bd19579953643f245b1b"
+}
