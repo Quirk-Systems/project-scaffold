@@ -1,0 +1,95 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.node-engines-floor.ec154efdeb14",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "4f4304050692939e8646872b084a177c235f78d2",
+    "commit": "ec154efdeb1447e1cd8d5d934642bfd5e9722834",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      "CLAUDE.md",
+      "bun.lock",
+      "package.json",
+      "scripts/check-engines.mjs"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.node-engines-floor.ec154efdeb14",
+      "claim_type": "implementation",
+      "authority_effect": "none",
+      "statement": "engines.node moves from >=20.0.0 to >=22.22.0, the lowest floor every installed engines.node range accepts (posthog-node ^20.20.0 || >=22.22.0 is the binding range; the requested >=22.0.0 is still excluded by 12 packages including posthog-node, jsdom and @vitejs/plugin-react). Both ci.yml setup-node steps now provision 22.22.0. scripts/check-engines.mjs (bun run engines:check, run in CI after install and in bun run validate) fails when any installed package's engines.node excludes the declared floor or any ci.yml setup-node step provisions a different version; it fails on the previous >=20.0.0 tree (53 packages plus both CI steps) and passes on this commit (507 ranges). semver ^7.8.5 becomes a direct devDependency already present in the tree; bun.lock only re-hoists existing semver versions. Owner review is not established.",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        "CLAUDE.md",
+        "bun.lock",
+        "package.json",
+        "scripts/check-engines.mjs"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "c6365b487d37171ad066e89da7ccb5f7efa0f771",
+      "sha256": "sha256:d736922a10f92e58ee368bca5de9a8dc7990d087afa6404540af91e5fed1450f"
+    },
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "056ca7bfcbbbbd976b85d84b6b53f54b1ca80a19",
+      "sha256": "sha256:a1136519716ef04c4418604a064fa1d338790ea217bc9e32681f51fe32c18cfc"
+    },
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "ab3347c4fb4c8754092673868714b1dbcbaf192c",
+      "sha256": "sha256:0327b43ab08e6d11faa1b820356be388b51563954a78b854afe336ca0080bfbc"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "65eac118246ff348b18cec9eaf004760e0cdb22e",
+      "sha256": "sha256:d3d21a0c1ac17e1273521e8f1b734e67d6934e36ec6bd436d59c8d435da18be0"
+    },
+    {
+      "path": "scripts/check-engines.mjs",
+      "state": "present",
+      "git_blob": "849c75f0a18dfc1bbd094c2d33b612c3fb4040dd",
+      "sha256": "sha256:0809adf70f3930f74c130f02df1aaeddd03ca8062be60bd3da95cda453e5d7b1"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run engines:check",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T13:45:00Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:ae197569eedad81e3f21dfe527f7fd99569b715691101f3f60e282d584cf4035"
+}
