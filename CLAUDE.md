@@ -42,6 +42,7 @@ Integration details (lazy-client pattern, media storage, Stripe, Resend, AI laye
 - No `tailwind.config.ts` — all customization is in CSS
 - OKLCH color space for theme colors (light/dark mode via `.dark` class)
 - Dark mode uses `.dark` class variant (not `media`)
+- Quirk design tokens: `src/styles/quirk-tokens.css` exposes the canonical `--quirk-*` variables, generated from a pinned `Quirk-Systems/.github` commit (named in its header). Regenerate it, never edit it; the theme does not map onto them yet
 
 ### Database
 
