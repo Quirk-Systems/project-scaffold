@@ -12,13 +12,29 @@ import { isConflict, quirkApi, type OfferWithAsset } from "@/lib/quirk/client";
 const FILTERS = ["all", "open", "claimed", "retired"] as const;
 type Filter = (typeof FILTERS)[number];
 
+/** What this viewer's own claim did: won it, or lost the race (HTTP 409). */
+type ClaimResult = { title: string; outcome: "won" | "lost" };
+
 export function OffersBoard() {
   const [filter, setFilter] = useState<Filter>("all");
+  // Kept here, not in each card: a refetch under the "open" filter drops the
+  // offer a viewer just won or lost, and its card's state with it.
+  const [results, setResults] = useState<Record<string, ClaimResult>>({});
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["offers", filter],
     queryFn: () => quirkApi.listOffers(filter === "all" ? undefined : filter),
   });
+
+  const shown = new Set(data?.offers.map((o) => o.id));
+  const offscreen = Object.entries(results)
+    .filter(([id]) => data && !shown.has(id))
+    .map(([, r]) =>
+      r.outcome === "won"
+        ? `You claimed \u201c${r.title}\u201d. It\u2019s yours.`
+        : `Missed \u201c${r.title}\u201d. It is no longer open.`,
+    )
+    .join(" ");
 
   return (
     <div className="flex flex-col gap-6">
@@ -40,6 +56,13 @@ export function OffersBoard() {
         ))}
       </div>
 
+      <p
+        role="status"
+        className={cn("text-muted-foreground text-sm", !offscreen && "sr-only")}
+      >
+        {offscreen}
+      </p>
+
       {isLoading && (
         <p className="text-muted-foreground text-sm">Loading offers…</p>
       )}
@@ -55,40 +78,61 @@ export function OffersBoard() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {data?.offers.map((offer) => (
-          <OfferCard key={offer.id} offer={offer} />
+          <OfferCard
+            key={offer.id}
+            offer={offer}
+            result={results[offer.id]?.outcome}
+            onResult={(outcome) =>
+              setResults((prev) => ({
+                ...prev,
+                [offer.id]: { title: offer.title, outcome },
+              }))
+            }
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function OfferCard({ offer }: { offer: OfferWithAsset }) {
+function OfferCard({
+  offer,
+  result,
+  onResult,
+}: {
+  offer: OfferWithAsset;
+  result?: ClaimResult["outcome"];
+  onResult: (outcome: ClaimResult["outcome"]) => void;
+}) {
   const queryClient = useQueryClient();
   const claim = useMutation({
     mutationFn: () => quirkApi.claimOffer(offer.id),
+    onSuccess: () => onResult("won"),
+    onError: (error) => {
+      if (isConflict(error)) onResult("lost");
+    },
     onSettled: () => queryClient.invalidateQueries({ queryKey: ["offers"] }),
   });
 
   const overall = offer.scores?.overall;
 
   // The card's one status line says what this viewer's claim did. A 409 means
-  // the offer stopped being open first (someone else claimed it, or it was
-  // retired); until the refetch says which, it only says it was missed. The
-  // line is an always-mounted live region whose text changes, so screen
-  // readers announce the outcome.
-  const lostRace = isConflict(claim.error);
+  // the offer stopped being open first: claimed (perhaps by this viewer in
+  // another tab) or retired, so the copy claims no more than that. The line is
+  // an always-mounted live region whose text changes, so screen readers
+  // announce the outcome.
   const statusLine =
     offer.status === "open"
-      ? lostRace
+      ? result === "lost"
         ? "Missed it. This one is no longer open."
         : ""
       : offer.status === "claimed"
-        ? lostRace
-          ? "Missed it. Someone else claimed this one."
-          : claim.isSuccess
+        ? result === "lost"
+          ? "Missed it. This one was claimed first."
+          : result === "won"
             ? "You claimed it. This one is yours."
             : "Claimed. This one belongs to someone now."
-        : lostRace
+        : result === "lost"
           ? "Missed it. This one was retired."
           : "Retired.";
 
@@ -137,7 +181,7 @@ function OfferCard({ offer }: { offer: OfferWithAsset }) {
         >
           {statusLine}
         </p>
-        {claim.error && !lostRace && (
+        {claim.error && !isConflict(claim.error) && (
           <p className="text-destructive text-xs" role="alert">
             {claim.error.message}
           </p>
