@@ -31,13 +31,16 @@ export async function POST(
     });
     if (!claimed) {
       // Idempotent for the owner: a retry after a lost response, or a second
-      // tab of the user who already holds it, gets their offer back.
+      // tab of the user who already holds it, gets their offer back — in the
+      // same shape as a fresh win (the offer row, without the joined asset).
       const current = await getOffer(id);
       if (
         current?.status === "claimed" &&
         current.claimedBy === session.user.id
       ) {
-        return NextResponse.json({ offer: current });
+        const { asset, ...offer } = current;
+        void asset;
+        return NextResponse.json({ offer });
       }
       return NextResponse.json(
         { error: "Already claimed — this one is gone" },

@@ -34,6 +34,22 @@ describe("POST /api/offers/[id]/claim", () => {
     const res = await call();
 
     expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      offer: { id: "offer-1", status: "claimed", claimedBy: "user-a" },
+    });
+    expect(claimOffer).toHaveBeenCalledWith({
+      offerId: "offer-1",
+      userId: "user-a",
+    });
+  });
+
+  it("answers 404 for an unknown offer without attempting the claim", async () => {
+    getOffer.mockResolvedValue(null);
+
+    const res = await call();
+
+    expect(res.status).toBe(404);
+    expect(claimOffer).not.toHaveBeenCalled();
   });
 
   it("answers 409 when someone else already holds it", async () => {
@@ -70,12 +86,13 @@ describe("POST /api/offers/[id]/claim", () => {
     const owned = { id: "offer-1", status: "claimed", claimedBy: "user-a" };
     getOffer
       .mockResolvedValueOnce({ id: "offer-1", status: "open" })
-      .mockResolvedValueOnce(owned);
+      .mockResolvedValueOnce({ ...owned, asset: { id: "asset-1" } });
     claimOffer.mockResolvedValue(null);
 
     const res = await call();
 
     expect(res.status).toBe(200);
+    // Same shape as a fresh win: the offer row, not the joined asset.
     expect(await res.json()).toEqual({ offer: owned });
   });
 
@@ -85,5 +102,7 @@ describe("POST /api/offers/[id]/claim", () => {
     const res = await call();
 
     expect(res.status).toBe(401);
+    expect(getOffer).not.toHaveBeenCalled();
+    expect(claimOffer).not.toHaveBeenCalled();
   });
 });

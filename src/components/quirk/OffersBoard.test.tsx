@@ -154,6 +154,28 @@ describe("OffersBoard claim outcomes", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("marks a lost race closed even when the refetch fails", async () => {
+    listOffers
+      .mockResolvedValueOnce({ offers: [openOffer] })
+      .mockRejectedValue(new QuirkApiError("Database is down", 500));
+    claimOffer.mockRejectedValue(
+      new QuirkApiError("Already claimed — this one is gone", 409),
+    );
+    renderBoard();
+
+    await claim();
+
+    expect(
+      await screen.findByText("Missed it. This one is no longer open."),
+    ).toHaveAttribute("role", "status");
+    expect(
+      screen.getByText("closed", { selector: "span" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("open", { selector: "span" }),
+    ).not.toBeInTheDocument();
+  });
+
   describe("under the open filter, where a refetch removes the card", () => {
     let serverStatus: "open" | "claimed";
 

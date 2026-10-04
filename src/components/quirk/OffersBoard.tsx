@@ -86,8 +86,8 @@ export function OffersBoard() {
             result={results[offer.id]?.outcome}
             onResult={(outcome) =>
               setResults((prev) =>
-                // A win stands: a later 409 (a retry, another tab) is about
-                // the same claim and never downgrades it.
+                // A win stands: the owner's retries get 200, and a later 409
+                // never downgrades a claim this viewer already holds.
                 prev[offer.id]?.outcome === "won"
                   ? prev
                   : { ...prev, [offer.id]: { title: offer.title, outcome } },
@@ -122,8 +122,9 @@ function OfferCard({
   const overall = offer.scores?.overall;
 
   // The card's one status line says what this viewer's claim did. A 409 means
-  // the offer stopped being open first: claimed (perhaps by this viewer in
-  // another tab) or retired, so the copy claims no more than that. The line is
+  // the offer stopped being open first: claimed by someone else (the owner's
+  // own retry or second tab gets 200) or retired, and until the refetch says
+  // which, the copy claims no more than that. The line is
   // an always-mounted live region whose text changes, so screen readers
   // announce the outcome.
   // A won claim counts at once, without waiting for the refetch (which can
