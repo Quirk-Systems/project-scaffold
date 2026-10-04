@@ -146,6 +146,12 @@ describe("OffersBoard claim outcomes", () => {
     expect(
       screen.queryByRole("button", { name: /claim it — only one exists/i }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByText("claimed", { selector: "span" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("open", { selector: "span" }),
+    ).not.toBeInTheDocument();
   });
 
   describe("under the open filter, where a refetch removes the card", () => {

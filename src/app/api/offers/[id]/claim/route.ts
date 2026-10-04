@@ -30,6 +30,15 @@ export async function POST(
       userId: session.user.id,
     });
     if (!claimed) {
+      // Idempotent for the owner: a retry after a lost response, or a second
+      // tab of the user who already holds it, gets their offer back.
+      const current = await getOffer(id);
+      if (
+        current?.status === "claimed" &&
+        current.claimedBy === session.user.id
+      ) {
+        return NextResponse.json({ offer: current });
+      }
       return NextResponse.json(
         { error: "Already claimed — this one is gone" },
         { status: 409 },

@@ -143,8 +143,18 @@ function OfferCard({
             ? "Missed it. This one was retired."
             : "Retired.";
 
+  // The badge and styling follow the recorded result too, so a failed refetch
+  // that leaves the cached offer "open" cannot contradict the status line.
+  const gone = offer.status !== "open" || !!result;
+  const badgeLabel =
+    result === "won"
+      ? "claimed"
+      : result === "lost" && offer.status === "open"
+        ? "closed"
+        : offer.status;
+
   return (
-    <Card className={offer.status !== "open" ? "opacity-70" : undefined}>
+    <Card className={gone ? "opacity-70" : undefined}>
       <CardHeader className="flex flex-row items-start justify-between gap-2">
         <CardTitle className="text-base leading-snug">
           <Link
@@ -156,9 +166,7 @@ function OfferCard({
         </CardTitle>
         <div className="flex shrink-0 gap-1">
           <Badge variant="outline">1/1</Badge>
-          <Badge variant={offer.status === "open" ? "default" : "secondary"}>
-            {offer.status}
-          </Badge>
+          <Badge variant={gone ? "secondary" : "default"}>{badgeLabel}</Badge>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
