@@ -12,6 +12,11 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+      // vitest 4 removed coverage.all, so without an explicit include only
+      // files a test actually loads are reported — untested modules vanish
+      // rather than showing as 0%. This repo was already reporting 36 of 125
+      // source files before the upgrade; the include makes the figure honest.
+      include: ["src/**/*.{ts,tsx}"],
       exclude: [
         "node_modules",
         ".next",
