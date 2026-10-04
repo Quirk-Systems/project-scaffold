@@ -1,0 +1,9 @@
+{
+  "repository": "Quirk-Systems/quirk-core",
+  "commit": "0b4fc6debf5c93b94463c9a460d022cfbdf4a37b",
+  "path": "schemas/preference-evidence-wedge.v1.schema.json",
+  "blob_sha1": "8b04608ffee9a326f5562e1a496a49d8e1db098c",
+  "sha256": "db5cf4cd2b2d7131bef945b828b17a35fa02a08f1bfa5b7af5bcb9c6dde87ca7",
+  "contract_status": "candidate",
+  "admission_effect": "none"
+}
