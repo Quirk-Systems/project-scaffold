@@ -1,0 +1,90 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.owner-idempotent-claim.da23eb13d4e5",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "f0b2bbd42b71a840193b149e3299809cca358d64",
+    "commit": "da23eb13d4e59e0b1c7585eb714a28aaf8da7df9",
+    "changed_paths": [
+      "CLAUDE.md",
+      "src/app/api/offers/[id]/claim/route.test.ts",
+      "src/app/api/offers/[id]/claim/route.ts",
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.owner-idempotent-claim.da23eb13d4e5",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "POST /api/offers/[id]/claim returns 200 with the offer when the conditional UPDATE matches nothing but the offer is already claimed by the requesting user, and 409 otherwise; OffersBoard's badge and card styling follow the recorded claim result. New route tests (5) and a badge assertion pass, and the owner-retry and badge cases fail on the previous code; bun run validate exits 0 (242 tests); the repo E2E suite passes on Chromium against local Postgres 16; the uncommitted local race harness passed 15 of 15 (two-user race, owner-idempotent burst, one user in two tabs both getting 200). Owner review is not established.",
+      "evidence_paths": [
+        "CLAUDE.md",
+        "src/app/api/offers/[id]/claim/route.test.ts",
+        "src/app/api/offers/[id]/claim/route.ts",
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "fd10f1dc516e7eb4429f3391179b299c3d48d1ff",
+      "sha256": "sha256:71349fc1f6fd468dbe1e139e72918afe87d1642a6b8a7d56dbeeecb8ff119dd4"
+    },
+    {
+      "path": "src/app/api/offers/[id]/claim/route.test.ts",
+      "state": "present",
+      "git_blob": "f23eac0795ffe5bbcdb33a5a012863e4809d438f",
+      "sha256": "sha256:449484424341f8c29d579d6a937d67dd9093c351544169273d01c5360af41308"
+    },
+    {
+      "path": "src/app/api/offers/[id]/claim/route.ts",
+      "state": "present",
+      "git_blob": "4957ea2f09558221130bf76712d6da3c93ad4ee2",
+      "sha256": "sha256:89366e08f2a483dedb06be16c2a964181ee813e8661d15e11881f3e266edd238"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "8fd65692a2fb2690039e1acf8d371cfba187274a",
+      "sha256": "sha256:b6e44a2a25c6e54b5472217fd5e14ed887202e3558f341d919da01774de3c5cc"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "632fdf1a8fca4bd016b6bd9bb4bbf31f9e3ad07d",
+      "sha256": "sha256:c55abb1fa28f0252db23c14836c679c84ef0482f1098446e8cead1bdd4c6acd8"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "playwright test (repo e2e, Chromium, local Postgres 16)",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "playwright test e2e-local/claim-race.spec.ts --repeat-each=5 (local harness, not committed)",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T12:38:48Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:0fc22413d6409c6a419c5e2e565cd8fb25e5dc136f692559ff810e70a16cf9ba"
+}
