@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { quirkApi, type OfferWithAsset } from "@/lib/quirk/client";
+import { isConflict, quirkApi, type OfferWithAsset } from "@/lib/quirk/client";
 
 const FILTERS = ["all", "open", "claimed", "retired"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -112,11 +112,16 @@ function OfferCard({ offer }: { offer: OfferWithAsset }) {
               : "Retired."}
           </p>
         )}
-        {claim.error && (
-          <p className="text-destructive text-xs">
-            {(claim.error as Error).message}
-          </p>
-        )}
+        {claim.error &&
+          (isConflict(claim.error) ? (
+            <p className="text-muted-foreground text-xs" role="status">
+              Someone claimed it first. This one is gone.
+            </p>
+          ) : (
+            <p className="text-destructive text-xs" role="alert">
+              {claim.error.message}
+            </p>
+          ))}
       </CardContent>
     </Card>
   );
