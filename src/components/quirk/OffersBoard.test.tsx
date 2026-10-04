@@ -186,6 +186,40 @@ describe("OffersBoard claim outcomes", () => {
       expect(screen.queryByText("The only one")).not.toBeInTheDocument();
     });
 
+    it("reports the result when the user switches to a filter that fails to load", async () => {
+      let finishClaim: (value: unknown) => void = () => {};
+      claimOffer.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            finishClaim = resolve;
+          }),
+      );
+      listOffers.mockImplementation(async (status?: string) => {
+        if (status === "retired") {
+          throw new QuirkApiError("Database is down", 500);
+        }
+        return { offers: [{ ...openOffer, status: serverStatus }] };
+      });
+      const user = userEvent.setup();
+      renderBoard();
+
+      await user.click(
+        await screen.findByRole("button", {
+          name: /claim it — only one exists/i,
+        }),
+      );
+      await user.click(screen.getByRole("button", { name: "retired" }));
+      await screen.findByText("Database is down");
+      serverStatus = "claimed";
+      finishClaim({ offer: { ...openOffer, status: "claimed" } });
+
+      expect(
+        await screen.findByText(
+          "You claimed \u201cThe only one\u201d. It\u2019s yours.",
+        ),
+      ).toHaveAttribute("role", "status");
+    });
+
     it("still tells the loser after the card leaves the list", async () => {
       claimOffer.mockImplementation(async () => {
         serverStatus = "claimed";

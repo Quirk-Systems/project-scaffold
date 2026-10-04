@@ -26,9 +26,11 @@ export function OffersBoard() {
     queryFn: () => quirkApi.listOffers(filter === "all" ? undefined : filter),
   });
 
+  // An unloaded or failed list shows no offer, so every saved result is
+  // reported here rather than waiting for some filter to load.
   const shown = new Set(data?.offers.map((o) => o.id));
   const offscreen = Object.entries(results)
-    .filter(([id]) => data && !shown.has(id))
+    .filter(([id]) => !shown.has(id))
     .map(([, r]) =>
       r.outcome === "won"
         ? `You claimed \u201c${r.title}\u201d. It\u2019s yours.`
