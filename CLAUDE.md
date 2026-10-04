@@ -121,6 +121,6 @@ Key recommendation docs:
 - Never commit `.env` files or secrets
 - Write tests for new components and utilities (`src/**/*.test.tsx` for unit, `e2e/*.spec.ts` for E2E)
 - Use conventional commit messages (enforced by commitlint)
-- Node.js >=20.0.0 is required (alongside Bun)
+- Node.js >=22.22.0 is required (alongside Bun). `bun run engines:check` (in `validate` and CI) fails when any installed package's `engines.node` excludes the declared floor, or when `ci.yml` does not provision exactly that floor — raise both together
 - For agent/AI work, see `AGENTS.md` and `docs/recommendations/ai/`
 - For project planning, see `PROJECT.md`

@@ -32,9 +32,10 @@
     "email:dev": "email dev --dir src/emails --port 3001",
     "clean": "rm -rf .next out node_modules",
     "identity:check": "node scripts/check-repository-identity.mjs",
+    "engines:check": "node scripts/check-engines.mjs",
     "preference-contract:check": "node scripts/check-preference-contract.mjs",
     "preference-wedge:demo": "bun scripts/run-preference-evidence-wedge.ts",
-    "validate": "bun run preference-contract:check && bun run identity:check && bun run lint && bun run type-check && bun run test:run && SKIP_ENV_VALIDATION=1 bun run build",
+    "validate": "bun run preference-contract:check && bun run identity:check && bun run engines:check && bun run lint && bun run type-check && bun run test:run && SKIP_ENV_VALIDATION=1 bun run build",
     "validate:full": "bun run validate && bun run test:e2e",
     "prepare": "lefthook install"
   },
@@ -96,6 +97,7 @@
     "prettier": "^3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "react-email": "^6.7.0",
+    "semver": "^7.8.5",
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",
     "vite-tsconfig-paths": "^5.1.4",
@@ -103,7 +105,7 @@
     "yaml": "^2.9.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.22.0"
   },
   "overrides": {
     "postcss": "^8.5.25",
