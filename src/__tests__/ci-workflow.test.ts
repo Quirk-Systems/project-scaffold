@@ -36,12 +36,14 @@ const find = (job: Job, predicate: (step: Step) => boolean): Step => {
   expect(step).toBeDefined();
   return step!;
 };
-const action = (job: Job, uses: string) =>
-  find(job, (step) => step.uses === uses);
+const action = (job: Job, repository: string) =>
+  find(job, (step) => step.uses?.startsWith(`${repository}@`) === true);
 const cache = (job: Job, path: string) =>
   find(
     job,
-    (step) => step.uses === "actions/cache@v4" && step.with?.path === path,
+    (step) =>
+      step.uses?.startsWith("actions/cache@") === true &&
+      step.with?.path === path,
   );
 const toolchain =
   "${{ runner.os }}-${{ runner.arch }}-bun-${{ steps.bun.outputs.bun-version }}-";
@@ -49,6 +51,23 @@ const nextToolchain =
   "${{ runner.os }}-${{ runner.arch }}-next-node20-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}-";
 
 describe("CI workflow contract", () => {
+  it("pins every remote action to a full commit with a release comment", () => {
+    const uses = Object.values(workflow.jobs).flatMap((job) =>
+      job.steps.flatMap((step) => (step.uses ? [step.uses] : [])),
+    );
+    expect(uses.length).toBeGreaterThan(0);
+    for (const use of uses) {
+      expect(use).toMatch(/^[\w.-]+\/[\w.-]+@[0-9a-f]{40}$/);
+    }
+    const lines = source.split("\n").filter((line) => /^\s*uses:/.test(line));
+    expect(lines).toHaveLength(uses.length);
+    for (const line of lines) {
+      expect(line).toMatch(
+        /^\s*uses: [\w.-]+\/[\w.-]+@[0-9a-f]{40} # v\d+\.\d+\.\d+$/,
+      );
+    }
+  });
+
   it("parses YAML and preserves events, job IDs and cancellation", () => {
     expect(document.errors).toEqual([]);
     expect(workflow.name).toBe("CI");
@@ -74,12 +93,12 @@ describe("CI workflow contract", () => {
       expect(job["timeout-minutes"]).toBeGreaterThan(0);
       expect(job["timeout-minutes"]).toBeLessThanOrEqual(30);
       expect(job.permissions).toEqual({ contents: "read" });
-      expect(action(job, "actions/checkout@v7").with).toEqual(
+      expect(action(job, "actions/checkout").with).toEqual(
         id === "security"
           ? { "persist-credentials": false, "fetch-depth": 0 }
           : { "persist-credentials": false },
       );
-      const bun = action(job, "oven-sh/setup-bun@v2");
+      const bun = action(job, "oven-sh/setup-bun");
       expect(bun.id).toBe("bun");
       expect(bun.with).toEqual({ "bun-version": "latest" });
       const install = find(
@@ -103,7 +122,7 @@ describe("CI workflow contract", () => {
     "%s caches downloads and compilation with compatible toolchain invalidation",
     (id) => {
       const job = workflow.jobs[id];
-      expect(action(job, "actions/setup-node@v7").with).toEqual({
+      expect(action(job, "actions/setup-node").with).toEqual({
         "node-version": 20,
       });
       const downloads = cache(job, "~/.bun/install/cache");
@@ -119,7 +138,7 @@ describe("CI workflow contract", () => {
       expect(next.with?.["restore-keys"]).toBe(nextToolchain + "\n");
       expect(
         job.steps
-          .filter((step) => step.uses === "actions/cache@v4")
+          .filter((step) => step.uses?.startsWith("actions/cache@") === true)
           .map((step) => step.with?.path),
       ).toEqual(
         id === "validate"
@@ -208,7 +227,7 @@ describe("CI workflow contract", () => {
           '--health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5',
       },
     });
-    const report = action(e2e, "actions/upload-artifact@v7");
+    const report = action(e2e, "actions/upload-artifact");
     expect(report.if).toBe("${{ !cancelled() }}");
     expect(report.with).toEqual({
       name: "playwright-report",
@@ -224,7 +243,7 @@ describe("CI workflow contract", () => {
       step.run?.startsWith("bun install"),
     );
     const audit = find(security, (step) => step.run === "bun audit --prod");
-    const scan = action(security, "trufflesecurity/trufflehog@v3.97.9");
+    const scan = action(security, "trufflesecurity/trufflehog");
     expect(security.steps.indexOf(audit)).toBeGreaterThan(install);
     expect(security.steps.indexOf(scan)).toBeGreaterThan(
       security.steps.indexOf(audit),
