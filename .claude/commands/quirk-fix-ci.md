@@ -11,12 +11,13 @@ guessing between them has cost this repository real time.
 
 Known failure signatures, each of which has occurred here:
 
-| Log line                                                                        | Cause                                                                                                         | Fix                                                               |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `lockfile had changes, but lockfile is frozen`                                  | `package.json` moved without `bun.lock` — usually a Dependabot merge, which edits the manifest only           | `bun install`, commit the lockfile                                |
-| `The job was not started because your account is locked due to a billing issue` | GitHub Actions billing, not the code                                                                          | Nothing to fix in the repository; wait for it to clear and re-run |
-| `contextOrFilename.getFilename is not a function`                               | eslint 10 against `eslint-plugin-react`, which still peers `eslint: ^9.7`                                     | Hold eslint at 9.x; see the guard in `.github/dependabot.yml`     |
-| A failure you cannot reproduce locally                                          | PR checks build the _merge_ of your head into current `main`, so the break may be in main, not in your branch | Reproduce the merge in a throwaway worktree (below)               |
+| Log line                                                                        | Cause                                                                                                                             | Fix                                                               |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `lockfile had changes, but lockfile is frozen`                                  | `package.json` moved without `bun.lock` — a manifest edit without `bun install` (historically, Dependabot on the `npm` ecosystem) | `bun install`, commit the lockfile                                |
+| `Dependabot detected that Bun is misconfigured` (`misconfigured_tooling`)       | `dependabot.yml` declares `package-ecosystem: npm` on a Bun repo; shows up as a red Dependabot "Update" run, not as CI            | Set `package-ecosystem: bun`                                      |
+| `The job was not started because your account is locked due to a billing issue` | GitHub Actions billing, not the code                                                                                              | Nothing to fix in the repository; wait for it to clear and re-run |
+| `contextOrFilename.getFilename is not a function`                               | eslint 10 against `eslint-plugin-react`, which still peers `eslint: ^9.7`                                                         | Hold eslint at 9.x; see the guard in `.github/dependabot.yml`     |
+| A failure you cannot reproduce locally                                          | PR checks build the _merge_ of your head into current `main`, so the break may be in main, not in your branch                     | Reproduce the merge in a throwaway worktree (below)               |
 
 ## Reproduce locally before changing anything
 
