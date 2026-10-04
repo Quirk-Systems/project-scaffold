@@ -1,0 +1,44 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.evidence-gate-pin.17238b800183",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "bc3849598a5be9ab11b97b12b47b36dab4edb3da",
+    "commit": "17238b80018348a36053a4fa4b93836b30deff15",
+    "changed_paths": [".github/workflows/evidence-binding.yml"]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.evidence-gate-pin.17238b800183",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The evidence-binding caller is pinned to Quirk-Systems/.github@ed2f2ff7caacdb7a148ac9811dce1e7cce48a7c8 (main on 2026-10-04) instead of 6136fa5, so the pull-request gate runs that commit's receipt validator. The workflow keeps contents: read and takes no inputs or secrets. Owner review is not established.",
+      "evidence_paths": [".github/workflows/evidence-binding.yml"]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/evidence-binding.yml",
+      "state": "present",
+      "git_blob": "f4309df8e47e1b45317b17d033bf89bc16ae95d6",
+      "sha256": "sha256:535ae80fc1382b1c50d4ed4f003ad14f9c3318fb47a70fa3944877bd457cf1b9"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "test \"$(sed -n 's/^[[:space:]]*uses: Quirk-Systems\\/.github\\/.github\\/workflows\\/reusable-evidence-binding.yml@\\([0-9a-f]*\\).*/\\1/p' .github/workflows/evidence-binding.yml)\" = \"ed2f2ff7caacdb7a148ac9811dce1e7cce48a7c8\"",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T06:49:19Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:37e07d8781f126ab2db4aef981322cde9cba01935758d5d296e6c44f86f3827c"
+}

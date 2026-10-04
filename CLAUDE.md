@@ -42,6 +42,7 @@ Integration details (lazy-client pattern, media storage, Stripe, Resend, AI laye
 - No `tailwind.config.ts` — all customization is in CSS
 - OKLCH color space for theme colors (light/dark mode via `.dark` class)
 - Dark mode uses `.dark` class variant (not `media`)
+- Quirk design tokens: `src/styles/quirk-tokens.css` exposes the canonical `--quirk-*` variables, generated from a pinned `Quirk-Systems/.github` commit (named in its header). Regenerate it, never edit it; the theme does not map onto them yet
 
 ### Database
 
@@ -102,6 +103,7 @@ Integration details (lazy-client pattern, media storage, Stripe, Resend, AI laye
 
 Key recommendation docs:
 
+- **Design**: `docs/recommendations/design/` — component layers, shadcn/headless/composition patterns, journey states, audit of current gaps
 - **AI**: `docs/recommendations/ai/` — prompt patterns, agent patterns, model selection, memory, evals
 - **Voice**: `docs/recommendations/voice/` — AI voice, persona, soul, tone calibration
 - **Tips**: `docs/recommendations/tips/` — TypeScript, Next.js, Testing, Debugging, Tailwind, Drizzle, Bun, Git

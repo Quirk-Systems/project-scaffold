@@ -17,6 +17,14 @@
 
 ---
 
+## Design & Components
+
+| File                                                         | What's Inside                                                                                 |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| [design/COMPONENT_PATTERNS.md](design/COMPONENT_PATTERNS.md) | shadcn ownership, headless behaviour, composition, journey states, honest scarcity, gap audit |
+
+---
+
 ## AI & Agents
 
 | File                                           | What's Inside                                                      |
