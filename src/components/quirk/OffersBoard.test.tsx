@@ -75,7 +75,7 @@ describe("OffersBoard claim outcomes", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
-  it("does not repeat the claimed message once the refetch shows the winner", async () => {
+  it("tells the loser plainly once the refetch shows the winner", async () => {
     listOffers
       .mockResolvedValueOnce({ offers: [openOffer] })
       .mockResolvedValue({ offers: [{ ...openOffer, status: "claimed" }] });
@@ -86,14 +86,14 @@ describe("OffersBoard claim outcomes", () => {
 
     await claim();
 
-    expect(
-      await screen.findByText("Claimed. This one belongs to someone now."),
-    ).toBeInTheDocument();
-    const status = screen.getByRole("status");
-    expect(status).toHaveTextContent(
+    const status = await screen.findByText(
       "Missed it. Someone else claimed this one.",
     );
-    expect(status).toHaveClass("sr-only");
+    expect(status).toHaveAttribute("role", "status");
+    expect(status).not.toHaveClass("sr-only");
+    expect(
+      screen.queryByText("Claimed. This one belongs to someone now."),
+    ).not.toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
@@ -108,10 +108,25 @@ describe("OffersBoard claim outcomes", () => {
 
     await claim();
 
-    expect(await screen.findByText("Retired.")).toBeInTheDocument();
-    const status = screen.getByRole("status");
-    expect(status).toHaveTextContent("Missed it. This one was retired.");
-    expect(status).not.toHaveTextContent(/claimed/i);
+    const status = await screen.findByText("Missed it. This one was retired.");
+    expect(status).toHaveAttribute("role", "status");
+    expect(screen.getByRole("status")).not.toHaveTextContent(/claimed/i);
+  });
+
+  it("confirms the win to the winner", async () => {
+    listOffers
+      .mockResolvedValueOnce({ offers: [openOffer] })
+      .mockResolvedValue({ offers: [{ ...openOffer, status: "claimed" }] });
+    claimOffer.mockResolvedValue({
+      offer: { ...openOffer, status: "claimed" },
+    });
+    renderBoard();
+
+    await claim();
+
+    expect(
+      await screen.findByText("You claimed it. This one is yours."),
+    ).toHaveAttribute("role", "status");
   });
 
   it("still shows a real failure as an error", async () => {

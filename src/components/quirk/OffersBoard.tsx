@@ -71,18 +71,26 @@ function OfferCard({ offer }: { offer: OfferWithAsset }) {
 
   const overall = offer.scores?.overall;
 
-  // A 409 means the offer stopped being open before this claim landed: someone
-  // else claimed it, or a curator retired it. Until the refetch says which, the
-  // card says only that it was missed; afterwards the status line shows it and
-  // the always-mounted live region repeats it for screen readers.
+  // The card's one status line says what this viewer's claim did. A 409 means
+  // the offer stopped being open first (someone else claimed it, or it was
+  // retired); until the refetch says which, it only says it was missed. The
+  // line is an always-mounted live region whose text changes, so screen
+  // readers announce the outcome.
   const lostRace = isConflict(claim.error);
-  const outcome = !lostRace
-    ? ""
-    : offer.status === "open"
-      ? "Missed it. This one is no longer open."
+  const statusLine =
+    offer.status === "open"
+      ? lostRace
+        ? "Missed it. This one is no longer open."
+        : ""
       : offer.status === "claimed"
-        ? "Missed it. Someone else claimed this one."
-        : "Missed it. This one was retired.";
+        ? lostRace
+          ? "Missed it. Someone else claimed this one."
+          : claim.isSuccess
+            ? "You claimed it. This one is yours."
+            : "Claimed. This one belongs to someone now."
+        : lostRace
+          ? "Missed it. This one was retired."
+          : "Retired.";
 
   return (
     <Card className={offer.status !== "open" ? "opacity-70" : undefined}>
@@ -111,7 +119,7 @@ function OfferCard({ offer }: { offer: OfferWithAsset }) {
           {typeof overall === "number" && <span>quality {overall}</span>}
           {offer.register && <span>voiced: {offer.register}</span>}
         </div>
-        {offer.status === "open" ? (
+        {offer.status === "open" && (
           <Button
             size="sm"
             onClick={() => claim.mutate()}
@@ -119,21 +127,15 @@ function OfferCard({ offer }: { offer: OfferWithAsset }) {
           >
             {claim.isPending ? "Claiming…" : "Claim it — only one exists"}
           </Button>
-        ) : (
-          <p className="text-muted-foreground text-xs">
-            {offer.status === "claimed"
-              ? "Claimed. This one belongs to someone now."
-              : "Retired."}
-          </p>
         )}
         <p
           role="status"
           className={cn(
             "text-muted-foreground text-xs",
-            (!outcome || offer.status !== "open") && "sr-only",
+            !statusLine && "sr-only",
           )}
         >
-          {outcome}
+          {statusLine}
         </p>
         {claim.error && !lostRace && (
           <p className="text-destructive text-xs" role="alert">
