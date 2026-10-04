@@ -50,7 +50,35 @@ describe("OffersBoard claim outcomes", () => {
     claimOffer.mockReset();
   });
 
-  it("shows a lost race as a plain outcome, not an error", async () => {
+  it("keeps an empty live region mounted before any claim", async () => {
+    renderBoard();
+
+    await screen.findByRole("button", { name: /claim it — only one exists/i });
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+  });
+
+  it("shows a lost race as a plain outcome while the list catches up", async () => {
+    claimOffer.mockRejectedValue(
+      new QuirkApiError("Already claimed — this one is gone", 409),
+    );
+    renderBoard();
+
+    await claim();
+
+    const status = await screen.findByRole("status");
+    await vi.waitFor(() =>
+      expect(status).toHaveTextContent(
+        "Missed it. This one is no longer open.",
+      ),
+    );
+    expect(status).not.toHaveClass("sr-only");
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("does not repeat the claimed message once the refetch shows the winner", async () => {
+    listOffers
+      .mockResolvedValueOnce({ offers: [openOffer] })
+      .mockResolvedValue({ offers: [{ ...openOffer, status: "claimed" }] });
     claimOffer.mockRejectedValue(
       new QuirkApiError("Already claimed — this one is gone", 409),
     );
@@ -59,9 +87,31 @@ describe("OffersBoard claim outcomes", () => {
     await claim();
 
     expect(
-      await screen.findByText("Someone claimed it first. This one is gone."),
-    ).toHaveClass("text-muted-foreground");
+      await screen.findByText("Claimed. This one belongs to someone now."),
+    ).toBeInTheDocument();
+    const status = screen.getByRole("status");
+    expect(status).toHaveTextContent(
+      "Missed it. Someone else claimed this one.",
+    );
+    expect(status).toHaveClass("sr-only");
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("does not say someone claimed an offer that was retired", async () => {
+    listOffers
+      .mockResolvedValueOnce({ offers: [openOffer] })
+      .mockResolvedValue({ offers: [{ ...openOffer, status: "retired" }] });
+    claimOffer.mockRejectedValue(
+      new QuirkApiError("Already claimed — this one is gone", 409),
+    );
+    renderBoard();
+
+    await claim();
+
+    expect(await screen.findByText("Retired.")).toBeInTheDocument();
+    const status = screen.getByRole("status");
+    expect(status).toHaveTextContent("Missed it. This one was retired.");
+    expect(status).not.toHaveTextContent(/claimed/i);
   });
 
   it("still shows a real failure as an error", async () => {

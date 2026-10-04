@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { isConflict, quirkApi, type OfferWithAsset } from "@/lib/quirk/client";
 
 const FILTERS = ["all", "open", "claimed", "retired"] as const;
@@ -70,6 +71,19 @@ function OfferCard({ offer }: { offer: OfferWithAsset }) {
 
   const overall = offer.scores?.overall;
 
+  // A 409 means the offer stopped being open before this claim landed: someone
+  // else claimed it, or a curator retired it. Until the refetch says which, the
+  // card says only that it was missed; afterwards the status line shows it and
+  // the always-mounted live region repeats it for screen readers.
+  const lostRace = isConflict(claim.error);
+  const outcome = !lostRace
+    ? ""
+    : offer.status === "open"
+      ? "Missed it. This one is no longer open."
+      : offer.status === "claimed"
+        ? "Missed it. Someone else claimed this one."
+        : "Missed it. This one was retired.";
+
   return (
     <Card className={offer.status !== "open" ? "opacity-70" : undefined}>
       <CardHeader className="flex flex-row items-start justify-between gap-2">
@@ -112,16 +126,20 @@ function OfferCard({ offer }: { offer: OfferWithAsset }) {
               : "Retired."}
           </p>
         )}
-        {claim.error &&
-          (isConflict(claim.error) ? (
-            <p className="text-muted-foreground text-xs" role="status">
-              Someone claimed it first. This one is gone.
-            </p>
-          ) : (
-            <p className="text-destructive text-xs" role="alert">
-              {claim.error.message}
-            </p>
-          ))}
+        <p
+          role="status"
+          className={cn(
+            "text-muted-foreground text-xs",
+            (!outcome || offer.status !== "open") && "sr-only",
+          )}
+        >
+          {outcome}
+        </p>
+        {claim.error && !lostRace && (
+          <p className="text-destructive text-xs" role="alert">
+            {claim.error.message}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

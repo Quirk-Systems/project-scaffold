@@ -123,15 +123,15 @@ A primitive is not done until it works with a keyboard and a screen reader.
 Each row is a gap between the patterns above and the code observed above. They are
 listed for follow-up; rows marked **Fixed** were closed by a later change.
 
-| Journey        | Gap                                                                                                                            | Where                                                                              | Pattern |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ------- |
-| Claim an offer | **Fixed:** losing the race (HTTP 409) now reads as a plain outcome ("Someone claimed it first"), not destructive red           | `src/components/quirk/OffersBoard.tsx`; `src/app/api/offers/[id]/claim/route.ts:9` | 7, 8    |
-| Claim an offer | **Fixed:** the API client now throws `QuirkApiError` with the HTTP status, and `isConflict()` tells a lost race from a failure | `src/lib/quirk/client.ts`                                                          | 7       |
-| Claim an offer | The selected filter lives only in component state, so it is lost on reload and cannot be linked                                | `OffersBoard.tsx` (`useState<Filter>`)                                             | 7       |
-| Filter offers  | Toggle buttons expose no pressed state                                                                                         | `OffersBoard.tsx:34`                                                               | 2, 9    |
-| Subscribe      | Hand-rolled `<button>` instead of the `Button` primitive                                                                       | `src/app/pricing/page.tsx:22`                                                      | 1, 3    |
-| Subscribe      | No pending state, so a slow redirect invites a double submit                                                                   | `src/app/pricing/page.tsx:22`                                                      | 7       |
-| Subscribe      | Stripe returns to `/pricing?status=success` or `?status=cancel`, but the page never reads it                                   | `src/app/pricing/actions.ts` (success and cancel URLs); `page.tsx`                 | 7       |
+| Journey        | Gap                                                                                                                                           | Where                                                                              | Pattern |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------- |
+| Claim an offer | **Fixed:** losing the race (HTTP 409) now reads as a plain outcome ("Missed it", then whether it was claimed or retired), not destructive red | `src/components/quirk/OffersBoard.tsx`; `src/app/api/offers/[id]/claim/route.ts:9` | 7, 8    |
+| Claim an offer | **Fixed:** the API client now throws `QuirkApiError` with the HTTP status, and `isConflict()` tells a lost race from a failure                | `src/lib/quirk/client.ts`                                                          | 7       |
+| Claim an offer | The selected filter lives only in component state, so it is lost on reload and cannot be linked                                               | `OffersBoard.tsx` (`useState<Filter>`)                                             | 7       |
+| Filter offers  | Toggle buttons expose no pressed state                                                                                                        | `OffersBoard.tsx:34`                                                               | 2, 9    |
+| Subscribe      | Hand-rolled `<button>` instead of the `Button` primitive                                                                                      | `src/app/pricing/page.tsx:22`                                                      | 1, 3    |
+| Subscribe      | No pending state, so a slow redirect invites a double submit                                                                                  | `src/app/pricing/page.tsx:22`                                                      | 7       |
+| Subscribe      | Stripe returns to `/pricing?status=success` or `?status=cancel`, but the page never reads it                                                  | `src/app/pricing/actions.ts` (success and cancel URLs); `page.tsx`                 | 7       |
 
 ---
 
