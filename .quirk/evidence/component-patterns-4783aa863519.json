@@ -1,0 +1,99 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.component-patterns.4783aa863519",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "b6e6c0ac69fdaf3ea4061fd15cf8352f31b6fa7d",
+    "commit": "4783aa863519a2bc2d685615cc547def52dd8b8b",
+    "changed_paths": [
+      "CLAUDE.md",
+      "docs/recommendations/INDEX.md",
+      "docs/recommendations/design/COMPONENT_PATTERNS.md"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.component-patterns.4783aa863519",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "docs/recommendations/design/COMPONENT_PATTERNS.md documents component layers, nine UI patterns, and seven journey gaps; each gap's file reference was re-checked against this tree by the recorded grep commands. It is guidance only: no code, behaviour, or visual change, and its pattern judgements are inferences, not owner decisions. INDEX.md and CLAUDE.md link it.",
+      "evidence_paths": [
+        "CLAUDE.md",
+        "docs/recommendations/INDEX.md",
+        "docs/recommendations/design/COMPONENT_PATTERNS.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "6804d1eb6748f15014368169fb8a4bf6135b2759",
+      "sha256": "sha256:faa17ebb90e8087dbd0fdb795bf62f5c14adf02a6b5ed81b830aec8f33bfa49d"
+    },
+    {
+      "path": "docs/recommendations/INDEX.md",
+      "state": "present",
+      "git_blob": "66ac4bd8558bfe9d1b570152190486cfa091f8de",
+      "sha256": "sha256:703917cd0b4f63d8263a9c713c00f19100af0f02510e2c76d1ec8285a401ff1e"
+    },
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "dc2000b0e3a90c31299e3ef1679d081952951b16",
+      "sha256": "sha256:457805f82d353225f6d5f8250ebb2961726f1f9d1b83ce369fdf7c9e7ac5a3f9"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "npx prettier --check CLAUDE.md docs/recommendations/INDEX.md docs/recommendations/design/COMPONENT_PATTERNS.md",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run identity:check",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "grep -n \"not an error\" \"src/app/api/offers/[id]/claim/route.ts\"",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "grep -n \"text-destructive text-xs\" src/components/quirk/OffersBoard.tsx",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "grep -n \"throw new Error(body.error\" src/lib/quirk/client.ts",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "! grep -n \"aria-pressed\" src/components/quirk/OffersBoard.tsx",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "grep -n \"<button\" src/app/pricing/page.tsx",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "! grep -n \"searchParams\\|status=\" src/app/pricing/page.tsx",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T06:53:54Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:556884dcb12084f99018f43a004b73b9b8e95ea6f32f24d5b334a08221ac0afa"
+}

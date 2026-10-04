@@ -1,13 +1,14 @@
 {
   "schema_version": "evidence-receipt.v1",
-  "receipt_id": "qreceipt.project-scaffold-preference-evidence-wedge-2026-08-21",
+  "receipt_id": "qreceipt.preference-evidence-wedge.2fae63822b05",
   "repository": "Quirk-Systems/project-scaffold",
   "status": "verified",
   "subject": {
-    "base_commit": "18636ffe64b37fdd0a85dff9798b6a604b59a073",
-    "commit": "156670f7c9f7fe05f0555d9b3c8059a95d2c5ea0",
+    "base_commit": "313eb62241a4c7aa084e71693c80de0800391d1f",
+    "commit": "2fae63822b0543e5939e1948b39ec68609d9a476",
     "changed_paths": [
       ".github/workflows/evidence-binding.yml",
+      ".quirk/evidence/2026-08-21-preference-evidence-wedge.json",
       ".quirk/manifest.json",
       "docs/quirk/PREFERENCE_EVIDENCE_WEDGE.md",
       "package.json",
@@ -25,7 +26,7 @@
   },
   "claims": [
     {
-      "claim_id": "qclaim.preference-evidence-reference-wedge",
+      "claim_id": "qclaim.preference-evidence-reference-wedge.2fae63822b05",
       "claim_type": "evidence",
       "authority_effect": "none",
       "statement": "Candidate reference wedge emits a deterministic unapplied project-only projection and recorded receipt, captures each public transition in a closed immutable descriptor snapshot that prevents Proxy-varying check/use state, preserves opaque frozen governed stages, and requires separately bound event-time-valid explicit human confirmation before recording an unapplied edge; this evidence grants no admission or runtime or consumer authority.",
@@ -55,6 +56,12 @@
       "sha256": "sha256:b0a2e67e1f93d3ff19b44184968ae812f5d4e7b08cd743927c59c24ff96e7087"
     },
     {
+      "path": ".quirk/evidence/2026-08-21-preference-evidence-wedge.json",
+      "state": "present",
+      "git_blob": "24f40a63269c3823a0aba5da951d8cadbafafe7e",
+      "sha256": "sha256:f69fc23f076a077f7b124280ead6fad07b32aef4fd080e96dc0080f6778ba172"
+    },
+    {
       "path": ".quirk/manifest.json",
       "state": "present",
       "git_blob": "19d7869bb51f37e40053b257ee99bc7e17571155",
@@ -69,8 +76,8 @@
     {
       "path": "package.json",
       "state": "present",
-      "git_blob": "af3aa2b8d02fb33a1f05ccfd5e2c1531f7850dd2",
-      "sha256": "sha256:468bafe66206f2c6cddad2d525e793364c8c0dafd2e10a6f65c777b6edba7176"
+      "git_blob": "8913bf6247183a11af000d4e0562b29ab97e12eb",
+      "sha256": "sha256:bb12034f8bcabc10000b31c207d6ff768be28dd2266eb57a9b82652fd0cee445"
     },
     {
       "path": "scripts/check-preference-contract.mjs",
@@ -136,57 +143,42 @@
   "verification": {
     "commands": [
       {
-        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun test src/lib/quirk/preference-evidence/__tests__/wedge.test.ts src/lib/quirk/governance/authority.test.ts",
+        "command": "bun test src/lib/quirk/preference-evidence/__tests__/wedge.test.ts src/lib/quirk/governance/authority.test.ts",
         "result": "pass",
         "exit_code": 0
       },
       {
-        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run preference-contract:check",
+        "command": "bun run preference-contract:check",
         "result": "pass",
         "exit_code": 0
       },
       {
-        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run test:run",
+        "command": "bun run test:run",
         "result": "pass",
         "exit_code": 0
       },
       {
-        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run type-check",
+        "command": "bun run type-check",
         "result": "pass",
         "exit_code": 0
       },
       {
-        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run lint",
+        "command": "bun run lint",
         "result": "pass",
         "exit_code": 0
       },
       {
-        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run preference-wedge:demo > /tmp/preference-wedge-remote-final-1.json",
+        "command": "bun run preference-wedge:demo > wedge-1.json",
         "result": "pass",
         "exit_code": 0
       },
       {
-        "command": "PATH=/tmp/bun-runner.vXmPBd/node_modules/.bin:$PATH bun run preference-wedge:demo > /tmp/preference-wedge-remote-final-2.json",
+        "command": "bun run preference-wedge:demo > wedge-2.json",
         "result": "pass",
         "exit_code": 0
       },
       {
-        "command": "cmp /tmp/preference-wedge-remote-final-1.json /tmp/preference-wedge-remote-final-2.json",
-        "result": "pass",
-        "exit_code": 0
-      },
-      {
-        "command": "sha256sum /tmp/preference-wedge-remote-final-1.json",
-        "result": "pass",
-        "exit_code": 0
-      },
-      {
-        "command": "python /workspace/scratch/6f6fa2996563/worktrees/quirk-core-remote-final/scripts/validate_preference_wedge.py --schema vendor/quirk-core/preference-evidence-wedge.v1.schema.json /tmp/preference-wedge-remote-final-1.json",
-        "result": "pass",
-        "exit_code": 0
-      },
-      {
-        "command": "cmp vendor/quirk-core/preference-evidence-wedge.v1.schema.json /workspace/scratch/6f6fa2996563/worktrees/quirk-core-remote-final/schemas/preference-evidence-wedge.v1.schema.json",
+        "command": "cmp wedge-1.json wedge-2.json",
         "result": "pass",
         "exit_code": 0
       },
@@ -196,17 +188,17 @@
         "exit_code": 0
       },
       {
-        "command": "git diff --check 18636ffe64b37fdd0a85dff9798b6a604b59a073..156670f7c9f7fe05f0555d9b3c8059a95d2c5ea0",
+        "command": "git diff --check 313eb62 2fae638",
         "result": "pass",
         "exit_code": 0
       }
     ],
-    "verified_at": "2026-08-21T06:45:35Z"
+    "verified_at": "2026-10-04T06:50:09Z"
   },
   "authority": {
     "admission_effect": "none",
     "authority_ref": null
   },
   "correction": null,
-  "receipt_sha256": "sha256:ce03a0664588791a1ecf809fb899e06ad23e0a136a609142285bde2221472f5c"
+  "receipt_sha256": "sha256:00fb568aab0e1ad6a6c944290ec00110a5f3521f0213c9c81d7f4fcf71761140"
 }
