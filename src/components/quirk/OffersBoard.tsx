@@ -83,10 +83,13 @@ export function OffersBoard() {
             offer={offer}
             result={results[offer.id]?.outcome}
             onResult={(outcome) =>
-              setResults((prev) => ({
-                ...prev,
-                [offer.id]: { title: offer.title, outcome },
-              }))
+              setResults((prev) =>
+                // A win stands: a later 409 (a retry, another tab) is about
+                // the same claim and never downgrades it.
+                prev[offer.id]?.outcome === "won"
+                  ? prev
+                  : { ...prev, [offer.id]: { title: offer.title, outcome } },
+              )
             }
           />
         ))}
@@ -121,20 +124,22 @@ function OfferCard({
   // another tab) or retired, so the copy claims no more than that. The line is
   // an always-mounted live region whose text changes, so screen readers
   // announce the outcome.
+  // A won claim counts at once, without waiting for the refetch (which can
+  // fail and leave this offer looking open).
   const statusLine =
-    offer.status === "open"
-      ? result === "lost"
-        ? "Missed it. This one is no longer open."
-        : ""
-      : offer.status === "claimed"
+    result === "won"
+      ? "You claimed it. This one is yours."
+      : offer.status === "open"
         ? result === "lost"
-          ? "Missed it. This one was claimed first."
-          : result === "won"
-            ? "You claimed it. This one is yours."
+          ? "Missed it. This one is no longer open."
+          : ""
+        : offer.status === "claimed"
+          ? result === "lost"
+            ? "Missed it. This one was claimed first."
             : "Claimed. This one belongs to someone now."
-        : result === "lost"
-          ? "Missed it. This one was retired."
-          : "Retired.";
+          : result === "lost"
+            ? "Missed it. This one was retired."
+            : "Retired.";
 
   return (
     <Card className={offer.status !== "open" ? "opacity-70" : undefined}>
@@ -163,7 +168,7 @@ function OfferCard({
           {typeof overall === "number" && <span>quality {overall}</span>}
           {offer.register && <span>voiced: {offer.register}</span>}
         </div>
-        {offer.status === "open" && (
+        {offer.status === "open" && !result && (
           <Button
             size="sm"
             onClick={() => claim.mutate()}

@@ -129,6 +129,25 @@ describe("OffersBoard claim outcomes", () => {
     ).toHaveAttribute("role", "status");
   });
 
+  it("confirms the win even when the refetch fails, and hides the claim button", async () => {
+    listOffers
+      .mockResolvedValueOnce({ offers: [openOffer] })
+      .mockRejectedValue(new QuirkApiError("Database is down", 500));
+    claimOffer.mockResolvedValue({
+      offer: { ...openOffer, status: "claimed" },
+    });
+    renderBoard();
+
+    await claim();
+
+    expect(
+      await screen.findByText("You claimed it. This one is yours."),
+    ).toHaveAttribute("role", "status");
+    expect(
+      screen.queryByRole("button", { name: /claim it — only one exists/i }),
+    ).not.toBeInTheDocument();
+  });
+
   describe("under the open filter, where a refetch removes the card", () => {
     let serverStatus: "open" | "claimed";
 
