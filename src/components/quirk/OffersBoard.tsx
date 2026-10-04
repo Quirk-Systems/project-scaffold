@@ -12,11 +12,32 @@ import { isConflict, quirkApi, type OfferWithAsset } from "@/lib/quirk/client";
 const FILTERS = ["all", "open", "claimed", "retired"] as const;
 type Filter = (typeof FILTERS)[number];
 
+function parseFilter(value: string | undefined): Filter {
+  return FILTERS.find((f) => f === value) ?? "all";
+}
+
 /** What this viewer's own claim did: won it, or lost the race (HTTP 409). */
 type ClaimResult = { title: string; outcome: "won" | "lost" };
 
-export function OffersBoard() {
-  const [filter, setFilter] = useState<Filter>("all");
+export function OffersBoard({
+  initialFilter,
+}: {
+  /** The `?status=` value the page was loaded with; anything unknown is "all". */
+  initialFilter?: string;
+}) {
+  const [filter, setFilter] = useState<Filter>(() =>
+    parseFilter(initialFilter),
+  );
+
+  // Mirror the filter into the URL so a reload or a shared link keeps it.
+  // replaceState, not a router push: no server round trip, no history entry.
+  function selectFilter(next: Filter) {
+    setFilter(next);
+    const url = new URL(window.location.href);
+    if (next === "all") url.searchParams.delete("status");
+    else url.searchParams.set("status", next);
+    window.history.replaceState(window.history.state, "", url);
+  }
   // Kept here, not in each card: a refetch under the "open" filter drops the
   // offer a viewer just won or lost, and its card's state with it.
   const [results, setResults] = useState<Record<string, ClaimResult>>({});
@@ -45,13 +66,18 @@ export function OffersBoard() {
         exactly one person — after that, it&apos;s gone.
       </p>
 
-      <div className="flex flex-wrap gap-2">
+      <div
+        role="group"
+        aria-label="Filter offers"
+        className="flex flex-wrap gap-2"
+      >
         {FILTERS.map((f) => (
           <Button
             key={f}
             size="sm"
             variant={filter === f ? "default" : "outline"}
-            onClick={() => setFilter(f)}
+            aria-pressed={filter === f}
+            onClick={() => selectFilter(f)}
           >
             {f}
           </Button>

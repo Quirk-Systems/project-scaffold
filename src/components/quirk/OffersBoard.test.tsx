@@ -26,13 +26,13 @@ const openOffer = {
   asset: { assetType: "verse" },
 } as unknown as OfferWithAsset;
 
-function renderBoard() {
+function renderBoard(initialFilter?: string) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
   return render(
     <QueryClientProvider client={client}>
-      <OffersBoard />
+      <OffersBoard initialFilter={initialFilter} />
     </QueryClientProvider>,
   );
 }
@@ -262,5 +262,71 @@ describe("OffersBoard claim outcomes", () => {
     await claim();
 
     await vi.waitFor(() => expect(listOffers).toHaveBeenCalledTimes(2));
+  });
+});
+
+describe("OffersBoard filter", () => {
+  beforeEach(() => {
+    listOffers.mockReset().mockResolvedValue({ offers: [openOffer] });
+    window.history.replaceState(null, "", "/quirk/offers");
+  });
+
+  it("marks only the active filter as pressed", async () => {
+    renderBoard();
+
+    const group = screen.getByRole("group", { name: "Filter offers" });
+    expect(group).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "all" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "open" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+
+    await userEvent.setup().click(screen.getByRole("button", { name: "open" }));
+
+    expect(screen.getByRole("button", { name: "open" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "all" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+  });
+
+  it("starts from the filter in the URL and fetches it", async () => {
+    renderBoard("claimed");
+
+    expect(screen.getByRole("button", { name: "claimed" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await screen.findByText("The only one");
+    expect(listOffers).toHaveBeenCalledWith("claimed");
+  });
+
+  it("falls back to all for an unknown filter", async () => {
+    renderBoard("bogus");
+
+    expect(screen.getByRole("button", { name: "all" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await screen.findByText("The only one");
+    expect(listOffers).toHaveBeenCalledWith(undefined);
+  });
+
+  it("writes the chosen filter to the URL and clears it for all", async () => {
+    const user = userEvent.setup();
+    renderBoard();
+
+    await user.click(screen.getByRole("button", { name: "retired" }));
+    expect(window.location.search).toBe("?status=retired");
+
+    await user.click(screen.getByRole("button", { name: "all" }));
+    expect(window.location.search).toBe("");
   });
 });
