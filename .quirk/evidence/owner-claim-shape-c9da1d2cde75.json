@@ -1,0 +1,72 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.owner-claim-shape.c9da1d2cde75",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "5b21d777b16eb88a56ecb0f8d58ae0cad281e1d7",
+    "commit": "c9da1d2cde75e9d832c95f9fe41526839c8ef264",
+    "changed_paths": [
+      "src/app/api/offers/[id]/claim/route.test.ts",
+      "src/app/api/offers/[id]/claim/route.ts",
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.owner-claim-shape.c9da1d2cde75",
+      "claim_type": "implementation",
+      "authority_effect": "none",
+      "statement": "Review fixes for da23eb13d4e5: the owner-idempotent 200 from POST /api/offers/[id]/claim now returns the offer row without the joined asset, matching the fresh-win response and the quirkApi.claimOffer contract ({ offer: QuirkOffer }); OffersBoard comments no longer say a 409 may mean this viewer's own claim. Route tests now assert the win body and claimOffer arguments, 404 for an unknown offer without a claim attempt, the owner response shape, and no DB access when signed out; an OffersBoard test covers the 'closed' badge for a lost race whose refetch fails. bun run validate exits 0. Owner review is not established.",
+      "evidence_paths": [
+        "src/app/api/offers/[id]/claim/route.test.ts",
+        "src/app/api/offers/[id]/claim/route.ts",
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "src/app/api/offers/[id]/claim/route.test.ts",
+      "state": "present",
+      "git_blob": "fad90427d5cd312a079381cf28a26010799176de",
+      "sha256": "sha256:35cf4fc88a23b162d3822456e75bcb02d1f2f5c9fe6efdf25b0864e0a3a077f3"
+    },
+    {
+      "path": "src/app/api/offers/[id]/claim/route.ts",
+      "state": "present",
+      "git_blob": "6a6baa39824f940cd0070b87e52c1c6ceb2e72de",
+      "sha256": "sha256:bc80c19c103ea9002a54e36efe09d9e1d4e0e0ee0276143787440372114e9157"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "48d0f15e940a068330beb66c9baa6abc1b2d058f",
+      "sha256": "sha256:adb62013ac4923d4beb2dc40893e97c8a469648de14d64e4c11ab7b26d859690"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "0593d3c44ff2c41d13ee6a57e883d6f0739da70a",
+      "sha256": "sha256:d6231f5122dc3a7cb31b53b8a3213a91b0db97d63636887984709622e41a70a7"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T13:22:00Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:bbada40384210868d57dd2ebba6c67e51c5d4319f1eeb42f60eebf9cc7d15bd4"
+}
