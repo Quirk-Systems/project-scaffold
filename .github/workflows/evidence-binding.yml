@@ -8,4 +8,4 @@ permissions:
 
 jobs:
   validate:
-    uses: Quirk-Systems/.github/.github/workflows/reusable-evidence-binding.yml@6136fa5fa77116abfbc103c822d9d244a0e870b3
+    uses: Quirk-Systems/.github/.github/workflows/reusable-evidence-binding.yml@ed2f2ff7caacdb7a148ac9811dce1e7cce48a7c8 # main 2026-10-04
