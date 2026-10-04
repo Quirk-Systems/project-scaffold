@@ -173,7 +173,9 @@ bunx check-peer-dependencies
 # .github/dependabot.yml
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  # "bun", not "npm": the npm ecosystem cannot update bun.lock and aborts
+  # with "Dependabot detected that Bun is misconfigured".
+  - package-ecosystem: "bun"
     directory: "/"
     schedule:
       interval: "weekly"

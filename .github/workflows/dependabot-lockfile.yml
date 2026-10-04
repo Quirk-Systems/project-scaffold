@@ -1,10 +1,14 @@
-# Dependabot does not know how to update bun.lock. It edits package.json alone,
-# so every such merge lands a manifest that the committed lockfile no longer
-# satisfies, and `bun install --frozen-lockfile` — the first step of every CI
-# job — fails before anything else runs. That has taken main red four times.
+# Under the old `npm` Dependabot ecosystem, updates edited package.json alone,
+# so every such merge landed a manifest that the committed lockfile no longer
+# satisfied, and `bun install --frozen-lockfile` — the first step of every CI
+# job — failed before anything else ran. That took main red four times.
 #
-# This workflow regenerates the lockfile on the Dependabot branch, before the
-# merge, so the drift never reaches main.
+# dependabot.yml now declares `package-ecosystem: bun`, which regenerates
+# bun.lock alongside the manifest, so the sync job below is expected to find
+# nothing to do. It stays as a safety net: a maintainer's manifest tweak on a
+# Dependabot branch, or a Bun resolver mismatch between Dependabot and
+# `bun-version: latest`, still gets the lockfile repaired before the merge.
+# The verify job is the part that does work on every Dependabot PR.
 name: Dependabot lockfile
 
 on:
