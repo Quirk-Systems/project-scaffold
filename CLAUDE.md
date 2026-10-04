@@ -103,6 +103,7 @@ Integration details (lazy-client pattern, media storage, Stripe, Resend, AI laye
 
 Key recommendation docs:
 
+- **Design**: `docs/recommendations/design/` — component layers, shadcn/headless/composition patterns, journey states, audit of current gaps
 - **AI**: `docs/recommendations/ai/` — prompt patterns, agent patterns, model selection, memory, evals
 - **Voice**: `docs/recommendations/voice/` — AI voice, persona, soul, tone calibration
 - **Tips**: `docs/recommendations/tips/` — TypeScript, Next.js, Testing, Debugging, Tailwind, Drizzle, Bun, Git
