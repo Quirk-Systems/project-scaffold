@@ -1,0 +1,69 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.design-tokens-css.ce9e669b3b37",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "2fae63822b0543e5939e1948b39ec68609d9a476",
+    "commit": "ce9e669b3b377a323bf187c42ad61a88a9b1c2aa",
+    "changed_paths": [
+      "CLAUDE.md",
+      "src/app/globals.css",
+      "src/styles/quirk-tokens.css"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.design-tokens-css.ce9e669b3b37",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "src/styles/quirk-tokens.css is the unedited emit-css projection (prefix quirk, 44 tokens) of Quirk-Systems/.github@ed2f2ff7caacdb7a148ac9811dce1e7cce48a7c8:.quirk/design/tokens.json, which validates as status candidate v0.1.0, with a header naming that source; globals.css imports it and the built CSS contains the --quirk-* variables. No existing theme variable maps onto them, so rendering is unchanged. bun run validate exits 0. Visual correctness and owner review are not established.",
+      "evidence_paths": [
+        "CLAUDE.md",
+        "src/app/globals.css",
+        "src/styles/quirk-tokens.css"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "08d5830aa45f90dd7f7b4a408f296881b6ac2b72",
+      "sha256": "sha256:79b22aee532c42a3716307abc5cdfd6f0c84d6dc79f2e3a52f7fe8a24b5e1bb9"
+    },
+    {
+      "path": "src/app/globals.css",
+      "state": "present",
+      "git_blob": "3440e40fb70e84431f4c6211fbb6e44a0ebdcaec",
+      "sha256": "sha256:7be01bcfbc77ef61b530e894e8190b2873b1f5f01c83e7a2980ef8bdb39ee76a"
+    },
+    {
+      "path": "src/styles/quirk-tokens.css",
+      "state": "present",
+      "git_blob": "e49c42f67b960ad25cb0fd938664ddf5e9bf2c1b",
+      "sha256": "sha256:c83e1f9cffb78bd05c6f28d470c74b43acc753e94618651c07c53cb5d66ea9d8"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "python scripts/design_tokens.py validate .quirk/design/tokens.json (in Quirk-Systems/.github at ed2f2ff)",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T06:46:07Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:c8b18a8256e29fc5bde0e1bfb3934d5989ae5846a9a9e6a621ab73a817500876"
+}
