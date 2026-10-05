@@ -1,0 +1,83 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.offer-filter-url-sync.aed48f75ecd5",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "11f968c2be9e0e33661f54a0eac88259161ce35a",
+    "commit": "aed48f75ecd553c1bb0b42ac897f254fbe51e0ed",
+    "changed_paths": [
+      "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "src/app/quirk/offers/page.tsx",
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.offer-filter-url-sync.aed48f75ecd5",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "OffersBoard reads ?status= through useSearchParams (inside a Suspense boundary on the page) and adopts the URL's filter whenever it changes, so a soft navigation that drops or changes ?status= no longer leaves a stale filter pressed; choosing a filter still mirrors it into the URL with history.replaceState and preserves other query parameters. Under the open, claimed, or retired filter an empty list says nothing matches that filter instead of 'No offers minted yet'. Unit tests (jsdom, next/navigation mocked to read window.location) cover both; the empty-filter test fails on the previous component. bun run validate exits 0. Soft-navigation behaviour in a real browser and screen-reader output are not exercised; owner review is not established.",
+      "evidence_paths": [
+        "src/app/quirk/offers/page.tsx",
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    },
+    {
+      "claim_id": "qclaim.offer-filter-audit-doc.aed48f75ecd5",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "COMPONENT_PATTERNS.md's audit table records the URL-follow fix and the filter-aware empty state as Fixed rows pointing at OffersBoard.tsx.",
+      "evidence_paths": ["docs/recommendations/design/COMPONENT_PATTERNS.md"]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "6122f450b94490b2547d52dde3b2badd2398bbc6",
+      "sha256": "sha256:c7e32d15bdeefc0912ab5d9499a34fb69733e38b90949191a9fe5599041c06f6"
+    },
+    {
+      "path": "src/app/quirk/offers/page.tsx",
+      "state": "present",
+      "git_blob": "768cc0d5a629b1de145a0ff0739821842f627873",
+      "sha256": "sha256:1740396021dd591842a4fa35e87e3b4bab135415e2efa6de4597e60bb2a285b4"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "e7d255bd534bd75ccc181f785e0ed4a64002deb5",
+      "sha256": "sha256:0df7f155117ae58b47b84af1ad571e55c794387bb289c1b57ab677c2fe96f493"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "231c30d272cf0d01dc91731274e447c8582463cc",
+      "sha256": "sha256:6831ed76a835b037d6dc4e69d02f51ebea06485aebbaf51b42a4523f927721b8"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bunx vitest run src/components/quirk/OffersBoard.test.tsx",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-05T08:08:06Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:4a48a369b6f759db595e4a034932482026fb84e2fb2b18a5ca1bcbeb895f3123"
+}
