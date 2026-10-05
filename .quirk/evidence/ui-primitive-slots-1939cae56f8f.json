@@ -1,0 +1,114 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.ui-primitive-slots.1939cae56f8f",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "11f968c2be9e0e33661f54a0eac88259161ce35a",
+    "commit": "1939cae56f8ff80127411ad80d6a3b2894ae9702",
+    "changed_paths": [
+      "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "src/components/ui/badge.tsx",
+      "src/components/ui/card.tsx",
+      "src/components/ui/input.tsx",
+      "src/components/ui/label.tsx",
+      "src/components/ui/primitives.test.tsx",
+      "src/components/ui/separator.tsx",
+      "src/components/ui/textarea.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.ui-primitive-slots.1939cae56f8f",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Card, Input, Textarea, Label and Separator primitives move from forwardRef to React 19 function components; every ui primitive except the third-party sonner wrapper now marks its root with data-slot, and Badge gains data-slot=\"badge\". Class names, defaults and exported names are unchanged. src/components/ui/primitives.test.tsx pins slot names, ref forwarding and class merging. COMPONENT_PATTERNS.md pattern 4 records the migration as done. bun run validate passes: 254 tests, type checking, production build, existing lint warnings only. Theme mapping of --quirk-* tokens stays with Quirk-Systems/quirk-design and is not changed. Visual regression, browser E2E and screen-reader checks were not run. No deployment or merge occurred. Owner review is not established.",
+      "evidence_paths": [
+        "docs/recommendations/design/COMPONENT_PATTERNS.md",
+        "src/components/ui/badge.tsx",
+        "src/components/ui/card.tsx",
+        "src/components/ui/input.tsx",
+        "src/components/ui/label.tsx",
+        "src/components/ui/primitives.test.tsx",
+        "src/components/ui/separator.tsx",
+        "src/components/ui/textarea.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "c7dbb0518be397b74a329419cee5d865bb12d95a",
+      "sha256": "sha256:3e060197ae36c79ca33f753c672ba7c5077b3589f9dc967cf58e6754d4fb8c15"
+    },
+    {
+      "path": "src/components/ui/badge.tsx",
+      "state": "present",
+      "git_blob": "ac3421d73f748b47075a4e02efcc5d9d2c51ab8b",
+      "sha256": "sha256:cfa8091ea440ad3bb2bb6aa4bd99fd387451e0389f0983900c2a039701cfd13b"
+    },
+    {
+      "path": "src/components/ui/card.tsx",
+      "state": "present",
+      "git_blob": "242d8a12f33bdddae9598a9c4e98f25149a0868c",
+      "sha256": "sha256:f60503bafcda2e1b387f25a5e22bc09c704b3ada6d64c4568c071f53e6718237"
+    },
+    {
+      "path": "src/components/ui/input.tsx",
+      "state": "present",
+      "git_blob": "dcfaff4143af6bbf258cae1ccbef9c2f0dc8bb2c",
+      "sha256": "sha256:a80b130515248292ec9b4ed4228d5ffd6c84b967e93fc7f8ef69e651b46ddf96"
+    },
+    {
+      "path": "src/components/ui/label.tsx",
+      "state": "present",
+      "git_blob": "3aba43f4b442a444fb37b366a48512b0556fdbf2",
+      "sha256": "sha256:a515e25e9f2b639318d15c2823cc8811f55c9589f822f0f15bd7b36861da248a"
+    },
+    {
+      "path": "src/components/ui/primitives.test.tsx",
+      "state": "present",
+      "git_blob": "0038d6d04be72468285c7bbfd04f8ee346310630",
+      "sha256": "sha256:c279ba41e15c6e895771080ed2edda5a6fa6b317066b3694b0a76f3bad3f4a41"
+    },
+    {
+      "path": "src/components/ui/separator.tsx",
+      "state": "present",
+      "git_blob": "8965fbb76caf8ec38fbf04788eea96dff90eeb94",
+      "sha256": "sha256:100ea245093ba3249c4d8b38824d45edcf7d5226b4fb590e2ee8cae1f2d8e1be"
+    },
+    {
+      "path": "src/components/ui/textarea.tsx",
+      "state": "present",
+      "git_blob": "e5d860dd6d6b4726af800f7578464add3b01d5a8",
+      "sha256": "sha256:ab90b6fa7c19d82a7c66c3a4671c5114bbe36f997c965256d29345e85f494243"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run type-check",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --check 11f968c2be9e0e33661f54a0eac88259161ce35a..1939cae56f8ff80127411ad80d6a3b2894ae9702",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-05T14:30:08.379028Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:a3130d0f691dcd5348f02794695788acad38cf7da20d23f028652dc50c80e01a"
+}
