@@ -10,6 +10,12 @@ const { listOffers, claimOffer } = vi.hoisted(() => ({
   claimOffer: vi.fn(),
 }));
 
+// The board follows `?status=`; the real hook needs the app router, so read
+// the jsdom URL instead (replaceState updates it, as Next does in the browser).
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(window.location.search),
+}));
+
 vi.mock("@/lib/quirk/client", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/quirk/client")>();
   return { ...actual, quirkApi: { listOffers, claimOffer } };
@@ -26,15 +32,22 @@ const openOffer = {
   asset: { assetType: "verse" },
 } as unknown as OfferWithAsset;
 
-function renderBoard(initialFilter?: string) {
+function renderBoard(status?: string) {
+  window.history.replaceState(
+    null,
+    "",
+    status ? `/quirk/offers?status=${status}` : "/quirk/offers",
+  );
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
-  return render(
+  const board = () => (
     <QueryClientProvider client={client}>
-      <OffersBoard initialFilter={initialFilter} />
-    </QueryClientProvider>,
+      <OffersBoard />
+    </QueryClientProvider>
   );
+  const view = render(board());
+  return { ...view, rerenderBoard: () => view.rerender(board()) };
 }
 
 async function claim() {
@@ -268,7 +281,6 @@ describe("OffersBoard claim outcomes", () => {
 describe("OffersBoard filter", () => {
   beforeEach(() => {
     listOffers.mockReset().mockResolvedValue({ offers: [openOffer] });
-    window.history.replaceState(null, "", "/quirk/offers");
   });
 
   it("marks only the active filter as pressed", async () => {
@@ -328,5 +340,51 @@ describe("OffersBoard filter", () => {
 
     await user.click(screen.getByRole("button", { name: "all" }));
     expect(window.location.search).toBe("");
+  });
+
+  it("keeps other query parameters when it writes the filter", async () => {
+    const user = userEvent.setup();
+    renderBoard();
+    window.history.replaceState(null, "", "/quirk/offers?ref=nav");
+
+    await user.click(screen.getByRole("button", { name: "open" }));
+    expect(window.location.search).toBe("?ref=nav&status=open");
+
+    await user.click(screen.getByRole("button", { name: "all" }));
+    expect(window.location.search).toBe("?ref=nav");
+  });
+
+  it("follows the URL when a navigation changes it", async () => {
+    const { rerenderBoard } = renderBoard("claimed");
+    await screen.findByText("The only one");
+
+    // A soft navigation (the nav's "Offers" link) drops ?status=.
+    window.history.replaceState(null, "", "/quirk/offers");
+    rerenderBoard();
+
+    expect(screen.getByRole("button", { name: "all" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await vi.waitFor(() =>
+      expect(listOffers).toHaveBeenLastCalledWith(undefined),
+    );
+  });
+
+  it("says nothing matches a filter instead of nothing was minted", async () => {
+    listOffers.mockResolvedValue({ offers: [] });
+    renderBoard("claimed");
+
+    expect(await screen.findByText("Nothing claimed yet.")).toBeInTheDocument();
+    expect(screen.queryByText(/no offers minted yet/i)).not.toBeInTheDocument();
+  });
+
+  it("says nothing was minted when the unfiltered list is empty", async () => {
+    listOffers.mockResolvedValue({ offers: [] });
+    renderBoard();
+
+    expect(
+      await screen.findByText(/no offers minted yet/i),
+    ).toBeInTheDocument();
   });
 });

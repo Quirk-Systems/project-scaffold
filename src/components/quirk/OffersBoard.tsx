@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,25 +13,34 @@ import { isConflict, quirkApi, type OfferWithAsset } from "@/lib/quirk/client";
 const FILTERS = ["all", "open", "claimed", "retired"] as const;
 type Filter = (typeof FILTERS)[number];
 
-function parseFilter(value: string | undefined): Filter {
+function parseFilter(value: string | null): Filter {
   return FILTERS.find((f) => f === value) ?? "all";
 }
+
+const EMPTY_COPY: Record<Exclude<Filter, "all">, string> = {
+  open: "Nothing open right now.",
+  claimed: "Nothing claimed yet.",
+  retired: "Nothing retired.",
+};
 
 /** What this viewer's own claim did: won it, or lost the race (HTTP 409). */
 type ClaimResult = { title: string; outcome: "won" | "lost" };
 
-export function OffersBoard({
-  initialFilter,
-}: {
-  /** The `?status=` value the page was loaded with; anything unknown is "all". */
-  initialFilter?: string;
-}) {
-  const [filter, setFilter] = useState<Filter>(() =>
-    parseFilter(initialFilter),
-  );
+export function OffersBoard() {
+  // The URL's `?status=` is the source of truth; anything unknown is "all".
+  const urlFilter = parseFilter(useSearchParams().get("status"));
+  const [filter, setFilter] = useState<Filter>(urlFilter);
+  // Follow the URL when it changes underneath us (a soft navigation, such as
+  // the nav's "Offers" link), so the pressed button never disagrees with it.
+  const [seenUrlFilter, setSeenUrlFilter] = useState(urlFilter);
+  if (urlFilter !== seenUrlFilter) {
+    setSeenUrlFilter(urlFilter);
+    setFilter(urlFilter);
+  }
 
   // Mirror the filter into the URL so a reload or a shared link keeps it.
-  // replaceState, not a router push: no server round trip, no history entry.
+  // replaceState, not a router push: no server round trip, no history entry;
+  // Next.js syncs it into useSearchParams.
   function selectFilter(next: Filter) {
     setFilter(next);
     const url = new URL(window.location.href);
@@ -97,12 +107,16 @@ export function OffersBoard({
       {error && (
         <p className="text-destructive text-sm">{(error as Error).message}</p>
       )}
-      {data && data.offers.length === 0 && (
-        <p className="text-muted-foreground text-sm">
-          No offers minted yet. Promote a winning run, or mint one from an
-          approved asset via <code>POST /api/offers</code>.
-        </p>
-      )}
+      {data &&
+        data.offers.length === 0 &&
+        (filter === "all" ? (
+          <p className="text-muted-foreground text-sm">
+            No offers minted yet. Promote a winning run, or mint one from an
+            approved asset via <code>POST /api/offers</code>.
+          </p>
+        ) : (
+          <p className="text-muted-foreground text-sm">{EMPTY_COPY[filter]}</p>
+        ))}
 
       <div className="grid gap-4 sm:grid-cols-2">
         {data?.offers.map((offer) => (
