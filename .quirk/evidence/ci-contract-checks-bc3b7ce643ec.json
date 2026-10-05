@@ -1,0 +1,54 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.ci-contract-checks.bc3b7ce643ec",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "5b21d777b16eb88a56ecb0f8d58ae0cad281e1d7",
+    "commit": "bc3b7ce643ecb5f8fe1a1e539ea690d4d1bbdaa9",
+    "changed_paths": [".github/workflows/ci.yml"]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.ci-contract-checks.bc3b7ce643ec",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The CI validate job now runs preference-contract:check and identity:check, the two bun run validate gates that only the retired Dependabot lockfile verify job (31a6c63) had run in hosted CI. No other CI step, trigger, or permission changes. This receipt binds only this changed path at the subject commit. A hosted CI run of the new steps remains an unobserved check. This receipt grants no merge, admission, runtime, or fleet-rollout authority and establishes no owner review.",
+      "evidence_paths": [".github/workflows/ci.yml"]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "81582638f63ed88671039f94bb1f12e945aebbb0",
+      "sha256": "sha256:17e0f0150ec68fddcffc02c740f23e4669af354a000a6fa53e48f60b07bb2a58"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "git diff --check 5b21d777b16eb88a56ecb0f8d58ae0cad281e1d7 bc3b7ce643ecb5f8fe1a1e539ea690d4d1bbdaa9",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git merge-base --is-ancestor 5b21d777b16eb88a56ecb0f8d58ae0cad281e1d7 bc3b7ce643ecb5f8fe1a1e539ea690d4d1bbdaa9",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-05T14:40:00Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:c5818964d2a6ea40be1df117a22281d5a042bbdccdbc40a6fddaf05b9e3250f8"
+}
