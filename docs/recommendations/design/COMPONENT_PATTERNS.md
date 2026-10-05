@@ -65,8 +65,8 @@ Split a component into parts the caller arranges: `Card`, `CardHeader`,
 `CardTitle`, `CardContent`, `CardFooter`. Mark each part with `data-slot` so
 parents can style children without class-name coupling.
 
-- **In the scaffold:** `Card` has the parts (`card.tsx`). `Button` carries `data-slot="button"`; `Card`, `Input`, `Label`, `Separator`, and `Textarea` still use the older `forwardRef` form without `data-slot`.
-- **Do:** bring the older primitives to the function-component and `data-slot` form when you next touch them, one primitive per change.
+- **In the scaffold:** `Card` has the parts (`card.tsx`). Every primitive in `src/components/ui/` is a plain function component (React 19 passes `ref` as a prop) and marks its root with `data-slot` (`card`, `card-header`, `card-title`, `card-description`, `card-content`, `card-footer`, `button`, `badge`, `input`, `textarea`, `label`, `separator`); `sonner.tsx` wraps a third-party toaster and has no slot. `src/components/ui/primitives.test.tsx` pins the slot names and ref forwarding.
+- **Do:** keep new primitives in this form; shadcn's current generator already emits it.
 
 ### 5. Compose, don't configure
 
