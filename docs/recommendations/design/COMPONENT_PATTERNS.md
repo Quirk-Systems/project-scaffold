@@ -114,7 +114,7 @@ honest when the system enforces it and the copy says exactly what is true.
 A primitive is not done until it works with a keyboard and a screen reader.
 
 - **In the scaffold:** `Button` has a `focus-visible` ring.
-- **In the scaffold:** the offer filter is a labelled `role="group"` of buttons with `aria-pressed`, so a screen reader announces which filter is active. A Radix `ToggleGroup` would add arrow-key roving focus on top; adopt it when a second toggle row appears.
+- **In the scaffold:** the offer filter is a labelled `role="group"` of buttons with `aria-pressed`, exposing the active filter to assistive technology. Actual screen-reader announcements remain unproved; no screen-reader pass has been made. A Radix `ToggleGroup` would add arrow-key roving focus on top; adopt it when a second toggle row appears.
 
 ---
 
