@@ -1,0 +1,44 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.env-auth-trust-host.c963f444de8a",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "a298edef93ca63ae0e8cf34b7f73bc8614bc7452",
+    "commit": "c963f444de8a36d4767c9f8b5443b51f87ba32e3",
+    "changed_paths": [".env.example"]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.env-auth-trust-host.c963f444de8a",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": ".env.example documents, commented out, AUTH_URL (preferred) and AUTH_TRUST_HOST for self-hosted next start deployments. The trust rule was read from node_modules/@auth/core/lib/utils/env.js (trustHost defaults to !!(AUTH_URL ?? AUTH_TRUST_HOST ?? VERCEL ?? CF_PAGES ?? NODE_ENV !== 'production'), so any non-empty value enables it); the UntrustedHost failure without either was observed earlier this session under next start. bun run validate exits 0. No deployment was changed. Owner review is not established.",
+      "evidence_paths": [".env.example"]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".env.example",
+      "state": "present",
+      "git_blob": "f62b35b0ac1d8e160bf523ce6c0a37e965e4d9a7",
+      "sha256": "sha256:c4c92c6633c4f243f40f73e9a327b579ee1dd76d5b84665a231f6c170f93400c"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T13:35:41Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:ff1721dea37abd3163897076a7cdca4096ebfed37dc11e413086f92ed124015f"
+}
