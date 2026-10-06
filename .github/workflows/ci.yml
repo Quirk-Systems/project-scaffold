@@ -10,33 +10,74 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Deny by default; jobs opt into checkout's read access only.
+permissions: {}
+
+# Pin action implementations to immutable release commits; comments identify releases.
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      # Read access is needed for checkout only; cache/artifact services need no writes.
+      contents: read
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Set up Bun
+        id: bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 20
 
-      - run: bun install --frozen-lockfile
+      # Cache downloads, not node_modules; the frozen install always runs.
+      - name: Cache Bun downloads
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-${{ runner.arch }}-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-bun-${{ steps.bun.outputs.bun-version }}-
 
-      - run: bun run lint
-      - run: bun run type-check
-      - run: bun run test:run
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile --prefer-offline
 
-      - run: bun run build
+      # Exact keys include sources; partial restores keep the same deps/toolchain.
+      - name: Cache Next compilation
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-${{ runner.arch }}-next-node20-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}-${{ hashFiles('src/**', 'public/**', 'next.config.*', 'tsconfig.json', 'postcss.config.*', 'components.json', 'package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-next-node20-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}-
+
+      - name: Lint
+        run: bun run lint
+      - name: Type check
+        run: bun run type-check
+      - name: Unit tests
+        run: bun run test:run
+
+      - name: Build
+        run: bun run build
         env:
           SKIP_ENV_VALIDATION: "1"
 
   e2e:
     runs-on: ubuntu-latest
     needs: validate
+    timeout-minutes: 30
+    permissions:
+      # Read access is needed for checkout only; cache/artifact services need no writes.
+      contents: read
     services:
       postgres:
         image: postgres:16-alpine
@@ -52,20 +93,64 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Set up Bun
+        id: bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 20
 
-      - run: bun install --frozen-lockfile
-      - run: bunx playwright install --with-deps
+      # Cache downloads, not node_modules; the frozen install always runs.
+      - name: Cache Bun downloads
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-${{ runner.arch }}-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-bun-${{ steps.bun.outputs.bun-version }}-
 
-      - run: bun run test:e2e
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile --prefer-offline
+
+      # Exact keys include sources; partial restores keep the same deps/toolchain.
+      - name: Cache Next compilation
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-${{ runner.arch }}-next-node20-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}-${{ hashFiles('src/**', 'public/**', 'next.config.*', 'tsconfig.json', 'postcss.config.*', 'components.json', 'package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-next-node20-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}-
+
+      - name: Resolve installed Playwright version
+        id: playwright
+        run: node -p "'version=' + require('@playwright/test/package.json').version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-${{ runner.arch }}-playwright-${{ steps.playwright.outputs.version }}
+
+      - name: Install browser OS dependencies (cache hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: bunx playwright install-deps
+
+      - name: Install all browsers and OS dependencies (cache miss)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: bunx playwright install --with-deps
+
+      - name: End-to-end tests
+        run: bun run test:e2e --workers=2
         env:
           SKIP_ENV_VALIDATION: "1"
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
@@ -80,21 +165,30 @@ jobs:
             test-results/
           retention-days: 7
           if-no-files-found: ignore
+          # Mixed zipped traces/HTML benefit from faster, light compression.
+          compression-level: 1
 
   security:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
+      # Read access is needed for checkout only; cache/artifact services need no writes.
       contents: read
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Checkout full history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Set up Bun
+        id: bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
-      - run: bun install --frozen-lockfile
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile --prefer-offline
 
       - name: Dependency audit
         run: bun audit --prod
@@ -102,4 +196,5 @@ jobs:
       - name: Secret scan (TruffleHog)
         uses: trufflesecurity/trufflehog@4dd8831c5f12599465d4d45c3c447b4018a34c85 # v3.97.9
         with:
+          version: "3.97.9"
           extra_args: --results=verified,unknown
