@@ -1,0 +1,65 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.yaml-2-9-1.08a65913f43d",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "de138f4164c8cebb87a363647428a84fb8159fb0",
+    "commit": "08a65913f43dd4748603793b27b83c86546cff97",
+    "changed_paths": ["bun.lock", "package.json"]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.yaml-2-9-1.08a65913f43d",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The dependency-only subject diff updates the yaml devDependency from ^2.9.0 to ^2.9.1 in package.json and the matching workspace requirement, resolved yaml version, and integrity value in bun.lock. Frozen-lockfile installation and bun run validate passed locally, including contract and identity checks, lint, type checking, 222 unit tests, and the production build. This receipt covers only these two paths; it grants no review, merge, admission, runtime, or deployment authority. Hosted successor-head checks are not claimed by this receipt.",
+      "evidence_paths": ["bun.lock", "package.json"]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "6bc94c6916842fd8a5bcfcc90957854718783535",
+      "sha256": "sha256:fa2f4403067f61612ebf38966690ec8d6767dae185f6e01fef9adc28bade2b9f"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "98effd5cc93e73bd165568a73682ab2e9a239274",
+      "sha256": "sha256:f5ede063cabeb872045ab776314a8907f512bcfc14323f3390949eac7d66f27c"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "git diff --check de138f4164c8cebb87a363647428a84fb8159fb0 08a65913f43dd4748603793b27b83c86546cff97",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git merge-base --is-ancestor de138f4164c8cebb87a363647428a84fb8159fb0 08a65913f43dd4748603793b27b83c86546cff97",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T11:40:27Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:e008fef66d1b7f08b2af301acacd57edc5d6094da9379ae8fa18b410368659fb"
+}
