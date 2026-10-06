@@ -1,0 +1,82 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.offer-filter-route-sync.31bc918b19fd",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "11f968c2be9e0e33661f54a0eac88259161ce35a",
+    "commit": "31bc918b19fd3ce7aff2ec885e7ee224dfbf4e55",
+    "changed_paths": [
+      "e2e/offers.spec.ts",
+      "src/app/quirk/offers/page.tsx",
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.offer-filter-route-sync.31bc918b19fd",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "OffersBoard now derives the filter from live URL parameters and delegates history preservation to Next. The preserved-board regression failed on the original code and passes after repair. bun run validate passes 252 tests, type checking and production build with 3 existing lint warnings. The added Playwright regression selects claimed, follows the persistent Offers link to the bare route, and checks pressed state, displayed results and no document reload. Local browser execution remains unverified: browser download was truncated and an alternate browser exited at launch. Hosted E2E is required before merge. No screen-reader pass or live offer mutation was performed. Only the four repair files are covered; prior subjects and receipts are unchanged.",
+      "evidence_paths": [
+        "e2e/offers.spec.ts",
+        "src/app/quirk/offers/page.tsx",
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "e2e/offers.spec.ts",
+      "state": "present",
+      "git_blob": "4d5c213ad2316149931b5ca43623b25a43beafd3",
+      "sha256": "sha256:ae66303969c2e0ffc36a8eb94401eb8ed55e8d3e363b968283b8518deae8f7b3"
+    },
+    {
+      "path": "src/app/quirk/offers/page.tsx",
+      "state": "present",
+      "git_blob": "b8f00e497178e4bcbe89edb39cee485be03e8545",
+      "sha256": "sha256:fdd262de12b90781628158053cb67cbcec8ce98712721b06305e261b4834184a"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "67ee65ead7ec3cbc33e489fe1346d9818a0e6597",
+      "sha256": "sha256:7e84439643c6563e79701cbffa9fea22b7e7c2cc8974427b3cbc0bfe0e071cdb"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "ffe6cced5aa91c1d054c55950e83702eae5ab18c",
+      "sha256": "sha256:921b64ebd56ca59462f1265f9a8b4ae23ba65a87280f4fa8df7a8087e0742496"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx vitest run src/components/quirk/OffersBoard.test.tsx",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --check",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-06T03:24:41Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:7e759dd192b1af8e650700daf7b0724f4c65c9d0273facad562433040b90d2a2"
+}
