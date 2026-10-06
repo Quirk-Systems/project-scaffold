@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,24 +20,19 @@ function parseFilter(value: string | undefined): Filter {
 /** What this viewer's own claim did: won it, or lost the race (HTTP 409). */
 type ClaimResult = { title: string; outcome: "won" | "lost" };
 
-export function OffersBoard({
-  initialFilter,
-}: {
-  /** The `?status=` value the page was loaded with; anything unknown is "all". */
-  initialFilter?: string;
-}) {
-  const [filter, setFilter] = useState<Filter>(() =>
-    parseFilter(initialFilter),
-  );
+export function OffersBoard() {
+  const searchParams = useSearchParams();
+  const statuses = searchParams.getAll("status");
+  const filter = parseFilter(statuses.length === 1 ? statuses[0] : undefined);
 
-  // Mirror the filter into the URL so a reload or a shared link keeps it.
-  // replaceState, not a router push: no server round trip, no history entry.
+  // Next keeps useSearchParams in sync with native history and router navigation.
+  // replaceState avoids a server round trip and a new history entry.
   function selectFilter(next: Filter) {
-    setFilter(next);
     const url = new URL(window.location.href);
     if (next === "all") url.searchParams.delete("status");
     else url.searchParams.set("status", next);
-    window.history.replaceState(window.history.state, "", url);
+    // Next copies its internal history state; passing it here bypasses its URL update.
+    window.history.replaceState(null, "", url);
   }
   // Kept here, not in each card: a refetch under the "open" filter drops the
   // offer a viewer just won or lost, and its card's state with it.

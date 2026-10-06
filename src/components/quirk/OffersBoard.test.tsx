@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { OffersBoard } from "@/components/quirk/OffersBoard";
@@ -15,6 +15,33 @@ vi.mock("@/lib/quirk/client", async (importOriginal) => {
   return { ...actual, quirkApi: { listOffers, claimOffer } };
 });
 
+// Model Next's URL subscription; the browser regression covers its real history patch.
+vi.mock("next/navigation", async () => {
+  const { useSyncExternalStore } = await import("react");
+  return {
+    useSearchParams: () => {
+      const search = useSyncExternalStore(
+        (notify) => {
+          window.addEventListener("popstate", notify);
+          return () => window.removeEventListener("popstate", notify);
+        },
+        () => window.location.search,
+      );
+      return new URLSearchParams(search);
+    },
+  };
+});
+
+beforeEach(() => {
+  vi.spyOn(window.history, "replaceState").mockImplementation(
+    (data, unused, url) => {
+      History.prototype.replaceState.call(window.history, data, unused, url);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    },
+  );
+  window.history.replaceState(null, "", "/quirk/offers");
+});
+
 const openOffer = {
   id: "offer-1",
   assetId: "asset-1",
@@ -27,12 +54,19 @@ const openOffer = {
 } as unknown as OfferWithAsset;
 
 function renderBoard(initialFilter?: string) {
+  if (initialFilter) {
+    window.history.replaceState(
+      null,
+      "",
+      `/quirk/offers?status=${initialFilter}`,
+    );
+  }
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
   return render(
     <QueryClientProvider client={client}>
-      <OffersBoard initialFilter={initialFilter} />
+      <OffersBoard />
     </QueryClientProvider>,
   );
 }
@@ -317,6 +351,32 @@ describe("OffersBoard filter", () => {
     );
     await screen.findByText("The only one");
     expect(listOffers).toHaveBeenCalledWith(undefined);
+  });
+
+  it("resets a preserved board when navigation removes status", async () => {
+    renderBoard();
+    await userEvent
+      .setup()
+      .click(screen.getByRole("button", { name: "claimed" }));
+    expect(screen.getByRole("button", { name: "claimed" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await vi.waitFor(() => expect(listOffers).toHaveBeenCalledWith("claimed"));
+
+    act(() => window.history.replaceState(null, "", "/quirk/offers"));
+
+    expect(screen.getByRole("button", { name: "all" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "claimed" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    await vi.waitFor(() =>
+      expect(listOffers).toHaveBeenLastCalledWith(undefined),
+    );
   });
 
   it("writes the chosen filter to the URL and clears it for all", async () => {
