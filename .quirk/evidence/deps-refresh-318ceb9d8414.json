@@ -1,0 +1,95 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.deps-refresh.318ceb9d8414",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "de138f4164c8cebb87a363647428a84fb8159fb0",
+    "commit": "318ceb9d8414b9c74dfbc62ef832794425ea6b9e",
+    "changed_paths": [
+      ".quirk/evidence/deps-refresh-17d73fee5cfe.json",
+      ".quirk/evidence/deps-refresh-1f86b7ab2367.json",
+      "bun.lock",
+      "package.json",
+      "vitest.config.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.deps-refresh.318ceb9d8414",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The scaffold refreshes 33 direct dependencies to their latest in-range versions and moves vitest and @vitest/coverage-v8 from 3.2.7 to 4.1.11, the first release fixing GHSA-82fw-gwwq-j7x9 (vulnerable range >=2.1.0 <4.1.11). vitest.config.ts drops a UserConfig plugins cast that vitest 4 makes unnecessary and gains coverage.include ['src/**/*.{ts,tsx}'], because vitest 4 removed coverage.all and without an include only test-loaded files are reported; reported files go from 36 of 125 to 105 and overall coverage from 77.58 percent to 53.64 percent, correcting a figure that was already wrong before this change rather than fixing a regression. Full-tree advisories fall from 31 to 2, both dev-path with no safe fix available. bun audit --prod reports no vulnerabilities. The engines.node declaration of >=20.0.0 is left untouched and is known to be inaccurate independently of this change, since @supabase/supabase-js has required Node >=22.0.0 as a production dependency since before this branch. This receipt binds only the listed changed paths at the subject commit. It grants no merge, admission, runtime, or fleet-rollout authority and establishes no owner review.",
+      "evidence_paths": [
+        ".quirk/evidence/deps-refresh-17d73fee5cfe.json",
+        ".quirk/evidence/deps-refresh-1f86b7ab2367.json",
+        "bun.lock",
+        "package.json",
+        "vitest.config.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".quirk/evidence/deps-refresh-17d73fee5cfe.json",
+      "state": "present",
+      "git_blob": "c4823d74ec4b9112537f7bdcc44c3d899e8e273b",
+      "sha256": "sha256:aa5a454849eba2832db3ed9e92e8cc30cf84313b5023d4d63bb26dc45a6c6899"
+    },
+    {
+      "path": ".quirk/evidence/deps-refresh-1f86b7ab2367.json",
+      "state": "present",
+      "git_blob": "c64188712ddb79d22c7c501d77dc7d7591d9dc32",
+      "sha256": "sha256:734f9050a052437414cba728373b6e715235e20637b9dc269393e9f75fd46f0a"
+    },
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "cacc74c5ee9f8511e2bf60e547efe887a02e6faf",
+      "sha256": "sha256:ccbaf80d124294ed5b91865cd470a0c6ce1cffd602ad67bf6035b65539e6292d"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "8b92bd81f6d1f04d8306c1de4b6c187aaef22cfe",
+      "sha256": "sha256:91a972a863df4a690a99857cd76d45a581d2e5f48aaa16c1925337d48d114b97"
+    },
+    {
+      "path": "vitest.config.ts",
+      "state": "present",
+      "git_blob": "e48271f65368ac15cc51344965b2704bd1ab9680",
+      "sha256": "sha256:b758a899c8cd2a54839455640865b1dc9f5667465cb32ff1b5798a065f4c39cc"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T12:44:39Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:a044e14ff59d62f403ce05e52360231f7f4c5b49d28591c525e1aef4136d8497"
+}

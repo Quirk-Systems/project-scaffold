@@ -1,0 +1,108 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.tinypool-reconciliation.99566876e709",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "eae6dc9aabb4c63dfe97f72f0cb565266daa709b",
+    "commit": "99566876e709d670082029ed325ec3d046ce0a8b",
+    "changed_paths": [
+      ".quirk/evidence/deps-refresh-17d73fee5cfe.json",
+      ".quirk/evidence/deps-refresh-1f86b7ab2367.json",
+      ".quirk/evidence/deps-refresh-318ceb9d8414.json",
+      "bun.lock",
+      "package.json",
+      "vitest.config.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.tinypool-reconciliation.99566876e709",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "PR 136 is reconciled with current main without changing its candidate package.json, bun.lock, or vitest.config.ts bytes. All unrelated application and governance files match main. Current main resolves tinypool 1.1.1 through Vitest 3.2.7; a fresh frozen installation of the subject resolves Vitest and coverage-v8 4.1.11, with no Tinypool package or reference in the lockfile or installed graph. Fresh bun audit --json at the subject exits 1 with only GHSA-vfj7-8cjw-p6xm (braces, high) and GHSA-67mh-4wv8-2f99 (esbuild, moderate); neither GHSA-5gmw-xhrv-c9v3 nor GHSA-85c8-ppgw-ccpr is reported. The nonzero full audit is explicitly not a passing command below and is not security clearance. The production audit exits 0 with an empty JSON object. Frozen install, repository validation (252 tests, 25 files, 0 lint errors and 3 existing warnings, type checking, production build), and coverage pass with Bun 1.4.2 and Node 20.20.2. Coverage reports 126 files, including untested src/lib/quirk/media.ts; statements 55.57 percent and lines 56.98 percent. Validation began from a clean subject checkout. Next build generated changes to tsconfig.json; coverage used that generated config, and those changes were restored, not committed. A separate original-head runtime trace confirms bun run test:run invokes Node 20.20.2, not the Bun runtime. These executions do not establish the advertised Node >=20.0.0 contract: production supabase-js requires >=22.0.0 and posthog-node excludes Node 22 below 22.22.0; the same engine mismatch exists on main, and react-email has an additional dev-CLI floor increase in the original candidate. No runtime contract, security gate, or policy is changed. Existing receipt ancestry is preserved; this receipt rebinds the changed paths after main advanced. Hosted checks and independent review on the final receipt-bearing head remain required. Issue 91 remains open because default main still contains Tinypool and the other findings remain. No merge, deployment, runtime admission, or human approval authority is granted.",
+      "evidence_paths": [
+        ".quirk/evidence/deps-refresh-17d73fee5cfe.json",
+        ".quirk/evidence/deps-refresh-1f86b7ab2367.json",
+        ".quirk/evidence/deps-refresh-318ceb9d8414.json",
+        "bun.lock",
+        "package.json",
+        "vitest.config.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".quirk/evidence/deps-refresh-17d73fee5cfe.json",
+      "state": "present",
+      "git_blob": "c4823d74ec4b9112537f7bdcc44c3d899e8e273b",
+      "sha256": "sha256:aa5a454849eba2832db3ed9e92e8cc30cf84313b5023d4d63bb26dc45a6c6899"
+    },
+    {
+      "path": ".quirk/evidence/deps-refresh-1f86b7ab2367.json",
+      "state": "present",
+      "git_blob": "c64188712ddb79d22c7c501d77dc7d7591d9dc32",
+      "sha256": "sha256:734f9050a052437414cba728373b6e715235e20637b9dc269393e9f75fd46f0a"
+    },
+    {
+      "path": ".quirk/evidence/deps-refresh-318ceb9d8414.json",
+      "state": "present",
+      "git_blob": "959647c95c3c69f83243828034fac357a84cdb2a",
+      "sha256": "sha256:9d1106ec9f92b7941955bc871799aa32b0bcb6a79c9ec992cb7f9cdd54c249f1"
+    },
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "cacc74c5ee9f8511e2bf60e547efe887a02e6faf",
+      "sha256": "sha256:ccbaf80d124294ed5b91865cd470a0c6ce1cffd602ad67bf6035b65539e6292d"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "8b92bd81f6d1f04d8306c1de4b6c187aaef22cfe",
+      "sha256": "sha256:91a972a863df4a690a99857cd76d45a581d2e5f48aaa16c1925337d48d114b97"
+    },
+    {
+      "path": "vitest.config.ts",
+      "state": "present",
+      "git_blob": "e48271f65368ac15cc51344965b2704bd1ab9680",
+      "sha256": "sha256:b758a899c8cd2a54839455640865b1dc9f5667465cb32ff1b5798a065f4c39cc"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod --json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun pm ls --all",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-14T04:00:38Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:04baed396925d82bbc3e4e042198c0f198501ecd668ee0390905fbe95616bbf9"
+}
