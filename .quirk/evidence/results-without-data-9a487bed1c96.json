@@ -1,0 +1,61 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.results-without-data.9a487bed1c96",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "3cb7974aada37f9faed443a7b2fccd07eb836708",
+    "commit": "9a487bed1c9663d28e44a63086f0775068858c2c",
+    "changed_paths": [
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.results-without-data.9a487bed1c96",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "OffersBoard's board-level status notice reports every saved claim result whose offer is not in the current list, including when the active filter's list has not loaded or failed, so a claim that settles after switching to a failing filter is still reported. The new test fails on the previous component and passes here; bun run validate exits 0. The two-browser race harness was not re-run for this one-line predicate change. Owner review is not established.",
+      "evidence_paths": [
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "344fe258276993de98649d9b9be84e4c4b83fc9b",
+      "sha256": "sha256:5117a1dee72d3f69c4ec841f835045ebdb91526836051a9cddfadafaf7733bcf"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "95874041e55ae800902ed2ddf490c91daae9e99d",
+      "sha256": "sha256:f24ec90440bafacaa5511cd21ae24faa0481813cc7de6f8690107c98788012b4"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "npx vitest run src/components/quirk/OffersBoard.test.tsx",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T12:29:08Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:39ef07b5ba8b5d682abd3414009ca66f5fbb7b6f75ca15260aaa5ad907bebb38"
+}

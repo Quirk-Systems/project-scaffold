@@ -1,0 +1,101 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.pricing-checkout-states.1f03a064e38d",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "7476e789556809be85f262b4a11b28f32921e897",
+    "commit": "1f03a064e38d7f956f28127bbe6b06d5605ff49e",
+    "changed_paths": [
+      "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "e2e/pricing.spec.ts",
+      "src/app/pricing/notice.test.ts",
+      "src/app/pricing/notice.ts",
+      "src/app/pricing/page.tsx",
+      "src/components/billing/SubscribeButton.test.tsx",
+      "src/components/billing/SubscribeButton.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.pricing-checkout-states.1f03a064e38d",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The pricing page submits checkout through SubscribeButton (Button primitive), which is disabled and reads 'Opening checkout…' while the form action is pending, and it renders a role=status notice from ?status= for success, cancel, and already-subscribed (success copy says activation waits on Stripe's confirmation; unknown or repeated values render nothing). bun run validate exits 0 (251 tests, 3 lint warnings as on main); the new e2e spec plus home.spec pass locally against a production build in Chromium. The pending state was exercised only in a unit test, because the local e2e run had no STRIPE_PRICE_ID and no real Stripe checkout was made. Owner review is not established.",
+      "evidence_paths": [
+        "docs/recommendations/design/COMPONENT_PATTERNS.md",
+        "e2e/pricing.spec.ts",
+        "src/app/pricing/notice.test.ts",
+        "src/app/pricing/notice.ts",
+        "src/app/pricing/page.tsx",
+        "src/components/billing/SubscribeButton.test.tsx",
+        "src/components/billing/SubscribeButton.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "d7cf615c9af88253844f442740d877abc3a03e75",
+      "sha256": "sha256:93935dd75d84b610f534ef0f276960f84b78525b27230fac753113f6a62d123b"
+    },
+    {
+      "path": "e2e/pricing.spec.ts",
+      "state": "present",
+      "git_blob": "c4584b0cd1622c6d823a6e83d819cc040c9b5827",
+      "sha256": "sha256:188318891b1bdc9290b6d436f0a90b4e89752a64a834e7649ce17612d6f9260b"
+    },
+    {
+      "path": "src/app/pricing/notice.test.ts",
+      "state": "present",
+      "git_blob": "d76e232636b3cb8a76cfc7677f833f924780b8f4",
+      "sha256": "sha256:d54c036f0e7ac4d5fcb8b009a4bac3728dfbdcc02eb7513acc2b998b5aed816c"
+    },
+    {
+      "path": "src/app/pricing/notice.ts",
+      "state": "present",
+      "git_blob": "766c3a7da53abecbffc497ed8f0ee06f29c26c46",
+      "sha256": "sha256:968e6ca7c648e36bac5b1028f44c645f1b09119174c590c19d8bccd079312036"
+    },
+    {
+      "path": "src/app/pricing/page.tsx",
+      "state": "present",
+      "git_blob": "97e8281ce0882b3ae8b6fee3ec002916d4c55269",
+      "sha256": "sha256:d5c7ce23d1b69ebe7f5b4dc5e01f954155d84169b2ddc459ba991055c2ae47f3"
+    },
+    {
+      "path": "src/components/billing/SubscribeButton.test.tsx",
+      "state": "present",
+      "git_blob": "1a285403dcfc1b83a9e0500bbcecc0aea3683dd1",
+      "sha256": "sha256:2129bda79111a88e5e10c94bd5813b4ec87c25fca14ee85515ac61a0b12f3e1b"
+    },
+    {
+      "path": "src/components/billing/SubscribeButton.tsx",
+      "state": "present",
+      "git_blob": "d4cdd4c20b6355a7400a8e6c3a30989ad3f712eb",
+      "sha256": "sha256:d2f20cf17604190145012ce532fb1cf7c100fd55abf0bcde8e052373351a3f69"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx playwright test e2e/pricing.spec.ts e2e/home.spec.ts",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T13:31:18Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:06402fcbd407ee009ab4825bd72c0d398955c72733ae30011ec6974eeb973902"
+}

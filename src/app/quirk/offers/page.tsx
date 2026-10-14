@@ -1,5 +1,6 @@
 import { OffersBoard } from "@/components/quirk/OffersBoard";
 
+// Keep live search parameters available to OffersBoard during server rendering.
 export const dynamic = "force-dynamic";
 
 export default function OffersPage() {

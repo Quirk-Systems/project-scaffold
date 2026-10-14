@@ -1,0 +1,82 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.checkout-return-claims.d9b1a8c364be",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "34bed3e8a1edc07f446bc7cdd413d61ea6b92bb5",
+    "commit": "d9b1a8c364be57a2ced2247438f41016287581d9",
+    "changed_paths": [
+      "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "e2e/pricing.spec.ts",
+      "src/app/pricing/notice.test.ts",
+      "src/app/pricing/notice.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.checkout-return-claims.d9b1a8c364be",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Checkout URL notices no longer assert payment completion, no charge or confirmed subscription. bun run validate passes: 251 tests, type checking, production build, 3 existing lint warnings. Read-only local next start HTTP probes confirm unconfirmed-state copy for all three URLs and canonical AUTH_URL provider URLs despite hostile headers. Isolated app-handler probes confirm UntrustedHost without configuration and truthy AUTH_TRUST_HOST=false. Docs distinguish ARIA attributes from unperformed screen-reader validation. Real Stripe checkout, screen-reader pass, deployed sign-in and browser E2E remain unproved; browser installation failed on truncated downloads. No payment, database mutation, deployment or merge occurred. Owner review is not established.",
+      "evidence_paths": [
+        "docs/recommendations/design/COMPONENT_PATTERNS.md",
+        "e2e/pricing.spec.ts",
+        "src/app/pricing/notice.test.ts",
+        "src/app/pricing/notice.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "30f28ebad4c851d6a8b39f07889bf7a5b08bfaf0",
+      "sha256": "sha256:77ef7ad3fadca92b81039a683563c469de54787d08ec3f6398270a5531e65f52"
+    },
+    {
+      "path": "e2e/pricing.spec.ts",
+      "state": "present",
+      "git_blob": "913ecbe1c2a9c64607988ff082bb6a6c7030e29f",
+      "sha256": "sha256:73bd45f6d69aace6072649090e9a8f633d3f5b085d09c810b2ee8d4feb7ecdad"
+    },
+    {
+      "path": "src/app/pricing/notice.test.ts",
+      "state": "present",
+      "git_blob": "789a615ca0f9d458eee281cd0a73f03b69f48bf7",
+      "sha256": "sha256:d97926bc57bb5ad0044186b012006765b7ed2b9eece31bf602d34c642c1ef315"
+    },
+    {
+      "path": "src/app/pricing/notice.ts",
+      "state": "present",
+      "git_blob": "6d3ccdf2fd6de5c7283f615a3a0a0f81a94b8c28",
+      "sha256": "sha256:b29193e049120ec9bbcb64651e785ba28d608abd5d65ede867d3a473f8464690"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run type-check",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --check",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-05T06:22:16.472013Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:7855a4c06960c34bb1d229540003c2099c7404590af6086a630a98937ac7bfcc"
+}
