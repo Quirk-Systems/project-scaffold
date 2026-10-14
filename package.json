@@ -59,7 +59,7 @@
     "pino": "^10.4.0",
     "postgres": "^3.4.9",
     "posthog-js": "^1.435.8",
-    "posthog-node": "^5.55.0",
+    "posthog-node": "^5.55.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-hook-form": "^7.89.0",
