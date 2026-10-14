@@ -1,0 +1,80 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.context-continuity.e614090afb09",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "1e04dfc91941905fff7312403bf0817eb2768c0f",
+    "commit": "e614090afb09636efe4edb217ac40c9ed41fca32",
+    "changed_paths": [
+      ".quirk/context-profile.json",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "QUIRK-CONTEXT.md",
+      "README.md"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.context-continuity.e614090afb09",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Adds scoped candidate context continuity. Recorded checks validate the stated local scope; production adoption, host loading and human benefit are unproven.",
+      "evidence_paths": [
+        ".quirk/context-profile.json",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "QUIRK-CONTEXT.md",
+        "README.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".quirk/context-profile.json",
+      "state": "present",
+      "git_blob": "98a1bf0a2e362474fa007b26909cbc18ca8b2665",
+      "sha256": "sha256:5a20bcde34ab568edec93ab0676fe3588a5922a6f1d84a6836cb6e6379753914"
+    },
+    {
+      "path": "AGENTS.md",
+      "state": "present",
+      "git_blob": "4acaec7890ff94b365ac34888b254a8235dfc052",
+      "sha256": "sha256:0248bb06df8e9af2807a0b7b395253663ac649f4d0dec9f292391f90a60fd308"
+    },
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "c64f822ad140b15dfecbcf27f5ab10676ec12a58",
+      "sha256": "sha256:477d13487a1ae9243ef519abf1931f7910731a6ec74a944883083f26fc25a9b8"
+    },
+    {
+      "path": "QUIRK-CONTEXT.md",
+      "state": "present",
+      "git_blob": "9224195958bfeb698b2a02083144e877219ec36c",
+      "sha256": "sha256:8d1a98930722cfc46f0fb0533f8866465bdf96a0ccc2cca192133eee4fd0034a"
+    },
+    {
+      "path": "README.md",
+      "state": "present",
+      "git_blob": "22b89c4c9e350879e0fe613f37303c956c85ee40",
+      "sha256": "sha256:8c058036f56898b0d6f88df6333744ba79227e3b53b67c708b75304d05a0d0e2"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "python3 ../quirk-os/scripts/validate_context_profiles.py .quirk/context-profile.json --contract ../quirk-core/contracts/context-continuity/v0.1/README.md",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-14T08:47:14.753250Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:09f77ebaeb2ba5c2bb68fc7436fd9dbd9ba3cc847de644d52633b07524d1bd36"
+}
