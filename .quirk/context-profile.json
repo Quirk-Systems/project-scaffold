@@ -1,0 +1,45 @@
+{
+  "format": "quirk-context-profile-candidate/0.1",
+  "repository": "Quirk-Systems/project-scaffold",
+  "observed_base": "1e04dfc91941905fff7312403bf0817eb2768c0f",
+  "scope": "new project, module, and feature guidance",
+  "domain": "scaffold",
+  "status": "candidate",
+  "authority_effect": "none",
+  "contract": {
+    "repository": "Quirk-Systems/quirk-core",
+    "path": "contracts/context-continuity/v0.1/README.md",
+    "sha256": "35be29f9db49b7408fae2c3b7a89be4ac9166760d9d53ee687ef876f05ced067"
+  },
+  "requirements": [
+    "QC01",
+    "QC02",
+    "QC03",
+    "QC04",
+    "QC05",
+    "QC06",
+    "QC07",
+    "QC08",
+    "QC09",
+    "QC10",
+    "QC11",
+    "QC12"
+  ],
+  "inheritance": "Children inherit this profile unless a scoped local difference is declared.",
+  "acceptance_cases": [
+    "New children inherit a context profile or declare a local difference.",
+    "Provide private or observational paths before adding participation metrics."
+  ],
+  "refresh": "At task start or material correction; recheck access before consequential action.",
+  "coverage": {
+    "authored": true,
+    "delivered": false,
+    "loaded": false,
+    "behavior_tested": false,
+    "deployed": false
+  },
+  "limitations": [
+    "This profile changes contributor guidance; application context loading is not established.",
+    "Participant experience and human maintenance burden are unmeasured."
+  ]
+}
