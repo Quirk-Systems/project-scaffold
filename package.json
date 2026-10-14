@@ -93,7 +93,7 @@
     "jsdom": "^29.1.1",
     "lefthook": "^1.13.6",
     "postcss": "^8.5.28",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "react-email": "~6.9.2",
     "tailwindcss": "^4.3.3",
