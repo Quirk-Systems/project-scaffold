@@ -124,3 +124,9 @@ Key recommendation docs:
 - Node.js >=20.0.0 is required (alongside Bun)
 - For agent/AI work, see `AGENTS.md` and `docs/recommendations/ai/`
 - For project planning, see `PROJECT.md`
+
+## Context continuity
+
+For changes involving context, preferences, creative work, or participation, read
+[QUIRK-CONTEXT.md](QUIRK-CONTEXT.md) and preserve its scoped requirements.
+Do not treat this instruction entry point as proof of host loading or runtime adoption.
