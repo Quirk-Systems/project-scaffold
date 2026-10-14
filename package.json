@@ -95,7 +95,7 @@
     "postcss": "^8.5.28",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "react-email": "^6.11.0",
+    "react-email": "~6.9.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vite-tsconfig-paths": "^5.1.4",
