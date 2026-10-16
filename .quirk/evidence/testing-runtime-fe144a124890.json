@@ -1,0 +1,90 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.testing-runtime.fe144a124890",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "1e04dfc91941905fff7312403bf0817eb2768c0f",
+    "commit": "fe144a1248902ffbb3318758fd72630d42e583e3",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      "CLAUDE.md",
+      "README.md",
+      "bun.lock",
+      "package.json"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.testing-runtime.fe144a124890",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Testing upgrade runtime repair: Node engines are ^22.22.2 || ^24.15.0; validation CI covers 22.22.2, 24.15.0 and 24.19.0, E2E and security use 24.19.0, and Bun is pinned to 1.4.3. Local validate passes on all three Node versions with lint (three existing warnings), type-check, 252 tests and production build. Coverage on Node 24.19.0 passes (55.49% statements, 56.91% lines). Frozen install under Bun 1.4.3 passes without lock changes. Next build regenerates tsconfig settings; these generated edits were restored. The dependency upgrade still resolves Vitest 5.0.3/jsdom 30.1.2 and removes Tinypool. This evidence does not establish E2E or hosted CI success: matching browser downloads produced invalid archives, and new hosted runs failed with job logs unavailable. Existing braces/esbuild risks remain. No production deployment or complete security clearance is claimed. Rollback is to main testing versions while preserving the known Tinypool remediation.",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        "CLAUDE.md",
+        "README.md",
+        "bun.lock",
+        "package.json"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "77c41b11423fecb3f93872365e085d72331dafe4",
+      "sha256": "sha256:40eec3fe1bdd1906727466806aaa66d3791d1ca2ad7b06935efbc9fbc3847c48"
+    },
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "ad77bba227218ab49a50aa3b1bee54da16588175",
+      "sha256": "sha256:263b1fe533d1a39f834d9c8ecf85a84595839696daa0906fc805bccb5626e660"
+    },
+    {
+      "path": "README.md",
+      "state": "present",
+      "git_blob": "535cfd245e709f28afb0f427ceface47457dd7a6",
+      "sha256": "sha256:8616e6cad912eb61c5c94bea8700a415f4b9f0a7b9c6974db07085a42c2f6641"
+    },
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "27ae153e51a21bf31925aa0c93fe6c2e18c3933a",
+      "sha256": "sha256:a70a0d1d49ab0ddb60713b1b8437f7a11c97452b876544d2f11d7004e8362626"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "c671f52c891ed518c0c10392af2d8971a2d2e68b",
+      "sha256": "sha256:fe3b9f3ce177c1ccc08bb0775152ea6d78a9f96650119c9c6b3a9f075f2d73b8"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --frozen-lockfile (Bun 1.4.3 / Node 24.19.0)",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate (Node 22.22.2, 24.15.0 and 24.19.0)",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage (Node 24.19.0)",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-16T04:27:42Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:9a13c8b911f4f4fca1626be67e4831d743625529b3bc58622c9b22acc8d3e82f"
+}

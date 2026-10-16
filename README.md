@@ -57,6 +57,9 @@ working examples. Their presence does not change the repository identity.
 
 ## Getting started
 
+Use Node.js `^22.22.2 || ^24.15.0` with Bun. CI pins Node 24.19.0 and Bun
+1.4.3; Node 20 is unsupported by the locked runtime and testing dependencies.
+
 ```bash
 bun install
 cp .env.example .env
