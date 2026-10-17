@@ -1,0 +1,90 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.project-scaffold-pr93-anthropic-sdk-0.126.0-2026-10-04",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "2fae63822b0543e5939e1948b39ec68609d9a476",
+    "commit": "f6551ac252c8ebca9e4d2f2803f39f6a5b5eb3cc",
+    "changed_paths": ["bun.lock", "package.json"]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.project-scaffold-pr93-anthropic-sdk-0.126.0",
+      "claim_type": "test",
+      "authority_effect": "none",
+      "statement": "The dependency manifest and Bun lockfile resolve Anthropic SDK 0.126.0 with unchanged SDK production dependencies and optional Zod peer range. Frozen installation, full scaffold validation (222 tests and production build), production audit, Messages adapter fixtures, and Node 20.20.2/Bun 1.4.2 retry-cancellation probes passed. SDK 0.117.1 and 0.125.0 delayed abort until the mocked 1.5-second retry wait ended; 0.126.0 returned APIUserAbortError in 42-44 ms with one fetch. These observations are bounded to mocked HTTP and the validated source tree, and grant no review approval, runtime admission, deployment, or merge authority.",
+      "evidence_paths": ["bun.lock", "package.json"]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "99bb1254d4b64b68d6bdf402bc314e7aa30d17f5",
+      "sha256": "sha256:74c1f780b7f431375ab961d54f3a67dce6851314577ae04e75f685474014a7fb"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "c8c77bb6f90fda07e48adc0fbc7a14fd46d2c334",
+      "sha256": "sha256:8731018ead0d1e3355e6a5a1557494b38f4076ee34a646af96801df0ed5e9779"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --lockfile-only",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun x prettier --check package.json",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --check",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "node /workspace/scratch/52450fff0f54/pr93-sdk-check/compatibility.mjs (Node 20.20.2; all HTTP mocked)",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun /workspace/scratch/52450fff0f54/pr93-sdk-check/compatibility.mjs (Bun 1.4.2; all HTTP mocked)",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "ANTHROPIC_API_KEY=pr93-local-fixture SKIP_ENV_VALIDATION=1 bun /workspace/scratch/52450fff0f54/pr93-validation/adapter-smoke.ts (all HTTP mocked)",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T06:47:20Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:9e449022d82bd254212941a7911426b7ea798244a7444dce7b09b638f523af34"
+}
