@@ -1,0 +1,58 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.source-map-js-patch.fc0dbf65715a",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "c6bea95cfb31ae7c6b851c952e03ccf693a7902b",
+    "commit": "fc0dbf65715a0cb81da7456cc8e08c6b0cbdfe2c",
+    "changed_paths": [
+      "bun.lock"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.source-map-js-patch.fc0dbf65715a",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The exact-head CI security job for c6bea95 reported GHSA-68fv-2mgg-jv7q in source-map-js 1.2.1. A selective bun update source-map-js --lockfile-only changed only that package resolution to patched 1.2.2 within existing dependency ranges. package.json is unchanged. Frozen install passed; bun audit --prod reports no vulnerabilities among 163 packages; bun run validate passed 252 tests, type checking and production build with the same 3 lint warnings. Hosted CI and browser validation on the resulting head remain required before merge. No other dependency resolution changed.",
+      "evidence_paths": [
+        "bun.lock"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "55745421cc629cb26f28ad533cbdff4f5e93f5c9",
+      "sha256": "sha256:746522d436e19ea9213e775a9f660020c7d638457bd71a30e8b536abde815117"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-06T03:27:04Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:f99341c5649c50c4510258d74f3d249e3021d83934d0be652d06176636424c96"
+}

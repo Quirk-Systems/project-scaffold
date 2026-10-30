@@ -1,0 +1,66 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.claim-outcome-line.1648093319fd",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "e3ee7ccfc3abac6aa405da1cceae80b9e62b3811",
+    "commit": "1648093319fd7dd860901ee2735eb78cc37f0f8c",
+    "changed_paths": [
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.claim-outcome-line.1648093319fd",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "OffersBoard's single always-mounted role=status line names the viewer's own claim outcome: the loser of a 409 race sees 'Missed it...' (no longer open, someone else claimed, or retired) and the winner sees 'You claimed it. This one is yours.'. A local Playwright race with two signed-in Chromium sessions against Postgres 16 passed 5 of 5 runs (exactly one 200 and one 409, loser and winner lines as stated, database claimed_by = winner), and a 10-request concurrent burst passed 5 of 5 with exactly one 200; that harness is not committed. bun run validate exits 0 (233 tests) and the repo's E2E suite passes on Chromium. Owner review is not established.",
+      "evidence_paths": [
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "24c240ff9091a7d96614c5a9c7538e725db70408",
+      "sha256": "sha256:80b2e1dac354e154c345e5a1074c39cdd27270c5f1916e1a7c4da4ee06e95291"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "8eb46b215a1f0ba19fbfa7a0759f340a5e609b96",
+      "sha256": "sha256:f0d0795c466903890b1b35fe5f2429792839ecde9a8e763d008a05293f9cf07f"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "playwright test (repo e2e, Chromium, local Postgres 16)",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "playwright test e2e-local/claim-race.spec.ts --repeat-each=5 (local harness, not committed)",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T10:09:23Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:9846ee79567ff4d56acf0d979c5d889395b8fdfb11f4d56ed9ae1fd0b4357c1a"
+}

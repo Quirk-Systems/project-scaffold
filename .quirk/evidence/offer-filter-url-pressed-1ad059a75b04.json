@@ -1,0 +1,77 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.offer-filter-url-pressed.1ad059a75b04",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "4f4304050692939e8646872b084a177c235f78d2",
+    "commit": "1ad059a75b0446b9e68f56275503c1ae1528a376",
+    "changed_paths": [
+      "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "src/app/quirk/offers/page.tsx",
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.offer-filter-url-pressed.1ad059a75b04",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "The offers page reads ?status= and passes it to OffersBoard, which starts on that filter (unknown values fall back to all), mirrors later choices into ?status= via history.replaceState (all clears it), and renders the filter buttons in a role=group labelled 'Filter offers' with aria-pressed. Four new unit tests cover pressed state, URL start, unknown fallback, and URL writes; bun run validate exits 0 (246 tests). COMPONENT_PATTERNS.md marks the two audit rows Fixed. No browser or screen-reader run was made for this change; owner review is not established.",
+      "evidence_paths": [
+        "docs/recommendations/design/COMPONENT_PATTERNS.md",
+        "src/app/quirk/offers/page.tsx",
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "39f5b9fcea1bddb6bfa81d48557fe11131065ce0",
+      "sha256": "sha256:836c7d3e2e16e85d740aa4e6fdf735eded90125f2cb928566768b09127d559f9"
+    },
+    {
+      "path": "src/app/quirk/offers/page.tsx",
+      "state": "present",
+      "git_blob": "69b7c485b8ead77eb041e8a3e7b2511994a6e77c",
+      "sha256": "sha256:cf7537de85057081d968b321ebdd30f346bbf4283e51d8b069eeca8739ec6c03"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "3983414c925cfc7e4500d8ab227157f7a6e7e3d0",
+      "sha256": "sha256:1b92239f941af3a41be10a4a10d73dbc814b5019bd4a905baceb9de0d4f9988b"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "8962df515f28db916641b44aadb688cbca04a90c",
+      "sha256": "sha256:8ba27bae4d1417d4a3a5b74534865b403e6c1110f8b44352da5a3b98e89cf9e2"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx vitest run src/components/quirk",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T13:25:39Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:511bab17401d02f555defaed72631d156233136b6a969a97ca76a2fc7cb8a694"
+}

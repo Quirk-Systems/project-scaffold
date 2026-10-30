@@ -34,6 +34,26 @@ export type AssetSummary = QuirkAsset & {
   annotationCount: number;
 };
 
+/** A non-2xx response from the Quirk API, keeping the HTTP status. */
+export class QuirkApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+    this.name = "QuirkApiError";
+  }
+}
+
+/**
+ * True when a request lost a race the server settles atomically (HTTP 409),
+ * such as claiming a one-of-one offer someone else claimed first. That is an
+ * outcome to show plainly, not a failure.
+ */
+export function isConflict(error: unknown): error is QuirkApiError {
+  return error instanceof QuirkApiError && error.status === 409;
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
@@ -41,7 +61,10 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { error?: string };
-    throw new Error(body.error ?? `Request failed (${res.status})`);
+    throw new QuirkApiError(
+      body.error ?? `Request failed (${res.status})`,
+      res.status,
+    );
   }
   return res.json() as Promise<T>;
 }

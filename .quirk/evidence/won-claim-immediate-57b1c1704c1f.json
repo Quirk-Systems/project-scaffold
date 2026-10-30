@@ -1,0 +1,66 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.won-claim-immediate.57b1c1704c1f",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "3c2fcd8e458656014433bf2275242874f8bf976c",
+    "commit": "57b1c1704c1f5b641d2371376964c813682aef1b",
+    "changed_paths": [
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.won-claim-immediate.57b1c1704c1f",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "A successful claim shows 'You claimed it. This one is yours.' immediately, even if the following list refetch fails; a recorded win is never replaced by a later 409; the claim button is hidden once the viewer has a result. The new test fails on the previous component and passes here; bun run validate exits 0 (236 tests); the repo E2E suite and the uncommitted local two-browser race harness (10 of 10) pass on Chromium against local Postgres 16. Owner review is not established.",
+      "evidence_paths": [
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "2040cec30e79b553ffa911a45b37aa9ac42c3ae6",
+      "sha256": "sha256:13ae9265cd742e8ed501831555241b5585e804bf85536a23eb9e85eb3553caeb"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "dbc0a2f62d5cb334260a6d16f8b4785984014348",
+      "sha256": "sha256:2c00e2411f17ab8beeff7ca8a1c62622027d40a87eb9d7c2b95071c4ed1b0a15"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "playwright test (repo e2e, Chromium, local Postgres 16)",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "playwright test e2e-local/claim-race.spec.ts --repeat-each=5 (local harness, not committed)",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T12:23:46Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:3a8f35944410655c1e2ab074160de8bb1bf1bfda399b86efda2e3e8782485954"
+}

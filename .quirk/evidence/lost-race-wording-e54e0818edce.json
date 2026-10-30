@@ -1,0 +1,69 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.lost-race-wording.e54e0818edce",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "0c6e8141f7f9cb885f8974afd70953e4a5d9e47d",
+    "commit": "e54e0818edce17e1469e6ad84f6c0f61b4f40de1",
+    "changed_paths": [
+      "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.lost-race-wording.e54e0818edce",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "After a lost claim race (HTTP 409), OffersBoard says 'Missed it. This one is no longer open.' until the refetch, then shows the offer's status line while an always-mounted role=status region names the outcome (claimed or retired); it no longer says someone claimed a retired offer or repeats the claimed message. Four new component tests fail on the previous component and pass here; bun run validate exits 0 (232 tests). Owner review is not established.",
+      "evidence_paths": [
+        "docs/recommendations/design/COMPONENT_PATTERNS.md",
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "a8895fcb89ff597d6e368ac1e712411f942d0476",
+      "sha256": "sha256:d8c7637e21d9eaec0d3e3066796466270f04e03af62c0e34463f426796e91f66"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "71f9c9f89a0f11de92de9db6a461e40f35a6d19a",
+      "sha256": "sha256:475e325a496ca1550ec9f1a8999c12e26840cc20ee4dcb839e8e626f6da90072"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "b265be69749d77b967cdef5e66f766be1601f64e",
+      "sha256": "sha256:530bac3d1f9bfb55864ce283d5d42d5f35166c8b6f8b8427fe96bc42a24623ae"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "npx vitest run src/components/quirk/OffersBoard.test.tsx",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T09:59:06Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:aa14f7bfb69419ac6dc64d21ef61ffd4e85b80b94671e2666e14f98fc394ff70"
+}

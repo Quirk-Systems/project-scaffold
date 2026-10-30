@@ -1,0 +1,85 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.claim-race-outcome.7ff5df737e89",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "de138f4164c8cebb87a363647428a84fb8159fb0",
+    "commit": "7ff5df737e8926d2422f521629692a101296ce8b",
+    "changed_paths": [
+      "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "src/components/quirk/OffersBoard.test.tsx",
+      "src/components/quirk/OffersBoard.tsx",
+      "src/lib/quirk/client.test.ts",
+      "src/lib/quirk/client.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.claim-race-outcome.7ff5df737e89",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "A lost claim race (HTTP 409 from POST /api/offers/[id]/claim) now renders in OffersBoard as muted role=status text 'Someone claimed it first. This one is gone.', while other claim failures stay destructive with role=alert. The Quirk API client throws QuirkApiError, an Error subclass carrying the HTTP status, and isConflict() recognises 409. Seven new tests cover this; five fail on the previous code. bun run validate exits 0 (229 tests). Owner review is not established.",
+      "evidence_paths": [
+        "docs/recommendations/design/COMPONENT_PATTERNS.md",
+        "src/components/quirk/OffersBoard.test.tsx",
+        "src/components/quirk/OffersBoard.tsx",
+        "src/lib/quirk/client.test.ts",
+        "src/lib/quirk/client.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/recommendations/design/COMPONENT_PATTERNS.md",
+      "state": "present",
+      "git_blob": "815c15ee0b9af58739a16e807e3aadd88a370c5a",
+      "sha256": "sha256:9fdeee443ea5fc2f838ef2ae2f8742b1fd849d9a4d444a3aca0593e665b0b09b"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.test.tsx",
+      "state": "present",
+      "git_blob": "619b71270f64c0185b74f856d2ef68295c319f04",
+      "sha256": "sha256:6181423160da9f51ef5719a295a6c829525d8f704043bc68086ebef5318478cc"
+    },
+    {
+      "path": "src/components/quirk/OffersBoard.tsx",
+      "state": "present",
+      "git_blob": "e2406cedea9833b84c00a4ed503574ebc8f133a7",
+      "sha256": "sha256:ab1cf4ce863cff56579309096d174418f7171b527d1674e839411062096b0022"
+    },
+    {
+      "path": "src/lib/quirk/client.test.ts",
+      "state": "present",
+      "git_blob": "8debb16c7f54a0d460f07f8a3983e8903df35416",
+      "sha256": "sha256:70eeadb5470feff2ae406e148cff1724c5f616e882370a3952fa397958371b3a"
+    },
+    {
+      "path": "src/lib/quirk/client.ts",
+      "state": "present",
+      "git_blob": "3416259fa6b54d206e571eeed097fd93f1322bab",
+      "sha256": "sha256:6695f75301ecce0c1f385d0529d12dbe49c0d7f404682eef87988a11a1e66542"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "npx vitest run src/lib/quirk/client.test.ts src/components/quirk/OffersBoard.test.tsx",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T09:51:47Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:8ac57fc6429c4f7ccbe04bbd574620f61be889fbf1bdc4cfb19992db0657b294"
+}
