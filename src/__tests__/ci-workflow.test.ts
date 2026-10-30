@@ -250,9 +250,13 @@ describe("CI workflow contract", () => {
     );
     expect(audit.if).toBeUndefined();
     expect(scan.if).toBeUndefined();
+    expect(scan.uses).toBe(
+      "trufflesecurity/trufflehog@31ce31ee1abbcc7dc8eee5764c17121c3044c8b2",
+    );
     expect(scan.with).toEqual({
-      version: "3.97.9",
+      version: "3.99.7",
       extra_args: "--results=verified,unknown",
     });
+    expect(source).toContain(`${scan.uses} # v${scan.with?.version}`);
   });
 });
