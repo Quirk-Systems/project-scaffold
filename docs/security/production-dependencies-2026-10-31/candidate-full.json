@@ -1,0 +1,44 @@
+{
+  "esbuild": [
+    {
+      "id": 1102341,
+      "url": "https://github.com/advisories/GHSA-67mh-4wv8-2f99",
+      "title": "esbuild enables any website to send any requests to the development server and read the response",
+      "severity": "moderate",
+      "vulnerable_versions": "<=0.24.2",
+      "cwe": ["CWE-346"],
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N"
+      }
+    }
+  ],
+  "glob": [
+    {
+      "id": 1244013,
+      "url": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4",
+      "title": "Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal",
+      "severity": "moderate",
+      "vulnerable_versions": ">=9.0.0 <=14.0.1",
+      "cwe": ["CWE-400"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    }
+  ],
+  "minimatch": [
+    {
+      "id": 1244012,
+      "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+      "title": "minimatch has potential denial of service via globparts amplification",
+      "severity": "moderate",
+      "vulnerable_versions": "<11.0.1",
+      "cwe": ["CWE-405"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    }
+  ]
+}

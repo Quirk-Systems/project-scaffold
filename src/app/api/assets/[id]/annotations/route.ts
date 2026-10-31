@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const annotationSchema = z.object({
   annotationType: z.enum(annotationTypeEnum.enumValues),
   label: z.string().nullable().optional(),
-  value: z.record(z.unknown()).default({}),
+  value: z.record(z.string(), z.unknown()).default({}),
   confidence: z.number().min(0).max(1).optional(),
 });
 

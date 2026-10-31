@@ -1,0 +1,71 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.ci-pins.3c7105c584e3",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "de138f4164c8cebb87a363647428a84fb8159fb0",
+    "commit": "3c7105c584e3cbc70f3d2ef3b7177f8840a28a08",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      "src/__tests__/ci-workflow.test.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.ci-pins.3c7105c584e3",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "CI action implementations are pinned to upstream release commits with version comments. Workflow tests enforce full commit pins and release comments while preserving caching, least-privilege permissions, timeouts, frozen installs, and reporting. Local validation passed 233 tests and the production build; floating-tag, short-SHA, and missing-comment mutations were rejected. Hosted CI and E2E execution are not established by this receipt. No owner review, merge, or admission authority is granted.",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        "src/__tests__/ci-workflow.test.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "7f00da041d9ed2b3c97cf9a68abbeeb41428c053",
+      "sha256": "sha256:5218ce8c0cc3af8e197f0c578e14da3a95a7a1ce0f1e96ac4d40b049ad0400d4"
+    },
+    {
+      "path": "src/__tests__/ci-workflow.test.ts",
+      "state": "present",
+      "git_blob": "549ebb347372b1125e625b9239f47c53df1da0a7",
+      "sha256": "sha256:ba31a67f76d5df5dadf1baf663e2b16efcc10361d2b32eaa6178aba1b85ea845"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:run src/__tests__/ci-workflow.test.ts",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx prettier --check .github/workflows/ci.yml src/__tests__/ci-workflow.test.ts",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --check",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-04T11:42:09Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:874e4f85b39e40b6d54affbfac08496cf094086589516c131fb917285ed026d0"
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.trufflehog-reconciliation.f50805771196",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "f9499d410bc2a919917427be8526e79648606419",
+    "commit": "f5080577119639d5f6a51b8cb115846d4b082bdb",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      "src/__tests__/ci-workflow.test.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.trufflehog-reconciliation.f50805771196",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Reconciles PR #137 with PR #152 on main 1e04dfc91941905fff7312403bf0817eb2768c0f. The TruffleHog action uses verified upstream v3.99.7 commit 31ce31ee1abbcc7dc8eee5764c17121c3044c8b2, explicit scanner version 3.99.7, and tests binding the exact pin, version and release comment. Permissions, caches, frozen installs and security gates are unchanged from the modernization proposal. Publication is authorized by the user on October 30, 2026, with merges conditional on confidence; this receipt itself grants no authority. Git CLI had no write credentials, so GitHub Git-data tools recreated the local main-refresh and code commits without rewriting branch history. The subject tree e1aafbe9972d0cb4b21b1c3c11d91c2bc05e0de6 exactly equals the previously tested local code commit 7e809003ee7b9a10598501074b021f72f9893e70; git diff --exit-code confirmed no file differences. Prior validation on that identical tree passed 263 tests in 26 files, identity/preference checks, lint (3 warnings), type-check and production build under Node 24.22.1/Bun 1.3.11. Seven regression mutations were rejected. Fresh workflow checks on the recreated subject passed 11 tests and formatting. Both merge-order simulations with PR #152 return the identical subject tree. This is bounded configuration and regression evidence, not all-gates-pass evidence. A fresh bun audit --prod on October 30 exited 1 with 8 findings (3 critical, 3 high, 2 low), matching the prior main baseline. package.json and bun.lock match main. No audit bypass was added. No fresh hosted success, local E2E success or local Docker secret-scan success is claimed. The prepared original main-refresh commit excluded only the formatting hook for an unchanged pre-existing main receipt; scanner correction and evidence commits passed normal hooks. Next.js generated tsconfig edits were reverted. PR #137 historical head 54a6e3c26c4e69f3e1d89e24049d9a7218c4d6f8 has successful historical CI; PR #152 head be8958f41b4e0a2cdf66cec8940eb3b37af69567 has failed historical CI with unavailable logs, so its hosted failure cause remains unverified. Publication and merges must be reported separately.",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        "src/__tests__/ci-workflow.test.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "bd4ca72808a268fffe4626e1a5863e936b3bf84b",
+      "sha256": "sha256:068daf8aa5ffc19394a4ece4f679f1b840d3fdee2dd742a418b9d75eb174417e"
+    },
+    {
+      "path": "src/__tests__/ci-workflow.test.ts",
+      "state": "present",
+      "git_blob": "9557e5233051337140b2da475d08911859547946",
+      "sha256": "sha256:73c5fb7a65a4c0b09f5b0757632b2ce3579ea586b4285b3fcc52f19fddb71662"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "git diff --exit-code 7e809003ee7b9a10598501074b021f72f9893e70 f5080577119639d5f6a51b8cb115846d4b082bdb",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:run src/__tests__/ci-workflow.test.ts",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx prettier --check .github/workflows/ci.yml src/__tests__/ci-workflow.test.ts",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git merge-tree --write-tree f5080577119639d5f6a51b8cb115846d4b082bdb be8958f41b4e0a2cdf66cec8940eb3b37af69567",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git merge-tree --write-tree be8958f41b4e0a2cdf66cec8940eb3b37af69567 f5080577119639d5f6a51b8cb115846d4b082bdb",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-30T05:35:07Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:2178970c200c793e5cd67e1e89aa4abd6edc6b0469a81cab951f107c22666209"
+}

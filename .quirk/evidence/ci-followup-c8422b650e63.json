@@ -1,0 +1,143 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.ci-followup.c8422b650e63",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "ff7900a0c9f3ccc78b90d75dc194a775e91a02a4",
+    "commit": "c8422b650e63d05fc0b8da098b5a5b562f7e2714",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      "bun.lock",
+      "commitlint.config.ts",
+      "docs/security/2026-10-31-ci-followup.md",
+      "docs/security/ci-followup-2026-10-31/full-audit.json",
+      "docs/security/ci-followup-2026-10-31/hosted-annotations.json",
+      "package.json",
+      "postcss.config.mjs",
+      "prettier.config.mjs",
+      "src/__tests__/ci-workflow.test.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.ci-followup.c8422b650e63",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Scoped development dependency remediation and independent secret scanning pass local validation; hosted execution remains blocked by account billing, browser download failed, and one moderate minimatch audit finding remains as documented.",
+      "evidence_paths": [
+        "docs/security/2026-10-31-ci-followup.md",
+        "docs/security/ci-followup-2026-10-31/full-audit.json",
+        "docs/security/ci-followup-2026-10-31/hosted-annotations.json"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "a07ef9cae919ef4badb575b94cd6fa037422319a",
+      "sha256": "sha256:77d84ba27618d79dafd9883a5c3cba3f01ee868bf7899f2557630b880d6e8999"
+    },
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "4031cdc08d377d5c64517c5d368f9e0d07e37152",
+      "sha256": "sha256:af059fc7275d203885d090770fd34aa575b058ef47ae805f5b99729dcc9bd211"
+    },
+    {
+      "path": "commitlint.config.ts",
+      "state": "present",
+      "git_blob": "8dcfb2ea171cc648d96c3455b2271def4206c5a0",
+      "sha256": "sha256:7fe74e705d0a0def48c5e134465c58fdd5c16982f2fa048ace1a010991de96aa"
+    },
+    {
+      "path": "docs/security/2026-10-31-ci-followup.md",
+      "state": "present",
+      "git_blob": "8145e8daff86d4eec18c0b657fa9bd72128c6a5f",
+      "sha256": "sha256:42b67de338e9c96e773d2123e294cad6a46781f3d9a86185dcb27db26601c057"
+    },
+    {
+      "path": "docs/security/ci-followup-2026-10-31/full-audit.json",
+      "state": "present",
+      "git_blob": "79ab43dd536008dbd5466cebc224a96dd8e77504",
+      "sha256": "sha256:91853bc807e9863ec0d847871e2c5d3e38f55e083b5d1fd585466a9e0cbaed94"
+    },
+    {
+      "path": "docs/security/ci-followup-2026-10-31/hosted-annotations.json",
+      "state": "present",
+      "git_blob": "e0714c03344d00d1f9d8d310eacee5bfd00e33ad",
+      "sha256": "sha256:4bc21e3527228d604cf96d599f1c8001aff1768765e04ab7b192993656cc8acf"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "9bdbb11d1babebf4aa8e70aff9753a5a6a125c0b",
+      "sha256": "sha256:20ed4d6ee060b90ad81137505c1e2b01cb16d35a696bb67bb307f3c620230558"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "state": "present",
+      "git_blob": "61e36849cf7cfa9f1f71b4a3964a4953e3e243d3",
+      "sha256": "sha256:dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde"
+    },
+    {
+      "path": "prettier.config.mjs",
+      "state": "present",
+      "git_blob": "bcc73bce62f2ecf41e721db0a8d29dcc72bc034e",
+      "sha256": "sha256:5f3cf27c9c61ad587d9601037d9ba8ddca8351741253c8d66f0ed1ffcf4ec8e9"
+    },
+    {
+      "path": "src/__tests__/ci-workflow.test.ts",
+      "state": "present",
+      "git_blob": "8c5ec6ea879780eeb43684f03a7169cb047b8d97",
+      "sha256": "sha256:7c3c38b416d0fc68f1200ff891048c6367a5ac119d35f90712bbbcd50b8ea424"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:run src/__tests__/ci-workflow.test.ts",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx email export --dir src/emails --outDir ../evidence/email-export",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx playwright test --list",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-31T07:30:00Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:1c606e0301032c2a49090e10e14c571f7d1ba57bebe96605a9f9107d98220489"
+}
