@@ -1,0 +1,219 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.ci-security-integration.f2a4ab798009",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "1e04dfc91941905fff7312403bf0817eb2768c0f",
+    "commit": "f2a4ab798009a2d86809ddc7ca911c98132015ca",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/deps-audit.yml",
+      ".quirk/evidence/ci-pins-3c7105c584e3.json",
+      ".quirk/evidence/production-security-22496c81c8b9.json",
+      ".quirk/evidence/testing-runtime-pr149-44aad0b8a364.json",
+      ".quirk/evidence/trufflehog-reconciliation-f50805771196.json",
+      "CLAUDE.md",
+      "README.md",
+      "bun.lock",
+      "docs/security/2026-10-31-production-dependencies.md",
+      "docs/security/production-dependencies-2026-10-31/candidate-full.json",
+      "docs/security/production-dependencies-2026-10-31/main-full.json",
+      "docs/security/production-dependencies-2026-10-31/main-production.json",
+      "docs/security/production-dependencies-2026-10-31/results.json",
+      "package.json",
+      "src/__tests__/ci-workflow.test.ts",
+      "src/app/api/assets/[id]/annotations/route.ts",
+      "src/app/api/assets/capture/route.ts",
+      "src/lib/email/render.test.tsx",
+      "src/lib/env.test.ts",
+      "src/lib/quirk/http.test.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.ci-security-integration.f2a4ab798009",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Integrates dependency repair PR153 into PR137 without changing its verified TruffleHog action pin 31ce31ee1abbcc7dc8eee5764c17121c3044c8b2 or scanner3.99.7. Parents preserve original PR137 head0440f2cb837d3e05efff832f6a0e0ea37e3560f1 and security head234a00cf994288d7836f5df4af1954b56bb292e0, including all receipt ancestry. Resolves the actual workflow conflict by preserving least privilege, immutable pins, bounded jobs, browser cache OS installs, audit and secret scanning while carrying Node22.22.2/24.15.0/24.19.0, Bun1.4.3 and coverage from PR149. Next cache keys include the runtime lane. Twelve workflow tests pass. Four deliberate regressions (Node20 lane, cross-Node compilation cache, missing coverage, stale scanner) all fail the suite; restored source passes. Combined full validate passes274 tests/29files, lint with3 pre-existing warnings, types/contracts and production build under Node24.19.0/Bun1.4.3. That run preceded only report/receipt additions. Local merge abd72776bf8751d52267dba3ee560c276f16590b and this published subject have identical trees. Fresh published-subject frozen install, production audit (164packages,no findings) and12 workflow tests pass. Dependency graph equals PR153; full audit still has3 moderate dev-tool findings. No local browser or Docker secret-scan pass is claimed. Fresh PR153 hosted validate/security/evidence jobs fail in2seconds with no steps and no assigned runner; underlying cause remains unverified. Merge is held for final-head hosted checks and applicable review; no security gate bypass or authority grant is contained in this evidence. The integration receipt covers the full main-to-merge diff so imported security paths remain bound after the merge; this does not broaden the recorded test results.",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/deps-audit.yml",
+        "CLAUDE.md",
+        "README.md",
+        "bun.lock",
+        "docs/security/2026-10-31-production-dependencies.md",
+        "docs/security/production-dependencies-2026-10-31/candidate-full.json",
+        "docs/security/production-dependencies-2026-10-31/main-full.json",
+        "docs/security/production-dependencies-2026-10-31/main-production.json",
+        "docs/security/production-dependencies-2026-10-31/results.json",
+        "package.json",
+        "src/__tests__/ci-workflow.test.ts",
+        "src/app/api/assets/[id]/annotations/route.ts",
+        "src/app/api/assets/capture/route.ts",
+        "src/lib/email/render.test.tsx",
+        "src/lib/env.test.ts",
+        "src/lib/quirk/http.test.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "0048da81a64359810f85232666ca46627d0a3f72",
+      "sha256": "sha256:8b4b2bf463c79bd93e4d0ce96fc5d4eb4e127439a8da10eea00327cf35ba9396"
+    },
+    {
+      "path": ".github/workflows/deps-audit.yml",
+      "state": "present",
+      "git_blob": "50dcdce06be708edb3cd07d1eb2b501fa066b277",
+      "sha256": "sha256:889deae0af6b3295b5c275186646a51d56b4f71b15827cdeedd0888171961da7"
+    },
+    {
+      "path": ".quirk/evidence/ci-pins-3c7105c584e3.json",
+      "state": "present",
+      "git_blob": "662fbe9f561c6410fae2c6286a148647c3f071b0",
+      "sha256": "sha256:9a8f5e6380f68f66a97f059727f016da0129e82eb7f3424e49f6e20285e01763"
+    },
+    {
+      "path": ".quirk/evidence/production-security-22496c81c8b9.json",
+      "state": "present",
+      "git_blob": "7642513e630e2110137bc0621630bef2937069c4",
+      "sha256": "sha256:3faba1a3b3949ceb0c7397b788287421bba51f12a91afcbe26f7c63e7470dfde"
+    },
+    {
+      "path": ".quirk/evidence/testing-runtime-pr149-44aad0b8a364.json",
+      "state": "present",
+      "git_blob": "1ba609c70df71bc6290d924d87ec259847473bc0",
+      "sha256": "sha256:482ece95dc37d3f41beb6bd749dbd615adb304c89f0789cf9c9dbeb7bc73d793"
+    },
+    {
+      "path": ".quirk/evidence/trufflehog-reconciliation-f50805771196.json",
+      "state": "present",
+      "git_blob": "25243bcea5203b2373fe17b600b3395ca4495588",
+      "sha256": "sha256:50dd75e6bce9993a8c7d0e11d0739a21267693173a71d2f93997abc6b9bf4cdf"
+    },
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "ad77bba227218ab49a50aa3b1bee54da16588175",
+      "sha256": "sha256:263b1fe533d1a39f834d9c8ecf85a84595839696daa0906fc805bccb5626e660"
+    },
+    {
+      "path": "README.md",
+      "state": "present",
+      "git_blob": "8821ddc1042e1f1f0608d7232ab3072572103c96",
+      "sha256": "sha256:04ec56cec0097c4684fed559eeacfe91cea31a0d23c84fdef0593727be440ac5"
+    },
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "17c143c8fc0fecb3133b675b9b715ec0e5380c1f",
+      "sha256": "sha256:27b24870f283494791846d341c2be8dc735b528f465a384bc86a6224157be415"
+    },
+    {
+      "path": "docs/security/2026-10-31-production-dependencies.md",
+      "state": "present",
+      "git_blob": "9a6aff48d598725483b73a9882537013bc014cd5",
+      "sha256": "sha256:4078dfbb97b2d64b88a84768059c8e8d2592b27b7e06a63b7177354f02a635df"
+    },
+    {
+      "path": "docs/security/production-dependencies-2026-10-31/candidate-full.json",
+      "state": "present",
+      "git_blob": "beabfe5f34a2b27458e8bf7882c94139f24d0123",
+      "sha256": "sha256:dc73df4504664289da6eb5f3576495804fd9ad7e40c5257b03b08a7357ca9ac7"
+    },
+    {
+      "path": "docs/security/production-dependencies-2026-10-31/main-full.json",
+      "state": "present",
+      "git_blob": "dce966b19293a81005cdff91ff8988334601673f",
+      "sha256": "sha256:9cef051d85f3294a447bb7936c7a9268be7703f3d40f143eaf6b090fde8a166f"
+    },
+    {
+      "path": "docs/security/production-dependencies-2026-10-31/main-production.json",
+      "state": "present",
+      "git_blob": "0f3f8a89e820025f0e4e3bcf7f4b780566b3bef9",
+      "sha256": "sha256:7e809f5987b0a98c9e2c759462877e86c6eb373bd079df42781fdc2efc304611"
+    },
+    {
+      "path": "docs/security/production-dependencies-2026-10-31/results.json",
+      "state": "present",
+      "git_blob": "395e3d9a69360347c6b44fb3148993a20d4ea2fb",
+      "sha256": "sha256:19d8f5c5ffe1be49b1eab96729e03a1d41f02d15c440cbd77efb043e452fc59a"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "9a92231eb7c9ae6cbc19c40b48e5af416495b9a3",
+      "sha256": "sha256:29e3816f547ee7503aabff2c6fc10db280e4c5543a74e3276b9955f273b6c2a9"
+    },
+    {
+      "path": "src/__tests__/ci-workflow.test.ts",
+      "state": "present",
+      "git_blob": "69dcae32906fedb1b9f91912f7e4489e9a1fe48d",
+      "sha256": "sha256:8b5a66ff4baa0c64a0872ee4f718da45afa5b7f5c4d10ec9eaec0cb49fc09ca3"
+    },
+    {
+      "path": "src/app/api/assets/[id]/annotations/route.ts",
+      "state": "present",
+      "git_blob": "f4575c00d98664bd8888af567602695ce4e3ced8",
+      "sha256": "sha256:799b25ae987e9e2216e307d3c4a6434e4e354841ef449c6831bd3ccaeb7a4ad5"
+    },
+    {
+      "path": "src/app/api/assets/capture/route.ts",
+      "state": "present",
+      "git_blob": "56ad911752dda653307a94884b6313c98d76137f",
+      "sha256": "sha256:848d289a5c735c6cb309a5b882d14fed9703198178e2204fd10347a4e962d6f0"
+    },
+    {
+      "path": "src/lib/email/render.test.tsx",
+      "state": "present",
+      "git_blob": "fdd596b2d13de9123965909cde191f8c28dd2029",
+      "sha256": "sha256:55ad971bc035bcfb337972709d31b5eae3302b275b61aae19743ed7339bb5d12"
+    },
+    {
+      "path": "src/lib/env.test.ts",
+      "state": "present",
+      "git_blob": "e197b4ade8a26d92d82bb5f243b661d43f52f627",
+      "sha256": "sha256:4eb4bc16607a4abf6349e32a1a385395f6001ae022da516a7077a677324fe18d"
+    },
+    {
+      "path": "src/lib/quirk/http.test.ts",
+      "state": "present",
+      "git_blob": "8972c82dffdc22dbba682b4b0efb07735bb29a2c",
+      "sha256": "sha256:3974e8b578d943ea04f20abb42a8f941f078bb8b93d10606040f5ae009623201"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "git diff --exit-code abd72776bf8751d52267dba3ee560c276f16590b f2a4ab798009a2d86809ddc7ca911c98132015ca",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun install --frozen-lockfile",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:run src/__tests__/ci-workflow.test.ts",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-31T07:17:52Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:971a30d39e4824829f9b466d2651960580708bba4c831fbb79efb1d5324be319"
+}
