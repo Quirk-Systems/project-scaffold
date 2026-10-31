@@ -266,7 +266,7 @@ describe("CI workflow contract", () => {
       security.steps.indexOf(audit),
     );
     expect(audit.if).toBeUndefined();
-    expect(scan.if).toBeUndefined();
+    expect(scan.if).toBe("${{ !cancelled() }}");
     expect(scan.uses).toBe(
       "trufflesecurity/trufflehog@31ce31ee1abbcc7dc8eee5764c17121c3044c8b2",
     );
