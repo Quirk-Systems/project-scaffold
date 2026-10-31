@@ -1,0 +1,106 @@
+{
+  "deepmerge": [
+    {
+      "id": 1243505,
+      "url": "https://github.com/advisories/GHSA-gcqx-w48m-w2h4",
+      "title": "deepmerge mergeObject() allows prototype poisoning of returned objects",
+      "severity": "low",
+      "vulnerable_versions": ">=4.2.0 <=4.3.1",
+      "cwe": ["CWE-1321"],
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      }
+    }
+  ],
+  "dompurify": [
+    {
+      "id": 1242880,
+      "url": "https://github.com/advisories/GHSA-cg2g-xh64-v4q7",
+      "title": "DOMPurify SAFE_FOR_TEMPLATES bypass: split template expressions survive in attached shadow root content on DOM output modes",
+      "severity": "critical",
+      "vulnerable_versions": ">=3.4.4 <=3.4.16",
+      "cwe": ["CWE-79"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    },
+    {
+      "id": 1242881,
+      "url": "https://github.com/advisories/GHSA-mrv2-3pqr-j5jr",
+      "title": "DOMPurify IN_PLACE: hook that removes a parent or sibling leaves the detached subtree's event handlers armed (incomplete fix for GHSA-p98j-92pf-mc4p)",
+      "severity": "high",
+      "vulnerable_versions": "<=3.4.16",
+      "cwe": ["CWE-79", "CWE-693"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    },
+    {
+      "id": 1242882,
+      "url": "https://github.com/advisories/GHSA-c6gr-qvv4-5v3f",
+      "title": "DOMPurify: SMIL attributeName=href guard is skipped when PARSER_MEDIA_TYPE is application/xhtml+xml",
+      "severity": "low",
+      "vulnerable_versions": "<=3.4.16",
+      "cwe": ["CWE-79"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    }
+  ],
+  "next": [
+    {
+      "id": 1242818,
+      "url": "https://github.com/advisories/GHSA-p3m5-59mp-jv5r",
+      "title": "Next.js: Denial of Service in App Router using Server Actions",
+      "severity": "high",
+      "vulnerable_versions": ">=16.0.0 <=16.4.0",
+      "cwe": ["CWE-770"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    },
+    {
+      "id": 1242816,
+      "url": "https://github.com/advisories/GHSA-2464-fhr4-w9xw",
+      "title": "Next.js: Unauthenticated Remote Code Execution in Image Optimization API when SVG files are used",
+      "severity": "critical",
+      "vulnerable_versions": ">=16.0.0 <=16.4.0",
+      "cwe": ["CWE-1395"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    },
+    {
+      "id": 1242859,
+      "url": "https://github.com/advisories/GHSA-673q-mjm6-r5xr",
+      "title": "Next.js: Unauthenticated Remote Code Execution in `use cache` functions returning typed arrays",
+      "severity": "critical",
+      "vulnerable_versions": ">=16.0.0 <=16.4.0",
+      "cwe": ["CWE-502"],
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      }
+    }
+  ],
+  "zod": [
+    {
+      "id": 1243066,
+      "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+      "title": "Zod can exhaust memory while validating oversized constrained collections",
+      "severity": "high",
+      "vulnerable_versions": "<4.6.6",
+      "cwe": ["CWE-770"],
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    }
+  ]
+}

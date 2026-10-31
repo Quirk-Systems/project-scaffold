@@ -17,6 +17,7 @@ type Job = {
   "timeout-minutes": number;
   permissions: Record<string, string>;
   needs?: string;
+  strategy?: { "fail-fast": boolean; matrix: { node: string[] } };
   services?: Record<string, unknown>;
   steps: Step[];
 };
@@ -47,8 +48,10 @@ const cache = (job: Job, path: string) =>
   );
 const toolchain =
   "${{ runner.os }}-${{ runner.arch }}-bun-${{ steps.bun.outputs.bun-version }}-";
-const nextToolchain =
-  "${{ runner.os }}-${{ runner.arch }}-next-node20-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}-";
+const nextToolchain = (node: string) =>
+  "${{ runner.os }}-${{ runner.arch }}-next-node" +
+  node +
+  "-bun-${{ steps.bun.outputs.bun-version }}-${{ hashFiles('bun.lock') }}-";
 
 describe("CI workflow contract", () => {
   it("pins every remote action to a full commit with a release comment", () => {
@@ -100,7 +103,7 @@ describe("CI workflow contract", () => {
       );
       const bun = action(job, "oven-sh/setup-bun");
       expect(bun.id).toBe("bun");
-      expect(bun.with).toEqual({ "bun-version": "latest" });
+      expect(bun.with).toEqual({ "bun-version": "1.4.3" });
       const install = find(
         job,
         (step) => step.run?.startsWith("bun install") === true,
@@ -123,7 +126,7 @@ describe("CI workflow contract", () => {
     (id) => {
       const job = workflow.jobs[id];
       expect(action(job, "actions/setup-node").with).toEqual({
-        "node-version": 20,
+        "node-version": id === "validate" ? "${{ matrix.node }}" : "24.19.0",
       });
       const downloads = cache(job, "~/.bun/install/cache");
       expect(downloads.with?.key).toBe(
@@ -132,10 +135,13 @@ describe("CI workflow contract", () => {
       expect(downloads.with?.["restore-keys"]).toBe(toolchain + "\n");
       const next = cache(job, ".next/cache");
       expect(next.with?.key).toBe(
-        nextToolchain +
+        nextToolchain(id === "validate" ? "${{ matrix.node }}" : "24.19.0") +
           "${{ hashFiles('src/**', 'public/**', 'next.config.*', 'tsconfig.json', 'postcss.config.*', 'components.json', 'package.json') }}",
       );
-      expect(next.with?.["restore-keys"]).toBe(nextToolchain + "\n");
+      expect(next.with?.["restore-keys"]).toBe(
+        nextToolchain(id === "validate" ? "${{ matrix.node }}" : "24.19.0") +
+          "\n",
+      );
       expect(
         job.steps
           .filter((step) => step.uses?.startsWith("actions/cache@") === true)
@@ -153,6 +159,16 @@ describe("CI workflow contract", () => {
     },
   );
 
+  it("preserves the runtime matrix and security runtime", () => {
+    expect(validate.strategy).toEqual({
+      "fail-fast": false,
+      matrix: { node: ["22.22.2", "24.15.0", "24.19.0"] },
+    });
+    expect(action(security, "actions/setup-node").with).toEqual({
+      "node-version": "24.19.0",
+    });
+  });
+
   it("preserves the validation gates without cached build output", () => {
     const gates = validate.steps.filter((step) =>
       step.run?.startsWith("bun run"),
@@ -161,10 +177,11 @@ describe("CI workflow contract", () => {
       "bun run lint",
       "bun run type-check",
       "bun run test:run",
+      "bun run test:coverage",
       "bun run build",
     ]);
     for (const step of gates) expect(step.if).toBeUndefined();
-    expect(gates[3].env).toEqual({ SKIP_ENV_VALIDATION: "1" });
+    expect(gates[4].env).toEqual({ SKIP_ENV_VALIDATION: "1" });
   });
 
   it("caches the installed Playwright version only and installs OS libraries on hits", () => {

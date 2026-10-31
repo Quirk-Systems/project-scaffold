@@ -12,7 +12,7 @@ const captureSchema = z
     sourceUrl: z.string().url().optional(),
     storagePath: z.string().optional(),
     rawText: z.string().optional(),
-    metadata: z.record(z.unknown()).optional(),
+    metadata: z.record(z.string(), z.unknown()).optional(),
   })
   .refine((v) => v.rawText || v.sourceUrl || v.storagePath, {
     message: "Provide at least one of rawText, sourceUrl, or storagePath",
