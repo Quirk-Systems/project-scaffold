@@ -1,0 +1,138 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.testing-runtime-pr149.44aad0b8a364",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "1e04dfc91941905fff7312403bf0817eb2768c0f",
+    "commit": "44aad0b8a364b214c055b3f9597b51b1455b2743",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/deps-audit.yml",
+      "CLAUDE.md",
+      "README.md",
+      "bun.lock",
+      "package.json"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.testing-runtime-pr149.44aad0b8a364",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "PR 149 runtime repair reuses PR 144: engines ^22.22.2 || ^24.15.0, CI validation matrix 22.22.2/24.15.0/24.19.0, Bun 1.4.3, coverage in CI, Node 24.19.0 for E2E/security, and consistent README/CLAUDE guidance. The scheduled audit also pins this toolchain. Dependency versions and bun.lock are unchanged from proposed head 06961dd3dc65dda8e2b980bf08ff1b23a887dc2e. Local frozen install is unchanged; Vitest discovery completes and Playwright discovery lists 21 cases; validate and coverage pass on all three Node versions, each with 252 tests in 25 files. Lint has zero errors and three existing warnings. Coverage retains explicit source inclusion: 127 entries including untested src/lib/quirk/media.ts; statements 55.49%, branches 57.91%, functions 52.61%, lines 56.89%. Each build starts from clean source, succeeds, then generates Next tsconfig edits; those edits were inspected and restored. jest-dom 7.0.1 was already in PR 144; its Node >=22 and DOM >=10 <11 requirements are satisfied and the existing /vitest setup type-checks and executes. Production audit exits 0 with empty findings. Tinypool is absent from both lockfile and installed graph. LIMITS: full audit exits 1 for existing braces/esbuild/Vite findings (same findings on main), while the two main @vitest/mocker findings are absent from this proposal. This is not complete security clearance. Matching Chromium download fails with an invalid archive and the executable is missing. The one-case E2E smoke exits 1 before assertions because Next start reports uv_interface_addresses and webServer times out at 120000ms; all 21 browser cases remain unproved. Original-head hosted CI/Evidence Binding/semantic runs fail; validate job returns zero steps and BlobNotFound logs, so no dependency cause is established. Hosted execution of the repaired head and independent human review remain required before merge. The old PR 144 receipt is historical evidence only and has not been reused as coverage of this revision. No deployment, merge authorization, or human approval is granted. EXECUTION PROVENANCE: the three-version matrix, coverage, discovery and audits executed at local commit fa980f081600eeb9384016e21522b6a052c3646a. Its source tree dd2a87b00082555362a041ebbeb9c146b15efc4d exactly equals this published subject tree; git diff between the two subjects is empty. The authenticated GitHub commit transfer changed commit metadata only. A fresh frozen installation plus full validate (252 tests, lint, types, build) was then repeated successfully on this exact subject 44aad0b8a364b214c055b3f9597b51b1455b2743 under Node 24.19.0/Bun 1.4.3. This receipt reuses identical-source minimum-version evidence without representing those executions as newly run on this commit.",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/deps-audit.yml",
+        "CLAUDE.md",
+        "README.md",
+        "bun.lock",
+        "package.json"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "3c856b38c1d7292e752ce8371b4f0d172ec9834e",
+      "sha256": "sha256:290b917ea2b639f4af40690628fbcee9cb30785ada59b1d7e0e40d59fce2d6bf"
+    },
+    {
+      "path": ".github/workflows/deps-audit.yml",
+      "state": "present",
+      "git_blob": "50dcdce06be708edb3cd07d1eb2b501fa066b277",
+      "sha256": "sha256:889deae0af6b3295b5c275186646a51d56b4f71b15827cdeedd0888171961da7"
+    },
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "ad77bba227218ab49a50aa3b1bee54da16588175",
+      "sha256": "sha256:263b1fe533d1a39f834d9c8ecf85a84595839696daa0906fc805bccb5626e660"
+    },
+    {
+      "path": "README.md",
+      "state": "present",
+      "git_blob": "8821ddc1042e1f1f0608d7232ab3072572103c96",
+      "sha256": "sha256:04ec56cec0097c4684fed559eeacfe91cea31a0d23c84fdef0593727be440ac5"
+    },
+    {
+      "path": "bun.lock",
+      "state": "present",
+      "git_blob": "8434384b0364fb83ef9953224cc6c2d1cfb72315",
+      "sha256": "sha256:625fd1d4dd29213cb5e2aa86bdbcbc6b0bec337dbb30d17716bfaa147522404d"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "14d3bcc88dd37e59c967392538a2535f122d362f",
+      "sha256": "sha256:ed92aec6ad6572044d9cc58a2e330af13b7f7bbf54adb16cda2a50fb00b01065"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "bun install --frozen-lockfile && git diff --exit-code -- bun.lock (Node v24.19.0; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bunx vitest list && bunx playwright test --list (Node v24.19.0; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate (Node v22.22.2; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage (Node v22.22.2; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate (Node v24.15.0; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage (Node v24.15.0; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run validate (Node v24.19.0; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun run test:coverage (Node v24.19.0; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun audit --prod --json (Node v24.19.0; Bun 1.4.3) [executed at fa980f081600eeb9384016e21522b6a052c3646a; identical source tree]",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --exit-code fa980f081600eeb9384016e21522b6a052c3646a 44aad0b8a364b214c055b3f9597b51b1455b2743",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "bun install --frozen-lockfile && bun run validate (Node v24.19.0; Bun 1.4.3) [executed at 44aad0b8a364b214c055b3f9597b51b1455b2743]",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-10-21T21:31:48.830510Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:9a60c1b20aab0bfdbca6e13de9afb09420fbbaa01c69a6ca98861f0a7cbf8a30"
+}
