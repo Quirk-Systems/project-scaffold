@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="A 20-second Quirk taste test. Compare two directions, keep what hits, verify the exact decision." />
+  <title>HALO — Taste Collision · Quirk</title>
+  <style>
+    :root { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #f6f6ef; background: #080a11; color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: radial-gradient(ellipse at 80% 0%, rgba(123,99,207,.17) 0, transparent 40%), radial-gradient(ellipse at 0% 60%, rgba(180,244,110,.07) 0, transparent 48%), #080a11; min-height: 100vh; }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid #d3ff8e; outline-offset: 4px; }
+    .wrap { max-width: 1080px; margin: auto; padding: 0 clamp(20px, 4vw, 48px) 80px; }
+    header { border-bottom: 1px solid #292d36; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 25px 0; }
+    .brand { font-size: 15px; font-weight: 900; letter-spacing: .18em; }
+    .brand span { color: #d1ff91; }
+    .micro { text-transform: uppercase; letter-spacing: .16em; font: 700 10px/1.4 ui-monospace,monospace; color: #9a9ead; }
+    .hero { padding: clamp(58px, 7.5vw, 90px) 0 45px; max-width: 900px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; border: 1px solid #383c45; padding: 9px 13px; border-radius: 99px; color: #d1ff91; font-size: 11px; font-weight: 750; letter-spacing: .12em; }
+    .pulse { display: inline-block; height: 7px; width: 7px; background: #d1ff91; border-radius: 50%; box-shadow: 0 0 0 4px rgba(209,255,145,.1); }
+    h1 { font-size: clamp(46px, 7.3vw, 91px); line-height: .98; letter-spacing: -.075em; font-weight: 800; margin: 27px 0 22px; max-width: 850px; }
+    h1 em { color: #d1ff91; font-style: normal; }
+    .dek { font-size: clamp(16px, 2vw, 20px); line-height: 1.58; color: #afb4c0; max-width: 630px; margin: 0; }
+    .stats { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+    .stat { border: 1px solid #333843; background: #131720; padding: 9px 12px; border-radius: 7px; color: #cdd2dc; font: 600 12px ui-monospace,monospace; }
+    .stat strong { color: #d1ff91; }
+    .prompt { background: #141824; border: 1px solid #363b49; border-left: 3px solid #d1ff91; border-radius: 10px; padding: 24px 28px; margin-top: 16px; }
+    .prompt p { margin: 10px 0 0; font-size: 19px; line-height: 1.45; max-width: 690px; font-weight: 550; }
+    .prompt .old { color: #8b92a3; font-size: 14px; margin-top: 16px; font-weight: 400; }
+    .section-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; margin: 49px 0 17px; gap: 12px; }
+    h2 { margin: 0; font-size: clamp(22px, 3vw, 30px); letter-spacing: -.035em; }
+    .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .choice { color: inherit; position: relative; text-align: left; display: flex; flex-direction: column; background: #171b26; border: 1px solid #3b414f; border-radius: 14px; padding: 26px; min-height: 268px; transition: border-color .16s, background .16s, transform .16s; }
+    .choice:hover { border-color: #9bba80; transform: translateY(-2px); }
+    .choice[aria-pressed="true"] { border: 2px solid #d1ff91; background: #1b2b26; padding: 25px; box-shadow: 0 0 0 4px rgba(209,255,145,.09); }
+    .choice-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
+    .choice-label { font: 700 11px ui-monospace,monospace; letter-spacing: .15em; color: #aab1c1; }
+    .bubble { width: 23px; height: 23px; border-radius: 50%; border: 2px solid #76808e; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+    [aria-pressed="true"] .bubble { background: #d1ff91; color: #121b14; border-color: #d1ff91; }
+    .choice-phrase { display: block; font-size: clamp(23px, 3vw, 33px); font-weight: 700; line-height: 1.2; letter-spacing: -.035em; margin-top: 39px; max-width: 380px; }
+    .choice-sub { color: #9ca4b1; font-size: 12px; line-height: 1.5; margin-top: auto; padding-top: 28px; }
+    .other { margin-top: 14px; width: 100%; border: 1px dashed #575d6a; border-radius: 10px; background: transparent; padding: 17px 21px; color: #c1c8d2; text-align: left; display: flex; gap: 14px; align-items: center; }
+    .other:hover, .other[aria-pressed="true"] { border-color: #d1ff91; background: #1b2b26; color: #f2fae8; }
+    .other strong { color: #fafef4; }
+    .human-take { border-top: 1px solid #292e38; margin-top: 51px; padding-top: 33px; }
+    .desc { margin: 9px 0 18px; color: #a0a8b6; line-height: 1.5; }
+    .tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tag { background: #161b25; color: #d0d4df; border: 1px solid #4b5261; border-radius: 100px; padding: 11px 17px; font-size: 13px; }
+    .tag:hover { border-color: #c9eda1; }
+    .tag[aria-pressed="true"] { background: #d1ff91; color: #17200f; border-color: #d1ff91; font-weight: 800; }
+    label[for="feedback"] { display: block; margin: 23px 0 9px; color: #cbd1db; font-size: 13px; font-weight: 700; }
+    textarea { display: block; border: 1px solid #414857; color: #fafbf7; background: #151923; border-radius: 10px; width: 100%; resize: vertical; min-height: 78px; padding: 14px 16px; font-size: 15px; line-height: 1.5; }
+    textarea::placeholder { color: #8a93a3; }
+    .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 17px; margin-top: 24px; }
+    .primary { border: 0; background: #d1ff91; color: #17200f; font-weight: 900; font-size: 14px; border-radius: 9px; padding: 17px 24px; min-width: 205px; transition: filter .15s; }
+    .primary:hover:not(:disabled) { filter: brightness(1.1); }
+    .primary:disabled { cursor: not-allowed; color: #747a82; background: #383d47; }
+    .secondary { border: 1px solid #596171; padding: 15px 20px; border-radius: 9px; color: #cbd2dc; background: transparent; }
+    .secondary:hover { background: #202631; }
+    .fineprint { font: 12px/1.55 ui-monospace,monospace; color: #98a1b1; max-width: 440px; }
+    .result { background: #17211d; border: 1px solid #a4d577; border-radius: 13px; margin-top: 26px; padding: 24px; }
+    .result[hidden] { display: none; }
+    .result-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .verified { color: #d1ff91; font-size: 20px; margin: 9px 0; font-weight: 800; }
+    .digest { word-break: break-all; color: #c1d4bf; font: 12px/1.7 ui-monospace,monospace; }
+    pre { border: 1px solid #414e47; border-radius: 8px; background: #0d1513; color: #dce6d8; overflow: auto; padding: 16px; font: 12px/1.6 ui-monospace,monospace; max-height: 280px; }
+    .footer { margin-top: 50px; padding-top: 25px; border-top: 1px solid #282d38; color: #929aa8; font-size: 12px; line-height: 1.7; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media(max-width: 680px) { .compare { grid-template-columns: 1fr; } .choice { min-height: 200px; } .choice-phrase { margin-top: 24px; } .hero { padding-top: 54px; } .wrap { padding-bottom: 32px; } }
+    @media(prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+  <script type="module" src="./halo.mjs"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">QUIRK<span> / </span>HALO</div>
+      <div class="micro">Taste Collision &middot; Candidate 001</div>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="title">
+        <div class="eyebrow"><span class="pulse" aria-hidden="true"></span> 20-SECOND HUMAN TAKE</div>
+        <h1 id="title">Your reaction.<br><em>Your next move.</em></h1>
+        <p class="dek">Two directions. No interrogation. Pick what hits, say why if you want, and get proof of exactly what you chose. Nothing changes without you.</p>
+        <div class="stats"><span class="stat"><strong>02</strong> curated alternatives</span><span class="stat"><strong>01</strong> deliberate decision</span><span class="stat"><strong>00</strong> automatic effects</span></div>
+      </section>
+      <section class="prompt" aria-labelledby="brief-title">
+        <div class="micro" id="brief-title">THE ORIGINAL BRIEF / LOCKED FOR THIS TRIAL</div>
+        <p id="prompt-text">Make the next interaction feel personal without assuming permission.</p>
+        <div class="old">Before: <q id="original-text">Your feedback helps improve our experiences.</q></div>
+      </section>
+      <section aria-labelledby="compare-title">
+        <div class="section-top"><h2 id="compare-title">Which one makes you lean in?</h2><div class="micro">Select A, B, or Neither</div></div>
+        <div class="compare" role="group" aria-label="Choose one creative direction">
+          <button type="button" class="choice" data-choice="A" aria-pressed="false">
+            <span class="choice-top"><span class="choice-label">DIRECTION A</span><span class="bubble" aria-hidden="true">✓</span></span>
+            <span class="choice-phrase" id="text-a">Tell us what hit. See what changes.</span>
+            <span class="choice-sub">Choose this direction. You can switch before approving.</span>
+          </button>
+          <button type="button" class="choice" data-choice="B" aria-pressed="false">
+            <span class="choice-top"><span class="choice-label">DIRECTION B</span><span class="bubble" aria-hidden="true">✓</span></span>
+            <span class="choice-phrase" id="text-b">That moment you liked? Pull the thread. Choose what happens next.</span>
+            <span class="choice-sub">Choose this direction. You can switch before approving.</span>
+          </button>
+        </div>
+        <button type="button" class="other" data-choice="OTHER" aria-pressed="false"><span aria-hidden="true">↗</span><span><strong>Neither earns it.</strong> Keep the disagreement. Don’t manufacture a winner.</span></button>
+      </section>
+      <section class="human-take" aria-labelledby="take-title">
+        <h2 id="take-title">What did it stir up?</h2>
+        <p class="desc">Optional Human Take. Your words attach to this exact comparison; they do not grant learning or application permission.</p>
+        <div class="tags" role="group" aria-label="Optional reaction tag">
+          <button type="button" class="tag" data-take="more_bite" aria-pressed="false">Make it nastier</button>
+          <button type="button" class="tag" data-take="keep_rhythm" aria-pressed="false">Keep the rhythm</button>
+          <button type="button" class="tag" data-take="surprise_me" aria-pressed="false">Surprise me</button>
+          <button type="button" class="tag" data-take="no_tag" aria-pressed="true">No tag</button>
+        </div>
+        <label for="feedback">One more thing? <span class="micro">Optional &middot; Max 160 characters</span></label>
+        <textarea id="feedback" maxlength="160" placeholder="More of whatever happened right there."></textarea>
+        <div class="action-row">
+          <button class="primary" type="button" id="approve" disabled>Approve direction →</button>
+          <button class="secondary" type="button" id="reset">Reset trial</button>
+          <div class="fineprint" id="selection-status" role="status" aria-live="polite">Choose A, B, or Neither first.</div>
+        </div>
+      </section>
+      <section class="result" id="result" aria-labelledby="result-title" hidden>
+        <div class="result-head"><h2 id="result-title">The proof ledger</h2><button class="secondary" type="button" id="copy">Copy receipt JSON</button></div>
+        <div class="verified" id="verified" role="status" aria-live="polite">Checking receipt…</div>
+        <div class="micro">Content-addressed decision · Not a signature · No effect</div>
+        <p class="digest" id="digest"></p>
+        <pre id="receipt" tabindex="0" aria-label="Full receipt JSON"></pre>
+        <p class="fineprint" id="copy-status" role="status" aria-live="polite">Local, in-memory receipt. Not submitted, stored, published, or applied.</p>
+      </section>
+      <footer class="footer"><strong>Proof without pretend.</strong> This is one curated fixture, not live AI generation or measured conversion. A local SHA-256 digest detects tampering against this demo code; it does not prove identity or authorization. Quirk Human Gate remains external. No third-party requests, storage, or invisible analytics.</footer>
+    </main>
+  </div>
+</body>
+</html>
