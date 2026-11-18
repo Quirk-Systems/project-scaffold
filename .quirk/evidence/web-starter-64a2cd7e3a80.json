@@ -1,0 +1,226 @@
+{
+  "schema_version": "evidence-receipt.v1",
+  "receipt_id": "qreceipt.web-starter.64a2cd7e3a80",
+  "repository": "Quirk-Systems/project-scaffold",
+  "status": "verified",
+  "subject": {
+    "base_commit": "1e04dfc91941905fff7312403bf0817eb2768c0f",
+    "commit": "64a2cd7e3a80a7a3df64c6d990fa3fe0a71f6606",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      "CLAUDE.md",
+      "PROJECT.md",
+      "README.md",
+      "docs/ARCHITECTURE.md",
+      "docs/architecture/project-scaffold-dissection-2026-11-18.md",
+      "docs/recommendations/installs/PROJECT_BOOTSTRAP.md",
+      "package.json",
+      "scripts/create-quirk-starter.mjs",
+      "starters/web/.gitignore",
+      "starters/web/README.md",
+      "starters/web/next.config.ts",
+      "starters/web/package-lock.json",
+      "starters/web/package.json",
+      "starters/web/src/app/globals.css",
+      "starters/web/src/app/layout.tsx",
+      "starters/web/src/app/page.tsx",
+      "starters/web/src/lib/candidate.mjs",
+      "starters/web/tests/candidate.test.mjs",
+      "starters/web/tsconfig.json",
+      "tests/starter/create-starter.test.mjs",
+      "tests/starter/experience.test.tsx",
+      "tsconfig.json",
+      "vitest.config.ts"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "qclaim.web-starter.64a2cd7e3a80",
+      "claim_type": "evidence",
+      "authority_effect": "none",
+      "statement": "Candidate web starter generation and focused tests were locally executed; the generated project built and its production dependency audit reported no advisories at the observation time. This records scoped evidence and grants no admission, deployment, or authority.",
+      "evidence_paths": [
+        "docs/architecture/project-scaffold-dissection-2026-11-18.md",
+        "scripts/create-quirk-starter.mjs",
+        "starters/web/package-lock.json",
+        "starters/web/package.json",
+        "starters/web/src/app/page.tsx",
+        "starters/web/tests/candidate.test.mjs",
+        "tests/starter/create-starter.test.mjs",
+        "tests/starter/experience.test.tsx"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "state": "present",
+      "git_blob": "9f79001bd6cf0f035555ac5d117a50582bfe6c85",
+      "sha256": "sha256:f249d0f5b162bf7f02ddab969fe31b8fb4d14aeeceb7fc6381feeb82f9893674"
+    },
+    {
+      "path": "CLAUDE.md",
+      "state": "present",
+      "git_blob": "7ec9fb3cbc88cf9ff60aa862e6c6b28a6d31270b",
+      "sha256": "sha256:57dcdcf8b05c5bfd20f712c9ef57bc7c6eea642d22555d67b760ffe1eceeaa5e"
+    },
+    {
+      "path": "PROJECT.md",
+      "state": "present",
+      "git_blob": "85ba2ce8e7537da5dbf014d60e28ff565513e9c9",
+      "sha256": "sha256:c65205913bf78ec920429e367ab3a2d4b58cc002dee9407634d1d64bb1f1cdda"
+    },
+    {
+      "path": "README.md",
+      "state": "present",
+      "git_blob": "9c2194db26618200c56adfa5d7f8c2c4ceb04595",
+      "sha256": "sha256:6f6c2a707ff17c0dd3dcc88ca9efbe3e59e3df78de2b3735ed6413d5dfb2c455"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "state": "present",
+      "git_blob": "45f06ba1da40d2c764148ecf530984387014ff1d",
+      "sha256": "sha256:2748d3a5c3320a37793edc125e9d2f098f27759eb03557856941a31b200348b0"
+    },
+    {
+      "path": "docs/architecture/project-scaffold-dissection-2026-11-18.md",
+      "state": "present",
+      "git_blob": "6fcd2523ab1cccd59c3e576ff3db188937aa789d",
+      "sha256": "sha256:ad558391c3269a6d8baa869a7f86acb86ba405b8a0b4a049973224be53ccefe9"
+    },
+    {
+      "path": "docs/recommendations/installs/PROJECT_BOOTSTRAP.md",
+      "state": "present",
+      "git_blob": "6f3bb5ee96079c40d7019c3f28faa9c47cfa2a03",
+      "sha256": "sha256:6c26d584b55bc444850ed765f59d1556a11df59c5cd6c8093caebe0dbc739604"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "git_blob": "79f261b4c270e8b093c87bab57637935d2f33a00",
+      "sha256": "sha256:a47429160fe39129a84bfd65c4af72208031471660fc387f0143301c197c1fd2"
+    },
+    {
+      "path": "scripts/create-quirk-starter.mjs",
+      "state": "present",
+      "git_blob": "c655a6b2d230ecbfd83836fa85ca6814b4cc54e7",
+      "sha256": "sha256:5f6d062e182049103eec8f98c42a72f73dcdb85506522a2af633afaeae1ba4a0"
+    },
+    {
+      "path": "starters/web/.gitignore",
+      "state": "present",
+      "git_blob": "3cff90361284980e11ca36258ac8251cb9db67b9",
+      "sha256": "sha256:fc3e392684c7efa55478f0b8e893aff1102e0821e3ba4313e8d0013bc560387d"
+    },
+    {
+      "path": "starters/web/README.md",
+      "state": "present",
+      "git_blob": "ee97646606bd043f154eed128ad87831afae668a",
+      "sha256": "sha256:879db7f4d798c2759aef5df60af449a6ad7dd91da2ddc09d023f00b82bba6309"
+    },
+    {
+      "path": "starters/web/next.config.ts",
+      "state": "present",
+      "git_blob": "e0d551b0abc4baff5ee011e7ca30fc0c48c046c9",
+      "sha256": "sha256:aa21fd07841c9b9ef8a4c25f10214d03359ece3fc96782473b28f18f2238d675"
+    },
+    {
+      "path": "starters/web/package-lock.json",
+      "state": "present",
+      "git_blob": "b3ee417f82f4c3705fdf49fa6037922513313d0a",
+      "sha256": "sha256:f40aaf7e56d7258a6a55ae0c0c105c4b81d01234f7839b80f5b009d92eeb8957"
+    },
+    {
+      "path": "starters/web/package.json",
+      "state": "present",
+      "git_blob": "44f3cfdc33922deb0cfb77f88a631c40a1130137",
+      "sha256": "sha256:3a84cb226cc0b5d6f94d23f87acfd77cc13dbde6b356ed9a8800022b5f331f7a"
+    },
+    {
+      "path": "starters/web/src/app/globals.css",
+      "state": "present",
+      "git_blob": "de4b3e5b8cc8b57e9b0b3da4329024621b10ff2b",
+      "sha256": "sha256:e6b6fe88b0cee926b9e548ce280d5c4296afdd99a647e5c14211016b2f10f483"
+    },
+    {
+      "path": "starters/web/src/app/layout.tsx",
+      "state": "present",
+      "git_blob": "704bb6d6ca29c597b965def7f8e48f4623206708",
+      "sha256": "sha256:63dcec73a8c9f0d5c20e5e20fe528b1e81fad3558ff8b557d54ae846d3637630"
+    },
+    {
+      "path": "starters/web/src/app/page.tsx",
+      "state": "present",
+      "git_blob": "fb422be89c5acd2eb8948307fe273db4d401d759",
+      "sha256": "sha256:3f04e600708f9386bcd2830d719df4f1720a299b150efcb6996a280948f35e35"
+    },
+    {
+      "path": "starters/web/src/lib/candidate.mjs",
+      "state": "present",
+      "git_blob": "0a5ca2938ed98f1b560f378c28c82e038b72200a",
+      "sha256": "sha256:d9c394afdef1e974694c37b154ac2ecdfa51b9ebcfafae887b41f07be62baf3a"
+    },
+    {
+      "path": "starters/web/tests/candidate.test.mjs",
+      "state": "present",
+      "git_blob": "8e1cd267ebac6e3fc9d9e61ccffb48615d4c1051",
+      "sha256": "sha256:8c960e9f370ae58be6af9aea44910dcda6751089705c54704c718695434b4aec"
+    },
+    {
+      "path": "starters/web/tsconfig.json",
+      "state": "present",
+      "git_blob": "1feabd7c4fbb9729c5f3906f97469ce3b7a4e59e",
+      "sha256": "sha256:956aeb3fe5b2e716d09f6f770417a2dbed200a8566d169987f9c6e2f3f35b6b4"
+    },
+    {
+      "path": "tests/starter/create-starter.test.mjs",
+      "state": "present",
+      "git_blob": "2f3b94703300013a5f8f1272f172f356f783a08e",
+      "sha256": "sha256:9c52c7e2151c8d4a5de1cc18e6bd3c7c92a710cedd179850229b8c0999493531"
+    },
+    {
+      "path": "tests/starter/experience.test.tsx",
+      "state": "present",
+      "git_blob": "8983efe81537abd486722984a52d4317cad9bc77",
+      "sha256": "sha256:7545b2dc36ab35bc56697a902221a3e83c382ddbc9e0d76325cda54c68f41670"
+    },
+    {
+      "path": "tsconfig.json",
+      "state": "present",
+      "git_blob": "808f68e36d74b28a950532052f529d1b86c27221",
+      "sha256": "sha256:697397fcddea5704d0d483edbd539d8304c32c1b8bbd7d0f9d7ccd61456f12ed"
+    },
+    {
+      "path": "vitest.config.ts",
+      "state": "present",
+      "git_blob": "9768a4e379ba14cf812a121ca62a74a87335563c",
+      "sha256": "sha256:005df9df7fc7791d9f61ba69ddda80971f390fca2af4419c5e39b3007b09376b"
+    }
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": "PATH=/home/agent/.npm/_npx/9ec17c29a94a501f/node_modules/.bin:$PATH NEXT_TELEMETRY_DISABLED=1 bun run validate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "node scripts/create-quirk-starter.mjs --name subject-proof --output ../quirk-subject-proof-64a2cd7 && cd ../quirk-subject-proof-64a2cd7 && npm ci --no-audit --no-fund && npm test && NEXT_TELEMETRY_DISABLED=1 npm run build && npm audit --omit=dev --audit-level=moderate",
+        "result": "pass",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff --check HEAD^ HEAD",
+        "result": "pass",
+        "exit_code": 0
+      }
+    ],
+    "verified_at": "2026-11-18T19:04:35Z"
+  },
+  "authority": {
+    "admission_effect": "none",
+    "authority_ref": null
+  },
+  "correction": null,
+  "receipt_sha256": "sha256:c4abc208299b66c348b8ebfabb45f160f2a172f1530b5526c47756014c317680"
+}
