@@ -11,6 +11,27 @@ product.
 See [Project Scaffold Identity](docs/canon/PROJECT_SCAFFOLD_IDENTITY.md) for the
 boundary, ownership rules, and change-control contract.
 
+## Start a new project
+
+For a small, independently named web application, try the **candidate**
+[Quirk Web Starter](starters/web/README.md):
+
+```bash
+node scripts/create-quirk-starter.mjs --name my-quirk-project --output ../my-quirk-project
+cd ../my-quirk-project
+npm ci
+npm test
+npm run dev
+```
+
+The destination must not already exist. The generator copies an explicit file
+list, does not install or execute anything, and records file hashes in a local
+generation receipt. The starter has its own identity; it does not carry this
+repository's identity guard, asset application, integrations, or authority.
+It is an early candidate, not an admitted product or a proven replacement for
+the full reference application. See the
+[dissection and migration proposal](docs/architecture/project-scaffold-dissection-2026-11-18.md).
+
 ### Proposed: Quirk Conversation Compiler
 
 `Quirk Wrap` specifies how consequential conversation deltas become typed,
@@ -21,7 +42,6 @@ contradictions and returns an honest no-op when no durable artifact is
 justified. See the
 [capability pack](docs/capabilities/conversation-compiler/README.md).
 
-### The Quirk Data Engine
 ## What this repository owns
 
 - a working Next.js application baseline with TypeScript, Tailwind, testing,
@@ -55,28 +75,29 @@ pipelines, media storage, agent roles, voice composition, billing, email,
 analytics, and authentication. These modules are deliberately inspectable
 working examples. Their presence does not change the repository identity.
 
-## Getting started
+## Run the existing reference application
 
 ```bash
-bun install
+bun install --frozen-lockfile
 cp .env.example .env
+# Configure a reachable PostgreSQL database with the pgvector extension.
 bun run dev
 ```
 
-Most integrations are lazy-initialized so the scaffold can build with no
-secrets. Individual features become active when their required environment
-variables are configured.
+`bun run dev` first runs the database migration. Most integrations are
+lazy-initialized, and individual features require their own configuration.
+The clean starter above does not require the reference application's database.
 
 ## Commands
 
-| Command | Description |
-| --- | --- |
-| `bun run dev` | Run the development server |
-| `bun run identity:check` | Verify the repository identity invariants |
-| `bun run validate` | Identity guard, lint, type-check, tests, and build |
-| `bun run db:migrate` / `db:seed` | Apply migrations / seed example data |
-| `bun run test:e2e` | Run the Playwright suite |
-| `bun run email:dev` | Preview email templates |
+| Command                          | Description                                        |
+| -------------------------------- | -------------------------------------------------- |
+| `bun run dev`                    | Run the development server                         |
+| `bun run identity:check`         | Verify the repository identity invariants          |
+| `bun run validate`               | Identity guard, lint, type-check, tests, and build |
+| `bun run db:migrate` / `db:seed` | Apply migrations / seed example data               |
+| `bun run test:e2e`               | Run the Playwright suite                           |
+| `bun run email:dev`              | Preview email templates                            |
 
 ## Repository structure
 

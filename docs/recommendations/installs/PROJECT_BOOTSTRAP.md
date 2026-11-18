@@ -1,167 +1,55 @@
 # Project Bootstrap
 
-> Go from zero to running in under 5 minutes.
+There are two different starting points in this repository. Choose the one
+that matches the project.
 
----
+## A small new web application
 
-## New Project from Scratch
+The candidate Quirk Web Starter is a separate, minimal Next.js app. Its first
+screen is a local idea preview that can be replaced. It does not include the
+reference application's database, authentication, billing, AI providers,
+asset engine, repository identity guard, or existing evidence receipts.
 
-```bash
-# 1. Clone the scaffold
-git clone https://github.com/quirk-systems/project-scaffold my-project
-cd my-project
+From a checkout of this repository, using Node 22.22.2 or later:
 
-# 2. Reset git history
-rm -rf .git && git init && git add . && git commit -m "chore: initial scaffold"
+```sh
+node scripts/create-quirk-starter.mjs --name my-project --output ../my-project
+cd ../my-project
+npm ci
+npm test
+npm run dev
+```
 
-# 3. Set up environment
+The output directory must not exist. The command creates files and a local
+hash receipt; it does not install packages, run the generated application,
+create a Git repository, connect services, deploy, or grant authority. If an
+I/O error interrupts creation, inspect the partial directory before deleting
+or retrying. `npm run build` checks a production build; a successful build is
+not deployment or user acceptance.
+
+Give the new project its own name, source control, permissions, dependencies,
+and release process. Add integrations only when they are needed. The receipt
+is a record of generated file bytes, not an approval or a behavior test.
+
+## The existing reference application
+
+The root of this repository contains the larger application with the Quirk
+asset lifecycle and other integrations. To work on that reference app:
+
+```sh
+bun install --frozen-lockfile
 cp .env.example .env
-# Edit .env with your values:
-# - AUTH_SECRET: openssl rand -base64 32
-# - DATABASE_URL: leave as local.db for SQLite
-# - NEXT_PUBLIC_APP_URL: http://localhost:3000
-
-# 4. Install and initialize
-bun install
-bun run db:push    # creates local.db with users table
-lefthook install   # installs git hooks
-
-# 5. Verify everything works
-bun run validate   # lint + type-check + test + build
-
-# 6. Start developing
+# Set DATABASE_URL to a reachable PostgreSQL database with pgvector available.
 bun run dev
 ```
 
----
+`bun run dev` runs `db:migrate` first. The migrations use PostgreSQL and create
+the `vector` extension; SQLite's `local.db` is not the configured database.
+Other integrations need their own credentials when used. The source
+repository's identity check deliberately fixes its repository and package
+identity; simply changing the root `package.json` name makes that check fail.
 
-## Customize the Scaffold
-
-### 1. Update package.json
-```json
-{
-  "name": "my-project",
-  "version": "0.1.0",
-  "description": "What this does in one sentence"
-}
-```
-
-### 2. Update CLAUDE.md
-Replace the "Project Overview" section with your project's actual description, stack, and conventions.
-
-### 3. Update app metadata
-```typescript
-// src/app/layout.tsx
-export const metadata: Metadata = {
-  title: "My Project",
-  description: "What this does",
-};
-```
-
-### 4. Update home page
-```tsx
-// src/app/page.tsx
-export default function Home() {
-  return (
-    <main>
-      <h1>My Project</h1>
-      {/* Your landing page */}
-    </main>
-  );
-}
-```
-
-### 5. Configure Auth.js (if needed)
-```typescript
-// src/lib/auth.ts
-import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
-    GitHub({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    }),
-  ],
-});
-```
-
-Add to `.env`:
-```
-GITHUB_CLIENT_ID=...
-GITHUB_CLIENT_SECRET=...
-```
-
-### 6. Set up GitHub repo
-```bash
-# Create repo on GitHub (via gh CLI or web)
-gh repo create my-project --private
-git remote add origin git@github.com:username/my-project.git
-git push -u origin main
-```
-
----
-
-## Remote Repository Setup
-
-### Branch Protection (GitHub)
-
-Required for real projects:
-1. Settings → Branches → Add rule for `main`
-2. Enable: "Require a pull request before merging"
-3. Enable: "Require status checks to pass" → select `validate` and `e2e`
-4. Enable: "Require conversation resolution before merging"
-5. Enable: "Do not allow bypassing the above settings"
-
-### Repository Secrets (CI)
-
-Go to Settings → Secrets and variables → Actions:
-
-| Secret | Value |
-|--------|-------|
-| `AUTH_SECRET` | `openssl rand -base64 32` |
-| `DATABASE_URL` | Production DB URL |
-| Any other env vars needed by build | ... |
-
-For `SKIP_ENV_VALIDATION`, it's set directly in the workflow yaml (not a secret).
-
----
-
-## Adding Your First Feature
-
-1. **Write the PRD** (even one paragraph in `docs/`)
-2. **Update the DB schema** if needed (`src/lib/db/schema.ts`)
-3. **Generate migration**: `bun run db:generate && bun run db:push`
-4. **Write the feature** (server component or server action first, add client only if needed)
-5. **Write the tests**:
-   - Unit test: `src/components/MyFeature.test.tsx`
-   - E2E test: `e2e/my-feature.spec.ts` (for user-facing flows)
-6. **Validate**: `bun run validate`
-7. **Commit**: `git commit -m "feat(feature-name): add thing"`
-8. **Push and PR**: `git push -u origin feature/name`
-
----
-
-## Deployment Checklist
-
-### Vercel (simplest for Next.js)
-```bash
-bunx vercel
-
-# Environment variables: set in Vercel dashboard or:
-bunx vercel env add AUTH_SECRET production
-bunx vercel env add DATABASE_URL production
-```
-
-### Self-hosted (VPS/Docker)
-See `docs/recommendations/installs/DOCKER_SETUP.md`.
-
-### Key env vars for production:
-```bash
-NODE_ENV=production
-AUTH_SECRET=<random 32 bytes>
-DATABASE_URL=<production DB URL>
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
-# Remove SKIP_ENV_VALIDATION — you want validation in prod
-```
+See [Architecture](../../ARCHITECTURE.md),
+[Project Scaffold Identity](../../canon/PROJECT_SCAFFOLD_IDENTITY.md), and the
+[dissection proposal](../../architecture/project-scaffold-dissection-2026-11-18.md)
+for the current boundaries and outstanding migration decisions.

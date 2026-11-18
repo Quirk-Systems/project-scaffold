@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**project-scaffold** is the fully-loaded boilerplate for Quirk Systems projects. It provides a production-ready Next.js 16 scaffold with all tooling, testing, CI/CD, and conventions configured out of the box. Stack, scripts, and layout are visible in `package.json` and the tree itself.
+**project-scaffold** contains a Next.js reference application, reusable project conventions, and Quirk experiments. It is not Quirk OS. A separately generated, minimal web starter is a candidate under `starters/web/`; see the [dissection proposal](docs/architecture/project-scaffold-dissection-2026-11-18.md). The reference application's presence does not by itself establish production readiness.
 
 ## Environment Variables
 

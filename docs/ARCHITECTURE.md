@@ -5,10 +5,12 @@ and the asset lifecycle used to exercise the scaffold.
 
 ## Shape: single app, workspace-shaped on purpose
 
-The scaffold's bundled reference application is one Next.js 16 application
-today. It demonstrates Quirk-domain capabilities; it is not Quirk OS and does
-not own Quirk OS canon or kernel authority. Each `src/lib/` module has a clean
-boundary so the graduation path to bun workspaces is mechanical, not a rewrite:
+The bundled reference application is one Next.js 16 application today. It
+demonstrates Quirk-domain capabilities; it is not Quirk OS and does not own
+Quirk OS canon or kernel authority. The following is a candidate extraction
+map, not a claim that each module can already move independently. The shared
+database schema couples authentication, billing, asset, and ontology tables;
+imports and migrations need review before any extraction:
 
 ```
 Today (single app)                Target (when a second app exists)
@@ -22,9 +24,10 @@ src/lib/lazy-client.ts ────────▶  packages/lazy-client (shared
 src/app/             ──────────▶  apps/web
 ```
 
-**Graduation trigger:** a second consumer. Until a CLI, worker, or second
-app imports a module, extracting it is ceremony. The boundary rules below
-are what keep graduation cheap.
+The recorded graduation trigger is a second consumer. A different ownership,
+permission, release, or failure boundary can also justify a split even without
+a second importer. The [dissection proposal](architecture/project-scaffold-dissection-2026-11-18.md)
+records the current seams and an additive starter experiment.
 
 ## Boundary rules
 

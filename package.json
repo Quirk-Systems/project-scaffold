@@ -34,7 +34,8 @@
     "identity:check": "node scripts/check-repository-identity.mjs",
     "preference-contract:check": "node scripts/check-preference-contract.mjs",
     "preference-wedge:demo": "bun scripts/run-preference-evidence-wedge.ts",
-    "validate": "bun run preference-contract:check && bun run identity:check && bun run lint && bun run type-check && bun run test:run && SKIP_ENV_VALIDATION=1 bun run build",
+    "starter:test": "node --test tests/starter/*.test.mjs starters/web/tests/*.test.mjs",
+    "validate": "bun run preference-contract:check && bun run identity:check && bun run starter:test && bun run lint && bun run type-check && bun run test:run && SKIP_ENV_VALIDATION=1 bun run build",
     "validate:full": "bun run validate && bun run test:e2e",
     "prepare": "lefthook install"
   },

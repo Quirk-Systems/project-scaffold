@@ -1,0 +1,263 @@
+:root {
+  color-scheme: light;
+  --ink: #172b2b;
+  --muted: #617471;
+  --paper: #f4f1e9;
+  --line: #d9ded4;
+  --accent: #d5fa70;
+  --deep: #142c2a;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+button,
+textarea,
+input {
+  font: inherit;
+}
+.shell {
+  max-width: 1160px;
+  margin: auto;
+  padding: 32px 32px 24px;
+}
+.masthead,
+footer,
+.workspace-head,
+.workspace-foot,
+.field-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.wordmark {
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+}
+.wordmark span {
+  color: #dc673d;
+  margin-left: 3px;
+}
+.eyebrow,
+.step,
+.candidate-label,
+footer {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.eyebrow {
+  color: var(--muted);
+}
+.intro {
+  max-width: 760px;
+  padding: 94px 0 48px;
+}
+.badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  background: #e3ebd2;
+  border-radius: 40px;
+  padding: 9px 13px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.badge span {
+  color: #5f8b3f;
+  font-size: 8px;
+}
+h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  margin: 23px 0;
+}
+h1 em {
+  color: #477467;
+  font-weight: 400;
+}
+.intro > p {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 520px;
+  margin: 0;
+}
+.workspace {
+  background: #fff;
+  border: 1px solid #e3e7df;
+  border-radius: 22px;
+  padding: 32px;
+  box-shadow: 0 18px 55px #1d3e2d0b;
+}
+.step {
+  color: #6f8579;
+}
+.workspace h2 {
+  font-family: Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  font-size: 28px;
+  margin: 8px 0 25px;
+}
+.scribble {
+  font-size: 40px;
+  color: #d96842;
+}
+label,
+legend {
+  font-size: 13px;
+  font-weight: 700;
+}
+textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #ccd7cb;
+  border-radius: 12px;
+  background: #fbfcf9;
+  padding: 16px;
+  color: var(--ink);
+  line-height: 1.5;
+  margin-top: 10px;
+}
+textarea::placeholder {
+  color: #90a196;
+}
+textarea:focus-visible,
+input:focus-visible,
+button:focus-visible {
+  outline: 3px solid #659f78;
+  outline-offset: 3px;
+}
+.field-note {
+  font-size: 11px;
+  color: #73857a;
+  margin-top: 8px;
+}
+fieldset {
+  padding: 0;
+  border: 0;
+  margin: 30px 0 22px;
+}
+legend {
+  margin-bottom: 12px;
+}
+.move-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.move {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 9px;
+  row-gap: 5px;
+  border: 1px solid #dce4da;
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+}
+.move input {
+  accent-color: #285e49;
+  margin: 1px 0 0;
+}
+.move strong {
+  font-size: 13px;
+}
+.move span {
+  grid-column: 2;
+  color: #72857a;
+  font-size: 11px;
+  font-weight: 400;
+}
+.move.selected {
+  background: #f0f9df;
+  border-color: #89ad71;
+}
+.candidate {
+  min-height: 116px;
+  background: var(--deep);
+  color: #eff7e8;
+  border-radius: 13px;
+  padding: 20px 22px;
+  overflow-wrap: anywhere;
+}
+.candidate-label {
+  color: var(--accent);
+}
+.candidate p {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  line-height: 1.4;
+  margin: 11px 0 6px;
+}
+.candidate small {
+  color: #b2c5b6;
+  font-size: 11px;
+}
+.workspace-foot {
+  margin-top: 19px;
+}
+.workspace-foot p {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 0;
+}
+.workspace-foot button {
+  border: 0;
+  background: var(--accent);
+  border-radius: 40px;
+  padding: 12px 17px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.workspace-foot button span {
+  padding-left: 8px;
+}
+footer {
+  padding: 55px 0 0;
+  color: #829187;
+}
+@media (max-width: 640px) {
+  .shell {
+    padding: 24px 18px;
+  }
+  .eyebrow {
+    display: none;
+  }
+  .intro {
+    padding: 64px 0 35px;
+  }
+  .workspace {
+    padding: 22px 18px;
+  }
+  .move-grid {
+    grid-template-columns: 1fr;
+  }
+  .workspace-foot {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .workspace-foot button {
+    width: 100%;
+  }
+  footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
