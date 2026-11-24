@@ -48,6 +48,14 @@ export function isEmbeddingsConfigured(): boolean {
   return Boolean(env.EMBEDDINGS_API_KEY);
 }
 
+/**
+ * Name of the model this deployment embeds with, readable without an API key
+ * so query paths can tag and filter vectors by the space they belong to.
+ */
+export function getConfiguredEmbeddingModel(): string {
+  return env.EMBEDDINGS_MODEL ?? DEFAULT_EMBEDDING_MODEL;
+}
+
 export function assertEmbeddingsConfigured(): void {
   getClient().assertConfigured();
 }

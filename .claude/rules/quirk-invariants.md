@@ -12,6 +12,37 @@ paths:
 These are correctness properties, not style preferences. Code that violates one
 is wrong even when it type-checks and the tests pass.
 
+## An embedding is only comparable to embeddings from the same model
+
+Two embedders write `quirk_assets.embedding`: the offline hash fallback in
+`src/lib/quirk/embeddings.ts` and whatever provider model `EMBEDDINGS_API_KEY`
+configures. They agree on width (1536) and disagree on meaning, so cosine
+distance between vectors from different embedders is noise that sorts
+confidently and ranks randomly. Width validation cannot catch it — the
+dimensions match.
+
+`quirk_assets.embedding_model` is what makes the mismatch representable.
+Two rules hold it up, and both are load-bearing:
+
+- **Every writer records the model.** `embedAssetText()` returns the vector and
+  its model together precisely so they cannot be separated; `captureAsset()`,
+  `mutateAsset()`, and `embedPendingAssets()` persist both. A write that sets
+  `embedding` without `embedding_model` reintroduces an untyped vector.
+- **Every similarity query filters on the model.** `normalizeSearchParams()`
+  throws when `embedding` arrives without `embeddingModel`, and `searchAssets()`
+  restricts ranking to matching rows. Do not relax that error into a default:
+  guessing the model is how a foreign vector gets ranked.
+
+Rows whose model does not match the configured one are not an error state. They
+are pending work: `embedPendingAssets()` selects on
+`embedding_model IS DISTINCT FROM <model>`, not on `embedding IS NULL`, so it
+re-embeds them in place. Narrowing that back to a NULL check strands every row
+the fallback wrote, permanently and silently — there is no other repair path.
+
+Changing the configured model is therefore a backfill, not a config edit: until
+`bun run db:embed` finishes, previously embedded assets drop out of semantic
+results rather than ranking wrongly. That is the intended failure direction.
+
 ## A one-of-one is decided by the database, never by the application
 
 `claimOffer()` and `retireOffer()` are single conditional statements —

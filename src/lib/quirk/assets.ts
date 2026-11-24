@@ -8,7 +8,7 @@ import {
   type QuirkAssetVersion,
 } from "@/lib/db/schema";
 import { archivistIngest, type IngestInput } from "./agents";
-import { embedText } from "./embeddings";
+import { embedAssetText } from "./embeddings";
 
 export type AssetStatus = QuirkAsset["status"];
 
@@ -26,7 +26,9 @@ export async function captureAsset(input: IngestInput): Promise<{
   version: QuirkAssetVersion;
 }> {
   const ingest = archivistIngest(input);
-  const embedding = ingest.rawText ? embedText(ingest.rawText) : null;
+  // Embedded before the transaction opens: the provider call is network I/O
+  // and has no business holding a database transaction open.
+  const embedded = ingest.rawText ? await embedAssetText(ingest.rawText) : null;
 
   return db.transaction(async (tx) => {
     const [asset] = await tx
@@ -38,7 +40,8 @@ export async function captureAsset(input: IngestInput): Promise<{
         storagePath: input.storagePath ?? null,
         rawText: ingest.rawText,
         metadata: ingest.metadata,
-        embedding,
+        embedding: embedded?.embedding ?? null,
+        embeddingModel: embedded?.model ?? null,
         status: "captured",
       })
       .returning();
@@ -125,6 +128,9 @@ export async function mutateAsset(
   id: string,
   input: { rawText: string; changeSummary?: string; createdBy?: string },
 ): Promise<QuirkAssetVersion | null> {
+  // Outside the transaction for the same reason as in captureAsset.
+  const embedded = await embedAssetText(input.rawText);
+
   return db.transaction(async (tx) => {
     const [asset] = await tx
       .select()
@@ -165,7 +171,8 @@ export async function mutateAsset(
       .update(quirkAssets)
       .set({
         rawText: input.rawText,
-        embedding: embedText(input.rawText),
+        embedding: embedded.embedding,
+        embeddingModel: embedded.model,
         status: "mutated",
         updatedAt: new Date(),
       })
