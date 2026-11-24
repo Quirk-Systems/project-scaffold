@@ -69,6 +69,7 @@ export async function embedPendingAssets(
         id: quirkAssets.id,
         title: quirkAssets.title,
         rawText: quirkAssets.rawText,
+        embeddingModel: quirkAssets.embeddingModel,
       })
       .from(quirkAssets)
       .where(pendingWhere)
@@ -79,22 +80,35 @@ export async function embedPendingAssets(
     // as the single source of truth for what actually gets embedded.
     const embeddable = batch.flatMap((row) => {
       const input = buildAssetEmbeddingInput(row);
-      return input === null ? [] : [{ id: row.id, input }];
+      return input === null ? [] : [{ ...row, input }];
     });
 
+    let embedded = 0;
     if (embeddable.length > 0) {
       const vectors = unwrap(
         await embedTexts(embeddable.map((row) => row.input)),
       );
       for (const [position, row] of embeddable.entries()) {
-        await db
+        const written = await db
           .update(quirkAssets)
           .set({
             embedding: vectors[position],
             embeddingModel: model,
             updatedAt: new Date(),
           })
-          .where(eq(quirkAssets.id, row.id));
+          .where(
+            and(
+              eq(quirkAssets.id, row.id),
+              pendingWhere,
+              // Reject a stale result if its source or model tag changed
+              // while the provider request was in flight.
+              sql`${quirkAssets.title} is not distinct from ${row.title}`,
+              sql`${quirkAssets.rawText} is not distinct from ${row.rawText}`,
+              sql`${quirkAssets.embeddingModel} is not distinct from ${row.embeddingModel}`,
+            ),
+          )
+          .returning({ id: quirkAssets.id });
+        embedded += written.length;
       }
     }
 
@@ -104,7 +118,7 @@ export async function embedPendingAssets(
       .where(pendingWhere);
 
     return {
-      embedded: embeddable.length,
+      embedded,
       remaining: pending?.value ?? 0,
     };
   });
