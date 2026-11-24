@@ -6,6 +6,8 @@ function embedding(): number[] {
   return new Array(EMBEDDING_DIMENSIONS).fill(0);
 }
 
+const MODEL = "text-embedding-3-small";
+
 describe("normalizeSearchParams", () => {
   it("applies default limit and offset", () => {
     const p = normalizeSearchParams({});
@@ -49,24 +51,58 @@ describe("normalizeSearchParams", () => {
 
   it("clamps minSimilarity into the 0..1 range", () => {
     expect(
-      normalizeSearchParams({ embedding: embedding(), minSimilarity: 2 })
-        .minSimilarity,
+      normalizeSearchParams({
+        embedding: embedding(),
+        embeddingModel: MODEL,
+        minSimilarity: 2,
+      }).minSimilarity,
     ).toBe(1);
     expect(
-      normalizeSearchParams({ embedding: embedding(), minSimilarity: -1 })
-        .minSimilarity,
+      normalizeSearchParams({
+        embedding: embedding(),
+        embeddingModel: MODEL,
+        minSimilarity: -1,
+      }).minSimilarity,
     ).toBe(0);
   });
 
   it("accepts an embedding of the expected dimensionality", () => {
     expect(() =>
-      normalizeSearchParams({ embedding: embedding() }),
+      normalizeSearchParams({
+        embedding: embedding(),
+        embeddingModel: MODEL,
+      }),
     ).not.toThrow();
   });
 
   it("rejects an embedding with the wrong dimensionality", () => {
-    expect(() => normalizeSearchParams({ embedding: [1, 2, 3] })).toThrow(
-      RangeError,
+    expect(() =>
+      normalizeSearchParams({ embedding: [1, 2, 3], embeddingModel: MODEL }),
+    ).toThrow(RangeError);
+  });
+
+  it("rejects an embedding supplied without a model", () => {
+    // Ranking across embedding spaces is noise, so the pairing is mandatory.
+    expect(() => normalizeSearchParams({ embedding: embedding() })).toThrow(
+      TypeError,
     );
+    expect(() =>
+      normalizeSearchParams({ embedding: embedding(), embeddingModel: "  " }),
+    ).toThrow(TypeError);
+  });
+
+  it("trims the embedding model", () => {
+    expect(
+      normalizeSearchParams({
+        embedding: embedding(),
+        embeddingModel: `  ${MODEL}  `,
+      }).embeddingModel,
+    ).toBe(MODEL);
+  });
+
+  it("allows a model-free search when no embedding is supplied", () => {
+    const p = normalizeSearchParams({ text: "lo-fi" });
+    expect(p.embedding).toBeUndefined();
+    expect(p.embeddingModel).toBeUndefined();
   });
 });

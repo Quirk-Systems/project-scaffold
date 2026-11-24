@@ -179,6 +179,15 @@ export const quirkAssets = pgTable(
       .notNull()
       .default({}),
     embedding: vector("embedding", { dimensions: EMBEDDING_DIMENSIONS }),
+    /**
+     * Which embedder produced `embedding`. Two embedders write this column —
+     * the offline hash fallback and a learned provider model — and their
+     * vectors share a width but not a space, so cosine distance between them
+     * is noise. Every writer records its model here and every similarity
+     * query filters on it, which makes the mismatch unrepresentable instead
+     * of silently wrong. Null only when `embedding` is null.
+     */
+    embeddingModel: text("embedding_model"),
     status: assetStatusEnum("status").notNull().default("captured"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -187,7 +196,17 @@ export const quirkAssets = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (t) => [index("quirk_assets_status_idx").on(t.status)],
+  (t) => [
+    index("quirk_assets_status_idx").on(t.status),
+    // Narrows similarity scans to one embedding space before ranking.
+    index("quirk_assets_embedding_model_idx").on(t.embeddingModel),
+    // Approximate nearest-neighbour index for cosine ranking. Without it
+    // pgvector sequentially scans every embedded row on every query.
+    index("quirk_assets_embedding_hnsw_idx").using(
+      "hnsw",
+      t.embedding.op("vector_cosine_ops"),
+    ),
+  ],
 );
 
 export const quirkAssetVersions = pgTable(

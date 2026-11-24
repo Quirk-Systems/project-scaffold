@@ -24,7 +24,6 @@ import {
 
 export { EMBEDDING_DIMENSIONS };
 
-
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 
@@ -42,6 +41,12 @@ export interface SearchAssetsParams {
   tags?: string[];
   /** Query embedding; when present, results are ranked by cosine similarity. */
   embedding?: number[];
+  /**
+   * Model that produced `embedding`. Required alongside it: ranking is
+   * restricted to assets embedded by the same model, because distance between
+   * vectors from different models is noise rather than similarity.
+   */
+  embeddingModel?: string;
   /** Minimum cosine similarity (0..1); only applied when `embedding` is set. */
   minSimilarity?: number;
   /** Page size (clamped to 1..100, default 20). */
@@ -56,6 +61,7 @@ export interface NormalizedSearchParams {
   statuses?: AssetStatus[];
   tags?: string[];
   embedding?: number[];
+  embeddingModel?: string;
   minSimilarity?: number;
   limit: number;
   offset: number;
@@ -79,9 +85,9 @@ function dedupe<T>(values?: T[]): T[] | undefined {
 
 /**
  * Validate and normalize raw search input into a predictable shape: limits are
- * clamped, text is trimmed, tags are lower-cased and de-duplicated, and a
- * wrong-sized embedding is rejected up front. Pure and database-free so it can
- * be unit-tested in isolation.
+ * clamped, text is trimmed, tags are lower-cased and de-duplicated, and an
+ * embedding that is the wrong size or carries no model is rejected up front.
+ * Pure and database-free so it can be unit-tested in isolation.
  */
 export function normalizeSearchParams(
   params: SearchAssetsParams,
@@ -95,12 +101,17 @@ export function normalizeSearchParams(
     );
   }
 
+  const embeddingModel = params.embeddingModel?.trim() || undefined;
+  if (params.embedding !== undefined && embeddingModel === undefined) {
+    throw new TypeError(
+      "embeddingModel is required when embedding is supplied: similarity is only meaningful within one embedding space",
+    );
+  }
+
   const text = params.text?.trim() || undefined;
 
   const tags = params.tags
-    ? dedupe(
-        params.tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean),
-      )
+    ? dedupe(params.tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))
     : undefined;
 
   const minSimilarity =
@@ -114,6 +125,7 @@ export function normalizeSearchParams(
     statuses: dedupe(params.statuses),
     tags,
     embedding: params.embedding,
+    embeddingModel,
     minSimilarity,
     limit: clampInt(params.limit ?? DEFAULT_LIMIT, 1, MAX_LIMIT),
     offset: Math.max(0, Math.trunc(params.offset ?? 0)),
@@ -127,9 +139,10 @@ function escapeLike(input: string): string {
 
 /**
  * Search the asset registry by any combination of semantic similarity, free
- * text, type/status, and tags. When `embedding` is supplied, only assets that
- * have an embedding are returned and rows are ordered by descending cosine
- * similarity; otherwise the newest matching assets come first.
+ * text, type/status, and tags. When `embedding` is supplied, only assets
+ * embedded by the same `embeddingModel` are returned and rows are ordered by
+ * descending cosine similarity; otherwise the newest matching assets come
+ * first.
  */
 export async function searchAssets(
   params: SearchAssetsParams,
@@ -176,6 +189,9 @@ export async function searchAssets(
 
     if (similarity) {
       conditions.push(isNotNull(quirkAssets.embedding));
+      // Compare like with like: rows embedded by a different model (or by an
+      // unknown one) are excluded rather than ranked against a foreign space.
+      conditions.push(eq(quirkAssets.embeddingModel, p.embeddingModel!));
       if (p.minSimilarity !== undefined) {
         conditions.push(gt(similarity, p.minSimilarity));
       }
